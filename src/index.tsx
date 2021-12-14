@@ -1,12 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { Provider } from 'react-redux'
+import CssBaseLine from '@mui/material/CssBaseline'
+import ThemeProvider from '@mui/material/styles/ThemeProvider'
+import { brandingDarkTheme } from 'app/theme/brandingDarkTheme'
+import { store } from 'app/store'
+import { Connector } from 'mqtt-react-hooks'
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <ThemeProvider theme={brandingDarkTheme}>
+        <CssBaseLine />
+        <Connector brokerUrl="ws://localhost:1883" options={{
+          clientId: 'zenoWebClient',
+          clean: true,
+          port: 1883,
+          protocol: 'ws',
+          connectTimeout: 2000
+        }}  >
+          <App />
+        </Connector>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
