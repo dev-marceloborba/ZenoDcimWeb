@@ -44,7 +44,7 @@ export interface UserRequest {
     passwordConfirmation: string
     email: string
     role: EUserRole
-    active: boolean
+    companyId: string
 }
 
 export interface EditUserRequest {

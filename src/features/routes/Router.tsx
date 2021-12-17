@@ -17,6 +17,7 @@ import RackFloorOverview from 'features/rack/RackFloorOverview'
 import RackDetails from 'features/rack/RackDetails'
 import AlarmList from 'features/automation/AlarmList'
 import CompanyList from 'features/company/CompanyList'
+import NewCompany from 'features/company/NewCompany'
 
 const Dashboard = React.lazy(() => import('features/dcim/Dashboard'))
 
@@ -41,6 +42,7 @@ export const SubRoutes: React.FC = () => {
 
 
                 <Route path="companies" element={<CompanyList />} />
+                <Route path="companies/new" element={<NewCompany />} />
 
                 <Route path="dashboard" element={<Dashboard />} />
 

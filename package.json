@@ -6,6 +6,7 @@
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.0",
+    "@mui/lab": "^5.0.0-alpha.60",
     "@mui/material": "^5.2.2",
     "@reduxjs/toolkit": "^1.6.2",
     "@straw-hat/react-fullscreen": "^3.0.2",
@@ -18,6 +19,8 @@
     "@types/react-dom": "^17.0.0",
     "apexcharts": "^3.32.0",
     "date-fns": "^2.27.0",
+    "formik": "^2.2.9",
+    "formik-mui": "^4.0.0-alpha.3",
     "i18next": "^21.5.4",
     "mqtt-react-hooks": "^2.0.3",
     "react": "^17.0.2",
@@ -25,9 +28,13 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.21.0",
     "react-i18next": "^11.14.3",
+    "react-imask": "^6.2.2",
+    "react-input-mask": "^2.0.4",
+    "react-mask-field": "^3.0.1",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
+    "react-text-mask": "^5.4.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1",
     "xlsx": "^0.17.4",
@@ -56,5 +63,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-input-mask": "^3.0.1",
+    "@types/react-text-mask": "^5.4.10"
   }
 }
