@@ -1,53 +1,37 @@
-import React from 'react'
-import { InputProps } from '@mui/material/Input'
-import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
-import { SxProps } from '@mui/system'
-import { Theme } from '@mui/material'
+import React from "react";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 type ComboboxItem = {
-    value: string | number
-    descripton: string
-}
+  value: string | number;
+  description: string;
+};
 
 type TextInputProps = {
-    name: string
-    errorMessage?: string
-    label: string
-    obscureText?: boolean
-    autoFocus?: boolean
-    defaultValue?: string
-    inputProps?: InputProps
-    items?: ComboboxItem[]
-    sx?: SxProps<Theme>
-}
+  items?: ComboboxItem[];
+} & TextFieldProps;
 
-const TextInput: React.FC<TextInputProps> = (props) => {
-    return (
-        <TextField
-            margin="normal"
-            // required
-            fullWidth
-            id={props.name}
-            // autoComplete={props.name}
-            autoFocus={props.autoFocus ?? false}
-            variant="outlined"
-            label={props.label}
-            error={!!props.errorMessage}
-            type={props.obscureText ? 'password' : 'text'}
-            helperText={props.errorMessage ? props.errorMessage : null}
-            select={!!props.items?.length}
-            InputProps={props.inputProps}
-            sx={props.sx}
-            defaultValue={props.defaultValue}
-        >
-            {
-                props.items?.map((item) => (
-                    <MenuItem key={item.value} value={item.value}>{item.descripton}</MenuItem>
-                ))
-            }
-        </TextField>
-    )
-}
+// const TextInput: React.FC<TextInputProps> = ({ ...props }) => {
+const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props, ref) => {
+  return (
+    <TextField
+      {...props}
+      ref={ref}
+      margin="normal"
+      fullWidth
+      id={props.name}
+      variant="outlined"
+      error={!!props.helperText}
+      helperText={props.helperText ? props.helperText : null}
+      select={!!props.items?.length}
+    >
+      {props.items?.map((item) => (
+        <MenuItem key={item.value} value={item.value}>
+          {item.description}
+        </MenuItem>
+      ))}
+    </TextField>
+  );
+});
 
-export default TextInput
+export default TextInput;

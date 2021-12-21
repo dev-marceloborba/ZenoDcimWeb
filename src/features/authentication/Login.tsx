@@ -1,6 +1,7 @@
-import React from "react";
 //libraries
-import { Formik, Form, Field } from "formik";
+import React from "react";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 //hooks
@@ -17,21 +18,27 @@ import Grid, { GridProps } from "@mui/material/Grid";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import Loading from "app/components/Loading";
 import Logo from "app/assets/logo-horizontal-white.svg";
-import { TextField } from "formik-mui";
 
 //business logic
 import { useLoginMutation } from "app/services/authentication";
 import type { LoginRequest } from "app/services/authentication";
 import getErrorMessage from "app/utils/apiErrorHandler";
+import ControlledTextInput from "app/components/ControlledTextInput";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+
+  const methods = useForm<LoginRequest>({
+    resolver: yupResolver(validationSchema),
+  });
   const { setCredentials, signed } = useAuth();
 
   const dispatch = useAppDispatch();
   const [login, { isLoading, error, isError }] = useLoginMutation();
 
-  const onSubmit = async (data: LoginRequest) => {
+  const { handleSubmit } = methods;
+
+  const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
       const { data: account } = await login(data).unwrap();
       dispatch(setCredentials(account));
@@ -53,57 +60,41 @@ const Login: React.FC = () => {
 
         <FormContainer>
           <FormTitle variant="h1">Bem vindo!</FormTitle>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit(onSubmit)}
+            maxWidth={320}
           >
-            {({ isSubmitting }) => (
-              <Form>
-                <Box maxWidth={320}>
-                  <Field
-                    component={TextField}
-                    type="email"
-                    name="email"
-                    label="E-mail"
-                    fullWidth
-                  />
+            <FormProvider {...methods}>
+              <ControlledTextInput name="email" label="E-mail" />
+              <ControlledTextInput
+                name="password"
+                label="Senha"
+                type="password"
+                sx={{ mt: 2 }}
+              />
 
-                  <Field
-                    component={TextField}
-                    type="password"
-                    label="Senha"
-                    name="password"
-                    fullWidth
-                    sx={{mt: 3}}
-                  />
+              <FormButtonsContainer>
+                <LoginButton type="submit" variant="contained" size="large">
+                  Login
+                </LoginButton>
+                <Button type="button" variant="text">
+                  Esqueceu sua senha?
+                </Button>
+              </FormButtonsContainer>
 
-                  <FormButtonsContainer>
-                    <LoginButton
-                      type="submit"
-                      variant="contained"
-                      size="large"
-                      disabled={isSubmitting}
-                    >
-                      Login
-                    </LoginButton>
-                    <Button type="button" variant="text">
-                      Esqueceu sua senha?
-                    </Button>
-                  </FormButtonsContainer>
-
-                  <Fade in={isError}>
-                    <Typography
-                      color="secondary"
-                      sx={{ textAlign: "center", mt: 2 }}
-                    >
-                      Erro ao realizar login: {getErrorMessage(error)}
-                    </Typography>
-                  </Fade>
-                </Box>
-              </Form>
-            )}
-          </Formik>
+              <Fade in={isError}>
+                <Typography
+                  color="secondary"
+                  sx={{ textAlign: "center", mt: 2 }}
+                >
+                  Erro ao realizar login: {getErrorMessage(error)}
+                </Typography>
+              </Fade>
+            </FormProvider>
+          </Box>
 
           <Copyright color="primary">
             © 2019-{new Date().getFullYear()}{" "}
@@ -123,11 +114,6 @@ const Login: React.FC = () => {
       </PageGrid>
     );
   }
-};
-
-const initialValues = {
-  email: "",
-  password: "",
 };
 
 const validationSchema = Yup.object().shape({

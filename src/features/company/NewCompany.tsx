@@ -17,7 +17,7 @@ const NewCompany: React.FC = () => {
 
   const onSubmit = async (data: CompanyRequest) => {
     try {
-      await createCompany(data);
+      await createCompany(data).unwrap();
     } catch (err) {
       console.log(err)
     }

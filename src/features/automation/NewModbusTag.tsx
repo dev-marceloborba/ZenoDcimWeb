@@ -26,12 +26,12 @@ const NewModbusTag: React.FC = () => {
                 Criar Tag Modbus
             </Typography>
             <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)} sx={{ maxWidth: '640px' }}>
-                <TextInput name="modbusDevice" label="Dispositivo Modbus" errorMessage="Dispositivo Modbus é obrigatório" />
-                <TextInput name="name" label="Nome" errorMessage="Nome é obrigatório" />
-                <TextInput name="dataType" label="Tipo de dado" errorMessage="Tipo de dado é obrigatório" />
-                <TextInput name="address" label="Endereço" errorMessage="Endereço é obrigatório" />
-                <TextInput name="size" label="Tamanho" errorMessage="Tamanho é obrigatório" />
-                <TextInput name="deadband" label="Banda morta" errorMessage="Banda morta é obrigatório" />
+                <TextInput name="modbusDevice" label="Dispositivo Modbus" helperText="Dispositivo Modbus é obrigatório" />
+                <TextInput name="name" label="Nome" helperText="Nome é obrigatório" />
+                <TextInput name="dataType" label="Tipo de dado" helperText="Tipo de dado é obrigatório" />
+                <TextInput name="address" label="Endereço" helperText="Endereço é obrigatório" />
+                <TextInput name="size" label="Tamanho" helperText="Tamanho é obrigatório" />
+                <TextInput name="deadband" label="Banda morta" helperText="Banda morta é obrigatório" />
                 <Button sx={{ mt: 2 }} fullWidth type="submit" color="primary" variant="contained">Criar</Button>
             </Box>
         </Container>

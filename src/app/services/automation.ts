@@ -12,8 +12,6 @@ export interface PlcRequest {
     manufactor: string
     model: string
     ipAddress: string
-    networkMask: string
-    gateway: string
     tcpPort: number
     scan: number
 }
