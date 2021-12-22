@@ -12,7 +12,7 @@ import {
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import * as Yup from "yup";
+import { SchemaOf, object, ref, string, number } from "yup";
 import { useToast } from "app/components/Toast";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
@@ -53,11 +53,13 @@ const CreateUser: React.FC = () => {
       <Typography variant="h5">Criar usuário</Typography>
 
       <Box
-        sx={{ maxWidth: "480px" }}
         component="form"
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
+        sx={{ maxWidth: "480px", '& .MuiTextField-root': {
+          mt: 2
+        } }}
       >
         <FormProvider {...methods}>
           <ControlledTextInput
@@ -130,18 +132,18 @@ const items: RoleItem[] = [
   { value: 5, description: "Cliente" },
 ];
 
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string().required("Nome é obrigatorio"),
-  lastName: Yup.string().required("Sobrenome é obrigatorio"),
-  email: Yup.string().email("E-mail inválido").required("E-mail é obrigatorio"),
-  password: Yup.string()
+const validationSchema: SchemaOf<UserRequest> = object().shape({
+  firstName: string().required("Nome é obrigatorio"),
+  lastName: string().required("Sobrenome é obrigatorio"),
+  email: string().email("E-mail inválido").required("E-mail é obrigatorio"),
+  password: string()
     .min(5, "Senha deve ter ao menos 5 caracteres")
     .required("Senha é obrigatória"),
-  passwordConfirmation: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Senhas não coincidem")
+  passwordConfirmation: string()
+    .oneOf([ref("password"), null], "Senhas não coincidem")
     .required("Confirmação de senha é obrigatória"),
-  role: Yup.string().required("Grupo é obrigatório"),
-  companyId: Yup.string().required("Empresa é obrigatória"),
+  role: number().required("Grupo é obrigatório"),
+  companyId: string().required("Empresa é obrigatória"),
 });
 
 export default CreateUser;

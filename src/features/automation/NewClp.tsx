@@ -3,18 +3,20 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import ControlledTextInput from "app/components/ControlledTextInput";
 
 import { PlcRequest, useAddPlcMutation } from "app/services/automation";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import TextInput from "app/components/TextInput";
+import { SchemaOf, object, number, string } from "yup";
 
 const NewClp: React.FC = () => {
-  const { control, handleSubmit } = useForm<PlcRequest>({
+  const methods = useForm<PlcRequest>({
     resolver: yupResolver(validationSchema),
   });
   const [mutation, { isLoading, isError }] = useAddPlcMutation();
+
+  const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<PlcRequest> = async (data) => {
     try {
@@ -33,30 +35,24 @@ const NewClp: React.FC = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ maxWidth: "640px" }}
+        sx={{ maxWidth: "640px", "& .MuiTextField-root": { mt: 2 } }}
       >
-        <Controller 
-          name="name"
-          defaultValue={""}
-          control={control}
-          render={({field, formState: { errors }}) => (
-            <TextInput {...field} label="Nome" helperText={errors.name?.message } />
-          )}
-        />
-        
-        <TextInput name="manufactor" label="Fabricante" />
-        <TextInput name="ipAddress" label="Endereço IP" />
-        <TextInput name="tcpPort" label="Porta TCP/IP" />
-        <TextInput name="scan" label="Varredura" />
-        <Button
-          sx={{ mt: 2 }}
-          fullWidth
-          type="submit"
-          color="primary"
-          variant="contained"
-        >
-          Criar
-        </Button>
+        <FormProvider {...methods}>
+          <ControlledTextInput name="name" label="Nome" />
+          <ControlledTextInput name="manufactor" label="Fabricante" />
+          <ControlledTextInput name="ipAddress" label="Endereço IP" />
+          <ControlledTextInput name="tcpPort" label="Porta TCP/IP" />
+          <ControlledTextInput name="scan" label="Varredura" />
+          <Button
+            sx={{ mt: 2 }}
+            fullWidth
+            type="submit"
+            color="primary"
+            variant="contained"
+          >
+            Criar
+          </Button>
+        </FormProvider>
       </Box>
     </Container>
   );
@@ -64,11 +60,11 @@ const NewClp: React.FC = () => {
 
 export default NewClp;
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Nome é obrigatório"),
-  manufactor: Yup.string().required("Fabricante é obrigatório"),
-  model: Yup.string().required("Modelo é obrigatório"),
-  ipAddress: Yup.string().required("Endereço IP é obrigatório"),
-  tcpPort: Yup.number().required("Porta TCP é obrigatória"),
-  scan: Yup.number().required("Varredura é obrigatória"),
+const validationSchema: SchemaOf<PlcRequest> = object().shape({
+  name: string().required("Nome é obrigatório"),
+  manufactor: string().required("Fabricante é obrigatório"),
+  model: string().required("Modelo é obrigatório"),
+  ipAddress: string().required("Endereço IP é obrigatório"),
+  tcpPort: number().required("Porta TCP é obrigatória"),
+  scan: number().required("Varredura é obrigatória"),
 });

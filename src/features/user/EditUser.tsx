@@ -4,25 +4,27 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import TextInput from "app/components/TextInput";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import {
   EditUserRequest,
   useEditUserMutation,
 } from "app/services/authentication";
+import ControlledTextInput from "app/components/ControlledTextInput";
 
 const EditUser: React.FC = () => {
   const [editUser, { isError, isLoading, error }] = useEditUserMutation();
   const [searchParams] = useSearchParams();
-  const { handleSubmit, control } = useForm<EditUserRequest>({
+  const methods = useForm<EditUserRequest>({
     defaultValues: {
       firstName: searchParams.get("firstName") ?? "",
       lastName: searchParams.get("lastName") ?? "",
       email: searchParams.get("email") ?? "",
-      active: true,
+      active: 1,
       role: 1,
     },
   });
+
+  const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<EditUserRequest> = async (data) => {
     data.id = searchParams.get("id") ?? "";
@@ -33,8 +35,6 @@ const EditUser: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-    // const result = await http.post('v1/users', data)
-    // console.log(result)
   };
 
   return (
@@ -43,93 +43,47 @@ const EditUser: React.FC = () => {
 
       <Box
         component="form"
-        sx={{ maxWidth: "480px" }}
         onSubmit={handleSubmit(onSubmit)}
+        sx={{ maxWidth: "480px", "& .MuiTextField-root": { mt: 2 } }}
       >
-        <Controller
-          name="firstName"
-          //   defaultValue={""}
-          control={control}
-          render={({ field, formState: { errors } }) => (
-            <TextInput
-              {...field}
-              label="Nome"
-              helperText={errors.firstName?.message}
-            />
-          )}
-        />
+        <FormProvider {...methods}>
+          <ControlledTextInput name="firstName" label="Nome" />
 
-        <Controller
-          name="lastName"
-          //   defaultValue={""}
-          control={control}
-          render={({ field, formState: { errors } }) => (
-            <TextInput
-              {...field}
-              label="Sobrenome"
-              helperText={errors.lastName?.message}
-            />
-          )}
-        />
+          <ControlledTextInput name="lastName" label="Sobrenome" />
 
-        <Controller
-          name="email"
-          // defaultValue={""}
-          control={control}
-          render={({ field, formState: { errors } }) => (
-            <TextInput
-              {...field}
-              label="E-mail"
-              helperText={errors.email?.message}
-            />
-          )}
-        />
+          <ControlledTextInput name="email" label="E-mail" />
 
-        <Controller
-          name="active"
-          control={control}
-          render={({ field, formState: { errors } }) => (
-            <TextInput
-              {...field}
-              sx={{ mt: 1 }}
-              label="Status"
-              helperText={errors.active?.message}
-              items={[
-                { value: 0, description: "Inativo" },
-                { value: 1, description: "Ativo" },
-              ]}
-            />
-          )}
-        />
+          <ControlledTextInput
+            name="active"
+            label="Status"
+            items={[
+              { value: 0, description: "Inativo" },
+              { value: 1, description: "Ativo" },
+            ]}
+          />
 
-        <Controller 
+          <ControlledTextInput
             name="role"
-            control={control}
-            render={({ field, formState: { errors } }) => (
-                <TextInput
-                sx={{ mt: 1 }}
-                label="Grupo"
-                helperText={errors.role?.message}
-                items={[
-                  { value: 1, description: "Administrador" },
-                  { value: 2, description: "Operador" },
-                  { value: 3, description: "Técnico" },
-                  { value: 4, description: "Visualizador" },
-                  { value: 5, description: "Cliente" },
-                ]}
-              />
-            )}
-        />
+            label="Grupo"
+            items={[
+              { value: 1, description: "Administrador" },
+              { value: 2, description: "Operador" },
+              { value: 3, description: "Técnico" },
+              { value: 4, description: "Visualizador" },
+              { value: 5, description: "Cliente" },
+            ]}
+          />
 
-        <Button
-          sx={{ mt: 2 }}
-          fullWidth
-          type="submit"
-          color="primary"
-          variant="contained"
-        >
-          Salvar
-        </Button>
+          <Button
+            sx={{ mt: 2 }}
+            fullWidth
+            type="submit"
+            color="primary"
+            variant="contained"
+          >
+            Salvar
+          </Button>
+        </FormProvider>
       </Box>
     </Container>
   );

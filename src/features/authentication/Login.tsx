@@ -2,7 +2,8 @@
 import React from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+// import * as Yup from "yup";
+import { SchemaOf, string, object } from 'yup'
 
 //hooks
 import { useNavigate, Navigate } from "react-router-dom";
@@ -116,9 +117,9 @@ const Login: React.FC = () => {
   }
 };
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("E-mail inválido").required("E-mail é obrigatório"),
-  password: Yup.string().required("Senha é obrigatória"),
+const validationSchema: SchemaOf<LoginRequest> = object().shape({
+  email: string().email("E-mail inválido").required("E-mail é obrigatório"),
+  password: string().required("Senha é obrigatória"),
 });
 
 // styled-components

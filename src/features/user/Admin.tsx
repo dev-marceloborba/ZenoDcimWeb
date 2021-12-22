@@ -31,7 +31,7 @@ const Admin: React.FC = () => {
             lastName: row.lastName,
             email: row.email,
             active: row.active,
-            role: getUserRoleDescription(row.role)
+            role: row.role
         }
 
         navigate({

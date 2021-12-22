@@ -20,6 +20,11 @@ export enum EUserRole {
     EXTERNAL_CLIENT = 5
 }
 
+export enum EUserStatus {
+    INACTIVE = 0,
+    ACTIVE = 1
+}
+
 
 export interface UserResponse {
     id: string
@@ -53,7 +58,7 @@ export interface EditUserRequest {
     lastName: string
     email: string
     role: EUserRole
-    active: boolean
+    active: EUserStatus
 }
 
 export const api = createApi({

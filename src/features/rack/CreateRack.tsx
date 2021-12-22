@@ -5,18 +5,20 @@ import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
-import TextInput from "app/components/TextInput";
 import { RackRequest, useCreateRackMutation } from "app/services/rack";
 
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { SchemaOf, object, number, string } from "yup";
+import ControlledTextInput from "app/components/ControlledTextInput";
 
 const CreateRack: React.FC = () => {
-  const { control, handleSubmit } = useForm<RackRequest>({
+  const methods = useForm<RackRequest>({
     resolver: yupResolver(schema),
   });
   const [addRack, { isLoading, isError, error }] = useCreateRackMutation();
+
+  const { handleSubmit } = methods
 
   const onSubmit: SubmitHandler<RackRequest> = async (data) => {
     try {
@@ -27,52 +29,39 @@ const CreateRack: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xs">
       <Toolbar />
       <Typography variant="h4">Criar novo rack</Typography>
       <Box
-        sx={{ maxWidth: "640px" }}
         component="form"
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
+        sx={{ maxWidth: "640px", '& .MuiTextField-root': { mt: 2 } }}
       >
-        <Controller
-          name="localization"
-          control={control}
-          defaultValue={""}
-          render={({ field, formState: { errors } }) => (
-            <TextInput
-              {...field}
-              label="Localização"
-              helperText={errors.localization?.message}
-            />
-          )}
-        />
+        <FormProvider {...methods}>
+          <ControlledTextInput
+            name="localization"
+            label="Localização"
+          />
 
-        <Controller 
-          name="size"
-          control={control}
-          defaultValue={""}
-          render={({ field, formState: { errors} }) => (
-              <TextInput
-                 {...field}
-                label="Tamanho"
-                helperText={errors.size?.message}
-              />
-          )}
-        />
-        <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
-          Criar rack
-        </Button>
+          <ControlledTextInput 
+            name="size"
+            label="Tamanho"
+          />
+
+          <Button fullWidth type="submit" variant="contained" sx={{ mt: 2 }}>
+            Criar rack
+          </Button>
+        </FormProvider>
       </Box>
     </Container>
   );
 };
 
-const schema = Yup.object().shape({
-  localization: Yup.string().required("Localização é obrigatório"),
-  size: Yup.number().required("Tamanho é obrigatório"),
+const schema: SchemaOf<RackRequest> = object().shape({
+  localization: string().required("Localização é obrigatório"),
+  size: number().required("Tamanho é obrigatório"),
 });
 
 export default CreateRack;

@@ -33,7 +33,7 @@ export interface RackResponse {
 }
 
 export interface RackRequest {
-    size: string
+    size: number
     localization: string
 }
 

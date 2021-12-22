@@ -1,29 +1,63 @@
 import React from "react";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { Controller, useFormContext } from "react-hook-form";
-import MaskedInput from "react-input-mask";
+import NumberFormat from "react-number-format";
 
-const MaskedControlledTextInput: React.FC<TextFieldProps> = ({ ...props }) => {
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+type MaskedControlledTextInputProps = TextFieldProps & {
+  mask: string;
+};
+
+const MaskedControlledTextInput: React.FC<MaskedControlledTextInputProps> = ({
+  ...props
+}) => {
   const { control } = useFormContext();
-  const { name, defaultValue } = props;
+  const { name, defaultValue, mask } = props;
+
+  const CustomInputMask = React.forwardRef<NumberFormat, CustomProps>(
+    function NumberFormatCustom(props, ref) {
+      const { onChange, ...other } = props;
+
+      return (
+        <NumberFormat
+          {...other}
+          getInputRef={ref}
+          onValueChange={(values) => {
+            onChange({
+              target: {
+                name: props.name,
+                value: values.value,
+              },
+            });
+          }}
+          format={mask}
+          allowEmptyFormatting
+          mask="_"
+          isNumericString
+        />
+      );
+    }
+  );
+
   return (
     <Controller
       name={name ?? ""}
       control={control}
       defaultValue={defaultValue ? defaultValue : ""}
-      render={({ field: { onChange, value }, formState: { errors } }) => (
-        <MaskedInput mask="9999-9999" onChange={onChange} value={value}>
-          {({ ...innerProps }) => (
-            <TextField
-              variant="outlined"
-              fullWidth
-              error={!!errors[name ?? ""]?.message}
-              helperText={errors[name ?? ""]?.message}
-              {...props}
-              {...innerProps}
-            />
-          )}
-        </MaskedInput>
+      render={({ field, formState: { errors } }) => (
+        <TextField
+          variant="outlined"
+          fullWidth
+          error={!!errors[name ?? ""]?.message}
+          helperText={errors[name ?? ""]?.message}
+          InputProps={{ inputComponent: CustomInputMask as any }}
+          {...props}
+          {...field}
+        />
       )}
     />
   );

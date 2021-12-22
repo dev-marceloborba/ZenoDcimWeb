@@ -8,8 +8,6 @@ const CompanyList: React.FC = () => {
 
     const { data, isError, isLoading, error } = useListCompaniesQuery()
 
-    console.log(data)
-
     return (
         <Container maxWidth="xl">
             <Toolbar />
