@@ -18,6 +18,7 @@ import RackDetails from 'features/rack/RackDetails'
 import AlarmList from 'features/automation/AlarmList'
 import CompanyList from 'features/company/CompanyList'
 import NewCompany from 'features/company/NewCompany'
+import Etc from 'features/automation/pages/Etc'
 
 const Dashboard = React.lazy(() => import('features/dcim/Dashboard'))
 
@@ -36,7 +37,9 @@ export const SubRoutes: React.FC = () => {
     return (
         <Suspense fallback={<h3>loading...</h3>}>
             <Routes>
-                <Route path="admin" element={<Admin />} />
+            
+            <Route path="/automation/etc" element={<Etc />} />
+                {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />
                 <Route path="admin/edit" element={<EditUser />} />
 
@@ -56,7 +59,7 @@ export const SubRoutes: React.FC = () => {
 
                 <Route path="modbus-tag/list" element={<ModbusTagList />} />
                 <Route path="modbus-tag/new" element={<NewModbusTag />} />
-                <Route path="automation/alarms/list" element={<AlarmList />} />
+                <Route path="automation/alarms/list" element={<AlarmList />} /> */}
 
             </Routes>
         </Suspense>

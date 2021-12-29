@@ -7,6 +7,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Table from "app/hooks/useTable";
 
 import { readFile, exportFile } from "app/utils/excel.handler";
+import ImportButton from "./ImportButton";
 
 type ModbusTag = {
   name: string;
@@ -22,7 +23,7 @@ type ColumnProps = {
   align: "left" | "right";
 };
 
-type ListPanelProps = {
+export type ListPanelProps = {
   newActionLabel: string;
   newActionLink: string;
   columns: ColumnProps[];
@@ -60,21 +61,7 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
         >
           {props.newActionLabel}
         </Button>
-        <input
-          id="import-button"
-          type="file"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-          accept={SheetJSFT}
-        />
-        <Button
-          variant="contained"
-          sx={{ ml: 1 }}
-          component="label"
-          htmlFor="import-button"
-        >
-          Importar
-        </Button>
+        <ImportButton sx={{ml: 1}} callback={(data) => console.log(data)} />
         <Button variant="contained" sx={{ ml: 1 }} onClick={handleExport}>
           Exportar
         </Button>
@@ -89,30 +76,5 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
     </Container>
   );
 };
-
-const SheetJSFT = [
-  "xlsx",
-  "xlsb",
-  "xlsm",
-  "xls",
-  "xml",
-  "csv",
-  "txt",
-  "ods",
-  "fods",
-  "uos",
-  "sylk",
-  "dif",
-  "dbf",
-  "prn",
-  "qpw",
-  "123",
-  "wb*",
-  "wq*",
-  "html",
-  "htm",
-]
-  .map((x) => `.${x}`)
-  .join(",");
 
 export default ListPanel;

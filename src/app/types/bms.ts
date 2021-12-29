@@ -41,5 +41,5 @@ export enum EEquipmentStatus {
 export enum EParameterStatus {
     NORMAL = 0,
     ALERT = 1,
-    DANGER = 1
+    DANGER = 2
 }

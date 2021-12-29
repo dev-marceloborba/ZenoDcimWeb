@@ -1,23 +1,36 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { BmsInformation, EParameterStatus } from "app/types/bms";
+import {
+  BmsInformation,
+  EEquipmentStatus,
+  EParameterStatus,
+} from "app/types/bms";
 
-type BmsIndicatorProps = BmsInformation;
-type CircleIndicatorProps = Partial<BmsInformation>;
+type BmsIndicatorProps = BmsInformation & {
+  status: EEquipmentStatus;
+};
+type CircleIndicatorProps = Partial<BmsInformation> & {
+  status: EEquipmentStatus;
+};
 
 const CircleIndicator: React.FC<CircleIndicatorProps> = ({
   children,
   parameterStatus,
+  status,
 }) => {
   const getColor = () => {
-    switch (parameterStatus) {
-      case EParameterStatus.NORMAL:
-        return "rgb(0,255,0)";
-      case EParameterStatus.ALERT:
-        return "rgb(0,0,255)";
-      case EParameterStatus.DANGER:
-        return "rgb(255,0,0)";
+    if (status === EEquipmentStatus.ONLINE) {
+      switch (parameterStatus) {
+        case EParameterStatus.NORMAL:
+          return "green";
+        case EParameterStatus.ALERT:
+          return "yellow";
+        case EParameterStatus.DANGER:
+          return "red";
+      }
+    } else {
+      return "#ccc";
     }
   };
 
@@ -27,7 +40,7 @@ const CircleIndicator: React.FC<CircleIndicatorProps> = ({
       sx={{
         width: "16px",
         height: "16px",
-        borderWidth: "100%",
+        borderRadius: "100%",
         backgroundColor: getColor(),
       }}
     >
@@ -37,13 +50,15 @@ const CircleIndicator: React.FC<CircleIndicatorProps> = ({
 };
 
 const BmsIndicator: React.FC<BmsIndicatorProps> = ({ ...props }) => {
+  const { description, value, unit } = props;
   return (
-    <Box sx={{display: 'flex', alignItems: 'center'}}>
-        <CircleIndicator {...props} />
-        <Typography>{ props.description } </Typography>
-        <Typography>{ props.unit } </Typography>
+    <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+      <CircleIndicator {...props} />
+      <Typography sx={{ ml: 1 }}>
+        {description}: {value} {unit}
+      </Typography>
     </Box>
-    );
+  );
 };
 
 export default BmsIndicator;
