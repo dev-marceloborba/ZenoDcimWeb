@@ -10,21 +10,25 @@ import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import BmsIndicator from "app/components/BmsIndicator";
-import { BmsEquipment, EEquipmentStatus } from "app/types/bms";
+import { BmsEquipment, EEquipmentStatus, Floor } from "app/types/bms";
 
 import { building01 } from "app/data/bms";
+
+type FilterData = {
+  energy: boolean;
+  clim: boolean;
+  telecom: boolean;
+};
 
 const Etc: React.FC = () => {
   const [building, setBuilding] = React.useState("");
   const [floor, setFloor] = React.useState("");
-  const [filter, setFilter] = React.useState({
+  const [filter, setFilter] = React.useState<FilterData>({
     energy: true,
     clim: false,
     telecom: false,
   });
-
-  const { floors } = building01;
-  const { rooms } = floors[0];
+  const [currentFloor, setCurrentFloor] = React.useState<Floor>({} as Floor);
 
   const handleBuildingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBuilding(event.target.value);
@@ -49,9 +53,11 @@ const Etc: React.FC = () => {
     setFilter((prevState) => ({ ...prevState, telecom: !telecom }));
   };
 
-  React.useEffect(() => {
+  const { floors } = building01;
 
-  }, [floor])
+  React.useEffect(() => {
+    setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
+  }, [floor, floors]);
 
   return (
     <Container maxWidth="xl">
@@ -86,10 +92,10 @@ const Etc: React.FC = () => {
             onChange={handleFloorChange}
             sx={{ ml: 2 }}
           >
-            <MenuItem value={"floor1"}>Andar 1</MenuItem>
-            <MenuItem value={"floor2"}>Andar 2</MenuItem>
-            <MenuItem value={"floor3"}>Andar 3</MenuItem>
-            <MenuItem value={"floor4"}>Andar 4</MenuItem>
+            <MenuItem value={"Andar 1"}>Andar 1</MenuItem>
+            <MenuItem value={"Andar 2"}>Andar 2</MenuItem>
+            <MenuItem value={"Andar 3"}>Andar 3</MenuItem>
+            <MenuItem value={"Andar 4"}>Andar 4</MenuItem>
           </TextField>
         </Box>
 
@@ -116,15 +122,13 @@ const Etc: React.FC = () => {
       </Box>
 
       <Grid sx={{ mt: 1 }} container spacing={1}>
-        {rooms.map((room, index) => (
+        {currentFloor?.rooms?.map((room, index) => (
           <Grid key={index} item md={6}>
             <RoomCard title={room.name}>
-              {/* <Grid container spacing={1} justifyContent="space-around"> */}
               <Grid container spacing={1} justifyContent="space-between">
-                {/* <Grid container spacing={1}> */}
                 {room.equipments.map((equipment, index) => (
                   <Grid key={index}>
-                    <EquipmentCard {...equipment} />
+                    <EquipmentCard {...equipment} {...filter} />
                   </Grid>
                 ))}
               </Grid>
@@ -160,12 +164,24 @@ const RoomCard: React.FC<RoomCardProps> = ({ title, children }) => {
   );
 };
 
-type EquipmentCardProps = BmsEquipment;
+type EquipmentCardProps = BmsEquipment & FilterData;
 
 const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
-  const { name, status, groups } = props;
+  const { name, status, groups, energy, clim, telecom } = props;
 
-  const energy = groups.filter((group) => group.name === "Energia")[0];
+  const getFilterName = () => {
+    if (energy) {
+      return "Energia";
+    } else if (clim) {
+      return "Clima";
+    } else if (telecom) {
+      return "Telecom";
+    }
+  };
+
+  const filteredGroup = groups.filter(
+    (group) => group.name === getFilterName()
+  )[0];
 
   return (
     <Card sx={{ p: 4, m: 2 }}>
@@ -184,7 +200,7 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
         </Typography>
       </Box>
 
-      {energy.informations.map((information, index) => (
+      {filteredGroup?.informations?.map((information, index) => (
         <BmsIndicator key={index} {...information} status={status} />
       ))}
     </Card>
