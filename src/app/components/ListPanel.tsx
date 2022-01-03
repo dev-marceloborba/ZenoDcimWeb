@@ -1,5 +1,4 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -8,6 +7,7 @@ import Table from "app/hooks/useTable";
 
 import { readFile, exportFile } from "app/utils/excel.handler";
 import ImportButton from "./ImportButton";
+import ButtonLink from "./ButtonLink";
 
 type ModbusTag = {
   name: string;
@@ -54,13 +54,12 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
     <Container maxWidth="xl">
       <Toolbar />
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          component={RouterLink}
+        <ButtonLink
           to={props.newActionLink}
           variant="contained"
         >
           {props.newActionLabel}
-        </Button>
+        </ButtonLink>
         <ImportButton sx={{ml: 1}} callback={(data) => console.log(data)} />
         <Button variant="contained" sx={{ ml: 1 }} onClick={handleExport}>
           Exportar
