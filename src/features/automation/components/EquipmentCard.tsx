@@ -6,24 +6,37 @@ import { BmsEquipment, EEquipmentStatus } from "app/types/bms";
 import { FilterData } from "../types/filter-data";
 import BmsIndicator from "app/components/BmsIndicator";
 
-type EquipmentCardProps = BmsEquipment & FilterData;
+type EquipmentCardProps = BmsEquipment & FilterData & {
+  showGroupTitle?: boolean
+};
 
 const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
-  const { name, status, groups, energy, clim, telecom } = props;
+  const { name, status, groups, energy, clim, telecom, showGroupTitle } = props;
 
-  const getFilterName = () => {
+  // console.log(groups)
+
+  const getFilterName = (): string => {
     if (energy) {
       return "Energia";
     } else if (clim) {
       return "Clima";
     } else if (telecom) {
       return "Telecom";
+    } else {
+      return "";
     }
   };
 
+  // const filteredGroup = groups.filter((group) =>
+  //   group.name.includes(getFilterName())
+  // );
+
   const filteredGroup = groups.filter(
-    (group) => group.name === getFilterName()
-  )[0];
+    // (group) => group.name.includes("Energia") || group.name.includes("Clima")
+    (group) => group.name.includes("Energia")
+  );
+
+  console.log(filteredGroup);
 
   return (
     <Card sx={{ p: 4, m: 2 }}>
@@ -42,9 +55,18 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
         </Typography>
       </Box>
 
-      {filteredGroup?.informations?.map((information, index) => (
-        <BmsIndicator key={index} {...information} status={status} />
-      ))}
+      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+      {
+        filteredGroup.map((group) => (
+          <Box key={group.name}>
+            {showGroupTitle && (<Typography>{group.name}</Typography>)} 
+            {group.informations.map((information, index) => (
+              <BmsIndicator key={index} {...information} status={status} />
+            ))}
+          </Box>
+        ))
+      }
+      </Box>      
     </Card>
   );
 };

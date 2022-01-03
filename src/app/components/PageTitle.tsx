@@ -1,8 +1,12 @@
-import React from 'react'
-import Typrography from '@mui/material/Typography'
+import React from "react";
+import Typrography, { TypographyProps } from "@mui/material/Typography";
 
-const PageTitle: React.FC = ({children}) => {
-    return <Typrography variant="h4">{children}</Typrography>
-}
+const PageTitle: React.FC<TypographyProps> = ({ children, ...props }) => {
+  return (
+    <Typrography variant="h4" {...props}>
+      {children}
+    </Typrography>
+  );
+};
 
-export default PageTitle
+export default PageTitle;

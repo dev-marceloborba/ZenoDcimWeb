@@ -3,8 +3,6 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import { Floor } from "app/types/bms";
 
@@ -13,6 +11,8 @@ import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
 import RoomCard from "../components/RoomCard";
 import ButtonLink from "app/components/ButtonLink";
+import BuildingDropdown from "../components/BuildingDropdown";
+import FloorDropdown from "../components/FloorDropdown";
 
 type FilterData = {
   energy: boolean;
@@ -21,22 +21,12 @@ type FilterData = {
 };
 
 const Etc: React.FC = () => {
-  const [building, setBuilding] = React.useState("");
-  const [floor, setFloor] = React.useState("");
   const [filter, setFilter] = React.useState<FilterData>({
     energy: true,
     clim: false,
     telecom: false,
   });
   const [currentFloor, setCurrentFloor] = React.useState<Floor>({} as Floor);
-
-  const handleBuildingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBuilding(event.target.value);
-  };
-
-  const handleFloorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFloor(event.target.value);
-  };
 
   const handleEnergyFilter = () => {
     const { energy } = filter;
@@ -53,11 +43,11 @@ const Etc: React.FC = () => {
     setFilter((prevState) => ({ ...prevState, telecom: !telecom }));
   };
 
-  const { floors } = building01;
+  // const { floors } = building01;
 
-  React.useEffect(() => {
-    setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
-  }, [floor, floors]);
+  // React.useEffect(() => {
+  //   setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
+  // }, [floor, floors]);
 
   return (
     <Container maxWidth="xl">
@@ -72,31 +62,9 @@ const Etc: React.FC = () => {
         }}
       >
         <Box sx={{ display: "flex", width: "640px" }}>
-          <TextField
-            variant="outlined"
-            label="Prédio"
-            select
-            fullWidth
-            value={building}
-            onChange={handleBuildingChange}
-          >
-            <MenuItem value={"datahall"}>Data Hall</MenuItem>
-          </TextField>
+          <BuildingDropdown />
 
-          <TextField
-            variant="outlined"
-            label="Andar"
-            select
-            fullWidth
-            value={floor}
-            onChange={handleFloorChange}
-            sx={{ ml: 2 }}
-          >
-            <MenuItem value={"Andar 1"}>Andar 1</MenuItem>
-            <MenuItem value={"Andar 2"}>Andar 2</MenuItem>
-            <MenuItem value={"Andar 3"}>Andar 3</MenuItem>
-            <MenuItem value={"Andar 4"}>Andar 4</MenuItem>
-          </TextField>
+          <FloorDropdown />
         </Box>
 
         <Box sx={{ display: "flex" }}>
