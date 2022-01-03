@@ -1,12 +1,10 @@
 import React from "react";
 import {
   useNavigate,
-  Link as RouterLink,
   createSearchParams,
 } from "react-router-dom";
 import ToolBar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
 import { Typography } from "@mui/material";
@@ -22,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import Loading from "app/components/Loading";
 import { EUserRole, useGetUsersQuery } from "app/services/authentication";
+import ButtonLink from "app/components/ButtonLink";
 
 const Admin: React.FC = () => {
   const { isLoading, isError, data, error } = useGetUsersQuery();
@@ -68,9 +67,9 @@ const Admin: React.FC = () => {
     <Container maxWidth="xl">
       <ToolBar />
       <Box component="div" sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button component={RouterLink} to="/zeno/admin/new" variant="contained">
+        <ButtonLink to="/zeno/admin/new" variant="contained">
           Criar usuário
-        </Button>
+        </ButtonLink>
       </Box>
       {/* <Loading open={state.loading} /> */}
 

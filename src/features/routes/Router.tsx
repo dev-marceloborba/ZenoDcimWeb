@@ -19,6 +19,7 @@ import AlarmList from 'features/automation/AlarmList'
 import CompanyList from 'features/company/CompanyList'
 import NewCompany from 'features/company/NewCompany'
 import Etc from 'features/automation/pages/Etc'
+import EtcDetails from 'features/automation/pages/EtcDetails'
 
 const Dashboard = React.lazy(() => import('features/dcim/Dashboard'))
 
@@ -39,6 +40,7 @@ export const SubRoutes: React.FC = () => {
             <Routes>
             
             <Route path="/automation/etc" element={<Etc />} />
+            <Route path="/automation/etc/details" element={<EtcDetails />} />
                 {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />
                 <Route path="admin/edit" element={<EditUser />} />

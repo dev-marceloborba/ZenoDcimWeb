@@ -1,11 +1,10 @@
 import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import Table from 'app/hooks/useTable'
 import { useListRacksQuery } from 'app/services/rack'
+import ButtonLink from 'app/components/ButtonLink'
 
 const Racks: React.FC = () => {
 
@@ -15,7 +14,7 @@ const Racks: React.FC = () => {
         <Container maxWidth="xl">
             <Toolbar />
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button component={RouterLink} to="/zeno/racks/new" variant="contained">Novo rack</Button>
+                <ButtonLink to="/zeno/racks/new" variant="contained">Novo rack</ButtonLink>
             </Box>
             <Table columns={[
                 { label: 'Localização', name: 'localization', align: 'left' },

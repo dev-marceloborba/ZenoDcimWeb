@@ -1,9 +1,18 @@
-import React from 'react'
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
+import React from "react";
+import Button, { ButtonProps } from "@mui/material/Button";
+import { Link as RouterLink, LinkProps as RouterLinkProps } from "react-router-dom";
 
+type PickedButtonProps = Pick<ButtonProps, 'sx' | 'variant'>
+type PickedRouterLinkProps = Pick<RouterLinkProps, 'to'>
 
-const ButtonLink = React.forwardRef<any, Omit<RouterLinkProps, 'to'>>(
-  (props, ref) => <RouterLink ref={ref} to="/" {...props} role={undefined} />
-)
+type ButtonLinkProps = PickedButtonProps & PickedRouterLinkProps
 
-export default ButtonLink
+const ButtonLink: React.FC<ButtonLinkProps> = ({ children, ...props }) => {
+  return (
+    <Button component={RouterLink} {...props}>
+      {children}
+    </Button>
+  );
+};
+
+export default ButtonLink;

@@ -1,18 +1,18 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import BmsIndicator from "app/components/BmsIndicator";
-import { BmsEquipment, EEquipmentStatus, Floor } from "app/types/bms";
+import { Floor } from "app/types/bms";
 
 import { building01 } from "app/data/bms";
+import EquipmentCard from "../components/EquipmentCard";
+import PageTitle from "app/components/PageTitle";
+import RoomCard from "../components/RoomCard";
+import ButtonLink from "app/components/ButtonLink";
 
 type FilterData = {
   energy: boolean;
@@ -62,7 +62,7 @@ const Etc: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <Toolbar />
-      <Typography variant="h4">Energia, Clima e Telecom</Typography>
+      <PageTitle>Energia, Clima e Telecom</PageTitle>
       <Box
         sx={{
           display: "flex",
@@ -139,71 +139,15 @@ const Etc: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <Button variant="outlined" sx={{ mt: 1 }}>
+                <ButtonLink to="/zeno/automation/etc/details" sx={{ mt: 1 }}>
                   Ver mais
-                </Button>
+                </ButtonLink>
               </Box>
             </RoomCard>
           </Grid>
         ))}
       </Grid>
     </Container>
-  );
-};
-
-type RoomCardProps = {
-  title: string;
-};
-
-const RoomCard: React.FC<RoomCardProps> = ({ title, children }) => {
-  return (
-    <Card sx={{ p: 1 }}>
-      <Typography variant="h6">{title}</Typography>
-      {children}
-    </Card>
-  );
-};
-
-type EquipmentCardProps = BmsEquipment & FilterData;
-
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
-  const { name, status, groups, energy, clim, telecom } = props;
-
-  const getFilterName = () => {
-    if (energy) {
-      return "Energia";
-    } else if (clim) {
-      return "Clima";
-    } else if (telecom) {
-      return "Telecom";
-    }
-  };
-
-  const filteredGroup = groups.filter(
-    (group) => group.name === getFilterName()
-  )[0];
-
-  return (
-    <Card sx={{ p: 4, m: 2 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h6">{name}</Typography>
-        <Typography
-          sx={{ color: status === EEquipmentStatus.ONLINE ? "green" : "red" }}
-        >
-          {status === EEquipmentStatus.ONLINE ? "Online" : "Offline"}
-        </Typography>
-      </Box>
-
-      {filteredGroup?.informations?.map((information, index) => (
-        <BmsIndicator key={index} {...information} status={status} />
-      ))}
-    </Card>
   );
 };
 
