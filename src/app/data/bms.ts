@@ -4,7 +4,7 @@ export const building01: Building = {
     name: 'Data Hall',
     floors: [
         {
-            name: "Andar 1",
+            name: "floor1",
             rooms: [
                 {
                     name: "Sala 1",

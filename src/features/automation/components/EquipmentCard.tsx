@@ -6,37 +6,20 @@ import { BmsEquipment, EEquipmentStatus } from "app/types/bms";
 import { FilterData } from "../types/filter-data";
 import BmsIndicator from "app/components/BmsIndicator";
 
-type EquipmentCardProps = BmsEquipment & FilterData & {
-  showGroupTitle?: boolean
-};
+type EquipmentCardProps = BmsEquipment &
+  FilterData & {
+    showGroupTitle?: boolean;
+  };
 
 const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
   const { name, status, groups, energy, clim, telecom, showGroupTitle } = props;
 
-  // console.log(groups)
-
-  const getFilterName = (): string => {
-    if (energy) {
-      return "Energia";
-    } else if (clim) {
-      return "Clima";
-    } else if (telecom) {
-      return "Telecom";
-    } else {
-      return "";
-    }
-  };
-
-  // const filteredGroup = groups.filter((group) =>
-  //   group.name.includes(getFilterName())
-  // );
-
   const filteredGroup = groups.filter(
-    // (group) => group.name.includes("Energia") || group.name.includes("Clima")
-    (group) => group.name.includes("Energia")
+    (group) =>
+      (energy && group.name.includes("Energia")) ||
+      (clim && group.name.includes("Clima")) ||
+      (telecom && group.name.includes("Telecom"))
   );
-
-  console.log(filteredGroup);
 
   return (
     <Card sx={{ p: 4, m: 2 }}>
@@ -55,18 +38,16 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
         </Typography>
       </Box>
 
-      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-      {
-        filteredGroup.map((group) => (
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        {filteredGroup.map((group) => (
           <Box key={group.name}>
-            {showGroupTitle && (<Typography>{group.name}</Typography>)} 
+            {showGroupTitle && <Typography>{group.name}</Typography>}
             {group.informations.map((information, index) => (
               <BmsIndicator key={index} {...information} status={status} />
             ))}
           </Box>
-        ))
-      }
-      </Box>      
+        ))}
+      </Box>
     </Card>
   );
 };

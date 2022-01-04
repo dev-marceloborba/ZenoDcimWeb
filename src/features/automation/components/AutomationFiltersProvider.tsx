@@ -1,5 +1,11 @@
 import React from "react";
 
+export type FilterData = {
+  energy: boolean;
+  clim: boolean;
+  telecom: boolean;
+};
+
 type AutomationFiltersData = {
   building: string;
   floor: string;
@@ -31,22 +37,41 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
 
   const setFloor = (floor: string) =>
     setState((prevState) => ({ ...prevState, floor }));
+
   const setBuilding = (building: string) =>
     setState((prevState) => ({ ...prevState, building }));
 
   const toggleEnergyGroup = () => {
     const { energy } = state.groups;
-    setState((prevState) => ({ ...prevState, energy: !energy }));
+    setState((prevState) => ({
+      ...prevState,
+      groups: {
+        ...state.groups,
+        energy: !energy,
+      },
+    }));
   };
 
   const toggleClimGroup = () => {
     const { clim } = state.groups;
-    setState((prevState) => ({ ...prevState, clim: !clim }));
+    setState((prevState) => ({
+      ...prevState,
+      groups: {
+        ...state.groups,
+        clim: !clim,
+      },
+    }));
   };
 
   const toggleTelecomGroup = () => {
     const { telecom } = state.groups;
-    setState((prevState) => ({ ...prevState, telecom: !telecom }));
+    setState((prevState) => ({
+      ...prevState,
+      groups: {
+        ...state.groups,
+        telecom: !telecom,
+      },
+    }));
   };
 
   return (

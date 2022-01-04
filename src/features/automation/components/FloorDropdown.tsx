@@ -1,7 +1,9 @@
 import React from "react";
 import Dropdown, { ItemProps } from "app/components/Dropdown";
+import { useAutomationFilters } from "./AutomationFiltersProvider";
 
 const FloorDropdown: React.FC = () => {
+  const { handleFloor, floor } = useAutomationFilters()
   const items: ItemProps[] = [
     {
       label: "Andar 1",
@@ -21,18 +23,13 @@ const FloorDropdown: React.FC = () => {
       }
   ];
 
-  const [selectedItem, setSelectedItem] = React.useState<string>(
-    items[0].value
-  );
-
+  
   return (
     <Dropdown
       label="Andar"
       items={items}
-      value={selectedItem}
-      callback={(value) => {
-          setSelectedItem(value)
-      }}
+      value={floor}
+      callback={handleFloor}
       sx={{ ml: 2 }}
     />
   );

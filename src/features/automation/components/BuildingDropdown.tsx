@@ -1,7 +1,9 @@
 import React from "react";
 import Dropdown, { ItemProps } from "app/components/Dropdown";
+import { useAutomationFilters } from "./AutomationFiltersProvider";
 
 const BuildingDropdown: React.FC = () => {
+  const { handleBuilding, building } = useAutomationFilters()
   const items: ItemProps[] = [
     {
       label: "Data Hall",
@@ -13,16 +15,12 @@ const BuildingDropdown: React.FC = () => {
     },
   ];
 
-  const [selectedItem, setSelectedItem] = React.useState<string>(
-    items[0].value
-  );
-
   return (
     <Dropdown
       label="Prédio"
       items={items}
-      value={selectedItem}
-      callback={(value) => setSelectedItem(value)}
+      value={building}
+      callback={handleBuilding}
     />
   );
 };

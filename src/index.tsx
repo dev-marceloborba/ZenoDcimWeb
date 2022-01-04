@@ -12,6 +12,7 @@ import { Connector } from "mqtt-react-hooks";
 import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Toast from "app/components/Toast";
+import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,7 +31,9 @@ ReactDOM.render(
             }}
           >
             <Toast>
-              <App />
+              <AutomationFiltersProvider>
+                <App />
+              </AutomationFiltersProvider>
             </Toast>
           </Connector>
         </LocalizationProvider>

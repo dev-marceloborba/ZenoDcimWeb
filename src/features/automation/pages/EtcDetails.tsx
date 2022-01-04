@@ -6,44 +6,16 @@ import Toolbar from "@mui/material/Toolbar";
 import { building01 } from "app/data/bms";
 import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
-import EtcFilters, {
-  FilterData,
-  useFilters,
-  EtcFiltersProvider,
-} from "../components/EtcFilters";
+import EtcFilters from "../components/EtcFilters";
+import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 
 const EtcDetails: React.FC = () => {
+  const { groups } = useAutomationFilters();
   const { floors } = building01;
   const { rooms } = floors[0];
   const { equipments } = rooms[0];
 
-  // const { filter } = useFilters();
-
-  // console.log(filter)
-
-  const [filter, setFilter] = React.useState<FilterData>({
-    energy: true,
-    clim: false,
-    telecom: false,
-  });
-
-  const handleEnergyFilter = () => {
-    const { energy } = filter;
-    setFilter((prevState) => ({ ...prevState, energy: !energy }));
-  };
-
-  const handleClimFilter = () => {
-    const { clim } = filter;
-    setFilter((prevState) => ({ ...prevState, clim: !clim }));
-  };
-
-  const handleTelecomFilter = () => {
-    const { telecom } = filter;
-    setFilter((prevState) => ({ ...prevState, telecom: !telecom }));
-  };
-
   return (
-    // <EtcFiltersProvider>
     <Container maxWidth="xl">
       <Toolbar />
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -61,23 +33,17 @@ const EtcDetails: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <EtcFilters
-          handleEnergyFilter={handleEnergyFilter}
-          handleClimFilter={handleClimFilter}
-          handleTelecomFilter={handleTelecomFilter}
-          filter={filter}
-        />
+        <EtcFilters />
       </Box>
 
       <Grid sx={{ mt: 2 }} container>
         {equipments.map((equipment, index) => (
           <Grid key={index} item md={6}>
-            <EquipmentCard {...equipment} {...filter} showGroupTitle />
+            <EquipmentCard {...equipment} {...groups} showGroupTitle />
           </Grid>
         ))}
       </Grid>
     </Container>
-    // </EtcFiltersProvider>
   );
 };
 
