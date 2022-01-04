@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -14,12 +14,29 @@ import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
 import RoomCard from "../components/RoomCard";
 import ButtonLink from "app/components/ButtonLink";
-
+import FloorDropdown from "../components/FloorDropdown";
+import FireSystemCard from "../components/FireSystemCard";
 
 const FireSystem: React.FC = () => {
-    return (<Container maxWidth="xl">
+  return (
+    <Container maxWidth="xl">
+      <Toolbar />
+      <PageTitle>Incêndio</PageTitle>
+      <FloorDropdown />
 
-    </Container>)
-}
+      <Grid container spacing={1}>
+          <Grid item md={6}>
+              <RoomCard title="Laços">
+                 <Grid container spacing={1} justifyContent="space-between">
+                     <Grid item >
+                         <FireSystemCard  />
+                     </Grid>
+                </Grid>   
+              </RoomCard>
+          </Grid>
+      </Grid>
+    </Container>
+  );
+};
 
-export default FireSystem
+export default FireSystem;
