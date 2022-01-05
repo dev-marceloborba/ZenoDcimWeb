@@ -22,6 +22,7 @@ import Etc from "features/automation/pages/Etc";
 import EtcDetails from "features/automation/pages/EtcDetails";
 import FireSystem from "features/automation/pages/FireSystem";
 import FireSystemDetails from "features/automation/pages/FireSystemDetails";
+import AccessControl from "features/automation/pages/AccessControl";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -45,6 +46,8 @@ export const SubRoutes: React.FC = () => {
 
         <Route path="/automation/fire-system" element={<FireSystem />} />
         <Route path="/automation/fire-system/details" element={<FireSystemDetails />} />
+
+        <Route path="/automation/access-control" element={<AccessControl />} />
         {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />
                 <Route path="admin/edit" element={<EditUser />} />
