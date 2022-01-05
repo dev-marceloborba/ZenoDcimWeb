@@ -29,9 +29,8 @@ const FireSystemCard: React.FC<FireSystemCardProps> = ({ ...props }) => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box>
         {data.map((information, index) => (
-          //   <BmsIndicator key={index} {...information} status={status} />
           <BmsIndicator
             key={index}
             description={information.description}

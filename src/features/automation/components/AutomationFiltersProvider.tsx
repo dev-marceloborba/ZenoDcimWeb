@@ -9,13 +9,17 @@ export type FilterData = {
 type AutomationFiltersData = {
   building: string;
   floor: string;
+  zone: string;
+  loop: string;
   groups: {
     energy: boolean;
     clim: boolean;
     telecom: boolean;
   };
   handleFloor(floor: string): void;
-  handleBuilding(floor: string): void;
+  handleBuilding(building: string): void;
+  handleZone(zone: string): void;
+  handleLoop(loop: string): void;
   handleToggleEnergyGroup(): void;
   handleToggleClimGroup(): void;
   handleToggleTelecomGroup(): void;
@@ -28,6 +32,8 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
   const [state, setState] = React.useState({
     building: "",
     floor: "",
+    zone: "",
+    loop: "",
     groups: {
       energy: true,
       clim: false,
@@ -40,6 +46,12 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
 
   const setBuilding = (building: string) =>
     setState((prevState) => ({ ...prevState, building }));
+
+  const setZone = (zone: string) =>
+    setState((prevState) => ({ ...prevState, zone }));
+
+  const setLoop = (loop: string) =>
+    setState((prevState) => ({ ...prevState, loop }));
 
   const toggleEnergyGroup = () => {
     const { energy } = state.groups;
@@ -80,6 +92,8 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
         ...state,
         handleFloor: setFloor,
         handleBuilding: setBuilding,
+        handleZone: setZone,
+        handleLoop: setLoop,
         handleToggleClimGroup: toggleClimGroup,
         handleToggleEnergyGroup: toggleEnergyGroup,
         handleToggleTelecomGroup: toggleTelecomGroup,
