@@ -14,6 +14,7 @@ import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import EtcFilters from "../components/EtcFilters";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
+import Center from "app/components/Center";
 
 const Etc: React.FC = () => {
   const { groups, floor } = useAutomationFilters();
@@ -40,7 +41,7 @@ const Etc: React.FC = () => {
       >
         <Box sx={{ display: "flex", width: "640px" }}>
           <BuildingDropdown />
-          <FloorDropdown />
+          <FloorDropdown sx={{ ml: 2 }} />
         </Box>
 
         <EtcFilters />
@@ -57,17 +58,11 @@ const Etc: React.FC = () => {
                   </Grid>
                 ))}
               </Grid>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
+              <Center>
                 <ButtonLink to="/zeno/automation/etc/details" sx={{ mt: 1 }}>
                   Ver mais
                 </ButtonLink>
-              </Box>
+              </Center>
             </RoomCard>
           </Grid>
         ))}

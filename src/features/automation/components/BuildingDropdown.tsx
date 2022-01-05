@@ -1,8 +1,14 @@
 import React from "react";
 import Dropdown, { ItemProps } from "app/components/Dropdown";
 import { useAutomationFilters } from "./AutomationFiltersProvider";
+import { SxProps, Theme } from "@mui/material";
 
-const BuildingDropdown: React.FC = () => {
+type BuildingDropdownProps = {
+  sx?: SxProps<Theme>;
+};
+
+
+const BuildingDropdown: React.FC<BuildingDropdownProps> = ({sx}) => {
   const { handleBuilding, building } = useAutomationFilters()
   const items: ItemProps[] = [
     {
@@ -21,6 +27,7 @@ const BuildingDropdown: React.FC = () => {
       items={items}
       value={building}
       callback={handleBuilding}
+      sx={sx}
     />
   );
 };

@@ -27,7 +27,7 @@ export type BmsGroup = {
 
 export type BmsInformation = {
     description: string
-    value: number
+    value?: number
     format?: string
     unit?: string
     parameterStatus: EParameterStatus

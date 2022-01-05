@@ -1,39 +1,46 @@
 import React from "react";
 
-import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
+// import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
-import Toolbar from "@mui/material/Toolbar";
-import { Floor } from "app/types/bms";
 
-import { building01 } from "app/data/bms";
-import EquipmentCard from "../components/EquipmentCard";
+import Toolbar from "@mui/material/Toolbar";
+
 import PageTitle from "app/components/PageTitle";
 import RoomCard from "../components/RoomCard";
 import ButtonLink from "app/components/ButtonLink";
 import FloorDropdown from "../components/FloorDropdown";
 import FireSystemCard from "../components/FireSystemCard";
 
+import { fireSystem } from "app/data/fire-system";
+import Center from "app/components/Center";
+
 const FireSystem: React.FC = () => {
+  const { groups } = fireSystem;
   return (
     <Container maxWidth="xl">
       <Toolbar />
       <PageTitle>Incêndio</PageTitle>
-      <FloorDropdown />
-
-      <Grid container spacing={1}>
-          <Grid item md={6}>
-              <RoomCard title="Laços">
-                 <Grid container spacing={1} justifyContent="space-between">
-                     <Grid item >
-                         <FireSystemCard  />
-                     </Grid>
-                </Grid>   
-              </RoomCard>
-          </Grid>
+      
+      <FloorDropdown sx={{mt: 2, maxWidth: '280px'}} />
+      
+      <Grid sx={{mt: 1}} container spacing={1}>
+          {groups.map((group, index) => (
+            <Grid key={index} item md={6}>
+            <RoomCard title={group.name}>
+              <Grid container spacing={1} justifyContent="space-between">
+                {group.categories.map((category, index) => (
+                  <Grid key={index} item>
+                    <FireSystemCard {...category} />
+                  </Grid>
+                ))}
+              </Grid>
+              <Center>
+                <ButtonLink to="/zeno/fire-system/details">Detalhes</ButtonLink>
+              </Center>
+            </RoomCard>
+            </Grid>
+          ))}
       </Grid>
     </Container>
   );

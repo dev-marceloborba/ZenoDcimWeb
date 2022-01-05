@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 
 import BmsIndicator from "app/components/BmsIndicator";
 import { ESystemStatus, FireSystemCategory } from "app/data/fire-system";
+import { EEquipmentStatus } from "app/types/bms";
 
 type FireSystemCardProps = FireSystemCategory;
 
@@ -30,8 +31,19 @@ const FireSystemCard: React.FC<FireSystemCardProps> = ({ ...props }) => {
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         {data.map((information, index) => (
-        //   <BmsIndicator key={index} {...information} status={status} />
-          <BmsIndicator key={index} {...information}  />
+          //   <BmsIndicator key={index} {...information} status={status} />
+          <BmsIndicator
+            key={index}
+            description={information.description}
+            value={information.value}
+            unit={information.unit}
+            parameterStatus={information.parameterStatus}
+            status={
+              status === ESystemStatus.OK
+                ? EEquipmentStatus.ONLINE
+                : EEquipmentStatus.OFFLINE
+            }
+          />
         ))}
       </Box>
     </Card>

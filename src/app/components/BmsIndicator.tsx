@@ -8,7 +8,7 @@ import {
 } from "app/types/bms";
 
 type BmsIndicatorProps = BmsInformation & {
-  status?: EEquipmentStatus;
+  status: EEquipmentStatus;
 };
 type CircleIndicatorProps = Partial<BmsInformation> & {
   status: EEquipmentStatus;
