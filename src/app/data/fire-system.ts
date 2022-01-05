@@ -79,7 +79,7 @@ export const fireSystem: FireSystem = {
             },
             {
               description: "Detector de fumaça 3",
-              parameterStatus: EParameterStatus.NORMAL,
+              parameterStatus: EParameterStatus.DANGER,
             },
             {
               description: "Pressão",

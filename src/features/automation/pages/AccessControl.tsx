@@ -5,6 +5,8 @@ import Toolbar from "@mui/material/Toolbar";
 import PageTitle from "app/components/PageTitle";
 import FloorDropdown from "../components/FloorDropdown";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
+import AccessControlEventsTable from "../components/AccessControlEventsTable";
+import AccessControlDoorEventsTable from "../components/AccessControlDoorStatusTable";
 
 const AccessControl: React.FC = () => {
   return (
@@ -21,6 +23,10 @@ const AccessControl: React.FC = () => {
           options={users}
         />
       </Box>
+
+      <AccessControlEventsTable />
+
+      <AccessControlDoorEventsTable />
     </Container>
   );
 };
