@@ -25,13 +25,28 @@ const AccessControl: React.FC = () => {
   const [filteredDoorControlEvents, setFilteredDoorControlEvents] =
     React.useState<DoorControlEvent[]>([...doorControlEvents]);
 
+  const [user, setUser] = React.useState<string | null>(null);
+  const [inputValue, setInputValue] = React.useState("");
+
   React.useEffect(() => {
     const events =
       floor === "Todos"
         ? accessEvents
         : accessEvents.filter((event) => event.place === floor);
-    setFilteredAccessEvents(events);
-  }, [floor, accessEvents]);
+
+    const eventsByUser = user
+      ? events.filter((event) => event.name === user)
+      : events;
+    setFilteredAccessEvents(eventsByUser);
+  }, [floor, accessEvents, user]);
+
+  React.useEffect(() => {
+    const events =
+      floor === "Todos"
+        ? doorControlEvents
+        : doorControlEvents.filter((event) => event.place === floor);
+    setFilteredDoorControlEvents(events);
+  }, [floor, doorControlEvents]);
 
   return (
     <Container maxWidth="xl">
@@ -45,6 +60,10 @@ const AccessControl: React.FC = () => {
           label="Usuário"
           sx={{ width: 300, ml: 2 }}
           options={users}
+          value={user}
+          handleValue={setUser}
+          inputValue={inputValue}
+          handleInputValue={setInputValue}
         />
       </Box>
 
@@ -58,21 +77,28 @@ const AccessControl: React.FC = () => {
 
 export default AccessControl;
 
+// const users = [
+//   {
+//     label: "Marcelo Borba",
+//     id: 1,
+//   },
+//   {
+//     label: "Linus Schuster",
+//     id: 2,
+//   },
+//   {
+//     label: "Gustavo Dal Molin",
+//     id: 3,
+//   },
+//   {
+//     label: "Benhur Branco",
+//     id: 4,
+//   },
+// ];
+
 const users = [
-  {
-    label: "Marcelo Borba",
-    id: 1,
-  },
-  {
-    label: "Linus Schuster",
-    id: 2,
-  },
-  {
-    label: "Gustavo Dal Molin",
-    id: 3,
-  },
-  {
-    label: "Benhur Branco",
-    id: 4,
-  },
+  "Marcelo Borba",
+  "Linus Schuster",
+  "Gustavo Dal Molin",
+  "Benhur Branco",
 ];
