@@ -27,6 +27,7 @@ export type FireSystemEvent = {
   equipment: string;
   event: string;
   date: string;
+  priority: string
 };
 
 export type FireSystem = {
@@ -152,21 +153,25 @@ export const fireSystem: FireSystem = {
       equipment: "Detector de fumaça 1",
       event: "AGDH123 - Falha de comunicação",
       date: "10:59:23  28-12-2021",
+      priority: 'Muito alta',
     },
     {
       equipment: "Detector de fumaça 2",
       event: "AGDH124 - Retorno de comunicação",
       date: "10:59:30  28-12-2021",
+      priority: 'Muito alta',
     },
     {
       equipment: "Detector de fumaça 3",
       event: "AGDH124 - Retorno de comunicação",
       date: "10:59:30  28-12-2021",
+      priority: 'Muito alta',
     },
     {
       equipment: "Detector de fumaça 4",
       event: "AGDH124 - Retorno de comunicação",
       date: "10:59:30  28-12-2021",
+      priority: 'Muito alta',
     },
   ],
 };
