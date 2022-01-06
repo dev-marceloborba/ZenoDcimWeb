@@ -11,20 +11,24 @@ const FloorDropdown: React.FC<FloorDropdownProps> = ({ sx }) => {
   const { handleFloor, floor } = useAutomationFilters();
   const items: ItemProps[] = [
     {
+      label: "Todos",
+      value: "Todos",
+    },
+    {
       label: "Andar 1",
-      value: "floor1",
+      value: "Andar 1",
     },
     {
       label: "Andar 2",
-      value: "floor2",
+      value: "Andar 2",
     },
     {
       label: "Andar 3",
-      value: "floor3",
+      value: "Andar 3",
     },
     {
       label: "Andar 4",
-      value: "floor4",
+      value: "Andar 4",
     },
   ];
 
