@@ -84,7 +84,7 @@ const Table = ({ rows, columns, ...props }) => {
     )
   }
 
-  const renderField = (data, key, index) => {
+  const renderField = (data, key, index, field) => {
     return (
       <TableCell
         key={key}
@@ -121,7 +121,8 @@ const Table = ({ rows, columns, ...props }) => {
                     return renderField(
                       row[field],
                       `${row[field]}-${index}`,
-                      index
+                      index,
+                      field
                     );
                   } else {
                     return renderActions(row, `${row[field]}-${index}`);
