@@ -7,14 +7,16 @@ import FloorDropdown from "../components/FloorDropdown";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
 import AccessControlEventsTable from "../components/AccessControlEventsTable";
 import AccessControlDoorEventsTable from "../components/AccessControlDoorStatusTable";
+import { accessControl } from "app/data/access-control";
 
 const AccessControl: React.FC = () => {
+  const { accessEvents, doorControlEvents } = accessControl;
   return (
     <Container maxWidth="xl">
       <Toolbar />
       <PageTitle>Controle de acesso</PageTitle>
 
-      <Box sx={{ display: "flex", alignItems: 'center', mt: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
         <FloorDropdown sx={{ maxWidth: "280px" }} />
         <AutoCompleteDropdown
           name="user"
@@ -24,9 +26,10 @@ const AccessControl: React.FC = () => {
         />
       </Box>
 
-      <AccessControlEventsTable />
-
-      <AccessControlDoorEventsTable />
+      <AccessControlEventsTable events={accessEvents} />
+      <Box sx={{ mt: 4 }}>
+        <AccessControlDoorEventsTable events={doorControlEvents} />
+      </Box>
     </Container>
   );
 };

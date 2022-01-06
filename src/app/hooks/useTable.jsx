@@ -76,6 +76,14 @@ const Table = ({ rows, columns, ...props }) => {
     </TableCell>
   );
 
+  const renderCustomComponent = (Component, key, ...props) => {
+    return (
+      <TableCell key={key} align="right">
+        <Component {...props}/>
+      </TableCell>
+    )
+  }
+
   const renderField = (data, key, index) => {
     return (
       <TableCell
