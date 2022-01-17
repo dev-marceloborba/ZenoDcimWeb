@@ -24,6 +24,7 @@ import FireSystem from "features/automation/pages/FireSystem";
 import FireSystemDetails from "features/automation/pages/FireSystemDetails";
 import AccessControl from "features/automation/pages/AccessControl";
 import FireSystemEvents from "features/automation/pages/FireSystemEvents";
+import EquipmentConectivity from "features/automation/pages/EquipmentConectivity";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -53,6 +54,11 @@ export const SubRoutes: React.FC = () => {
         <Route
           path="/automation/fire-system/events"
           element={<FireSystemEvents />}
+        />
+
+        <Route
+          path="automation/equipment-conectivity"
+          element={<EquipmentConectivity />}
         />
 
         <Route path="/automation/access-control" element={<AccessControl />} />
