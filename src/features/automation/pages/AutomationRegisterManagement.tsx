@@ -1,4 +1,5 @@
 import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -88,7 +89,12 @@ const AutomationRegisterManagement: React.FC = () => {
       <Divider sx={{ mt: 2 }} />
 
       <Box sx={{ display: "flex", mt: 2 }}>
-        <Button variant="text" startIcon={<AddIcon />}>
+        <Button
+          variant="text"
+          startIcon={<AddIcon />}
+          component={RouterLink}
+          to="/zeno/automation/management/equipment"
+        >
           Novo equipamento
         </Button>
         <Button variant="text" startIcon={<CallSplitIcon />}>

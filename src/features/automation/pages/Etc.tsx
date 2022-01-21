@@ -24,6 +24,8 @@ const Etc: React.FC = () => {
   const { floors } = building01;
 
   React.useEffect(() => {
+    console.log(floors)
+    console.log(floor)
     setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
   }, [floor, floors]);
 
