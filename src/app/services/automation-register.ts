@@ -5,3 +5,13 @@ export type EnergyEquipmentRequest = {
     building: string
     room: string
 }
+
+export type NewAutomationParameterRequest = {
+    parameter: string
+    unit: string
+    limitMin: number
+    limitMax: number
+    scale: number
+    dataSource: string
+    address: string
+}

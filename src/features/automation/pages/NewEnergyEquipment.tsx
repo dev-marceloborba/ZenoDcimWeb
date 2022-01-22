@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
@@ -20,8 +21,10 @@ import EtcFilters from "../components/EtcFilters";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
+import ParameterModal from "../components/ParameterModal";
 
 const NewEnergyEquipment: React.FC = () => {
+  const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
   const columns = [
     {
       name: "parameter",
@@ -74,6 +77,14 @@ const NewEnergyEquipment: React.FC = () => {
     console.log(data);
   };
 
+  const handleOpenParameterModal = () => {
+    setParameterModalOpen(true);
+  };
+
+  const handleCloseParameterModal = () => {
+    setParameterModalOpen(false);
+  };
+
   return (
     <Container maxWidth="xl">
       <Toolbar />
@@ -86,7 +97,11 @@ const NewEnergyEquipment: React.FC = () => {
       </Box>
       <Divider sx={{ mb: 3 }} />
       <Box sx={{ display: "flex", mb: 2 }}>
-        <Button startIcon={<ThermostatIcon />} variant="text">
+        <Button
+          startIcon={<ThermostatIcon />}
+          variant="text"
+          onClick={handleOpenParameterModal}
+        >
           Novo parâmetro
         </Button>
         <Button startIcon={<SmsFailedIcon />} variant="text">
@@ -156,6 +171,9 @@ const NewEnergyEquipment: React.FC = () => {
         <Typography variant="h4">Parâmetros</Typography>
         <Table columns={columns} rows={automationParameters} />
       </Box>
+      <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
+        <ParameterModal closeModal={handleCloseParameterModal} />
+      </Modal>
     </Container>
   );
 };
@@ -169,3 +187,4 @@ const validationSchema: SchemaOf<EnergyEquipmentRequest> = object().shape({
   building: string().required("Prédio é obrigatório"),
   room: string().required("Sala é obrigatória"),
 });
+
