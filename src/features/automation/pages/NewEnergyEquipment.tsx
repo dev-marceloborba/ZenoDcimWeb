@@ -22,9 +22,11 @@ import ThermostatIcon from "@mui/icons-material/Thermostat";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
 import ParameterModal from "../components/ParameterModal";
+import ConnectionModal from "../components/ConnectionModal";
 
 const NewEnergyEquipment: React.FC = () => {
   const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
+  const [connectionModalOpen, setConnectionModalOpen] = React.useState(false);
   const columns = [
     {
       name: "parameter",
@@ -85,6 +87,14 @@ const NewEnergyEquipment: React.FC = () => {
     setParameterModalOpen(false);
   };
 
+  const handleOpenConnectionModal = () => {
+    setConnectionModalOpen(true);
+  };
+
+  const handleCloseConnectionModal = () => {
+    setConnectionModalOpen(false);
+  };
+
   return (
     <Container maxWidth="xl">
       <Toolbar />
@@ -107,7 +117,11 @@ const NewEnergyEquipment: React.FC = () => {
         <Button startIcon={<SmsFailedIcon />} variant="text">
           Novo alarme
         </Button>
-        <Button startIcon={<CallSplitIcon />} variant="text">
+        <Button
+          startIcon={<CallSplitIcon />}
+          variant="text"
+          onClick={handleOpenConnectionModal}
+        >
           Nova conexão
         </Button>
       </Box>
@@ -174,6 +188,9 @@ const NewEnergyEquipment: React.FC = () => {
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
         <ParameterModal closeModal={handleCloseParameterModal} />
       </Modal>
+      <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>
+        <ConnectionModal />
+      </Modal>
     </Container>
   );
 };
@@ -187,4 +204,3 @@ const validationSchema: SchemaOf<EnergyEquipmentRequest> = object().shape({
   building: string().required("Prédio é obrigatório"),
   room: string().required("Sala é obrigatória"),
 });
-
