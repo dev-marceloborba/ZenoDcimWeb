@@ -13,6 +13,7 @@ import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Toast from "app/components/Toast";
 import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
+import { ReactFlowProvider } from "react-flow-renderer";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -32,7 +33,9 @@ ReactDOM.render(
           >
             <Toast>
               <AutomationFiltersProvider>
-                <App />
+                <ReactFlowProvider>
+                  <App />
+                </ReactFlowProvider>
               </AutomationFiltersProvider>
             </Toast>
           </Connector>

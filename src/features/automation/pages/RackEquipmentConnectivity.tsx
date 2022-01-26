@@ -6,54 +6,22 @@ import Typography from "@mui/material/Typography";
 import PageTitle from "app/components/PageTitle";
 import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
-
-import ReactFlow from "react-flow-renderer";
-
-const elements = [
-  {
-    id: "1",
-    data: { label: "Node 1" },
-    position: { x: 0, y: 5 },
-    // sourcePosition: "right",
-    type: "input",
-  },
-  // you can also pass a React component as a label
-  {
-    id: "2",
-    data: {
-      label: <div>Switch Core XXX 500Mpbs</div>,
-    },
-    position: { x: 250, y: 8 },
-    style: {
-      background: "#D6D5E6",
-      color: "#333",
-      border: "1px solid #222138",
-      width: 180,
-    },
-  },
-  { id: "e1-2", source: "1", target: "2", animated: false },
-];
+import ConnectivityFlowDiagram from "../components/ConnectivityFlowDiagram";
 
 const RackEquipmentConnectivity: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <Toolbar />
       <PageTitle>Conectividade de equipamento</PageTitle>
-      <Box sx={{ display: "flex", mt: 2, mb: 2 }}>
+      <Box sx={{ display: "flex", mt: 2, mb: 2, maxWidth: "640px" }}>
         <BuildingDropdown />
-        <FloorDropdown />
+        <FloorDropdown sx={{ ml: 2 }} />
       </Box>
 
       <Typography variant="h4">Telecomunicações</Typography>
 
-      <Box sx={{ width: "600px", height: "600px" }}>
-        <ReactFlow
-          elements={elements}
-          elementsSelectable={false}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          paneMoveable={false}
-        />
+      <Box sx={{ width: "1200px", height: "900px" }}>
+        <ConnectivityFlowDiagram />
       </Box>
     </Container>
   );

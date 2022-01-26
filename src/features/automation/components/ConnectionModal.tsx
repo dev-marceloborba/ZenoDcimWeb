@@ -17,11 +17,11 @@ import { modalStyle } from "app/styles/modal-style";
 
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-
-enum ConnectionType {
-  PARALEL = 0,
-  SERIES = 1,
-}
+import {
+  connectionData,
+  ConnectionData,
+  ConnectionType,
+} from "app/data/connection-data";
 
 const ConnectionModal: React.FC = () => {
   const [state, setState] = React.useState<ConnectionData[]>(connectionData);
@@ -84,38 +84,5 @@ const ConnectionModal: React.FC = () => {
     </Container>
   );
 };
-
-const getConnectionDescription = (connection: ConnectionType) => {
-  switch (connection) {
-    case ConnectionType.PARALEL:
-      return "Paralelo";
-    case ConnectionType.SERIES:
-      return "Série";
-  }
-};
-
-type ConnectionData = {
-  connectionType: ConnectionType;
-  subsystemComponents: string[];
-  system: string;
-};
-
-const connectionData: ConnectionData[] = [
-  {
-    connectionType: ConnectionType.PARALEL,
-    subsystemComponents: ["PDU XYZ", "RPP XYZ"],
-    system: "Subsistema 3",
-  },
-  {
-    connectionType: ConnectionType.PARALEL,
-    subsystemComponents: ["THRD125"],
-    system: "Subsistema 2",
-  },
-  {
-    connectionType: ConnectionType.SERIES,
-    subsystemComponents: ["THRD125"],
-    system: "Subsistema 3",
-  },
-];
 
 export default ConnectionModal;
