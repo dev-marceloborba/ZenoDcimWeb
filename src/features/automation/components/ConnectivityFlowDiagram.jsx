@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import ReactFlow, {
   addEdge,
   removeElements,
   useZoomPanHelper,
+  Controls,
 } from "react-flow-renderer";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
 export default function ConnectivityFlowDiagram() {
+  const reactFlowWrapper = useRef(null);
   const [system, setSystem] = useState(options[0].name);
   const [rfInstance, setRfInstance] = useState(null);
   const [elements, setElements] = useState([]);
@@ -70,7 +72,7 @@ export default function ConnectivityFlowDiagram() {
       const flow = JSON.parse(localStorage.getItem(flowKey));
 
       if (flow) {
-        const [x , y ] = flow.position;
+        const [x, y] = flow.position;
         setElements(flow.elements || []);
         transform({ x, y, zoom: flow.zoom || 0 });
       }
@@ -79,11 +81,39 @@ export default function ConnectivityFlowDiagram() {
     restoreFlow();
   }, [setElements, transform]);
 
+  const onDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const onDrop = (event) => {
+    event.preventDefault();
+
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const type = event.dataTransfer.getData("application/reactflow");
+    const position = rfInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+
+    const newNode = {
+      id: getNodeId(),
+      type,
+      position,
+      data: {
+        label: `${type} node`,
+      },
+    };
+
+    setElements((els) => els.concat(newNode));
+  };
+
   return (
     <>
       <Button onClick={onAdd}>Adicionar</Button>
       <Button onClick={onSave}>Salvar</Button>
       <Button onClick={onRestore}>Restaurar</Button>
+      <Sidebar />
       <TextField
         label={"Sistema"}
         color="primary"
@@ -123,16 +153,23 @@ export default function ConnectivityFlowDiagram() {
           {" " + selectedElement?.position.y}
         </Typography>
       </Box>
-      <ReactFlow
-        elements={elements}
-        paneMoveable={false}
-        zoomOnScroll={false}
-        zoomOnDoubleClick={false}
-        onLoad={setRfInstance}
-        onConnect={onConnect}
-        onElementClick={onElementClick}
-        onElementsRemove={onElementsRemove}
-      />
+      <div ref={reactFlowWrapper} style={{width: '100%', height: '100%'}}>
+        <ReactFlow
+          elements={elements}
+          paneMoveable={false}
+          zoomOnScroll={false}
+          zoomOnDoubleClick={false}
+          onLoad={setRfInstance}
+          onConnect={onConnect}
+          onElementClick={onElementClick}
+          onElementsRemove={onElementsRemove}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        >
+          <Controls />
+        </ReactFlow>
+      </div>
+  
     </>
   );
 }
@@ -153,3 +190,24 @@ const options = [
 ];
 
 const getNodeId = () => `randomNode_${+new Date()}`;
+
+const Sidebar = () => {
+  const onDragStart = (event, nodeType) => {
+    event.dataTransfer.setData("application/reactflow", nodeType);
+    event.dataTransfer.effectAllowed = "move";
+  };
+
+  return (
+    <aside>
+      <div onDragStart={(event) => onDragStart(event, "input")} draggable>
+        Nó de entrada
+      </div>
+      <div onDragStart={(event) => onDragStart(event, "default")} draggable>
+        Nó padrão
+      </div>
+      <div onDragStart={(event) => onDragStart(event, "output")} draggable>
+        Nó de saída
+      </div>
+    </aside>
+  );
+};
