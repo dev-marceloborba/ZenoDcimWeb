@@ -17,31 +17,19 @@ export default function ConnectivityFlowDiagram() {
   const [rfInstance, setRfInstance] = useState(null);
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
+  const [elementBackgroundColor, setElementBackgroundColor] =
+    useState("orange");
+
+  const { transform } = useZoomPanHelper();
   const flowKey = "flow1";
 
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
-  const onElementClick = (event, element) => {
-    console.log("click", element);
-    setSelectedElement(element);
-  };
-
-  const handleSystemChange = (event) => setSystem(event.target.value);
-
-  const handleEditSystem = (event) => {
-    const elementsCpy = [...elements];
-    elementsCpy.forEach((node) => {
-      if (node.data.label === selectedElement?.data.label) {
-        node.data.label = event.target.value;
-      }
-    });
-    setElements(elementsCpy);
-  };
+  const onElementClick = (event, element) => setSelectedElement(element);
 
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
 
-  const { transform } = useZoomPanHelper();
   const onSave = useCallback(() => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
@@ -61,7 +49,7 @@ export default function ConnectivityFlowDiagram() {
         // x: Math.random() * window.innerWidth - 100,
         // y: Math.random() * window.innerHeight,
         x: 40,
-        y: 400,
+        y: 300,
       },
     };
     setElements((els) => els.concat(newNode));
@@ -70,7 +58,6 @@ export default function ConnectivityFlowDiagram() {
   const onRestore = useCallback(() => {
     const restoreFlow = () => {
       const flow = JSON.parse(localStorage.getItem(flowKey));
-
       if (flow) {
         const [x, y] = flow.position;
         setElements(flow.elements || []);
@@ -88,14 +75,12 @@ export default function ConnectivityFlowDiagram() {
 
   const onDrop = (event) => {
     event.preventDefault();
-
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData("application/reactflow");
     const position = rfInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
-
     const newNode = {
       id: getNodeId(),
       type,
@@ -103,16 +88,44 @@ export default function ConnectivityFlowDiagram() {
       data: {
         label: `${type} node`,
       },
+      ...(type === "input" && {
+        sourcePosition: "right",
+      }),
+      ...(type === "default" && {
+        sourcePosition: "right",
+        targetPosition: "left",
+      }),
+      ...(type === "output" && {
+        targetPosition: "left",
+      }),
+      style: {
+        backgroundColor: elementBackgroundColor,
+      },
     };
-
     setElements((els) => els.concat(newNode));
   };
+
+  const handleSystemChange = (event) => setSystem(event.target.value);
+
+  const handleEditSystem = (event) => {
+    const elementsCpy = [...elements];
+    elementsCpy.forEach((node) => {
+      if (node?.data?.label === selectedElement?.data.label) {
+        node.data.label = event.target.value;
+      }
+    });
+    setElements(elementsCpy);
+  };
+
+  const handleOnChangeColor = (event) =>
+    setElementBackgroundColor(event.target.value);
 
   return (
     <>
       <Button onClick={onAdd}>Adicionar</Button>
       <Button onClick={onSave}>Salvar</Button>
       <Button onClick={onRestore}>Restaurar</Button>
+      <ElementColorSelection value={elementBackgroundColor} handleOnChange={handleOnChangeColor} />
       <Sidebar />
       <TextField
         label={"Sistema"}
@@ -153,7 +166,7 @@ export default function ConnectivityFlowDiagram() {
           {" " + selectedElement?.position.y}
         </Typography>
       </Box>
-      <div ref={reactFlowWrapper} style={{width: '100%', height: '100%'}}>
+      <div ref={reactFlowWrapper} style={{ width: "100%", height: "100%" }}>
         <ReactFlow
           elements={elements}
           paneMoveable={false}
@@ -169,7 +182,6 @@ export default function ConnectivityFlowDiagram() {
           <Controls />
         </ReactFlow>
       </div>
-  
     </>
   );
 }
@@ -209,5 +221,18 @@ const Sidebar = () => {
         Nó de saída
       </div>
     </aside>
+  );
+};
+
+const ElementColorSelection = ({ value, handleOnChange }) => {
+  return (
+    <TextField select defaultValue="" value={value} onChange={handleOnChange}>
+      <MenuItem value={"yellow"}>Amarelo</MenuItem>
+      <MenuItem value={"blue"}>Azul</MenuItem>
+      <MenuItem value={"red"}>Vermelho</MenuItem>
+      <MenuItem value={"green"}>Verde</MenuItem>
+      <MenuItem value={"orange"}>Laranja</MenuItem>
+      <MenuItem value={"white"}>Branco</MenuItem>
+    </TextField>
   );
 };
