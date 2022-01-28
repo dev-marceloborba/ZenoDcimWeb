@@ -17,8 +17,7 @@ export default function ConnectivityFlowDiagram() {
   const [rfInstance, setRfInstance] = useState(null);
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [elementBackgroundColor, setElementBackgroundColor] =
-    useState("orange");
+  const [elementBackgroundColor, setElementBackgroundColor] = useState("white");
 
   const { transform } = useZoomPanHelper();
   const flowKey = "flow1";
@@ -125,7 +124,10 @@ export default function ConnectivityFlowDiagram() {
       <Button onClick={onAdd}>Adicionar</Button>
       <Button onClick={onSave}>Salvar</Button>
       <Button onClick={onRestore}>Restaurar</Button>
-      <ElementColorSelection value={elementBackgroundColor} handleOnChange={handleOnChangeColor} />
+      <ElementColorSelection
+        value={elementBackgroundColor}
+        handleOnChange={handleOnChangeColor}
+      />
       <Sidebar />
       <TextField
         label={"Sistema"}
@@ -211,15 +213,29 @@ const Sidebar = () => {
 
   return (
     <aside>
-      <div onDragStart={(event) => onDragStart(event, "input")} draggable>
+      <Box
+        className="react-flow__node-input"
+        onDragStart={(event) => onDragStart(event, "input")}
+        draggable
+      >
         Nó de entrada
-      </div>
-      <div onDragStart={(event) => onDragStart(event, "default")} draggable>
+      </Box>
+      <Box
+        sx={{ mt: 1 }}
+        className="react-flow__node-default"
+        onDragStart={(event) => onDragStart(event, "default")}
+        draggable
+      >
         Nó padrão
-      </div>
-      <div onDragStart={(event) => onDragStart(event, "output")} draggable>
+      </Box>
+      <Box
+        sx={{ mt: 1 }}
+        className="react-flow__node-output"
+        onDragStart={(event) => onDragStart(event, "output")}
+        draggable
+      >
         Nó de saída
-      </div>
+      </Box>
     </aside>
   );
 };
@@ -227,12 +243,55 @@ const Sidebar = () => {
 const ElementColorSelection = ({ value, handleOnChange }) => {
   return (
     <TextField select defaultValue="" value={value} onChange={handleOnChange}>
-      <MenuItem value={"yellow"}>Amarelo</MenuItem>
-      <MenuItem value={"blue"}>Azul</MenuItem>
-      <MenuItem value={"red"}>Vermelho</MenuItem>
-      <MenuItem value={"green"}>Verde</MenuItem>
-      <MenuItem value={"orange"}>Laranja</MenuItem>
-      <MenuItem value={"white"}>Branco</MenuItem>
+      <MenuItem value={"yellow"}>
+        <ColorWithDescription
+          colorDescription={"Amarelo"}
+          backgroundColor={"yellow"}
+        />
+      </MenuItem>
+      <MenuItem value={"blue"}>
+        <ColorWithDescription
+          colorDescription={"Azul"}
+          backgroundColor={"blue"}
+        />
+      </MenuItem>
+      <MenuItem value={"red"}>
+        <ColorWithDescription
+          colorDescription={"Vermelho"}
+          backgroundColor={"red"}
+        />
+      </MenuItem>
+      <MenuItem value={"green"}>
+        <ColorWithDescription
+          colorDescription={"Verde"}
+          backgroundColor={"green"}
+        />
+      </MenuItem>
+      <MenuItem value={"orange"}>
+        <ColorWithDescription
+          colorDescription={"Laranja"}
+          backgroundColor={"orange"}
+        />
+      </MenuItem>
+      <MenuItem value={"white"}>
+        <ColorWithDescription
+          colorDescription={"Branco"}
+          backgroundColor={"white"}
+        />
+      </MenuItem>
     </TextField>
+  );
+};
+
+const ColorWithDescription = ({ colorDescription, backgroundColor }) => {
+  const renderColorSquare = () => {
+    return <Box sx={{ width: 16, height: 16, backgroundColor }} />;
+  };
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      {renderColorSquare()}
+      <Typography sx={{ ml: "0.4rem" }}>{colorDescription}</Typography>
+    </Box>
   );
 };
