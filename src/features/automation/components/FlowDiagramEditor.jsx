@@ -28,21 +28,33 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
+import { modalStyle } from "app/styles/modal-style";
+
 const FlowDiagramEditor = () => {
-  const flowKey = "flow1";
-  // const [system, setSystem] = useState(options[0].name);
   const [rfInstance, setRfInstance] = useState(null);
   const reactFlowWrapper = useRef(null);
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
   const [elementBackgroundColor, setElementBackgroundColor] = useState("white");
   const [openDiagramNameModal, setOpenDiagramNameModal] = useState(false);
-  const [openSavedDiagramListModal, setOpenSavedDiagramListModal] = useState(false)
+  const [openSavedDiagramListModal, setOpenSavedDiagramListModal] =
+    useState(false);
   const { transform } = useZoomPanHelper();
 
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
-  const onElementClick = (event, element) => setSelectedElement(element);
+  const onElementClick = (event, element) => {
+    console.log(element)
+    console.log(event)
+    const { style} = element
+    console.log(style)
+
+    const elementInArrayOfElements = elements.find((x) => x.id === element.id)
+    
+    console.log(elementInArrayOfElements)
+    // setSelectedElement(element);
+    setSelectedElement(elementInArrayOfElements)
+  }
 
   const onDrop = (event) => {
     function getNodeDescription(type) {
@@ -98,30 +110,22 @@ const FlowDiagramEditor = () => {
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
 
-  // const onSave = useCallback(() => {
-  //   if (rfInstance) {
-  //     const flow = rfInstance.toObject();
-  //     // localStorage.setItem(flowKey, JSON.stringify(flow));
-  //     setOpenDiagramNameModal(true)
-  //   }
-  // }, [rfInstance]);
-
   const onSave = useCallback(() => {
     setOpenDiagramNameModal(true);
   }, [setOpenDiagramNameModal]);
 
-  const onRestore = useCallback(() => {
+  const onRestore = (diagram) => {
     const restoreFlow = () => {
-      const flow = JSON.parse(localStorage.getItem(flowKey));
+      const flow = JSON.parse(localStorage.getItem(diagram.key));
       if (flow) {
+        console.log(flow);
         const [x, y] = flow.position;
         setElements(flow.elements || []);
         transform({ x, y, zoom: flow.zoom || 0 });
       }
     };
-
     restoreFlow();
-  }, [setElements, transform]);
+  };
 
   const onNewDiagram = () => {
     setElements([]);
@@ -152,13 +156,12 @@ const FlowDiagramEditor = () => {
   };
 
   const onCloseSavedDiagramListModal = () => {
-    setOpenSavedDiagramListModal(false)
-  }
+    setOpenSavedDiagramListModal(false);
+  };
 
   const onOpenSavevDiagramListModal = () => {
-    setOpenSavedDiagramListModal(true)
-  }
-  
+    setOpenSavedDiagramListModal(true);
+  };
 
   return (
     <Container maxWidth="xl" sx={{ height: "100%" }}>
@@ -171,7 +174,11 @@ const FlowDiagramEditor = () => {
         <Button variant="contained" sx={{ ml: 1 }} onClick={onSave}>
           Salvar
         </Button>
-        <Button variant="contained" sx={{ ml: 1 }} onClick={onOpenSavevDiagramListModal}>
+        <Button
+          variant="contained"
+          sx={{ ml: 1 }}
+          onClick={onOpenSavevDiagramListModal}
+        >
           Pesquisar
         </Button>
       </Box>
@@ -226,9 +233,10 @@ const FlowDiagramEditor = () => {
         onClose={onCloseDiagramNameModal}
         onSave={onDiagramTitleSave}
       />
-      <SavedDiagramsListModal 
+      <SavedDiagramsListModal
         open={openSavedDiagramListModal}
         onClose={onCloseSavedDiagramListModal}
+        onLoad={onRestore}
       />
     </Container>
   );
@@ -447,12 +455,17 @@ const SavedDiagramsListModal = ({ open, onClose, onLoad }) => {
   ];
 
   const handleItemClick = (diagram) => {
-    console.log(diagram)
-  }
+    onLoad(diagram);
+    onClose();
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box>
+      <Box sx={modalStyle}>
+        <Typography variant="h4" sx={{ pb: 1 }}>
+          Escolha um diagrama abaixo
+        </Typography>
+        <Divider />
         <List>
           {diagrams.map((diagram, index) => (
             <ListItem disablePadding key={index}>
