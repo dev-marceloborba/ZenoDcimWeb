@@ -35,7 +35,7 @@ const FlowDiagramEditor = () => {
   const reactFlowWrapper = useRef(null);
   const [elements, setElements] = useState([]);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [elementBackgroundColor, setElementBackgroundColor] = useState("white");
+  // const [elementBackgroundColor, setElementBackgroundColor] = useState("white");
   const [openDiagramNameModal, setOpenDiagramNameModal] = useState(false);
   const [openSavedDiagramListModal, setOpenSavedDiagramListModal] =
     useState(false);
@@ -44,17 +44,9 @@ const FlowDiagramEditor = () => {
   const onConnect = (params) => setElements((els) => addEdge(params, els));
 
   const onElementClick = (event, element) => {
-    console.log(element)
-    console.log(event)
-    const { style} = element
-    console.log(style)
-
-    const elementInArrayOfElements = elements.find((x) => x.id === element.id)
-    
-    console.log(elementInArrayOfElements)
-    // setSelectedElement(element);
-    setSelectedElement(elementInArrayOfElements)
-  }
+    const elementInArrayOfElements = elements.find((x) => x.id === element.id);
+    setSelectedElement(elementInArrayOfElements);
+  };
 
   const onDrop = (event) => {
     function getNodeDescription(type) {
@@ -96,7 +88,7 @@ const FlowDiagramEditor = () => {
         targetPosition: "left",
       }),
       style: {
-        backgroundColor: elementBackgroundColor,
+        backgroundColor: 'white',
       },
     };
     setElements((els) => els.concat(newNode));
@@ -118,7 +110,6 @@ const FlowDiagramEditor = () => {
     const restoreFlow = () => {
       const flow = JSON.parse(localStorage.getItem(diagram.key));
       if (flow) {
-        console.log(flow);
         const [x, y] = flow.position;
         setElements(flow.elements || []);
         transform({ x, y, zoom: flow.zoom || 0 });
@@ -141,8 +132,15 @@ const FlowDiagramEditor = () => {
     setElements(elementsCpy);
   };
 
-  const onChangeColor = (event) =>
-    setElementBackgroundColor(event.target.value);
+  const onChangeColor = (event) => {
+    const elementsCpy = [...elements];
+    elementsCpy.forEach((node) => {
+      if (node?.data?.label === selectedElement?.data.label) {
+        node.style.backgroundColor = event.target.value;
+      }
+    });
+    setElements(elementsCpy);
+  }
 
   const onCloseDiagramNameModal = () => setOpenDiagramNameModal(false);
 
@@ -221,7 +219,7 @@ const FlowDiagramEditor = () => {
             </ReactFlow>
           </Box>
           <Sidebar
-            elementBackgroundColor={elementBackgroundColor}
+            // elementBackgroundColor={elementBackgroundColor}
             selectedElement={selectedElement}
             onEditSystem={onEditSystem}
             onChangeColor={onChangeColor}
@@ -265,7 +263,7 @@ const Sidebar = ({
   selectedElement,
   onEditSystem,
   onChangeColor,
-  elementBackgroundColor,
+  // elementBackgroundColor,
 }) => {
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
@@ -346,8 +344,8 @@ const Sidebar = ({
         {" " + selectedElement?.position.y}
       </Typography>
       <ElementColorSelection
-        value={elementBackgroundColor}
-        onChangeColor={onChangeColor}
+        value={selectedElement?.style.backgroundColor}
+        handleOnChange={onChangeColor}
       />
     </aside>
   );
@@ -355,7 +353,7 @@ const Sidebar = ({
 
 const ElementColorSelection = ({ value, handleOnChange }) => {
   return (
-    <TextField select defaultValue="" value={value} onChange={handleOnChange}>
+    <TextField select defaultValue="" value={value ?? ""} onChange={handleOnChange}>
       <MenuItem value={"yellow"}>
         <ColorWithDescription
           colorDescription={"Amarelo"}
