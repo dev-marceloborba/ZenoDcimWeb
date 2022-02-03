@@ -1,20 +1,17 @@
 import React from "react";
-import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Toolbar from "@mui/material/Toolbar";
-
 import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import PageTitle from "app/components/PageTitle";
 import { equipmentConnectivity } from "app/data/equipment-connectivity";
 import ConnectivityCard from "../components/ConnectivityCard";
+import HeroContainer from "app/components/HeroContainer";
 
 const EquipmentConectivity: React.FC = () => {
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
-      <PageTitle>Conectivade de equipamento</PageTitle>
+    <HeroContainer>
+      <PageTitle>Conectivade de equipamentos</PageTitle>
       <Box sx={{ display: "flex", maxWidth: "480px", mt: 2 }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />
@@ -27,7 +24,7 @@ const EquipmentConectivity: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-    </Container>
+    </HeroContainer>
   );
 };
 

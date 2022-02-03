@@ -1,17 +1,15 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import PageTitle from "app/components/PageTitle";
 import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import ConnectivityFlowDiagram from "../components/ConnectivityFlowDiagram";
+import HeroContainer from "app/components/HeroContainer";
 
 const RackEquipmentConnectivity: React.FC = () => {
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
+    <HeroContainer>
       <PageTitle>Conectividade de equipamento</PageTitle>
       <Box sx={{ display: "flex", mt: 2, mb: 2, maxWidth: "640px" }}>
         <BuildingDropdown />
@@ -23,7 +21,7 @@ const RackEquipmentConnectivity: React.FC = () => {
       <Box sx={{ width: "1200px", height: "900px" }}>
         <ConnectivityFlowDiagram />
       </Box>
-    </Container>
+    </HeroContainer>
   );
 };
 

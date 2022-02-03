@@ -1,11 +1,9 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -23,6 +21,7 @@ import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
 import ParameterModal from "../components/ParameterModal";
 import ConnectionModal from "../components/ConnectionModal";
+import HeroContainer from "app/components/HeroContainer";
 
 const NewEnergyEquipment: React.FC = () => {
   const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
@@ -96,8 +95,7 @@ const NewEnergyEquipment: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
+    <HeroContainer>
       <PageTitle>Cadastros de automação</PageTitle>
       <Box
         sx={{ display: "flex", justifyContent: "space-between", mb: 2, mt: 1 }}
@@ -191,7 +189,7 @@ const NewEnergyEquipment: React.FC = () => {
       <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>
         <ConnectionModal />
       </Modal>
-    </Container>
+    </HeroContainer>
   );
 };
 

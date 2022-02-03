@@ -2,10 +2,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
-
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import PageTitle from "app/components/PageTitle";
 import EtcFilters from "../components/EtcFilters";
@@ -20,6 +17,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 
 import { automationManagement } from "app/data/automation-management";
+import HeroContainer from "app/components/HeroContainer";
 
 const AutomationRegisterManagement: React.FC = () => {
   const columns = [
@@ -66,8 +64,7 @@ const AutomationRegisterManagement: React.FC = () => {
   const { equipments } = energyData;
 
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
+    <HeroContainer>
       <PageTitle>Cadastros de automação</PageTitle>
       <Box
         sx={{
@@ -111,7 +108,7 @@ const AutomationRegisterManagement: React.FC = () => {
       <Box sx={{ mt: 4 }}>
         <Table columns={columns} rows={equipments} />
       </Box>
-    </Container>
+    </HeroContainer>
   );
 };
 

@@ -1,8 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Toolbar from "@mui/material/Toolbar";
 import { Floor } from "app/types/bms";
 
 import { building01 } from "app/data/bms";
@@ -15,6 +13,7 @@ import FloorDropdown from "../components/FloorDropdown";
 import EtcFilters from "../components/EtcFilters";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import Center from "app/components/Center";
+import HeroContainer from "app/components/HeroContainer";
 
 const Etc: React.FC = () => {
   const { groups, floor } = useAutomationFilters();
@@ -24,14 +23,13 @@ const Etc: React.FC = () => {
   const { floors } = building01;
 
   React.useEffect(() => {
-    console.log(floors)
-    console.log(floor)
+    console.log(floors);
+    console.log(floor);
     setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
   }, [floor, floors]);
 
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
+    <HeroContainer>
       <PageTitle>Energia, Clima e Telecom</PageTitle>
       <Box
         sx={{
@@ -69,7 +67,7 @@ const Etc: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-    </Container>
+    </HeroContainer>
   );
 };
 

@@ -1,13 +1,12 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Toolbar from "@mui/material/Toolbar";
 import { building01 } from "app/data/bms";
 import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
 import EtcFilters from "../components/EtcFilters";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
+import HeroContainer from "app/components/HeroContainer";
 
 const EtcDetails: React.FC = () => {
   const { groups } = useAutomationFilters();
@@ -16,8 +15,7 @@ const EtcDetails: React.FC = () => {
   const { equipments } = rooms[0];
 
   return (
-    <Container maxWidth="xl">
-      <Toolbar />
+    <HeroContainer>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <PageTitle>Energia, Clima e Telecom</PageTitle>
         <Box sx={{ display: "flex" }}>
@@ -43,7 +41,7 @@ const EtcDetails: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-    </Container>
+    </HeroContainer>
   );
 };
 
