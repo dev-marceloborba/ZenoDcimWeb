@@ -9,12 +9,14 @@ import Typography from "@mui/material/Typography";
 import type { NewAutomationParameterRequest } from "app/services/automation-register";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import { modalStyle } from "app/styles/modal-style";
+import Alert from "app/components/Alert";
 
 type ParameterModalProps = {
   closeModal(): void;
 };
 
 const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
+  const [showAlert, setShowAlert] = React.useState(false);
   const methods = useForm<NewAutomationParameterRequest>({
     resolver: yupResolver(validationSchema),
   });
@@ -25,10 +27,15 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
   ) => {
     try {
       console.log(data);
-      closeModal();
+      setShowAlert(true);
+      // closeModal();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onCloseAlert = () => {
+    setShowAlert(false);
   };
 
   return (
@@ -54,6 +61,13 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
           </Button>
         </FormProvider>
       </Box>
+      <Alert
+        message="Parâmetro criado"
+        open={showAlert}
+        severity="success"
+        variant="standard"
+        handleClose={onCloseAlert}
+      />
     </Container>
   );
 };
@@ -68,6 +82,5 @@ const validationSchema: SchemaOf<NewAutomationParameterRequest> =
     dataSource: string().required("Fonte de dados é obrigatória"),
     address: string().required("Endereço é obrigatório"),
   });
-
 
 export default ParameterModal;

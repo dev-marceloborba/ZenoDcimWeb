@@ -3,7 +3,8 @@ export enum EStatus {
   OFFLINE = 1,
   NORMAL = 2, 
   ALERT = 3,
-  DANGER = 4
+  DANGER = 4,
+  CRITICAL = 5
 }
 
 export type EquipmentData = {
@@ -29,7 +30,7 @@ export const equipmentConnectivity: ConnectivityData[] = [
         description: "RPP XPA",
       },
       {
-        status: EStatus.DANGER,
+        status: EStatus.ALERT,
         description: "PDU A Andar 1",
       },
       {
@@ -37,7 +38,7 @@ export const equipmentConnectivity: ConnectivityData[] = [
         description: "PDU B Andar 1",
       },
       {
-        status: EStatus.DANGER,
+        status: EStatus.CRITICAL,
         description: "PDU C Andar 1",
       },
       {

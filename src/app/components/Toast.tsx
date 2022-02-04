@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
-import Snackbar from "@mui/material/Snackbar";
+import Snackbar, { SnackbarProps } from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 // import IconButton from "@mui/material/IconButton";
 // import CloseIcon from "@mui/icons-material/Close";
@@ -22,7 +22,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const Toast: React.FC = ({ children }) => {
+type ToastProps = Pick<AlertProps, 'variant' | 'severity'>
+
+const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
   const [state, setState] = useState({
     open: false,
     message: "",
@@ -65,7 +67,7 @@ const Toast: React.FC = ({ children }) => {
           onClose={handleClose}
           anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
         >
-          <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+          <Alert onClose={handleClose} sx={{width: '100%'}} {...props}>
             {state.message}
           </Alert>
         </Snackbar>
