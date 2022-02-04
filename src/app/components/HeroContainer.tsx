@@ -2,6 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
+import Breadcrumbs from "./Breadcrumbs";
 
 const HeroContainer: React.FC = ({ children }) => {
   return (
@@ -14,6 +15,7 @@ const HeroContainer: React.FC = ({ children }) => {
       }}
     >
       <Toolbar />
+      <Breadcrumbs />
       <Container
         maxWidth="xl"
         sx={{
