@@ -2,7 +2,6 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Floor } from "app/types/bms";
-
 import { building01 } from "app/data/bms";
 import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
@@ -17,15 +16,13 @@ import HeroContainer from "app/components/HeroContainer";
 
 const Etc: React.FC = () => {
   const { groups, floor } = useAutomationFilters();
-
   const [currentFloor, setCurrentFloor] = React.useState<Floor>({} as Floor);
-
   const { floors } = building01;
 
   React.useEffect(() => {
-    console.log(floors);
-    console.log(floor);
-    setCurrentFloor(floors.filter((x) => x.name === floor)[0]);
+    const floorEquipments =
+      floor === "Todos" ? floors[0] : floors.filter((x) => x.name === floor)[0];
+    setCurrentFloor(floorEquipments);
   }, [floor, floors]);
 
   return (
@@ -43,10 +40,8 @@ const Etc: React.FC = () => {
           <BuildingDropdown />
           <FloorDropdown sx={{ ml: 2 }} />
         </Box>
-
         <EtcFilters />
       </Box>
-
       <Grid sx={{ mt: 1 }} container spacing={1}>
         {currentFloor?.rooms?.map((room, index) => (
           <Grid key={index} item md={6}>

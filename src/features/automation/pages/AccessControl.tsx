@@ -50,7 +50,6 @@ const AccessControl: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Controle de acesso</PageTitle>
-
       <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
         <FloorDropdown sx={{ maxWidth: "280px" }} />
         <AutoCompleteDropdown
@@ -64,7 +63,6 @@ const AccessControl: React.FC = () => {
           handleInputValue={setInputValue}
         />
       </Box>
-
       <AccessControlEventsTable events={filteredAccessEvents} />
       <Box sx={{ mt: 4 }}>
         <AccessControlDoorEventsTable events={filteredDoorControlEvents} />

@@ -45,7 +45,12 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        sx={modalStyle}
+        sx={{
+          ...modalStyle,
+          "& .MuiFormControl-root, .MuiButton-root": {
+            marginTop: 2,
+          },
+        }}
       >
         <Typography variant="h5">Novo parâmetro</Typography>
         <FormProvider {...methods}>

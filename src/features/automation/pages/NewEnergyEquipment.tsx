@@ -1,9 +1,10 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,8 +23,13 @@ import CallSplitIcon from "@mui/icons-material/CallSplit";
 import ParameterModal from "../components/ParameterModal";
 import ConnectionModal from "../components/ConnectionModal";
 import HeroContainer from "app/components/HeroContainer";
+import TabPanel from "app/components/TabPanel";
+import Row from "app/components/Row";
+import Form from "app/components/Form";
+import Column from "app/components/Column";
 
 const NewEnergyEquipment: React.FC = () => {
+  const [tabIndex, setTabIndex] = React.useState(0);
   const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
   const [connectionModalOpen, setConnectionModalOpen] = React.useState(false);
   const columns = [
@@ -94,95 +100,109 @@ const NewEnergyEquipment: React.FC = () => {
     setConnectionModalOpen(false);
   };
 
+  const handleChangeTabIndex = (
+    event: React.SyntheticEvent,
+    newValue: number
+  ) => {
+    setTabIndex(newValue);
+  };
+
   return (
     <HeroContainer>
       <PageTitle>Cadastros de automação</PageTitle>
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", mb: 2, mt: 1 }}
-      >
+      <Row sx={{ justifyContent: "space-between", mb: 2, mt: 1 }}>
         <Typography variant="h5">Novo equipamento de energia</Typography>
         <EtcFilters />
-      </Box>
+      </Row>
+      <Tabs value={tabIndex} onChange={handleChangeTabIndex}>
+        <Tab label="Novo equipamento" />
+        <Tab label="Parâmetro" />
+      </Tabs>
       <Divider sx={{ mb: 3 }} />
-      <Box sx={{ display: "flex", mb: 2 }}>
-        <Button
-          startIcon={<ThermostatIcon />}
-          variant="text"
-          onClick={handleOpenParameterModal}
-        >
-          Novo parâmetro
-        </Button>
-        <Button startIcon={<SmsFailedIcon />} variant="text">
-          Novo alarme
-        </Button>
-        <Button
-          startIcon={<CallSplitIcon />}
-          variant="text"
-          onClick={handleOpenConnectionModal}
-        >
-          Nova conexão
-        </Button>
-      </Box>
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <FormProvider {...methods}>
-          <Grid container spacing={2}>
-            <Grid item md={6}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                Dados do equipamento
-              </Typography>
-              <ControlledTextInput
-                sx={{ maxWidth: "320px" }}
-                name="name"
-                label="Nomenclatura"
-              />
-            </Grid>
-            <Grid item md={6}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                Local
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item md={6}>
-                  <ControlledTextInput name="campus" label="Campus" />
-                </Grid>
-                <Grid item md={6}>
-                  <ControlledTextInput name="floor" label="Andar" />
-                </Grid>
-                <Grid item md={6}>
-                  <ControlledTextInput name="building" label="Prédio" />
-                </Grid>
-                <Grid item md={6}>
-                  <ControlledTextInput name="room" label="Sala" />
+
+      <TabPanel value={tabIndex} index={0}>
+        <Row sx={{ mb: 2 }}>
+          <Button
+            startIcon={<CallSplitIcon />}
+            variant="text"
+            onClick={handleOpenConnectionModal}
+          >
+            Nova conexão
+          </Button>
+        </Row>
+
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <FormProvider {...methods}>
+            <Grid container spacing={2}>
+              <Grid item md={6}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  Dados do equipamento
+                </Typography>
+                <ControlledTextInput
+                  sx={{ maxWidth: "320px" }}
+                  name="name"
+                  label="Nomenclatura"
+                />
+              </Grid>
+              <Grid item md={6}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  Local
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item md={6}>
+                    <ControlledTextInput name="campus" label="Campus" />
+                  </Grid>
+                  <Grid item md={6}>
+                    <ControlledTextInput name="floor" label="Andar" />
+                  </Grid>
+                  <Grid item md={6}>
+                    <ControlledTextInput name="building" label="Prédio" />
+                  </Grid>
+                  <Grid item md={6}>
+                    <ControlledTextInput name="room" label="Sala" />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </FormProvider>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            size="medium"
-            sx={{ mt: 2 }}
-            type="submit"
-            variant="contained"
+          </FormProvider>
+          <Row
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            Salvar
+            <Button
+              size="medium"
+              sx={{ mt: 2 }}
+              type="submit"
+              variant="contained"
+            >
+              Salvar
+            </Button>
+          </Row>
+        </Form>
+      </TabPanel>
+
+      <TabPanel value={tabIndex} index={1}>
+        <Row>
+          <Button
+            startIcon={<ThermostatIcon />}
+            variant="text"
+            onClick={handleOpenParameterModal}
+          >
+            Novo parâmetro
           </Button>
-        </Box>
-      </Box>
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="h4">Parâmetros</Typography>
-        <Table columns={columns} rows={automationParameters} />
-      </Box>
+          <Button startIcon={<SmsFailedIcon />} variant="text">
+            Novo alarme
+          </Button>
+        </Row>
+
+        <Column sx={{ mt: 2 }}>
+          <Typography variant="h4">Parâmetros</Typography>
+          <Table columns={columns} rows={automationParameters} />
+        </Column>
+      </TabPanel>
+
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
         <ParameterModal closeModal={handleCloseParameterModal} />
       </Modal>
