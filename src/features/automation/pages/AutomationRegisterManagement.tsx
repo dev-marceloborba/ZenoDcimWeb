@@ -1,6 +1,5 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
@@ -18,6 +17,7 @@ import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 
 import { automationManagement } from "app/data/automation-management";
 import HeroContainer from "app/components/HeroContainer";
+import Row from "app/components/Row";
 
 const AutomationRegisterManagement: React.FC = () => {
   const columns = [
@@ -66,9 +66,8 @@ const AutomationRegisterManagement: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Cadastros de automação</PageTitle>
-      <Box
+      <Row
         sx={{
-          display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           mt: 2,
@@ -76,16 +75,16 @@ const AutomationRegisterManagement: React.FC = () => {
       >
         <Typography variant="h6">Equipamentos de Energia</Typography>
         <EtcFilters />
-      </Box>
+      </Row>
 
-      <Box sx={{ mt: 2, display: "flex", maxWidth: "480px" }}>
+      <Row sx={{ mt: 2, maxWidth: "480px" }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />
-      </Box>
+      </Row>
 
       <Divider sx={{ mt: 2 }} />
 
-      <Box sx={{ display: "flex", mt: 2 }}>
+      <Row sx={{ mt: 2 }}>
         <Button
           variant="text"
           startIcon={<AddIcon />}
@@ -103,11 +102,11 @@ const AutomationRegisterManagement: React.FC = () => {
         <Button variant="text" startIcon={<StoreMallDirectoryIcon />}>
           Nova sala
         </Button>
-      </Box>
+      </Row>
 
-      <Box sx={{ mt: 4 }}>
+      <Row sx={{ mt: 4 }}>
         <Table columns={columns} rows={equipments} />
-      </Box>
+      </Row>
     </HeroContainer>
   );
 };

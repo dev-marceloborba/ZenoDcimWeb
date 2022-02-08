@@ -6,15 +6,16 @@ import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import ConnectivityFlowDiagram from "../components/ConnectivityFlowDiagram";
 import HeroContainer from "app/components/HeroContainer";
+import Row from "app/components/Row";
 
 const RackEquipmentConnectivity: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Conectividade de equipamento</PageTitle>
-      <Box sx={{ display: "flex", mt: 2, mb: 2, maxWidth: "640px" }}>
+      <Row sx={{ display: "flex", mt: 2, mb: 2, maxWidth: "640px" }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />
-      </Box>
+      </Row>
 
       <Typography variant="h4">Telecomunicações</Typography>
 

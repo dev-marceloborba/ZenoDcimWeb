@@ -1,5 +1,4 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import PageTitle from "app/components/PageTitle";
 import FloorDropdown from "../components/FloorDropdown";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
@@ -12,6 +11,7 @@ import {
 } from "app/data/access-control";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import HeroContainer from "app/components/HeroContainer";
+import Row from "app/components/Row";
 
 const AccessControl: React.FC = () => {
   const { accessEvents, doorControlEvents } = accessControl;
@@ -50,7 +50,7 @@ const AccessControl: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Controle de acesso</PageTitle>
-      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+      <Row sx={{ alignItems: "center", mt: 2 }}>
         <FloorDropdown sx={{ maxWidth: "280px" }} />
         <AutoCompleteDropdown
           name="user"
@@ -62,11 +62,11 @@ const AccessControl: React.FC = () => {
           inputValue={inputValue}
           handleInputValue={setInputValue}
         />
-      </Box>
+      </Row>
       <AccessControlEventsTable events={filteredAccessEvents} />
-      <Box sx={{ mt: 4 }}>
+      <Row sx={{ mt: 4 }}>
         <AccessControlDoorEventsTable events={filteredDoorControlEvents} />
-      </Box>
+      </Row>
     </HeroContainer>
   );
 };

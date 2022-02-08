@@ -1,5 +1,4 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import PageTitle from "app/components/PageTitle";
 import BuildingDropdown from "../components/BuildingDropdown";
@@ -10,6 +9,8 @@ import Table from "app/hooks/useTable";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { fireSystem } from "app/data/fire-system";
 import HeroContainer from "app/components/HeroContainer";
+import Row from "app/components/Row";
+import Column from "app/components/Column";
 
 const FireSystemDetails: React.FC = () => {
   const { events } = fireSystem;
@@ -38,16 +39,14 @@ const FireSystemDetails: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Incêndio - Eventos</PageTitle>
-
-      <Box sx={{ display: "flex", mt: 2, maxWidth: 480 }}>
+      <Row sx={{ mt: 2, maxWidth: 480 }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 1, mr: 1 }} />
-      </Box>
-
+      </Row>
       <Card sx={{ p: 2, mt: 2 }}>
         <Typography variant="h5">Laço 1</Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ width: "220px" }}>
+        <Row sx={{ justifyContent: "space-between" }}>
+          <Column sx={{ width: "220px" }}>
             <BmsIndicator
               status={EEquipmentStatus.ONLINE}
               parameterStatus={EParameterStatus.NORMAL}
@@ -88,11 +87,11 @@ const FireSystemDetails: React.FC = () => {
               parameterStatus={EParameterStatus.NORMAL}
               description="Detector de fumaça 1"
             />
-          </Box>
-          <Box sx={{ ml: 0, width: "80%" }}>
+          </Column>
+          <Column sx={{ ml: 0, width: "80%" }}>
             <Table columns={columns} rows={events} />
-          </Box>
-        </Box>
+          </Column>
+        </Row>
       </Card>
     </HeroContainer>
   );

@@ -3,7 +3,7 @@ import React from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 // import * as Yup from "yup";
-import { SchemaOf, string, object } from 'yup'
+import { SchemaOf, string, object } from "yup";
 
 //hooks
 import { useNavigate, Navigate } from "react-router-dom";
@@ -25,6 +25,7 @@ import { useLoginMutation } from "app/services/authentication";
 import type { LoginRequest } from "app/services/authentication";
 import getErrorMessage from "app/utils/apiErrorHandler";
 import ControlledTextInput from "app/components/ControlledTextInput";
+import Form from "app/components/Form";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -58,16 +59,9 @@ const Login: React.FC = () => {
           <PageLogo src={Logo} />
           <LogoTitle>Zeno DCIM</LogoTitle>
         </ImageContainer>
-
         <FormContainer>
           <FormTitle variant="h1">Bem vindo!</FormTitle>
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit={handleSubmit(onSubmit)}
-            maxWidth={320}
-          >
+          <Form onSubmit={handleSubmit(onSubmit)} maxWidth={320}>
             <FormProvider {...methods}>
               <ControlledTextInput name="email" label="E-mail" />
               <ControlledTextInput
@@ -76,7 +70,6 @@ const Login: React.FC = () => {
                 type="password"
                 sx={{ mt: 2 }}
               />
-
               <FormButtonsContainer>
                 <LoginButton type="submit" variant="contained" size="large">
                   Login
@@ -85,7 +78,6 @@ const Login: React.FC = () => {
                   Esqueceu sua senha?
                 </Button>
               </FormButtonsContainer>
-
               <Fade in={isError}>
                 <Typography
                   color="secondary"
@@ -95,8 +87,7 @@ const Login: React.FC = () => {
                 </Typography>
               </Fade>
             </FormProvider>
-          </Box>
-
+          </Form>
           <Copyright color="primary">
             © 2019-{new Date().getFullYear()}{" "}
             <a
@@ -109,7 +100,6 @@ const Login: React.FC = () => {
             </a>{" "}
             - Todos os direitos reservados.
           </Copyright>
-
           <Loading open={isLoading} />
         </FormContainer>
       </PageGrid>

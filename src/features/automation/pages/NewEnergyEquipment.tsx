@@ -128,7 +128,6 @@ const NewEnergyEquipment: React.FC = () => {
         <Tab label="Parâmetro" />
       </Tabs>
       <Divider sx={{ mb: 3 }} />
-
       <TabPanel value={tabIndex} index={0}>
         <Row sx={{ mb: 2 }}>
           <Button
@@ -191,7 +190,6 @@ const NewEnergyEquipment: React.FC = () => {
           </Row>
         </Form>
       </TabPanel>
-
       <TabPanel value={tabIndex} index={1}>
         <Row>
           <Button
@@ -215,7 +213,6 @@ const NewEnergyEquipment: React.FC = () => {
           <Table columns={columns} rows={automationParameters} />
         </Column>
       </TabPanel>
-
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
         <ParameterModal
           closeModal={handleCloseParameterModal}
