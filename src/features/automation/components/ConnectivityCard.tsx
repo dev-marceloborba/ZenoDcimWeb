@@ -13,7 +13,7 @@ const ConnectivityCard: React.FC<ConnectivityCardProps> = ({ data, group }) => {
       <Typography variant="h4">{group}</Typography>
       <Box>
         {data.map((info, index) => (
-          <AutomationDataIndicator key={index} {...info} />
+          <AutomationDataIndicator key={index} {...info} clickable />
         ))}
       </Box>
     </Card>

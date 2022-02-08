@@ -2,54 +2,69 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { EStatus } from "app/data/equipment-connectivity";
+import { Link as RouterLink } from "react-router-dom";
 
 export type AutomationDataIndicatorProps = {
   description: string;
   value?: number;
   unit?: string;
   status: EStatus;
+  clickable?: boolean;
 };
 
-type CircleIndicatorProps = {
-  status: EStatus;
-};
+// type CircleIndicatorProps = {
+//   status: EStatus;
+// };
 
-const CircleIndicator: React.FC<CircleIndicatorProps> = ({
-  status,
-  children,
-}) => {
-  const getColor = () => {
-    switch (status) {
-      case EStatus.NORMAL:
-        return "green";
-      case EStatus.ALERT:
-        return "yellow";
-      case EStatus.DANGER:
-        return "red";
-    }
-  };
+// const CircleIndicator: React.FC<CircleIndicatorProps> = ({
+//   status,
+//   children,
+// }) => {
+//   const getColor = () => {
+//     switch (status) {
+//       case EStatus.NORMAL:
+//         return "green";
+//       case EStatus.ALERT:
+//         return "yellow";
+//       case EStatus.DANGER:
+//         return "red";
+//     }
+//   };
 
-  return (
-    <Box
-      component="div"
-      sx={{
-        width: "16px",
-        height: "16px",
-        borderRadius: "100%",
-        backgroundColor: getColor(),
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
+//   return (
+//     <Box
+//       component="div"
+//       sx={{
+//         width: "16px",
+//         height: "16px",
+//         borderRadius: "100%",
+//         backgroundColor: getColor(),
+//       }}
+//     >
+//       {children}
+//     </Box>
+//   );
+// };
 
 const AutomationDataIndicator: React.FC<AutomationDataIndicatorProps> = ({
   ...props
 }) => {
   const { description, value, unit, status } = props;
   return (
-    <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+    <Box
+      sx={(theme) => ({
+        ...(props.clickable && { cursor: "pointer" }),
+        display: "flex",
+        alignItems: "center",
+        mt: 1,
+        textDecoration: "none",
+        color: theme.palette.text.primary,
+      })}
+      {...(props.clickable && {
+        component: RouterLink,
+        to: "/zeno/automation/equipment-conectivity/rack",
+      })}
+    >
       {/* <CircleIndicator status={status} /> */}
       {status === EStatus.NORMAL && <OkLevelIndicator />}
       {status === EStatus.ALERT && <TwoLevelIndicator />}
@@ -74,8 +89,8 @@ function OkLevelIndicator() {
         height: "16px",
         borderRadius: "100%",
         backgroundColor: "green",
-        marginLeft: '3px',
-        marginRight: '4px'
+        marginLeft: "3px",
+        marginRight: "4px",
       }}
     />
   );
@@ -93,8 +108,8 @@ function OneLevelIndicator() {
         justifyContent: "center",
         fontSize: 12,
         color: "#000",
-        marginRight: '4px',
-        marginLeft: '2px'
+        marginRight: "4px",
+        marginLeft: "2px",
       }}
     >
       1
