@@ -27,8 +27,10 @@ import TabPanel from "app/components/TabPanel";
 import Row from "app/components/Row";
 import Form from "app/components/Form";
 import Column from "app/components/Column";
+import { useToast } from "app/components/Toast";
 
 const NewEnergyEquipment: React.FC = () => {
+  const toast = useToast();
   const [tabIndex, setTabIndex] = React.useState(0);
   const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
   const [connectionModalOpen, setConnectionModalOpen] = React.useState(false);
@@ -105,6 +107,13 @@ const NewEnergyEquipment: React.FC = () => {
     newValue: number
   ) => {
     setTabIndex(newValue);
+  };
+
+  const handleSaveParameter = () => {
+    handleCloseParameterModal();
+    setTimeout(() => {
+      toast.open("Parametro salvo com sucesso", 2000, 'filled', 'success');
+    }, 500);
   };
 
   return (
@@ -195,6 +204,10 @@ const NewEnergyEquipment: React.FC = () => {
           <Button startIcon={<SmsFailedIcon />} variant="text">
             Novo alarme
           </Button>
+
+          <Button startIcon={<SmsFailedIcon />} variant="text">
+            Nova regra
+          </Button>
         </Row>
 
         <Column sx={{ mt: 2 }}>
@@ -204,7 +217,10 @@ const NewEnergyEquipment: React.FC = () => {
       </TabPanel>
 
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
-        <ParameterModal closeModal={handleCloseParameterModal} />
+        <ParameterModal
+          closeModal={handleCloseParameterModal}
+          onSaveData={handleSaveParameter}
+        />
       </Modal>
       <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>
         <ConnectionModal />

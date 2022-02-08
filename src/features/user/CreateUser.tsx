@@ -33,7 +33,7 @@ const CreateUser: React.FC = () => {
     function errorHandler() {
       if (isError) {
         const message = getErrorMessage(error);
-        open(message, 3000);
+        open(message, 3000, null, null);
       }
     }
     errorHandler();

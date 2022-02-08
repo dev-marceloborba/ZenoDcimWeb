@@ -9,14 +9,16 @@ import Typography from "@mui/material/Typography";
 import type { NewAutomationParameterRequest } from "app/services/automation-register";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import { modalStyle } from "app/styles/modal-style";
-import Alert from "app/components/Alert";
 
 type ParameterModalProps = {
   closeModal(): void;
+  onSaveData(): void;
 };
 
-const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
-  const [showAlert, setShowAlert] = React.useState(false);
+const ParameterModal: React.FC<ParameterModalProps> = ({
+  closeModal,
+  onSaveData,
+}) => {
   const methods = useForm<NewAutomationParameterRequest>({
     resolver: yupResolver(validationSchema),
   });
@@ -27,15 +29,10 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
   ) => {
     try {
       console.log(data);
-      setShowAlert(true);
-      // closeModal();
+      onSaveData();
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const onCloseAlert = () => {
-    setShowAlert(false);
   };
 
   return (
@@ -66,13 +63,6 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ closeModal }) => {
           </Button>
         </FormProvider>
       </Box>
-      <Alert
-        message="Parâmetro criado"
-        open={showAlert}
-        severity="success"
-        variant="standard"
-        handleClose={onCloseAlert}
-      />
     </Container>
   );
 };

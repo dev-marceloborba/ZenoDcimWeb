@@ -1,11 +1,16 @@
-import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
-import Snackbar, { SnackbarProps } from "@mui/material/Snackbar";
+import React, { createContext, useContext, useState, useMemo } from "react";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 // import IconButton from "@mui/material/IconButton";
 // import CloseIcon from "@mui/icons-material/Close";
 
 type ToastContextProps = {
-  open(message: string, autoHideDuration: number): void;
+  open(
+    message: string,
+    autoHideDuration: number,
+    variant: any,
+    severity: any
+  ): void;
   close(): void;
   options: {
     message: string;
@@ -22,13 +27,24 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-type ToastProps = Pick<AlertProps, 'variant' | 'severity'>
+type ToastProps = Pick<AlertProps, "variant" | "severity"> & {
+  mode?:
+    | "top-right"
+    | "top-left"
+    | "bottom-right"
+    | "bottom-left"
+    | "top-center"
+    | "bottom-center";
+};
 
 const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
   const [state, setState] = useState({
     open: false,
     message: "",
     autoHideDuration: 6000,
+    variant: props.variant,
+    severity: props.severity,
+    mode: "bottom-right" as Pick<ToastProps, "mode">,
   });
 
   const handleClose = (
@@ -41,13 +57,55 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
     setState((prevState) => ({ ...prevState, open: false }));
   };
 
-//   const handleOpen = (message: string, autoHideDuration: number) => {
-//     setState((prevState) => ({ ...prevState, open: true, message, autoHideDuration }));
-//   };
+  const handleOpen = useMemo(
+    () =>
+      (
+        message: string,
+        autoHideDuration: number,
+        variant: typeof props.variant = "filled",
+        severity: typeof props.severity = "error"
+      ) => {
+        setState((prevState) => ({
+          ...prevState,
+          open: true,
+          message,
+          autoHideDuration,
+          variant,
+          severity,
+        }));
+      },
+    [props]
+  );
 
-  const handleOpen = useMemo(() => (message: string, autoHideDuration: number) => {
-    setState((prevState) => ({ ...prevState, open: true, message, autoHideDuration }));
-  }, [setState] ) 
+  function handleToastPosition(mode: Pick<ToastProps, "mode">): SnackbarOrigin {
+    switch (mode) {
+      case "bottom-right":
+        return {
+          vertical: "bottom",
+          horizontal: "right",
+        };
+      case "bottom-left":
+        return {
+          vertical: "bottom",
+          horizontal: "left",
+        };
+      case "top-right":
+        return {
+          vertical: "top",
+          horizontal: "right",
+        };
+      case "top-left":
+        return {
+          vertical: "top",
+          horizontal: "left",
+        };
+      default:
+        return {
+          vertical: "top",
+          horizontal: "center",
+        };
+    }
+  }
 
   return (
     <ToastContext.Provider
@@ -65,9 +123,14 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
           open={state.open}
           autoHideDuration={state.autoHideDuration}
           onClose={handleClose}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+          anchorOrigin={handleToastPosition(state.mode)}
         >
-          <Alert onClose={handleClose} sx={{width: '100%'}} {...props}>
+          <Alert
+            onClose={handleClose}
+            sx={{ width: "100%" }}
+            variant={state.variant}
+            severity={state.severity}
+          >
             {state.message}
           </Alert>
         </Snackbar>
