@@ -2,7 +2,6 @@
 import React from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import * as Yup from "yup";
 import { SchemaOf, string, object } from "yup";
 
 //hooks

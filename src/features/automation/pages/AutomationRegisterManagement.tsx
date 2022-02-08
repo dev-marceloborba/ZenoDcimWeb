@@ -18,6 +18,7 @@ import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 import { automationManagement } from "app/data/automation-management";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
+import AccessButton from "app/components/AccessButton";
 
 const AutomationRegisterManagement: React.FC = () => {
   const columns = [
@@ -93,15 +94,21 @@ const AutomationRegisterManagement: React.FC = () => {
         >
           Novo equipamento
         </Button>
-        <Button variant="text" startIcon={<CallSplitIcon />}>
-          Nova conexão
-        </Button>
-        <Button variant="text" startIcon={<AccountBalanceIcon />}>
-          Novo prédio
-        </Button>
-        <Button variant="text" startIcon={<StoreMallDirectoryIcon />}>
-          Nova sala
-        </Button>
+        <AccessButton
+          startIcon={<CallSplitIcon />}
+          label="Nova conexão"
+          to="/zeno"
+        />
+        <AccessButton
+          startIcon={<AccountBalanceIcon />}
+          label="Novo prédio"
+          to="/zeno"
+        />
+        <AccessButton
+          startIcon={<StoreMallDirectoryIcon />}
+          label="Nova sala"
+          to="/zeno/automation/management/building"
+        />
       </Row>
 
       <Row sx={{ mt: 4 }}>
