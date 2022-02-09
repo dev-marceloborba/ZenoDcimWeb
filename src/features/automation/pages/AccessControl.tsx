@@ -12,6 +12,7 @@ import {
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
+import Column from "app/components/Column";
 
 const AccessControl: React.FC = () => {
   const { accessEvents, doorControlEvents } = accessControl;
@@ -64,9 +65,9 @@ const AccessControl: React.FC = () => {
         />
       </Row>
       <AccessControlEventsTable events={filteredAccessEvents} />
-      <Row sx={{ mt: 4 }}>
+      <Column sx={{ mt: 4 }}>
         <AccessControlDoorEventsTable events={filteredDoorControlEvents} />
-      </Row>
+      </Column>
     </HeroContainer>
   );
 };
