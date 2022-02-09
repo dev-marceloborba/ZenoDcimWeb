@@ -1,0 +1,566 @@
+{
+  "accessEvents": [
+    {
+      "name": "Marcelo Borba",
+      "registerNumber": "AGDH123",
+      "building": "Prédio de Suporte",
+      "place": "Andar 1",
+      "room": "Sala de Clientes",
+      "door": "THRD123",
+      "ackedDate": "10:59:30  28-12-2021"
+    },
+    {
+      "name": "Linus Schuster",
+      "registerNumber": "AGDH124",
+      "building": "Data Hall",
+      "place": "Andar 2",
+      "room": "Cage 1",
+      "door": "THRD125",
+      "ackedDate": "10:59:30  28-12-2021"
+    },
+    {
+      "name": "Gustavo Dal Molin",
+      "registerNumber": "AGDH125",
+      "building": "Data Hall",
+      "place": "Andar 3",
+      "room": "Cage 12",
+      "door": "THRD127",
+      "ackedDate": "10:59:30  28-12-2021"
+    },
+    {
+      "name": "Benhur Branco",
+      "registerNumber": "AGDH126",
+      "building": "Data Hall",
+      "place": "Andar 4",
+      "room": "Cage HDA",
+      "door": "THRD129",
+      "ackedDate": "10:59:30  28-12-2021"
+    }
+  ],
+  "doorControlEvents": [
+    {
+      "building": "Prédio de Suporte",
+      "place": "Andar 1",
+      "room": "Sala de Clientes",
+      "door": "THRD123",
+      "ackedDate": "10:59:30  28-12-2021",
+      "status": 0
+    },
+    {
+      "building": "Data Hall",
+      "place": "Andar 2",
+      "room": "Cage 1",
+      "door": "THRD125",
+      "ackedDate": "10:59:30  28-12-2021",
+      "status": 0
+    }
+  ],
+  "automationManagement": [
+    {
+      "group": "Energia",
+      "equipments": [
+        {
+          "name": "RPP XYZ",
+          "building": "Data Hall 1",
+          "floor": "Andar 2",
+          "room": "Cage 1",
+          "status": "Online",
+          "alarms": 3,
+          "createdAt": "21/01/2022"
+        },
+        {
+          "name": "PDU XYZ",
+          "building": "Data Hall 1",
+          "floor": "Andar 1",
+          "room": "Sala PDU A",
+          "status": "Online",
+          "alarms": 0,
+          "createdAt": "21/01/2022"
+        },
+        {
+          "name": "QGBT A",
+          "building": "Data Hall 1",
+          "floor": "Terreo",
+          "room": "Sala QGBT A",
+          "status": "Online",
+          "alarms": 0,
+          "createdAt": "21/01/2022"
+        },
+        {
+          "name": "QGBT B",
+          "building": "Data Hall 1",
+          "floor": "Terreo",
+          "room": "Sala QGBT B",
+          "status": "Online",
+          "alarms": 0,
+          "createdAt": "21/01/2022"
+        },
+        {
+          "name": "QGBT C",
+          "building": "Data Hall 1",
+          "floor": "Terreo",
+          "room": "Sala QGBT C",
+          "status": "Online",
+          "alarms": 0,
+          "createdAt": "21/01/2022"
+        }
+      ]
+    }
+  ],
+  "automationParameters": [
+    {
+      "parameter": "Tensão",
+      "unit": "V",
+      "controller": "PLC 1",
+      "address": "101",
+      "minLimit": 0,
+      "maxLimit": 450,
+      "scale": 0.1,
+      "rules": 1
+    },
+    {
+      "parameter": "Corrente",
+      "unit": "A",
+      "controller": "PLC 1",
+      "address": "102",
+      "minLimit": 0,
+      "maxLimit": 1000,
+      "scale": 1,
+      "rules": 0
+    },
+    {
+      "parameter": "Potência ativa",
+      "unit": "W",
+      "controller": "PLC 1",
+      "address": "103",
+      "minLimit": 0,
+      "maxLimit": 4500,
+      "scale": 10,
+      "rules": 0
+    },
+    {
+      "parameter": "Potência reativa",
+      "unit": "Var",
+      "controller": "PLC 1",
+      "address": "104",
+      "minLimit": -2500,
+      "maxLimit": 2500,
+      "scale": 100,
+      "rules": 1
+    },
+    {
+      "parameter": "Fator de potência",
+      "unit": "FP",
+      "controller": "PLC 1",
+      "address": "105",
+      "minLimit": 0,
+      "maxLimit": 1,
+      "scale": 1000,
+      "rules": 0
+    }
+  ],
+  "buildings": [
+    {
+      "name": "Data Hall",
+      "floors": [
+        {
+          "name": "Andar 1",
+          "rooms": [
+            {
+              "name": "Sala 1",
+              "equipments": [
+                {
+                  "name": "TR 1",
+                  "mainEquipment": true,
+                  "status": 1,
+                  "groups": [
+                    {
+                      "name": "Energia",
+                      "informations": [
+                        {
+                          "description": "Potência",
+                          "value": 1700,
+                          "unit": "kW",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Corrente",
+                          "value": 2040,
+                          "unit": "A",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Tensão",
+                          "value": 490,
+                          "unit": "V",
+                          "parameterStatus": 1
+                        },
+                        {
+                          "description": "THD",
+                          "value": 20,
+                          "unit": "%",
+                          "parameterStatus": 2
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Clima",
+                      "informations": [
+                        {
+                          "description": "Temperatura",
+                          "value": 20,
+                          "unit": "C",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Umidade",
+                          "value": 50,
+                          "unit": "%",
+                          "parameterStatus": 0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "TR 2",
+                  "mainEquipment": true,
+                  "status": 0,
+                  "groups": [
+                    {
+                      "name": "Energia",
+                      "informations": [
+                        {
+                          "description": "Potência",
+                          "value": 1700,
+                          "unit": "kW",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Corrente",
+                          "value": 2040,
+                          "unit": "A",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Tensão",
+                          "value": 490,
+                          "unit": "V",
+                          "parameterStatus": 1
+                        },
+                        {
+                          "description": "THD",
+                          "value": 20,
+                          "unit": "%",
+                          "parameterStatus": 2
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Clima",
+                      "informations": [
+                        {
+                          "description": "Temperatura",
+                          "value": 20,
+                          "unit": "C",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Umidade",
+                          "value": 50,
+                          "unit": "%",
+                          "parameterStatus": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Sala 2",
+              "equipments": [
+                {
+                  "name": "TR 1",
+                  "mainEquipment": true,
+                  "status": 1,
+                  "groups": [
+                    {
+                      "name": "Energia",
+                      "informations": [
+                        {
+                          "description": "Potência",
+                          "value": 1700,
+                          "unit": "kW",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Corrente",
+                          "value": 2040,
+                          "unit": "A",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Tensão",
+                          "value": 490,
+                          "unit": "V",
+                          "parameterStatus": 1
+                        },
+                        {
+                          "description": "THD",
+                          "value": 20,
+                          "unit": "%",
+                          "parameterStatus": 2
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Clima",
+                      "informations": [
+                        {
+                          "description": "Temperatura",
+                          "value": 20,
+                          "unit": "C",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Umidade",
+                          "value": 50,
+                          "unit": "%",
+                          "parameterStatus": 0
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "TR 2",
+                  "mainEquipment": true,
+                  "status": 0,
+                  "groups": [
+                    {
+                      "name": "Energia",
+                      "informations": [
+                        {
+                          "description": "Potência",
+                          "value": 1700,
+                          "unit": "kW",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Corrente",
+                          "value": 2040,
+                          "unit": "A",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Tensão",
+                          "value": 490,
+                          "unit": "V",
+                          "parameterStatus": 1
+                        },
+                        {
+                          "description": "THD",
+                          "value": 20,
+                          "unit": "%",
+                          "parameterStatus": 2
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Clima",
+                      "informations": [
+                        {
+                          "description": "Temperatura",
+                          "value": 20,
+                          "unit": "C",
+                          "parameterStatus": 0
+                        },
+                        {
+                          "description": "Umidade",
+                          "value": 50,
+                          "unit": "%",
+                          "parameterStatus": 0
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "connectionData": [
+    {
+      "connectionType": 0,
+      "subsystemComponents": ["PDU XYZ", "RPP XYZ"],
+      "system": "Subsistema 3"
+    },
+    {
+      "connectionType": 0,
+      "subsystemComponents": ["THRD125"],
+      "system": "Subsistema 2"
+    },
+    {
+      "connectionType": 1,
+      "subsystemComponents": ["THRD125"],
+      "system": "Subsistema 3"
+    }
+  ],
+  "equipmentConnectivity": [
+    {
+      "group": "Energia",
+      "data": [
+        {
+          "status": 2,
+          "description": "RPP XYZ"
+        },
+        {
+          "status": 2,
+          "description": "RPP XPA"
+        },
+        {
+          "status": 3,
+          "description": "PDU A Andar 1"
+        },
+        {
+          "status": 4,
+          "description": "PDU B Andar 1"
+        },
+        {
+          "status": 5,
+          "description": "PDU C Andar 1"
+        },
+        {
+          "status": 4,
+          "description": "QG Climatização A Sul Andar 1"
+        },
+        {
+          "status": 4,
+          "description": "QG Climatização B Norte Andar 1"
+        },
+        {
+          "status": 4,
+          "description": "QG Força e Serviço Andar 1"
+        },
+        {
+          "status": 4,
+          "description": "PDU C Andar 3"
+        },
+        {
+          "status": 4,
+          "description": "QG Climatização A Sul Andar 2"
+        },
+        {
+          "status": 4,
+          "description": "QG Climatização B Norte Andar 2"
+        },
+        {
+          "status": 4,
+          "description": "PDU C Andar 4"
+        },
+        {
+          "status": 4,
+          "description": "QG Climatização A Sul Andar 4"
+        }
+      ]
+    },
+    {
+      "group": "Climatização",
+      "data": [
+        {
+          "status": 2,
+          "description": "Válvula Esfera XYD"
+        },
+        {
+          "status": 2,
+          "description": "Válvula Esfera XYA"
+        },
+        {
+          "status": 4,
+          "description": "Válvula Solenóide XYD"
+        },
+        {
+          "status": 4,
+          "description": "Válvula Solenóide XYA"
+        },
+        {
+          "status": 4,
+          "description": "Fan Coil ABC"
+        },
+        {
+          "status": 4,
+          "description": "Fan Coil ABD"
+        },
+        {
+          "status": 4,
+          "description": "Fan Coil ABE"
+        },
+        {
+          "status": 4,
+          "description": "Fan Coil ABG"
+        },
+        {
+          "status": 4,
+          "description": "Chiller A"
+        },
+        {
+          "status": 4,
+          "description": "Chiller B"
+        },
+        {
+          "status": 4,
+          "description": "Chiller C"
+        },
+        {
+          "status": 4,
+          "description": "Chiller D"
+        },
+        {
+          "status": 4,
+          "description": "Válvula Motorizada A"
+        }
+      ]
+    },
+    {
+      "group": "Telecomunicações",
+      "data": [
+        {
+          "status": 2,
+          "description": "Switch TOR ABC"
+        },
+        {
+          "status": 2,
+          "description": "Switch gerenciável ABD"
+        },
+        {
+          "status": 4,
+          "description": "Switch Core XYE"
+        },
+        {
+          "status": 4,
+          "description": "Rack XYZ"
+        },
+        {
+          "status": 4,
+          "description": "Rack XYW"
+        },
+        {
+          "status": 4,
+          "description": "Rack XYY"
+        },
+        {
+          "status": 4,
+          "description": "Rack XZZ"
+        },
+        {
+          "status": 4,
+          "description": "Switch Core XYY"
+        }
+      ]
+    }
+  ]
+}
