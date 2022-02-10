@@ -102,7 +102,7 @@ const AutomationRegisterManagement: React.FC = () => {
         <AccessButton
           startIcon={<AccountBalanceIcon />}
           label="Novo prédio"
-          to="/zeno"
+          to="/zeno/automation/management/building"
         />
         <AccessButton
           startIcon={<StoreMallDirectoryIcon />}

@@ -31,6 +31,7 @@ import RackEquipmentConnectivity from "features/automation/pages/RackEquipmentCo
 import FlowDiagramEditor from "features/automation/components/FlowDiagramEditor";
 import NewBuilding from "features/automation/pages/NewBuilding";
 import UserSettings from "features/user/UserSettings";
+import DataCenterManagement from "features/datacenter/DataCenterManagement";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -76,7 +77,7 @@ export const SubRoutes: React.FC = () => {
 
         <Route path="/automation/management" element={<AutomationRegisterManagement />} />
         <Route path="/automation/management/equipment" element={<NewEnergyEquipment />} />
-        <Route path="/automation/management/building" element={<NewBuilding />} />
+        <Route path="/automation/management/building" element={<DataCenterManagement />} />
 
         <Route path="/automation/flow-diagram-editor" element={<FlowDiagramEditor />} />
 
