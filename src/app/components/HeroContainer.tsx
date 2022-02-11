@@ -20,7 +20,7 @@ const HeroContainer: React.FC = ({ children }) => {
         maxWidth="xl"
         sx={{
           mt: 4,
-          mb: 4,
+           mb: 8,
         }}
       >
         {children}
