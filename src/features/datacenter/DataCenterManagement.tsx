@@ -1,4 +1,7 @@
 import React from "react";
+import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SchemaOf, string, object } from "yup";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -9,20 +12,38 @@ import Typography from "@mui/material/Typography";
 import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaOf, string, object } from "yup";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/system";
 import Center from "app/components/Center";
+import {
+  BuildingRequest,
+  useAddBuildingMutation,
+} from "app/services/datacenter";
 
 const DataCenterManagement: React.FC = () => {
   // const ref1 = React.useRef<HTMLDivElement>(null);
+  const methods = useForm<BuildingRequest>({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const [addBuilding, { isLoading, error, isError }] = useAddBuildingMutation();
+
+  const { handleSubmit } = methods;
+
+  const onSubmit: SubmitHandler<BuildingRequest> = async (data) => {
+    try {
+      const { data: building } = await addBuilding(data).unwrap();
+      console.log(building);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <HeroContainer>
       <PageTitle>Gerenciamento do Data Center</PageTitle>
 
-      <CustomCard sx={{mt: 2}}>
+      <CustomCard sx={{ mt: 2 }}>
         <Grid container>
           <Grid item md={6}>
             <Box
@@ -40,15 +61,18 @@ const DataCenterManagement: React.FC = () => {
           <Grid item md={6}>
             <Form
               sx={{
-                "& .MuiTextField-root": {
+                "& .MuiTextField-root, .MuiButton-root": {
                   marginTop: 2,
                 },
               }}
+              onSubmit={handleSubmit(onSubmit)}
             >
-              <TextField fullWidth name="campus" label="Campus" />
-              <TextField fullWidth name="name" label="Nome do prédio" />
-              <Button variant="text">Incluir andar</Button>
-              <SubmitButton label="Salvar" />
+              <FormProvider {...methods}>
+                <ControlledTextInput name="campus" label="Campus" />
+                <ControlledTextInput name="name" label="Nome do prédio" />
+                {/* <Button variant="text">Incluir andar</Button> */}
+                <SubmitButton label="Salvar" />
+              </FormProvider>
             </Form>
           </Grid>
         </Grid>
@@ -118,7 +142,6 @@ const DataCenterManagement: React.FC = () => {
         </Grid>
       </CustomCard>
 
-
       <CustomCard sx={{ mt: 4 }}>
         <Grid container>
           <Grid item md={6}>
@@ -155,6 +178,11 @@ const DataCenterManagement: React.FC = () => {
 };
 
 export default DataCenterManagement;
+
+const validationSchema: SchemaOf<BuildingRequest> = object().shape({
+  campus: string().required("Campus é obrigatório"),
+  name: string().required("Nome é obrigatório"),
+});
 
 const CustomCard = styled(Card)({
   padding: "16px 24px",

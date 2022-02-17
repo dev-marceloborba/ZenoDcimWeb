@@ -59,34 +59,34 @@ export const datacenterApi = createApi({
       BuildingRequest
     >({
       query: (newBuilding) => ({
-        url: "v1/building",
+        url: "v1/data-center/building",
         method: "POST",
         body: newBuilding,
       }),
     }),
     listBuildings: builder.query<BuildingResponse, void>({
-      query: () => ({ url: "v1/building" }),
+      query: () => ({ url: "v1/data-center/building" }),
     }),
     addFloor: builder.mutation<ApiResponse<FloorResponse>, FloorRequest>({
       query: (newFloor) => ({
-        url: "v1/building/floor",
+        url: "v1/data-center/building/floor",
         method: "POST",
         body: newFloor,
       }),
     }),
     listFloor: builder.query<FloorResponse, void>({
-      query: () => ({ url: "v1/building/floor" }),
+      query: () => ({ url: "v1/data-center/building/floor" }),
     }),
     addRoom: builder.mutation<ApiResponse<RoomResponse>, RoomRequest>({
       query: (newRoom) => ({
-        url: "v1/building/floor/room",
+        url: "v1/data-center/building/floor/room",
         method: "POST",
         body: newRoom,
       }),
     }),
     listRoom: builder.query<BuildingRequest, void>({
       query: () => ({
-        url: "v1/building/floor/room",
+        url: "v1/data-center/building/floor/room",
       }),
     }),
     addEquipment: builder.mutation<
@@ -94,14 +94,14 @@ export const datacenterApi = createApi({
       EquipmentRequest
     >({
       query: (newEquipment) => ({
-        url: "v1/building/floor/room/equipment",
+        url: "v1/data-center/building/floor/room/equipment",
         method: "POST",
         body: newEquipment,
       }),
     }),
     listEquipments: builder.query({
       query: () => ({
-        url: "v1/building/floor/room/equipment",
+        url: "v1/data-center/building/floor/room/equipment",
       }),
     }),
   }),
