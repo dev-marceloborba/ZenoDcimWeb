@@ -66,6 +66,29 @@ export const datacenterApi = createApi({
     }),
     listBuildings: builder.query<BuildingResponse, void>({
       query: () => ({ url: "v1/data-center/building" }),
+      transformResponse: (buildings: any) => {
+        const rowsArray: any = [];
+
+        buildings.forEach((building: any) => {
+          building.floors.forEach((floor: any) => {
+            floor.rooms.forEach((room: any) => {
+              room.equipments.forEach((equipment: any) => {
+                rowsArray.push({
+                  class: equipment.class,
+                  component: equipment.component,
+                  componentCode: equipment.componentCode,
+                  description: equipment.description,
+                  building: building.name,
+                  floor: floor.name,
+                  room: room.name,
+                });
+              });
+            });
+          });
+        });
+
+        return rowsArray;
+      },
     }),
     addFloor: builder.mutation<ApiResponse<FloorResponse>, FloorRequest>({
       query: (newFloor) => ({

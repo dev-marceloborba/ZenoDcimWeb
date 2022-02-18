@@ -19,6 +19,8 @@ import {
   BuildingRequest,
   useAddBuildingMutation,
 } from "app/services/datacenter";
+import DataCenterEquipmentsTable from "./components/DataCenterEquipmentsTable";
+import ImportButton from "app/components/ImportButton";
 
 const DataCenterManagement: React.FC = () => {
   // const ref1 = React.useRef<HTMLDivElement>(null);
@@ -39,9 +41,36 @@ const DataCenterManagement: React.FC = () => {
     }
   };
 
+  type EquipmentPlain = {
+    class: number;
+    component: string;
+    componentCode: string;
+    description: string;
+    building: string;
+    floor: string;
+    room: string;
+  };
+
+  const formatPlain = (data: any) => {
+    data.forEach((row: any) => {
+      const equipment: EquipmentPlain = {
+        class: row[0],
+        component: row[1],
+        componentCode: row[2],
+        description: row[3],
+        building: row[4],
+        floor: row[5],
+        room: row[6],
+      };
+      console.log(equipment);
+    });
+  };
+
   return (
     <HeroContainer>
       <PageTitle>Gerenciamento do Data Center</PageTitle>
+
+      <ImportButton callback={formatPlain} />
 
       <CustomCard sx={{ mt: 2 }}>
         <Grid container>
@@ -173,6 +202,8 @@ const DataCenterManagement: React.FC = () => {
           </Grid>
         </Grid>
       </CustomCard>
+
+      <DataCenterEquipmentsTable />
     </HeroContainer>
   );
 };

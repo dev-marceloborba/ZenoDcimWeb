@@ -9,14 +9,6 @@ import { readFile, exportFile } from "app/utils/excel.handler";
 import ImportButton from "./ImportButton";
 import ButtonLink from "./ButtonLink";
 
-type ModbusTag = {
-  name: string;
-  type: string;
-  address: number;
-  size: number;
-  deadband: number;
-};
-
 type ColumnProps = {
   name: string;
   label: string;
@@ -54,13 +46,10 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
     <Container maxWidth="xl">
       <Toolbar />
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <ButtonLink
-          to={props.newActionLink}
-          variant="contained"
-        >
+        <ButtonLink to={props.newActionLink} variant="contained">
           {props.newActionLabel}
         </ButtonLink>
-        <ImportButton sx={{ml: 1}} callback={(data) => console.log(data)} />
+        <ImportButton sx={{ ml: 1 }} callback={(data) => console.log(data)} />
         <Button variant="contained" sx={{ ml: 1 }} onClick={handleExport}>
           Exportar
         </Button>
