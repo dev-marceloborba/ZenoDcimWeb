@@ -2,7 +2,7 @@ import React from "react";
 import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
 import Table from "app/hooks/useTable";
-import { useListBuildingsQuery } from "app/services/datacenter";
+import { useListBuildingsDeepQuery } from "app/services/datacenter";
 
 const DataCenterEquipmentsTable: React.FC = () => {
   const columns = [
@@ -43,7 +43,7 @@ const DataCenterEquipmentsTable: React.FC = () => {
     },
   ];
 
-  const { isError, isLoading, error, data } = useListBuildingsQuery();
+  const { isError, isLoading, error, data } = useListBuildingsDeepQuery();
   return (
     <HeroContainer>
       <PageTitle>Equipamentos do Data center</PageTitle>

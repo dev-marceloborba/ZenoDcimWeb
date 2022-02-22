@@ -1,152 +1,163 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { RootState } from 'app/store'
-import { ApiResponse } from './api-response'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { RootState } from "app/store";
+import { ApiResponse } from "./api-response";
 
 export interface BaseEquipmentResponse extends BaseEquipmentRequest {
-    id: string
+  id: string;
 }
 
 export interface BaseEquipmentRequest {
-    name: string
-    model: string
-    manufactor: string
-    serialNumber: string
+  name: string;
+  model: string;
+  manufactor: string;
+  serialNumber: string;
 }
 
 export interface RackEquipmentResponse extends RackEquipmentRequest {
-    id: string
+  id: string;
 }
 
 export interface RackEquipmentRequest {
-    id: string
-    baseEquipment: BaseEquipmentResponse
-    initialPosition: number
-    finalPosition: number
-    rackEquipmentType: number
+  id: string;
+  baseEquipment: BaseEquipmentResponse;
+  initialPosition: number;
+  finalPosition: number;
+  rackEquipmentType: number;
 }
 
 export interface RackResponse {
-    id: string
-    size: string
-    localization: string
-    rackEquipments?: RackEquipmentResponse[]
+  id: string;
+  size: string;
+  localization: string;
+  rackEquipments?: RackEquipmentResponse[];
 }
 
 export interface RackRequest {
-    size: number
-    localization: string
+  size: number;
+  localization: string;
 }
 
 export enum ERackEquipmentType {
-    SERVER = 0,
-    SWITCH = 1,
-    STORAGE = 2,
-    BACKUP_ROBOT = 3
+  SERVER = 0,
+  SWITCH = 1,
+  STORAGE = 2,
+  BACKUP_ROBOT = 3,
 }
 
 export type RackEquipmentMerged = {
-    rackId: string
-    size: string
-    localization: string
-    equipmentType?: string
-    name?: string
-    model?: string
-    manufactor?: string
-    serialNumber?: string
-    initialPosition?: number
-    finalPosition?: number
-}
+  rackId: string;
+  size: string;
+  localization: string;
+  equipmentType?: string;
+  name?: string;
+  model?: string;
+  manufactor?: string;
+  serialNumber?: string;
+  initialPosition?: number;
+  finalPosition?: number;
+};
 
-export type RacksResponse = RackResponse[]
+export type RacksResponse = RackResponse[];
 
-function getEquipmentDescription(rackEquipmentType: ERackEquipmentType): string {
-    switch (rackEquipmentType) {
-        case ERackEquipmentType.STORAGE: return 'Storage'
-        case ERackEquipmentType.SWITCH: return 'Switch'
-        case ERackEquipmentType.SERVER: return 'Servidor'
-        case ERackEquipmentType.BACKUP_ROBOT: return 'Backup'
-        default: return 'Desconhecido'
-    }
+function getEquipmentDescription(
+  rackEquipmentType: ERackEquipmentType
+): string {
+  switch (rackEquipmentType) {
+    case ERackEquipmentType.STORAGE:
+      return "Storage";
+    case ERackEquipmentType.SWITCH:
+      return "Switch";
+    case ERackEquipmentType.SERVER:
+      return "Servidor";
+    case ERackEquipmentType.BACKUP_ROBOT:
+      return "Backup";
+    default:
+      return "Desconhecido";
+  }
 }
 
 export const rackApi = createApi({
-    reducerPath: 'racksApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5000/',
-        prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).auth.token
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`)
-            }
-            return headers
-        },
+  reducerPath: "racksApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:5000/",
+    prepareHeaders: (headers, { getState }) => {
+      const token = (getState() as RootState).auth.token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ["RackResponse"],
+  endpoints: (builder) => ({
+    listRacks: builder.query<RackEquipmentMerged[], void>({
+      query: () => ({ url: "v1/racks" }),
+      transformResponse: (response: RacksResponse) => {
+        const rowsArray: RackEquipmentMerged[] = [];
+        response.forEach((rack) => {
+          if (rack.rackEquipments?.length) {
+            rack.rackEquipments?.forEach((equipment) => {
+              rowsArray.push({
+                rackId: rack.id,
+                size: rack.size + " U",
+                localization: rack.localization,
+                equipmentType: getEquipmentDescription(
+                  equipment.rackEquipmentType
+                ),
+                name: equipment.baseEquipment.name,
+                model: equipment.baseEquipment.model,
+                manufactor: equipment.baseEquipment.manufactor,
+                serialNumber: equipment.baseEquipment.serialNumber,
+                initialPosition: equipment.initialPosition,
+                finalPosition: equipment.finalPosition,
+              });
+            });
+          } else {
+            rowsArray.push({
+              rackId: rack.id,
+              size: rack.size + " U",
+              localization: rack.localization,
+            });
+          }
+        });
+
+        return rowsArray;
+      },
     }),
-    tagTypes: ['RackResponse'],
-    endpoints: (builder) => ({
-        listRacks: builder.query<RackEquipmentMerged[], void>({
-            query: () => ({ url: 'v1/racks' }),
-            transformResponse: (response: RacksResponse) => {
-                const rowsArray: RackEquipmentMerged[] = []
-                response.forEach((rack) => {
-                    if (rack.rackEquipments?.length) {
-                        rack.rackEquipments?.forEach((equipment) => {
-                            rowsArray.push(
-                                {
-                                    rackId: rack.id,
-                                    size: rack.size + ' U',
-                                    localization: rack.localization,
-                                    equipmentType: getEquipmentDescription(equipment.rackEquipmentType),
-                                    name: equipment.baseEquipment.name,
-                                    model: equipment.baseEquipment.model,
-                                    manufactor: equipment.baseEquipment.manufactor,
-                                    serialNumber: equipment.baseEquipment.serialNumber,
-                                    initialPosition: equipment.initialPosition,
-                                    finalPosition: equipment.finalPosition
-                                }
-                            )
-                        })
-                    } else {
-                        rowsArray.push(
-                            {
-                                rackId: rack.id,
-                                size: rack.size + ' U',
-                                localization: rack.localization
-                            }
-                        )
-                    }
-                })
+    createRack: builder.mutation<ApiResponse<RackResponse>, RackRequest>({
+      query: (rack) => ({
+        url: "v1/racks",
+        method: "POST",
+        body: rack,
+      }),
+    }),
+    createBaseEquipment: builder.mutation<
+      ApiResponse<BaseEquipmentResponse>,
+      BaseEquipmentRequest
+    >({
+      query: (equipment) => ({
+        url: "v1/racks/equipments",
+        method: "POST",
+        body: equipment,
+      }),
+    }),
+    listRackEquipments: builder.query<RackEquipmentResponse, void>({
+      query: () => ({
+        url: "v1/racks/rackEquipments",
+        method: "GET",
+      }),
+    }),
+    createRackEquipment: builder.mutation<
+      ApiResponse<RackEquipmentResponse>,
+      RackEquipmentRequest
+    >({
+      query: (rackEquipment) => ({
+        url: "v1/racks/rackEquipments",
+        method: "POST",
+        body: rackEquipment,
+      }),
+    }),
+  }),
+});
 
-                return rowsArray
-            }
-        }),
-        createRack: builder.mutation<ApiResponse<RackResponse>, RackRequest>({
-            query: (rack) => ({
-                url: 'v1/racks',
-                method: 'POST',
-                body: rack
-            })
-        }),
-        createBaseEquipment: builder.mutation<ApiResponse<BaseEquipmentResponse>, BaseEquipmentRequest>({
-            query: (equipment) => ({
-                url: 'v1/racks/equipments',
-                method: 'POST',
-                body: equipment
-            })
-        }),
-        listRackEquipments: builder.query<RackEquipmentResponse, void>({
-            query: () => ({
-                url: 'v1/racks/rackEquipments',
-                method: 'GET'
-            })
-        }),
-        createRackEquipment: builder.mutation<ApiResponse<RackEquipmentResponse>, RackEquipmentRequest>({
-            query: (rackEquipment) => ({
-                url: 'v1/racks/rackEquipments',
-                method: 'POST',
-                body: rackEquipment
-            })
-        })
-    })
-})
-
-export const { useListRacksQuery, useCreateRackMutation } = rackApi
+export const { useListRacksQuery, useCreateRackMutation } = rackApi;

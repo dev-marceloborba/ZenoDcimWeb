@@ -1,36 +1,45 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { ApiResponse } from "./api-response";
+import { RackEquipmentResponse } from "./rack";
 
-export interface BuildingRequest {
+export type BuildingRequest = {
   campus: string;
   name: string;
-}
+};
 
 export interface BuildingResponse extends BuildingRequest {
   id: string;
+  floors?: FloorResponse[];
 }
 
+export type BuildingsResponse = BuildingResponse[];
+
 export interface FloorRequest {
-  building: BuildingRequest;
+  buildingId: string;
   name: string;
 }
 
 export interface FloorResponse extends FloorRequest {
   id: string;
+  rooms?: RoomResponse[];
 }
 
 export interface RoomRequest {
-  floor: FloorRequest;
+  buildingId: string;
+  floorId: string;
   name: string;
 }
 
 export interface RoomResponse extends RoomRequest {
   id: string;
+  equipments?: RackEquipmentResponse[];
 }
 
 export interface EquipmentRequest {
-  room: RoomRequest;
+  buildingId: string;
+  floorId: string;
+  roomId: string;
   class: string;
   component: string;
   componentCode: string;
@@ -40,6 +49,16 @@ export interface EquipmentRequest {
 export interface EquipmentResponse extends EquipmentRequest {
   id: string;
 }
+
+export type BuildingMerged = {
+  class: string;
+  component: string;
+  componentCode: string;
+  description: string;
+  building: string;
+  floor: string;
+  room: string;
+};
 
 export const datacenterApi = createApi({
   reducerPath: "datacenterApi",
@@ -64,15 +83,18 @@ export const datacenterApi = createApi({
         body: newBuilding,
       }),
     }),
-    listBuildings: builder.query<BuildingResponse, void>({
+    listBuildings: builder.query<BuildingsResponse, void>({
       query: () => ({ url: "v1/data-center/building" }),
-      transformResponse: (buildings: any) => {
-        const rowsArray: any = [];
+    }),
+    listBuildingsDeep: builder.query<BuildingMerged[], void>({
+      query: () => ({ url: "v1/data-center/building" }),
+      transformResponse: (buildings: BuildingsResponse) => {
+        const rowsArray: BuildingMerged[] = [];
 
-        buildings.forEach((building: any) => {
-          building.floors.forEach((floor: any) => {
-            floor.rooms.forEach((room: any) => {
-              room.equipments.forEach((equipment: any) => {
+        buildings.forEach((building) => {
+          building.floors?.forEach((floor) => {
+            floor.rooms?.forEach((room) => {
+              room.equipments?.forEach((equipment: any) => {
                 rowsArray.push({
                   class: equipment.class,
                   component: equipment.component,
@@ -97,7 +119,7 @@ export const datacenterApi = createApi({
         body: newFloor,
       }),
     }),
-    listFloor: builder.query<FloorResponse, void>({
+    listFloor: builder.query<FloorResponse[], void>({
       query: () => ({ url: "v1/data-center/building/floor" }),
     }),
     addRoom: builder.mutation<ApiResponse<RoomResponse>, RoomRequest>({
@@ -107,7 +129,7 @@ export const datacenterApi = createApi({
         body: newRoom,
       }),
     }),
-    listRoom: builder.query<BuildingRequest, void>({
+    listRoom: builder.query<RoomResponse[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room",
       }),
@@ -133,6 +155,7 @@ export const datacenterApi = createApi({
 export const {
   useAddBuildingMutation,
   useListBuildingsQuery,
+  useListBuildingsDeepQuery,
   useAddFloorMutation,
   useListFloorQuery,
   useAddRoomMutation,
