@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
@@ -10,10 +10,10 @@ import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
+  FloorResponse,
   RoomRequest,
   useAddRoomMutation,
   useListBuildingsQuery,
-  useListFloorQuery,
 } from "app/services/datacenter";
 
 const RoomForm: React.FC = () => {
@@ -23,9 +23,19 @@ const RoomForm: React.FC = () => {
 
   const [addRoom, { isLoading, error, isError }] = useAddRoomMutation();
   const { data: buildings } = useListBuildingsQuery();
-  const { data: floors } = useListFloorQuery();
 
-  const { handleSubmit } = methods;
+  const [floors, setFloors] = useState<FloorResponse[]>([]);
+
+  const { handleSubmit, watch } = methods;
+
+  const buildingWatcher = watch("buildingId");
+
+  useEffect(() => {
+    const selectedBulding = buildings?.filter(
+      (building) => building.id === buildingWatcher
+    )[0];
+    setFloors(selectedBulding?.floors ?? []);
+  }, [buildingWatcher, buildings]);
 
   const onSubmit: SubmitHandler<RoomRequest> = async (data) => {
     try {
@@ -87,8 +97,10 @@ const RoomForm: React.FC = () => {
   );
 };
 
-const validationSchema = object().shape({
+const validationSchema: SchemaOf<RoomRequest> = object().shape({
   name: string().required("Nome é obrigatório"),
+  buildingId: string().required("Prédio é obrigatório"),
+  floorId: string().required("Andar é obrigatório"),
 });
 
 export default RoomForm;

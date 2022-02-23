@@ -89,8 +89,15 @@ const EquipmentForm: React.FC = () => {
                   value: room.id,
                 }))}
               />
-
-              <ControlledTextInput fullWidth name="class" label="Classe" />
+              <ControlledTextInput
+                fullWidth
+                name="class"
+                label="Classe"
+                items={Array.from({ length: 11 }).map((_, i) => ({
+                  description: `${i + 1}`,
+                  value: `${i + 1}`,
+                }))}
+              />
               <ControlledTextInput
                 fullWidth
                 name="component"
@@ -115,7 +122,10 @@ const EquipmentForm: React.FC = () => {
   );
 };
 
-const validationSchema = object().shape({
+const validationSchema: SchemaOf<EquipmentRequest> = object().shape({
+  buildingId: string().required("Prédio é obrigatório"),
+  floorId: string().required("Andar é obrigatório"),
+  roomId: string().required("Sala é obrigatória"),
   class: string().required("Classe é obrigatória"),
   component: string().required("Componente é obrigatório"),
   componentCode: string().required("Componente é obrigatório"),

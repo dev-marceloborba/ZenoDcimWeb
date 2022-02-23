@@ -86,6 +86,9 @@ export const datacenterApi = createApi({
     listBuildings: builder.query<BuildingsResponse, void>({
       query: () => ({ url: "v1/data-center/building" }),
     }),
+    findBuildingById: builder.mutation<BuildingResponse, string>({
+      query: (id) => ({ url: `v1/data-center/building/${id}`, method: "GET" }),
+    }),
     listBuildingsDeep: builder.query<BuildingMerged[], void>({
       query: () => ({ url: "v1/data-center/building" }),
       transformResponse: (buildings: BuildingsResponse) => {
@@ -162,4 +165,5 @@ export const {
   useListRoomQuery,
   useAddEquipmentMutation,
   useListEquipmentsQuery,
+  useFindBuildingByIdMutation,
 } = datacenterApi;

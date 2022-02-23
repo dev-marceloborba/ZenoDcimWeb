@@ -58,7 +58,11 @@ const BuildingForm: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <FormProvider {...methods}>
-              <ControlledTextInput name="campus" label="Campus" />
+              <ControlledTextInput
+                name="campus"
+                label="Campus"
+                items={[{ description: "Canoas", value: "Canoas" }]}
+              />
               <ControlledTextInput name="name" label="Nome do prédio" />
               <SubmitButton label="Salvar" />
             </FormProvider>

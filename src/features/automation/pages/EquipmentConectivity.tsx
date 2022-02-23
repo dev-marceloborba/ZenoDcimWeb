@@ -11,7 +11,7 @@ import Row from "app/components/Row";
 
 const EquipmentConectivity: React.FC = () => (
   <HeroContainer>
-    <PageTitle>Conectivade de equipamentos</PageTitle>
+    <PageTitle>Conectividade de equipamentos</PageTitle>
     <Row sx={{ maxWidth: "480px", mt: 2 }}>
       <BuildingDropdown />
       <FloorDropdown sx={{ ml: 2 }} />

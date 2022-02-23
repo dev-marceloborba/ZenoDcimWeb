@@ -28,6 +28,7 @@ const FloorForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FloorRequest> = async (data) => {
     try {
+      console.log(data);
       const { data: floor } = await addFloor(data).unwrap();
       console.log(floor);
     } catch (error) {
@@ -81,8 +82,9 @@ const FloorForm: React.FC = () => {
   );
 };
 
-const validationSchema = object().shape({
+const validationSchema: SchemaOf<FloorRequest> = object().shape({
   name: string().required("Nome é obrigatório"),
+  buildingId: string().required("Prédio é obrigatório"),
 });
 
 export default FloorForm;
