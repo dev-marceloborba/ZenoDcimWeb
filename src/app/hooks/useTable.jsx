@@ -24,10 +24,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const Table = ({ rows, columns, ...props }) => {
   let fields = [];
   let alteredColumns = [];
+  let alteredRows = [];
   const { showActions, editPage, handleDelete } = props;
   const [selectedRow, setSelectedRow] = React.useState(null);
 
   const navigate = useNavigate();
+
+  const renderActions = (row, key) => (
+    <Box key={key} component="div">
+      <IconButton onClick={() => handleEdit(row)}>
+        <EditIcon />
+      </IconButton>
+
+      <IconButton onClick={() => handleShowModal(row)}>
+        <DeleteIcon />
+      </IconButton>
+    </Box>
+  );
 
   if (showActions) {
     alteredColumns = [...columns];
@@ -37,9 +50,15 @@ const Table = ({ rows, columns, ...props }) => {
       align: "right",
     });
     fields = alteredColumns.map((column) => column.name);
+    alteredRows = rows.map((row, index) => ({
+      ...row,
+      actions: renderActions(row, index),
+    }));
+    console.log(alteredRows);
   } else {
     alteredColumns = [...columns];
     fields = columns.map((column) => column.name);
+    alteredRows = rows;
   }
 
   const handleEdit = (row) => {
@@ -50,39 +69,25 @@ const Table = ({ rows, columns, ...props }) => {
   };
 
   const handleShowModal = (row) => {
-    setSelectedRow(row)
+    setSelectedRow(row);
   };
 
   const handleClose = () => {
-    setSelectedRow(null)
+    setSelectedRow(null);
   };
 
   const handleConfirmDeletion = () => {
-    handleDelete(selectedRow)
-    handleClose()
-  }
+    handleDelete(selectedRow);
+    handleClose();
+  };
 
-  const renderActions = (row, key) => (
-    <TableCell key={key} align="right">
-      <Box component="div">
-        <IconButton onClick={() => handleEdit(row)}>
-          <EditIcon />
-        </IconButton>
-
-        <IconButton onClick={() => handleShowModal(row)}>
-          <DeleteIcon />
-        </IconButton>
-      </Box>
-    </TableCell>
-  );
-
-  const renderCustomComponent = (Component, key, ...props) => {
-    return (
-      <TableCell key={key} align="right">
-        <Component {...props}/>
-      </TableCell>
-    )
-  }
+  // const renderCustomComponent = (Component, key, ...props) => {
+  //   return (
+  //     <TableCell key={key} align="right">
+  //       <Component {...props} />
+  //     </TableCell>
+  //   );
+  // };
 
   const renderField = (data, key, index, field) => {
     return (
@@ -113,20 +118,16 @@ const Table = ({ rows, columns, ...props }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows?.map((row) => {
+          {alteredRows?.map((row) => {
             return (
               <TableRow key={row.id}>
                 {fields.map((field, index) => {
-                  if (field !== "actions") {
-                    return renderField(
-                      row[field],
-                      `${row[field]}-${index}`,
-                      index,
-                      field
-                    );
-                  } else {
-                    return renderActions(row, `${row[field]}-${index}`);
-                  }
+                  return renderField(
+                    row[field],
+                    `${row[field]}-${index}`,
+                    index,
+                    field
+                  );
                 })}
               </TableRow>
             );
@@ -139,16 +140,16 @@ const Table = ({ rows, columns, ...props }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Confirmar ação
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Confirmar ação</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja apagar o registro?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleClose}>Fechar</Button>
+          <Button variant="outlined" onClick={handleClose}>
+            Fechar
+          </Button>
           <Button variant="contained" onClick={handleConfirmDeletion} autoFocus>
             Confirmar
           </Button>

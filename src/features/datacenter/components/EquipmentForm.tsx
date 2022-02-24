@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
@@ -11,10 +11,10 @@ import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
   EquipmentRequest,
+  FloorResponse,
+  RoomResponse,
   useAddEquipmentMutation,
   useListBuildingsQuery,
-  useListFloorQuery,
-  useListRoomQuery,
 } from "app/services/datacenter";
 
 const EquipmentForm: React.FC = () => {
@@ -26,10 +26,25 @@ const EquipmentForm: React.FC = () => {
     useAddEquipmentMutation();
 
   const { data: buildings } = useListBuildingsQuery();
-  const { data: floors } = useListFloorQuery();
-  const { data: rooms } = useListRoomQuery();
+  const [floors, setFloors] = useState<FloorResponse[]>([]);
+  const [rooms, setRooms] = useState<RoomResponse[]>([]);
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch } = methods;
+
+  const buildingId = watch("buildingId");
+  const floorId = watch("floorId");
+
+  useEffect(() => {
+    const filteredBuilding = buildings?.find(
+      (building) => building.id === buildingId
+    );
+    setFloors(filteredBuilding?.floors ?? []);
+  }, [buildingId, buildings]);
+
+  useEffect(() => {
+    const filteredFloors = floors?.find((floor) => floor.id === floorId);
+    setRooms(filteredFloors?.rooms ?? []);
+  }, [floorId, floors]);
 
   const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
     try {
@@ -76,6 +91,7 @@ const EquipmentForm: React.FC = () => {
               <ControlledTextInput
                 name="floorId"
                 label="Andar"
+                forceSelect
                 items={floors?.map((floor) => ({
                   description: floor.name,
                   value: floor.id,
@@ -84,6 +100,7 @@ const EquipmentForm: React.FC = () => {
               <ControlledTextInput
                 name="roomId"
                 label="Sala"
+                forceSelect
                 items={rooms?.map((room) => ({
                   description: room.name,
                   value: room.id,

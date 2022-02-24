@@ -82,6 +82,7 @@ const RoomForm: React.FC = () => {
               <ControlledTextInput
                 name="floorId"
                 label="Andar"
+                forceSelect
                 items={floors?.map((floor) => ({
                   description: floor.name,
                   value: floor.id,
