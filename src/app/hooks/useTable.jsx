@@ -25,7 +25,7 @@ const Table = ({ rows, columns, ...props }) => {
   let fields = [];
   let alteredColumns = [];
   let alteredRows = [];
-  const { showActions, editPage, handleDelete } = props;
+  const { showActions, showCustomComponent, editPage, handleDelete } = props;
   const [selectedRow, setSelectedRow] = React.useState(null);
 
   const navigate = useNavigate();
@@ -54,7 +54,6 @@ const Table = ({ rows, columns, ...props }) => {
       ...row,
       actions: renderActions(row, index),
     }));
-    console.log(alteredRows);
   } else {
     alteredColumns = [...columns];
     fields = columns.map((column) => column.name);

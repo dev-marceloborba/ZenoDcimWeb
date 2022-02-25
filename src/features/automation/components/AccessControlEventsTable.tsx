@@ -48,7 +48,7 @@ const AccessControlEventsTable: React.FC<AccessControlEventsTableProps> = ({
       <Typography variant="h5" sx={{ ml: 2, mt: 1, mb: 1 }}>
         Eventos de acesso
       </Typography>
-      <Table columns={columns} rows={events} showActions />
+      <Table columns={columns} rows={events} />
     </Card>
   );
 };
