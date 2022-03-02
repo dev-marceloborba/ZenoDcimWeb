@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import Table from "app/hooks/useTable";
 import Dropdown from "app/components/Dropdown";
 import Column from "app/components/Column";
-import {
-  BuildingResponse,
-  useListBuildingsQuery,
-  useListFloorQuery,
-} from "app/services/datacenter";
+import { FloorResponse, useListBuildingsQuery } from "app/services/datacenter";
 
 const columns = [
   {
@@ -23,10 +19,15 @@ const columns = [
 
 const FloorTable: React.FC = () => {
   const { data: buildings } = useListBuildingsQuery();
-  const { data: floors } = useListFloorQuery();
-  const [selectedBuilding, setSelectedBulding] = useState<BuildingResponse>(
-    {} as BuildingResponse
-  );
+  const [selectedBuilding, setSelectedBuliding] = useState<string>("");
+  const [filteredBuilding, setFilteredBuilding] = useState<FloorResponse[]>([]);
+
+  const onApplyFilter = (id: string) => {
+    const b = buildings?.find((building) => building.id === id);
+    setFilteredBuilding(b?.floors ?? []);
+    setSelectedBuliding(id);
+  };
+
   return (
     <Column>
       <Dropdown
@@ -36,10 +37,11 @@ const FloorTable: React.FC = () => {
             value: building.id,
           })) ?? []
         }
-        value={selectedBuilding.id}
-        callback={(id) => console.log(id)}
+        defaultValue={""}
+        value={selectedBuilding}
+        callback={onApplyFilter}
       />
-      <Table rows={floors} columns={columns} showActions />
+      <Table rows={filteredBuilding} columns={columns} showActions />
     </Column>
   );
 };

@@ -1,8 +1,12 @@
-import HeroContainer from "app/components/HeroContainer";
 import React from "react";
+import FloorTable from "../components/FloorTable";
 
 const FloorAdmin: React.FC = () => {
-  return <HeroContainer></HeroContainer>;
+  return (
+    <>
+      <FloorTable />
+    </>
+  );
 };
 
 export default FloorAdmin;

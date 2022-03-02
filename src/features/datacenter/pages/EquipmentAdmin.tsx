@@ -1,8 +1,12 @@
-import HeroContainer from "app/components/HeroContainer";
 import React from "react";
+import EquipmentTable from "../components/EquipmentTable";
 
 const EquipmentAdmin: React.FC = () => {
-  return <HeroContainer></HeroContainer>;
+  return (
+    <>
+      <EquipmentTable />
+    </>
+  );
 };
 
 export default EquipmentAdmin;

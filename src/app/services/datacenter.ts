@@ -115,6 +115,12 @@ export const datacenterApi = createApi({
         return rowsArray;
       },
     }),
+    deleteBuilding: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/${id}`,
+        method: "DELETE",
+      }),
+    }),
     addFloor: builder.mutation<ApiResponse<FloorResponse>, FloorRequest>({
       query: (newFloor) => ({
         url: "v1/data-center/building/floor",
@@ -124,6 +130,12 @@ export const datacenterApi = createApi({
     }),
     listFloor: builder.query<FloorResponse[], void>({
       query: () => ({ url: "v1/data-center/building/floor" }),
+    }),
+    deleteFloor: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/${id}`,
+        method: "DELETE",
+      }),
     }),
     addRoom: builder.mutation<ApiResponse<RoomResponse>, RoomRequest>({
       query: (newRoom) => ({
@@ -137,6 +149,12 @@ export const datacenterApi = createApi({
         url: "v1/data-center/building/floor/room",
       }),
     }),
+    deleteRoom: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/${id}`,
+        method: "DELETE",
+      }),
+    }),
     addEquipment: builder.mutation<
       ApiResponse<EquipmentResponse>,
       EquipmentRequest
@@ -147,9 +165,15 @@ export const datacenterApi = createApi({
         body: newEquipment,
       }),
     }),
-    listEquipments: builder.query({
+    listEquipments: builder.query<EquipmentResponse[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment",
+      }),
+    }),
+    deleteEquipment: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/equipment/${id}`,
+        method: "DELETE",
       }),
     }),
   }),
@@ -159,11 +183,15 @@ export const {
   useAddBuildingMutation,
   useListBuildingsQuery,
   useListBuildingsDeepQuery,
+  useDeleteBuildingMutation,
   useAddFloorMutation,
   useListFloorQuery,
+  useDeleteFloorMutation,
   useAddRoomMutation,
   useListRoomQuery,
+  useDeleteRoomMutation,
   useAddEquipmentMutation,
   useListEquipmentsQuery,
+  useDeleteEquipmentMutation,
   useFindBuildingByIdMutation,
 } = datacenterApi;

@@ -50,7 +50,7 @@ const Table = ({ rows, columns, ...props }) => {
       align: "right",
     });
     fields = alteredColumns.map((column) => column.name);
-    alteredRows = rows.map((row, index) => ({
+    alteredRows = rows?.map((row, index) => ({
       ...row,
       actions: renderActions(row, index),
     }));
