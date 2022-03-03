@@ -1,6 +1,9 @@
 import React from "react";
 import Table from "app/hooks/useTable";
-import { useListEquipmentsQuery } from "app/services/datacenter";
+import {
+  useDeleteEquipmentMutation,
+  useListEquipmentsQuery,
+} from "app/services/datacenter";
 
 const columns = [
   {
@@ -32,7 +35,15 @@ const columns = [
 
 const EquipmentTable: React.FC = () => {
   const { data: equipments, isLoading } = useListEquipmentsQuery();
-  return <Table columns={columns} rows={equipments} showActions />;
+  const [deleteEquipment] = useDeleteEquipmentMutation();
+  return (
+    <Table
+      columns={columns}
+      rows={equipments}
+      showActions
+      handleDelete={async (row: any) => await deleteEquipment(row.id).unwrap()}
+    />
+  );
 };
 
 export default EquipmentTable;

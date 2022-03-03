@@ -1,6 +1,9 @@
 import React from "react";
 import Table from "app/hooks/useTable";
-import { useListBuildingsQuery } from "app/services/datacenter";
+import {
+  useDeleteBuildingMutation,
+  useListBuildingsQuery,
+} from "app/services/datacenter";
 
 const columns = [
   {
@@ -17,7 +20,15 @@ const columns = [
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useListBuildingsQuery();
-  return <Table columns={columns} rows={buildings} showActions />;
+  const [deleteBuilding] = useDeleteBuildingMutation();
+  return (
+    <Table
+      columns={columns}
+      rows={buildings}
+      showActions
+      handleDelete={async (row: any) => await deleteBuilding(row.id).unwrap()}
+    />
+  );
 };
 
 export default BuildingTable;

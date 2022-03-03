@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import Table from "app/hooks/useTable";
 import Dropdown from "app/components/Dropdown";
 import Column from "app/components/Column";
-import { FloorResponse, useListBuildingsQuery } from "app/services/datacenter";
+import {
+  FloorResponse,
+  useDeleteFloorMutation,
+  useListBuildingsQuery,
+} from "app/services/datacenter";
 
 const columns = [
   {
@@ -19,6 +23,7 @@ const columns = [
 
 const FloorTable: React.FC = () => {
   const { data: buildings } = useListBuildingsQuery();
+  const [deleteFloor] = useDeleteFloorMutation();
   const [selectedBuilding, setSelectedBuliding] = useState<string>("");
   const [filteredBuilding, setFilteredBuilding] = useState<FloorResponse[]>([]);
 
@@ -41,7 +46,12 @@ const FloorTable: React.FC = () => {
         value={selectedBuilding}
         callback={onApplyFilter}
       />
-      <Table rows={filteredBuilding} columns={columns} showActions />
+      <Table
+        rows={filteredBuilding}
+        columns={columns}
+        showActions
+        handleDelete={async (row: any) => await deleteFloor(row.id).unwrap()}
+      />
     </Column>
   );
 };

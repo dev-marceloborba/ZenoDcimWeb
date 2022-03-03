@@ -1,6 +1,9 @@
 import React from "react";
 import Table from "app/hooks/useTable";
-import { useListRoomQuery } from "app/services/datacenter";
+import {
+  useDeleteRoomMutation,
+  useListRoomQuery,
+} from "app/services/datacenter";
 
 const columns = [
   {
@@ -17,7 +20,16 @@ const columns = [
 
 const RoomTable: React.FC = () => {
   const { data: rooms, isLoading } = useListRoomQuery();
-  return <Table columns={columns} rows={rooms} showActions />;
+  const [deleteRoom] = useDeleteRoomMutation();
+
+  return (
+    <Table
+      columns={columns}
+      rows={rooms}
+      showActions
+      handleDelete={async (row: any) => await deleteRoom(row.id).unwrap()}
+    />
+  );
 };
 
 export default RoomTable;
