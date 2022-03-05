@@ -32,6 +32,11 @@ import FlowDiagramEditor from "features/automation/components/FlowDiagramEditor"
 import NewBuilding from "features/automation/pages/NewBuilding";
 import UserSettings from "features/user/UserSettings";
 import DataCenterManagement from "features/datacenter/pages/DataCenterManagement";
+import RoomAdmin from "features/datacenter/pages/RoomAdmin";
+import BuildingForm from "features/datacenter/components/BuilldingForm";
+import RoomForm from "features/datacenter/components/RoomForm";
+import FloorForm from "features/datacenter/components/FloorForm";
+import EquipmentForm from "features/datacenter/components/EquipmentForm";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -94,6 +99,20 @@ export const SubRoutes: React.FC = () => {
         />
 
         <Route path="/settings" element={<UserSettings />} />
+
+        <Route
+          path="/automation/management/building/new"
+          element={<BuildingForm />}
+        />
+        <Route
+          path="/automation/management/floor/new"
+          element={<FloorForm />}
+        />
+        <Route path="/automation/management/room/new" element={<RoomForm />} />
+        <Route
+          path="/automation/management/equipment/new"
+          element={<EquipmentForm />}
+        />
 
         {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />

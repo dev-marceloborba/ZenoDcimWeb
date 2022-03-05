@@ -60,6 +60,10 @@ export type BuildingMerged = {
   room: string;
 };
 
+export type MultipleEquipmentsRequest = {
+  equipments: EquipmentRequest[];
+};
+
 export const datacenterApi = createApi({
   reducerPath: "datacenterApi",
   baseQuery: fetchBaseQuery({
@@ -176,6 +180,16 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
+    addMultipleEquipments: builder.mutation<
+      BuildingsResponse,
+      MultipleEquipmentsRequest
+    >({
+      query: (params) => ({
+        url: "v1/data-center/building/floor/room/equipment/multiple",
+        method: "POST",
+        body: params,
+      }),
+    }),
   }),
 });
 
@@ -194,4 +208,5 @@ export const {
   useListEquipmentsQuery,
   useDeleteEquipmentMutation,
   useFindBuildingByIdMutation,
+  useAddMultipleEquipmentsMutation,
 } = datacenterApi;
