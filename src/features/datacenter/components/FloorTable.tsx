@@ -9,15 +9,15 @@ import {
 } from "app/services/datacenter";
 
 const columns = [
-  {
-    name: "id",
-    label: "Id",
-    align: "left",
-  },
+  // {
+  //   name: "id",
+  //   label: "Id",
+  //   align: "left",
+  // },
   {
     name: "name",
     label: "Andar",
-    align: "right",
+    align: "left",
   },
 ];
 

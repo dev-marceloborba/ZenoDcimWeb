@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { ApiResponse } from "./api-response";
-import { RackEquipmentResponse } from "./rack";
 
 export type BuildingRequest = {
   campus: string;
@@ -33,7 +32,7 @@ export interface RoomRequest {
 
 export interface RoomResponse extends RoomRequest {
   id: string;
-  equipments?: RackEquipmentResponse[];
+  equipments?: EquipmentResponse[];
 }
 
 export interface EquipmentRequest {
