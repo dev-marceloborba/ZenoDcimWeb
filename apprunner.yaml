@@ -6,6 +6,6 @@ build:
       - yarn --production
       - yarn build
 run:
-  command: yarn startServer
+  command: cd app && yarn startServer
   network:
     port: 3080
