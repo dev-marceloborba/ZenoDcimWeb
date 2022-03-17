@@ -59,7 +59,7 @@ const Login: React.FC = () => {
           <LogoTitle>Zeno DCIM</LogoTitle>
         </ImageContainer>
         <FormContainer>
-          <FormTitle variant="h1">Bem vindos!</FormTitle>
+          <FormTitle variant="h1">Bem vindo!</FormTitle>
           <Form onSubmit={handleSubmit(onSubmit)} maxWidth={320}>
             <FormProvider {...methods}>
               <ControlledTextInput name="email" label="E-mail" />
