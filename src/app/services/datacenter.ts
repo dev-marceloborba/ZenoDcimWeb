@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import environment from "app/config/env";
 import { RootState } from "../store";
 import { ApiResponse } from "./api-response";
 
@@ -66,7 +67,7 @@ export type MultipleEquipmentsRequest = {
 export const datacenterApi = createApi({
   reducerPath: "datacenterApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/",
+    baseUrl: environment.prod,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {

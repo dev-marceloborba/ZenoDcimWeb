@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import environment from "app/config/env";
 import { RootState } from "../store";
 import { ApiResponse } from "./api-response";
 
@@ -34,7 +35,7 @@ export interface ModbusTagRequest {
 export const automationApi = createApi({
   reducerPath: "automationApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/",
+    baseUrl: environment.prod,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -74,11 +75,11 @@ export const automationApi = createApi({
       }),
     }),
     deleteModbusTag: builder.mutation<ApiResponse<any>, string>({
-        query: (id) => ({
-            url: `v1/modbusTags/${id}`,
-            method: 'DELETE'
-        })
-    })
+      query: (id) => ({
+        url: `v1/modbusTags/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -88,5 +89,5 @@ export const {
   useAddModbusTagMutation,
   useAddPlcMutation,
   useDeletePlcMutation,
-  useDeleteModbusTagMutation
+  useDeleteModbusTagMutation,
 } = automationApi;

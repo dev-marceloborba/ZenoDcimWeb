@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import environment from "app/config/env";
 import { RootState } from "app/store";
 import { ApiResponse } from "./api-response";
 
@@ -79,7 +80,7 @@ function getEquipmentDescription(
 export const rackApi = createApi({
   reducerPath: "racksApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/",
+    baseUrl: environment.prod,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
