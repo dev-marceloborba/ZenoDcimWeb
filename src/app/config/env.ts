@@ -1,5 +1,5 @@
 const environment = {
-  prod: "http://zenoapi-dev.eba-czssgskg.us-east-1.elasticbeanstalk.com/",
+  prod: "https://zenodcimapi.azurewebsites.net/",
   dev: "http://localhost:5000/",
 };
 
