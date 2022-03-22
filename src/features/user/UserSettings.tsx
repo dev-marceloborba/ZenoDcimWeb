@@ -4,33 +4,54 @@ import PageTitle from "app/components/PageTitle";
 import Row from "app/components/Row";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from '@mui/material/Card';
+import Card from "@mui/material/Card";
 import Column from "app/components/Column";
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
+import LabelTabs from "app/components/LabelTabs";
+import { TabContextProvider, useTabContext } from "app/components/TabContext";
+import Admin from "./Admin";
+import TabPanel from "app/components/TabPanel";
 
 const UserSettings: React.FC = () => {
   return (
     <HeroContainer>
-      <PageTitle>Configurações do usuário</PageTitle>
-      <Card sx={{
-          padding: '8px 24px'
-      }}>
-        {/* <Grid container> */}
-            {/* <Grid item md={6}> */}
-                <Row sx={{justifyContent: 'space-between'}}>
-                    <Typography>Modo escuro</Typography>
-                    <Switch  />
-                
-                </Row>
-            {/* </Grid> */}
-            {/* <Grid item md={6}> */}
-            {/* </Grid> */}
-        {/* </Grid> */}
-      </Card>
+      <PageTitle>Configurações</PageTitle>
+      <TabContextProvider>
+        <LabelTabs items={["Usuário", "Sistema"]} />
+        <Card
+          sx={{
+            padding: "8px 24px",
+          }}
+        >
+          <UserPanel />
+          <SystemPanel />
+        </Card>
+      </TabContextProvider>
     </HeroContainer>
+  );
+};
+
+const UserPanel: React.FC = () => {
+  const { tabIndex } = useTabContext();
+  return (
+    <TabPanel index={0} value={tabIndex}>
+      <Admin />
+    </TabPanel>
+  );
+};
+
+const SystemPanel: React.FC = () => {
+  const { tabIndex } = useTabContext();
+  return (
+    <TabPanel index={1} value={tabIndex}>
+      <Row sx={{ justifyContent: "space-between" }}>
+        <Typography>Modo escuro</Typography>
+        <Switch />
+      </Row>
+    </TabPanel>
   );
 };
 
