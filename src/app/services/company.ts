@@ -28,7 +28,7 @@ export interface ContractResponse extends ContractRequest {
 export const companyApi = createApi({
   reducerPath: "companiesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: environment.prod,
+    baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {

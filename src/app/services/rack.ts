@@ -80,7 +80,7 @@ function getEquipmentDescription(
 export const rackApi = createApi({
   reducerPath: "racksApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: environment.prod,
+    baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {

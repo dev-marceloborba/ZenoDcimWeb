@@ -67,7 +67,7 @@ export type MultipleEquipmentsRequest = {
 export const datacenterApi = createApi({
   reducerPath: "datacenterApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: environment.prod,
+    baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
