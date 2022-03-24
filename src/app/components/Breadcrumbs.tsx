@@ -19,7 +19,10 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/zeno/automation/access-control": "Controle de acesso",
   "/zeno/automation/equipment-conectivity": "Conectividade de equipamentos",
   "/zeno/automation/management": "Cadastros de automação",
-  "/zeno/automation/management/equipment": "Novo equipamento de energia"
+  "/zeno/automation/management/equipment": "Novo equipamento de energia",
+  "/zeno/settings": "Configurações",
+  "/zeno/settings/new-user": "Novo usuário",
+  "/zeno/settings/new-company": "Nova empresa",
 };
 
 const LinkRouter = (props: LinkRouterProps) => (
@@ -30,8 +33,8 @@ const Breadcrumbs: React.FC = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   return (
-    <MuiBreadcrumbs aria-label="breadcrumb" sx={{ml: 4}}>
-      {pathnames.map((value, index) => {
+    <MuiBreadcrumbs aria-label="breadcrumb" sx={{ ml: 4 }}>
+      {pathnames.map((_, index) => {
         const last = index === pathnames.length - 1;
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 

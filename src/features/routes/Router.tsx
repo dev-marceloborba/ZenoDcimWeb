@@ -114,6 +114,10 @@ export const SubRoutes: React.FC = () => {
           element={<EquipmentForm />}
         />
 
+        <Route path="/settings/new-user" element={<CreateUser />} />
+        <Route path="/settings/edit-user" element={<EditUser />} />
+        <Route path="/settings/new-company" element={<NewCompany />} />
+
         {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />
                 <Route path="admin/edit" element={<EditUser />} />

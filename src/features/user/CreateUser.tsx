@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import Form from "app/components/Form";
+import ControlledTextInput from "app/components/ControlledTextInput";
+import { useToast } from "app/components/Toast";
 
 import {
   useCreateUserMutation,
@@ -13,11 +15,11 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { SchemaOf, object, ref, string, number } from "yup";
-import { useToast } from "app/components/Toast";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
 import { useListCompaniesQuery } from "app/services/company";
-import ControlledTextInput from "app/components/ControlledTextInput";
+import Card from "app/components/Card";
+import Loading from "app/components/Loading";
 
 const CreateUser: React.FC = () => {
   const methods = useForm<UserRequest>({
@@ -25,96 +27,78 @@ const CreateUser: React.FC = () => {
   });
   const { data: companyList } = useListCompaniesQuery();
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
-  const { open } = useToast();
+  const { open: openToast } = useToast();
 
-  const { handleSubmit } = methods
+  const { handleSubmit } = methods;
 
   useEffect(() => {
     function errorHandler() {
       if (isError) {
         const message = getErrorMessage(error);
-        open(message, 3000, null, null);
+        openToast(message, 3000, "error");
       }
     }
     errorHandler();
-  }, [error, open, isError]);
-
+  }, [error, openToast, isError]);
 
   const onSubmit: SubmitHandler<UserRequest> = async (data) => {
     try {
       await createUser(data).unwrap();
+      openToast("Usuário criado com sucesso", 2000, "success");
     } catch (err) {
-      console.log(err);
+      openToast(`Erro ao criar o usuário: ${err}`, 2000, "error");
     }
   };
 
   return (
     <Container maxWidth="xs">
-      <Typography variant="h5">Criar usuário</Typography>
-
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{ maxWidth: "480px", '& .MuiTextField-root': {
-          mt: 2
-        } }}
-      >
-        <FormProvider {...methods}>
-          <ControlledTextInput
-            name="companyId"
-            label="Empresa"
-            items={companyList?.map((company) => ({
-              value: company.id,
-              description: company.companyName,
-            }))}
-          />
-
-          <ControlledTextInput
-            name="firstName"
-            label="Nome"
-          />
-
-          <ControlledTextInput
-            name="lastName"
-            label="Sobrenome"
-          />
-
-          <ControlledTextInput
-            name="email"
-            label="E-mail"
-          />
-
-          <ControlledTextInput
-            name="password"
-            label="Senha"
-            type="password"
-          />
-
-          <ControlledTextInput
-            name="passwordConfirmation"
-            label="Confirmação de senha" 
-            type="password"
-          />
-
-          <ControlledTextInput
-            name="role"
-            label="Grupo"
-            items={items}
-          />
-
-          <Button
-            sx={{ mt: 2 }}
-            type="submit"
-            color="primary"
-            variant="contained"
-            fullWidth
-          >
-            Criar
-          </Button>
-        </FormProvider>
-      </Box>
+      <Card>
+        <Typography variant="h5">Criar usuário</Typography>
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{
+            maxWidth: "480px",
+            "& .MuiTextField-root": {
+              mt: 2,
+            },
+          }}
+        >
+          <FormProvider {...methods}>
+            <ControlledTextInput
+              name="companyId"
+              label="Empresa"
+              items={companyList?.map((company) => ({
+                value: company.id,
+                description: company.tradingName,
+              }))}
+            />
+            <ControlledTextInput name="firstName" label="Nome" />
+            <ControlledTextInput name="lastName" label="Sobrenome" />
+            <ControlledTextInput name="email" label="E-mail" />
+            <ControlledTextInput
+              name="password"
+              label="Senha"
+              type="password"
+            />
+            <ControlledTextInput
+              name="passwordConfirmation"
+              label="Confirmação de senha"
+              type="password"
+            />
+            <ControlledTextInput name="role" label="Grupo" items={items} />
+            <Button
+              sx={{ mt: 2 }}
+              type="submit"
+              color="primary"
+              variant="contained"
+              fullWidth
+            >
+              Criar
+            </Button>
+          </FormProvider>
+        </Form>
+      </Card>
+      <Loading open={isLoading} />
     </Container>
   );
 };

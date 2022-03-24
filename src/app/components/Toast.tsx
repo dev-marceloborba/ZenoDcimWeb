@@ -1,16 +1,11 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
 // import IconButton from "@mui/material/IconButton";
 // import CloseIcon from "@mui/icons-material/Close";
 
 type ToastContextProps = {
-  open(
-    message: string,
-    autoHideDuration: number,
-    variant: any,
-    severity: any
-  ): void;
+  open(message: string, autoHideDuration: number, severity: AlertColor): void;
   close(): void;
   options: {
     message: string;
@@ -62,7 +57,6 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
       (
         message: string,
         autoHideDuration: number,
-        variant: typeof props.variant = "filled",
         severity: typeof props.severity = "error"
       ) => {
         setState((prevState) => ({
@@ -70,7 +64,7 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
           open: true,
           message,
           autoHideDuration,
-          variant,
+          variant: "filled",
           severity,
         }));
       },

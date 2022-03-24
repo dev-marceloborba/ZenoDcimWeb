@@ -112,7 +112,7 @@ const NewEnergyEquipment: React.FC = () => {
   const handleSaveParameter = () => {
     handleCloseParameterModal();
     setTimeout(() => {
-      toast.open("Parametro salvo com sucesso", 2000, 'filled', 'success');
+      toast.open("Parametro salvo com sucesso", 2000, "success");
     }, 500);
   };
 
