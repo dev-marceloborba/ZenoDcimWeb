@@ -10,6 +10,7 @@ import {
 } from "app/services/datacenter";
 import Row from "app/components/Row";
 import Dropdown from "app/components/Dropdown";
+import Loading from "app/components/Loading";
 
 const columns = [
   // {
@@ -126,6 +127,7 @@ const EquipmentTable: React.FC = () => {
           await deleteEquipment(row.id).unwrap()
         }
       />
+      <Loading open={isLoading} />
     </>
   );
 };

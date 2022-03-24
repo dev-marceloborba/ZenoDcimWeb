@@ -5,6 +5,7 @@ import {
   useListBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
+import Loading from "app/components/Loading";
 
 const columns = [
   // {
@@ -34,12 +35,15 @@ const BuildingTable: React.FC = () => {
   };
 
   return (
-    <Table
-      columns={columns}
-      rows={buildings}
-      showActions
-      handleDelete={handleDeleteBuilding}
-    />
+    <>
+      <Table
+        columns={columns}
+        rows={buildings}
+        showActions
+        handleDelete={handleDeleteBuilding}
+      />
+      <Loading open={isLoading} />
+    </>
   );
 };
 

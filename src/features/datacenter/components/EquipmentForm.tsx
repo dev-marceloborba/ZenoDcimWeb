@@ -57,7 +57,7 @@ const EquipmentForm: React.FC = () => {
       );
     } catch (error) {
       toast.open(
-        `Erro ao excluir o equipamento ${data.name}: ${data.description}`,
+        `Erro ao excluir o equipamento ${data.description}: ${error}`,
         2000,
         "error"
       );

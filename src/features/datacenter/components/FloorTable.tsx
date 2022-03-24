@@ -7,6 +7,7 @@ import {
   useDeleteFloorMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
+import Loading from "app/components/Loading";
 
 const columns = [
   // {
@@ -22,7 +23,7 @@ const columns = [
 ];
 
 const FloorTable: React.FC = () => {
-  const { data: buildings } = useListBuildingsQuery();
+  const { data: buildings, isLoading } = useListBuildingsQuery();
   const [deleteFloor] = useDeleteFloorMutation();
   const [selectedBuilding, setSelectedBuliding] = useState<string>("");
   const [filteredBuilding, setFilteredBuilding] = useState<FloorResponse[]>([]);
@@ -52,6 +53,7 @@ const FloorTable: React.FC = () => {
         showActions
         handleDelete={async (row: any) => await deleteFloor(row.id).unwrap()}
       />
+      <Loading open={isLoading} />
     </Column>
   );
 };

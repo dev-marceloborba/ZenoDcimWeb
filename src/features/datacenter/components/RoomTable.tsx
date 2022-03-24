@@ -10,6 +10,7 @@ import {
 } from "app/services/datacenter";
 import Dropdown from "app/components/Dropdown";
 import Row from "app/components/Row";
+import Loading from "app/components/Loading";
 
 const columns = [
   // {
@@ -25,7 +26,6 @@ const columns = [
 ];
 
 const RoomTable: React.FC = () => {
-  // const { data: rooms, isLoading } = useListRoomQuery();
   const { data: buildings, isLoading } = useListBuildingsQuery();
   const [selectedBuilding, setSelectedBuilding] = useState<BuildingResponse>();
   const [selectedFloor, setSelectedFloor] = useState<FloorResponse>();
@@ -90,6 +90,7 @@ const RoomTable: React.FC = () => {
         showActions
         handleDelete={async (row: any) => await deleteRoom(row.id).unwrap()}
       />
+      <Loading open={isLoading} />
     </>
   );
 };
