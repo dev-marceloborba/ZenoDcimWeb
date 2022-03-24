@@ -8,6 +8,8 @@ import {
   useListBuildingsQuery,
 } from "app/services/datacenter";
 import Loading from "app/components/Loading";
+import Row from "app/components/Row";
+import ButtonLink from "app/components/ButtonLink";
 
 const columns = [
   // {
@@ -36,17 +38,36 @@ const FloorTable: React.FC = () => {
 
   return (
     <Column>
-      <Dropdown
-        items={
-          buildings?.map((building) => ({
-            label: building.name,
-            value: building.id,
-          })) ?? []
-        }
-        defaultValue={""}
-        value={selectedBuilding}
-        callback={onApplyFilter}
-      />
+      <Row
+        sx={{
+          alignItems: "center",
+          justifyContent: "space-between",
+          mt: 2,
+          mb: 2,
+          " & .MuiTextField-root": {
+            maxWidth: "300px",
+          },
+        }}
+      >
+        <Dropdown
+          items={
+            buildings?.map((building) => ({
+              label: building.name,
+              value: building.id,
+            })) ?? []
+          }
+          label="Andar"
+          defaultValue={""}
+          value={selectedBuilding}
+          callback={onApplyFilter}
+        />
+        <ButtonLink
+          variant="contained"
+          to="/zeno/automation/management/floor/new"
+        >
+          Criar andar
+        </ButtonLink>
+      </Row>
       <Table
         rows={filteredBuilding}
         columns={columns}

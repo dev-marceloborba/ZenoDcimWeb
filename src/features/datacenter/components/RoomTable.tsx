@@ -11,6 +11,7 @@ import {
 import Dropdown from "app/components/Dropdown";
 import Row from "app/components/Row";
 import Loading from "app/components/Loading";
+import ButtonLink from "app/components/ButtonLink";
 
 const columns = [
   // {
@@ -49,13 +50,14 @@ const RoomTable: React.FC = () => {
     <>
       <Row
         sx={{
+          alignItems: "center",
           mt: 2,
           mb: 2,
-          "& .MuiFormControl-root": {
+          "& .MuiTextField-root": {
             maxWidth: "240px",
           },
-          "& .MuiFormControl-root:last-child": {
-            marginLeft: "16px",
+          "& .MuiTextField-root:first-child": {
+            marginRight: "16px",
           },
         }}
       >
@@ -83,6 +85,14 @@ const RoomTable: React.FC = () => {
           defaultValue=""
           callback={onChangeFloor}
         />
+
+        <ButtonLink
+          variant="contained"
+          to="/zeno/automation/management/room/new"
+          sx={{ marginLeft: "auto" }}
+        >
+          Criar sala
+        </ButtonLink>
       </Row>
       <Table
         columns={columns}

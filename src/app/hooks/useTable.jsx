@@ -20,6 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import NoDataText from "app/components/NoDataText";
 
 const Table = ({ rows, columns, ...props }) => {
   let fields = [];
@@ -154,6 +155,7 @@ const Table = ({ rows, columns, ...props }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {alteredRows?.length === 0 && <NoDataText />}
     </TableContainer>
   );
 };

@@ -11,6 +11,7 @@ import {
 import Row from "app/components/Row";
 import Dropdown from "app/components/Dropdown";
 import Loading from "app/components/Loading";
+import ButtonLink from "app/components/ButtonLink";
 
 const columns = [
   // {
@@ -72,6 +73,7 @@ const EquipmentTable: React.FC = () => {
     <>
       <Row
         sx={{
+          alignItems: "center",
           mt: 2,
           mb: 2,
           "& .MuiFormControl-root": {
@@ -118,6 +120,13 @@ const EquipmentTable: React.FC = () => {
           defaultValue=""
           callback={onChangeRoom}
         />
+        <ButtonLink
+          variant="contained"
+          to="/zeno/automation/management/equipment/new"
+          sx={{ marginLeft: "auto" }}
+        >
+          Criar equipamento
+        </ButtonLink>
       </Row>
       <Table
         columns={columns}

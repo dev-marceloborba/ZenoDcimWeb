@@ -6,6 +6,7 @@ import {
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
+import Column from "app/components/Column";
 
 const columns = [
   // {
@@ -35,7 +36,7 @@ const BuildingTable: React.FC = () => {
   };
 
   return (
-    <>
+    <Column sx={{ mt: 2 }}>
       <Table
         columns={columns}
         rows={buildings}
@@ -43,7 +44,7 @@ const BuildingTable: React.FC = () => {
         handleDelete={handleDeleteBuilding}
       />
       <Loading open={isLoading} />
-    </>
+    </Column>
   );
 };
 
