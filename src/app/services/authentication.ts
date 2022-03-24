@@ -37,6 +37,15 @@ export interface UserResponse {
 
 type UsersResponse = UserResponse[];
 
+export type UserResponseNormalized = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  active: string;
+};
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -81,11 +90,39 @@ export const api = createApi({
         body: credentials,
       }),
     }),
-    protected: builder.mutation<{ message: string }, void>({
-      query: () => "protected",
-    }),
-    getUsers: builder.query<UsersResponse, void>({
+    getUsers: builder.query<UserResponseNormalized[], void>({
       query: () => ({ url: "v1/users", method: "GET" }),
+      transformResponse: (returnedUsers: UsersResponse) => {
+        function getUserRoleDescription(role: EUserRole): string {
+          switch (role) {
+            case EUserRole.ADMIN:
+              return "Administrador";
+            case EUserRole.EXTERNAL_CLIENT:
+              return "Cliente";
+            case EUserRole.OPERATOR:
+              return "Operador";
+            case EUserRole.TECHNICIAN:
+              return "Técnico";
+            case EUserRole.VIEW_ONLY:
+              return "Visualizador";
+            default:
+              return "Desconhecido";
+          }
+        }
+
+        const users: UserResponseNormalized[] = [];
+        returnedUsers.forEach((returnedUser) => {
+          users.push({
+            id: returnedUser.id,
+            firstName: returnedUser.firstName,
+            lastName: returnedUser.lastName,
+            email: returnedUser.email,
+            active: returnedUser.active ? "Ativo" : "Inativo",
+            role: getUserRoleDescription(returnedUser.role),
+          });
+        });
+        return users;
+      },
     }),
     createUser: builder.mutation<ApiResponse<UserResponse>, UserRequest>({
       query: (user) => ({
@@ -112,7 +149,6 @@ export const api = createApi({
 
 export const {
   useLoginMutation,
-  useProtectedMutation,
   useGetUsersQuery,
   useCreateUserMutation,
   useDeleteUserMutation,
