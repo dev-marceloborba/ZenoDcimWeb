@@ -16,18 +16,19 @@ import {
   useAddEquipmentMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
+import { useToast } from "app/components/Toast";
 
 const EquipmentForm: React.FC = () => {
-  const methods = useForm<EquipmentRequest>({
-    resolver: yupResolver(validationSchema),
-  });
-
   const [addEquipment, { isLoading, error, isError }] =
     useAddEquipmentMutation();
-
   const { data: buildings } = useListBuildingsQuery();
   const [floors, setFloors] = useState<FloorResponse[]>([]);
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
+  const toast = useToast();
+
+  const methods = useForm<EquipmentRequest>({
+    resolver: yupResolver(validationSchema),
+  });
 
   const { handleSubmit, watch } = methods;
 
@@ -48,10 +49,18 @@ const EquipmentForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
     try {
-      const { data: equipment } = await addEquipment(data).unwrap();
-      console.log(equipment);
+      await addEquipment(data).unwrap();
+      toast.open(
+        `Equipamento ${data.description} criado com sucesso`,
+        2000,
+        "success"
+      );
     } catch (error) {
-      console.log(error);
+      toast.open(
+        `Erro ao excluir o equipamento ${data.name}: ${data.description}`,
+        2000,
+        "error"
+      );
     }
   };
   return (

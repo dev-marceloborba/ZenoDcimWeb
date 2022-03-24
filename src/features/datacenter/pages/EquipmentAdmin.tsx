@@ -12,7 +12,7 @@ const EquipmentAdmin: React.FC = () => {
           variant="contained"
           to="/zeno/automation/management/equipment/new"
         >
-          Criar
+          Criar equipamento
         </ButtonLink>
       </Row>
       <EquipmentTable />

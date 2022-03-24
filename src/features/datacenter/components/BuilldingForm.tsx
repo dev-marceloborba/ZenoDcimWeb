@@ -13,13 +13,15 @@ import {
   BuildingRequest,
   useAddBuildingMutation,
 } from "app/services/datacenter";
+import { useToast } from "app/components/Toast";
+import Loading from "app/components/Loading";
 
 const BuildingForm: React.FC = () => {
+  const [addBuilding, { isLoading, error, isError }] = useAddBuildingMutation();
+  const toast = useToast();
   const methods = useForm<BuildingRequest>({
     resolver: yupResolver(validationSchema),
   });
-
-  const [addBuilding, { isLoading, error, isError }] = useAddBuildingMutation();
 
   const { handleSubmit } = methods;
 
@@ -27,8 +29,14 @@ const BuildingForm: React.FC = () => {
     try {
       const { data: building } = await addBuilding(data).unwrap();
       console.log(building);
+      toast.open(`Prédio ${data.name} criado com sucesso`, 2000, "success");
     } catch (error) {
       console.log(error);
+      toast.open(
+        `Erro ao excluir prédio ${data.name}: ${error}`,
+        2000,
+        "error"
+      );
     }
   };
 
@@ -47,7 +55,6 @@ const BuildingForm: React.FC = () => {
             <Typography variant="h5">Novo prédio</Typography>
           </Box>
         </Grid>
-
         <Grid item md={6}>
           <Form
             sx={{
@@ -69,6 +76,7 @@ const BuildingForm: React.FC = () => {
           </Form>
         </Grid>
       </Grid>
+      <Loading open={isLoading} />
     </Card>
   );
 };

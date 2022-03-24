@@ -93,8 +93,7 @@ const DataCenterManagement: React.FC = () => {
         <Tab label="Equipamento" />
       </Tabs>
       <TabPanel value={tabIndex} index={0}>
-        {/* <ImportButton callback={(data) => formatPlain(data, buildings)} /> */}
-        <ImportButton callback={handleAddMultipleEquipments} />
+        {/* <ImportButton callback={handleAddMultipleEquipments} /> */}
         <BuildingAdmin />
       </TabPanel>
       <TabPanel value={tabIndex} index={1}>

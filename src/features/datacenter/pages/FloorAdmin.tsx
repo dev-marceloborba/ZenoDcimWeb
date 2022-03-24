@@ -12,7 +12,7 @@ const FloorAdmin: React.FC = () => {
           variant="contained"
           to="/zeno/automation/management/floor/new"
         >
-          Criar
+          Criar andar
         </ButtonLink>
       </Row>
       <FloorTable />

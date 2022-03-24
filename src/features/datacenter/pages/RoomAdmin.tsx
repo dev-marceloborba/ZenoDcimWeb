@@ -12,7 +12,7 @@ const RoomAdmin: React.FC = () => {
           variant="contained"
           to="/zeno/automation/management/room/new"
         >
-          Criar
+          Criar sala
         </ButtonLink>
       </Row>
       <RoomTable />

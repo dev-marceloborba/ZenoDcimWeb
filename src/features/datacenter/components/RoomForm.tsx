@@ -15,16 +15,17 @@ import {
   useAddRoomMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
+import { useToast } from "app/components/Toast";
 
 const RoomForm: React.FC = () => {
+  const [addRoom, { isLoading, error, isError }] = useAddRoomMutation();
+  const { data: buildings } = useListBuildingsQuery();
+  const [floors, setFloors] = useState<FloorResponse[]>([]);
+  const toast = useToast();
+
   const methods = useForm<RoomRequest>({
     resolver: yupResolver(validationSchema),
   });
-
-  const [addRoom, { isLoading, error, isError }] = useAddRoomMutation();
-  const { data: buildings } = useListBuildingsQuery();
-
-  const [floors, setFloors] = useState<FloorResponse[]>([]);
 
   const { handleSubmit, watch } = methods;
 
@@ -39,10 +40,14 @@ const RoomForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<RoomRequest> = async (data) => {
     try {
-      const { data: floor } = await addRoom(data).unwrap();
-      console.log(floor);
+      await addRoom(data).unwrap();
+      toast.open(`Sala ${data.name} criada com sucesso`, 2000, "success");
     } catch (error) {
-      console.log(error);
+      toast.open(
+        `Erro ao excluir a sala ${data.name}: ${error}`,
+        2000,
+        "error"
+      );
     }
   };
   return (

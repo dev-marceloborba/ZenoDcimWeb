@@ -12,7 +12,7 @@ const BuildingAdmin: React.FC = () => {
           variant="contained"
           to="/zeno/automation/management/building/new"
         >
-          Criar
+          Criar prédio
         </ButtonLink>
       </Row>
       <BuildingTable />

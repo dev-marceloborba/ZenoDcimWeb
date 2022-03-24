@@ -14,25 +14,26 @@ import {
   useAddFloorMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
+import { useToast } from "app/components/Toast";
 
 const FloorForm: React.FC = () => {
-  const methods = useForm<FloorRequest>({
-    resolver: yupResolver(validationSchema),
-  });
-
   const [addFloor, { isLoading, error, isError }] = useAddFloorMutation();
   const { data: buildings, isLoading: isLoadingBuildings } =
     useListBuildingsQuery();
+  const toast = useToast();
+
+  const methods = useForm<FloorRequest>({
+    resolver: yupResolver(validationSchema),
+  });
 
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<FloorRequest> = async (data) => {
     try {
-      console.log(data);
-      const { data: floor } = await addFloor(data).unwrap();
-      console.log(floor);
+      await addFloor(data).unwrap();
+      toast.open(`Andar ${data.name} criado com sucesso`, 2000, "success");
     } catch (error) {
-      console.log(error);
+      toast.open(`Erro ao criar andar ${data.name}: ${error}`, 2000, "error");
     }
   };
 

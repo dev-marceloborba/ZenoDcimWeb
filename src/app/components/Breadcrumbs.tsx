@@ -20,6 +20,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/zeno/automation/equipment-conectivity": "Conectividade de equipamentos",
   "/zeno/automation/management": "Cadastros de automação",
   "/zeno/automation/management/equipment": "Novo equipamento de energia",
+  "/zeno/automation/management/building": "Entidades",
   "/zeno/settings": "Configurações",
   "/zeno/settings/new-user": "Novo usuário",
   "/zeno/settings/new-company": "Nova empresa",
