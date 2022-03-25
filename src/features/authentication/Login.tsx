@@ -25,9 +25,12 @@ import type { LoginRequest } from "app/services/authentication";
 import getErrorMessage from "app/utils/apiErrorHandler";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";
+import { useToast } from "app/components/Toast";
 
 const Login: React.FC = () => {
+  const [login, { isLoading, error, isError }] = useLoginMutation();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const methods = useForm<LoginRequest>({
     resolver: yupResolver(validationSchema),
@@ -35,15 +38,18 @@ const Login: React.FC = () => {
   const { setCredentials, signed } = useAuth();
 
   const dispatch = useAppDispatch();
-  const [login, { isLoading, error, isError }] = useLoginMutation();
 
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
       const { data: account } = await login(data).unwrap();
-      dispatch(setCredentials(account));
-      navigate("/zeno");
+      if (data) {
+        dispatch(setCredentials(account));
+        navigate("/zeno");
+      } else {
+        toast.open("Erro ao realizar login: Servidor offline", 2000, "error");
+      }
     } catch (error) {
       console.log(error);
     }
