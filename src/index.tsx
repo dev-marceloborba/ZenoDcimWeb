@@ -14,6 +14,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import Toast from "app/components/Toast";
 import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
+import { brokerUrl, mqttConfig } from "app/config/env";
 // import GlobalStyle from "app/styles/global-style";
 
 ReactDOM.render(
@@ -24,14 +25,8 @@ ReactDOM.render(
         {/* <GlobalStyle /> */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Connector
-            brokerUrl="ws://localhost:1883"
-            options={{
-              clientId: "zenoWebClient",
-              clean: true,
-              port: 1883,
-              protocol: "ws",
-              connectTimeout: 2000,
-            }}
+            brokerUrl={brokerUrl}
+            options={{ ...mqttConfig, protocol: "wss" }}
           >
             <Toast>
               <AutomationFiltersProvider>
