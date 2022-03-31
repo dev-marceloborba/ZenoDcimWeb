@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import Grid from "@mui/material/Grid";
-import { Floor } from "app/types/bms";
-import { building01 } from "app/data/bms";
 import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
 import RoomCard from "../components/RoomCard";
@@ -13,17 +11,21 @@ import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import Center from "app/components/Center";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
+// import { FloorResponse } from "app/services/datacenter";
 
 const Etc: React.FC = () => {
-  const { groups, floor } = useAutomationFilters();
-  const [currentFloor, setCurrentFloor] = React.useState<Floor>({} as Floor);
-  const { floors } = building01;
+  const { groups, buildings, building, floor } = useAutomationFilters();
+  // const [currentFloor, setCurrentFloor] = useState<FloorResponse>(
+  //   {} as FloorResponse
+  // );
 
-  React.useEffect(() => {
-    const floorEquipments =
-      floor === "Todos" ? floors[0] : floors.filter((x) => x.name === floor)[0];
-    setCurrentFloor(floorEquipments);
-  }, [floor, floors]);
+  const floors = useMemo(
+    () =>
+      buildings
+        ?.find((x) => x.id === building)
+        ?.floors?.find((x) => x.id === floor)?.rooms ?? [],
+    [building, buildings, floor]
+  );
 
   return (
     <HeroContainer>
@@ -42,13 +44,13 @@ const Etc: React.FC = () => {
         <EtcFilters />
       </Row>
       <Grid sx={{ mt: 1 }} container spacing={1}>
-        {currentFloor?.rooms?.map((room, index) => (
+        {floors?.map((room, index) => (
           <Grid key={index} item md={6}>
             <RoomCard title={room.name}>
               <Grid container spacing={1} justifyContent="space-between">
-                {room.equipments.map((equipment, index) => (
+                {room.equipments?.map((equipment, index) => (
                   <Grid key={index}>
-                    <EquipmentCard {...equipment} {...groups} />
+                    {/* <EquipmentCard {...equipment} {...groups} /> */}
                   </Grid>
                 ))}
               </Grid>

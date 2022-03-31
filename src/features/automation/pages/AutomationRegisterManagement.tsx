@@ -15,12 +15,15 @@ import CallSplitIcon from "@mui/icons-material/CallSplit";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 
-import { automationManagement } from "app/data/automation-management";
+// import { automationManagement } from "app/data/automation-management";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
 import AccessButton from "app/components/AccessButton";
+import { useAutomationFilters } from "../components/AutomationFiltersProvider";
+import { EquipmentData } from "app/data/automation-management";
 
 const AutomationRegisterManagement: React.FC = () => {
+  const { buildings, building, floor } = useAutomationFilters();
   const columns = [
     {
       name: "name",
@@ -59,10 +62,16 @@ const AutomationRegisterManagement: React.FC = () => {
     },
   ];
 
-  const energyData = automationManagement.filter(
-    (area) => area.group === "Energia"
-  )[0];
-  const { equipments } = energyData;
+  // const energyData = automationManagement.filter(
+  //   (area) => area.group === "Energia"
+  // )[0];
+  // const { equipments } = energyData;
+
+  const equipments = buildings
+    ?.find((x) => x.id === building)
+    ?.floors?.find((x) => x.id === floor)?.rooms;
+
+  console.log(equipments);
 
   return (
     <HeroContainer>
@@ -112,7 +121,18 @@ const AutomationRegisterManagement: React.FC = () => {
       </Row>
 
       <Row sx={{ mt: 4 }}>
-        <Table columns={columns} rows={equipments} />
+        <Table
+          columns={columns}
+          rows={equipments?.map<EquipmentData>((x) => ({
+            building,
+            floor,
+            alarms: 0,
+            createdAt: new Date().toLocaleDateString(),
+            room: "Room",
+            status: "Online",
+            name: x.name,
+          }))}
+        />
       </Row>
     </HeroContainer>
   );

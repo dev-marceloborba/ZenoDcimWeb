@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
+import {
+  BuildingsResponse,
+  useListBuildingsQuery,
+} from "app/services/datacenter";
 
 export type FilterData = {
   energy: boolean;
@@ -23,14 +27,30 @@ type AutomationFiltersData = {
   handleToggleEnergyGroup(): void;
   handleToggleClimGroup(): void;
   handleToggleTelecomGroup(): void;
+  // buildings: ItemProps[] | null;
+  buildings: BuildingsResponse | undefined;
 };
 
-export const AutomationFiltersContext =
-  React.createContext<AutomationFiltersData>({} as AutomationFiltersData);
+export const AutomationFiltersContext = createContext<AutomationFiltersData>(
+  {} as AutomationFiltersData
+);
+
+type AutomationFilterStateProps = {
+  building: string;
+  floor: string;
+  zone: string;
+  loop: string;
+  groups: FilterData;
+  // buildings: ItemProps[] | null;
+  buildings: BuildingsResponse | undefined;
+};
 
 const AutomationFiltersProvider: React.FC = ({ children }) => {
-  const [state, setState] = React.useState({
+  const { data } = useListBuildingsQuery();
+
+  const [state, setState] = useState<AutomationFilterStateProps>({
     building: "",
+    buildings: [],
     floor: "",
     zone: "",
     loop: "",
@@ -40,6 +60,18 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
       telecom: false,
     },
   });
+
+  useEffect(() => {
+    // setState((prevState) => ({
+    //   ...prevState,
+    //   buildings:
+    //     data?.map<ItemProps>((building) => ({
+    //       label: building.name,
+    //       value: building.id,
+    //     })) ?? [],
+    // }));
+    setState((prevState) => ({ ...prevState, buildings: data }));
+  }, [data]);
 
   const setFloor = (floor: string) =>
     setState((prevState) => ({ ...prevState, floor }));
@@ -106,5 +138,4 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
 
 export default AutomationFiltersProvider;
 
-export const useAutomationFilters = () =>
-  React.useContext(AutomationFiltersContext);
+export const useAutomationFilters = () => useContext(AutomationFiltersContext);
