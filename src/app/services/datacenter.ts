@@ -36,6 +36,18 @@ export interface RoomResponse extends RoomRequest {
   equipments?: EquipmentResponse[];
 }
 
+export enum EEquipmentGroup {
+  ENERGY = 0,
+  CLIM = 1,
+  TELECOM = 2,
+}
+
+export enum EEquipmentStatus {
+  ONLINE = 0,
+  OFFLINE = 1,
+  INDETERMINATE = 2,
+}
+
 export interface EquipmentRequest {
   buildingId: string;
   floorId: string;
@@ -44,10 +56,14 @@ export interface EquipmentRequest {
   component: string;
   componentCode: string;
   description: string;
+  group: EEquipmentGroup;
 }
 
 export interface EquipmentResponse extends EquipmentRequest {
   id: string;
+  status: EEquipmentStatus;
+  alarms: number;
+  createdDate: Date;
 }
 
 export type BuildingMerged = {

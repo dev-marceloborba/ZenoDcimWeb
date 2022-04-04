@@ -7,6 +7,7 @@ import PageTitle from "app/components/PageTitle";
 import EtcFilters from "../components/EtcFilters";
 import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
+import RoomDropdown from "../components/RoomDropdown";
 import Table from "app/hooks/useTable";
 
 // icons
@@ -15,7 +16,6 @@ import CallSplitIcon from "@mui/icons-material/CallSplit";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 
-// import { automationManagement } from "app/data/automation-management";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
 import AccessButton from "app/components/AccessButton";
@@ -23,7 +23,7 @@ import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import { EquipmentData } from "app/data/automation-management";
 
 const AutomationRegisterManagement: React.FC = () => {
-  const { buildings, building, floor } = useAutomationFilters();
+  const { buildings, building, floor, room } = useAutomationFilters();
   const columns = [
     {
       name: "name",
@@ -62,14 +62,11 @@ const AutomationRegisterManagement: React.FC = () => {
     },
   ];
 
-  // const energyData = automationManagement.filter(
-  //   (area) => area.group === "Energia"
-  // )[0];
-  // const { equipments } = energyData;
-
-  const equipments = buildings
-    ?.find((x) => x.id === building)
-    ?.floors?.find((x) => x.id === floor)?.rooms;
+  const equipments =
+    buildings
+      ?.find((x) => x.id === building)
+      ?.floors?.find((x) => x.id === floor)
+      ?.rooms?.find((x) => x.id === room)?.equipments ?? [];
 
   console.log(equipments);
 
@@ -90,6 +87,7 @@ const AutomationRegisterManagement: React.FC = () => {
       <Row sx={{ mt: 2, maxWidth: "480px" }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />
+        <RoomDropdown sx={{ ml: 2 }} />
       </Row>
 
       <Divider sx={{ mt: 2 }} />
@@ -126,11 +124,11 @@ const AutomationRegisterManagement: React.FC = () => {
           rows={equipments?.map<EquipmentData>((x) => ({
             building,
             floor,
-            alarms: 0,
+            alarms: x.alarms,
             createdAt: new Date().toLocaleDateString(),
-            room: "Room",
-            status: "Online",
-            name: x.name,
+            room: room,
+            status: x.status.toString(),
+            name: x.component,
           }))}
         />
       </Row>

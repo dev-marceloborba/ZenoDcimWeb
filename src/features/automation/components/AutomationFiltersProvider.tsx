@@ -13,6 +13,7 @@ export type FilterData = {
 type AutomationFiltersData = {
   building: string;
   floor: string;
+  room: string;
   zone: string;
   loop: string;
   groups: {
@@ -20,14 +21,14 @@ type AutomationFiltersData = {
     clim: boolean;
     telecom: boolean;
   };
-  handleFloor(floor: string): void;
   handleBuilding(building: string): void;
+  handleFloor(floor: string): void;
+  handleRoom(floor: string): void;
   handleZone(zone: string): void;
   handleLoop(loop: string): void;
   handleToggleEnergyGroup(): void;
   handleToggleClimGroup(): void;
   handleToggleTelecomGroup(): void;
-  // buildings: ItemProps[] | null;
   buildings: BuildingsResponse | undefined;
 };
 
@@ -38,10 +39,10 @@ export const AutomationFiltersContext = createContext<AutomationFiltersData>(
 type AutomationFilterStateProps = {
   building: string;
   floor: string;
+  room: string;
   zone: string;
   loop: string;
   groups: FilterData;
-  // buildings: ItemProps[] | null;
   buildings: BuildingsResponse | undefined;
 };
 
@@ -52,6 +53,7 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
     building: "",
     buildings: [],
     floor: "",
+    room: "",
     zone: "",
     loop: "",
     groups: {
@@ -62,22 +64,17 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
   });
 
   useEffect(() => {
-    // setState((prevState) => ({
-    //   ...prevState,
-    //   buildings:
-    //     data?.map<ItemProps>((building) => ({
-    //       label: building.name,
-    //       value: building.id,
-    //     })) ?? [],
-    // }));
     setState((prevState) => ({ ...prevState, buildings: data }));
   }, [data]);
+
+  const setBuilding = (building: string) =>
+    setState((prevState) => ({ ...prevState, building }));
 
   const setFloor = (floor: string) =>
     setState((prevState) => ({ ...prevState, floor }));
 
-  const setBuilding = (building: string) =>
-    setState((prevState) => ({ ...prevState, building }));
+  const setRoom = (room: string) =>
+    setState((prevState) => ({ ...prevState, room }));
 
   const setZone = (zone: string) =>
     setState((prevState) => ({ ...prevState, zone }));
@@ -122,8 +119,9 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
     <AutomationFiltersContext.Provider
       value={{
         ...state,
-        handleFloor: setFloor,
         handleBuilding: setBuilding,
+        handleFloor: setFloor,
+        handleRoom: setRoom,
         handleZone: setZone,
         handleLoop: setLoop,
         handleToggleClimGroup: toggleClimGroup,

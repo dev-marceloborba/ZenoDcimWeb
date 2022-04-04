@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaOf, string, object } from "yup";
+import { SchemaOf, string, object, number } from "yup";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
@@ -139,6 +139,26 @@ const EquipmentForm: React.FC = () => {
                 name="description"
                 label="Descrição"
               />
+              <ControlledTextInput
+                fullWidth
+                name="group"
+                label="Grupo"
+                items={[
+                  {
+                    description: "Energia",
+                    value: 0,
+                  },
+                  {
+                    description: "Clima",
+                    value: 1,
+                  },
+                  {
+                    description: "Telecom",
+                    value: 2,
+                  },
+                ]}
+              />
+
               <SubmitButton label="Salvar" />
             </FormProvider>
           </Form>
@@ -156,6 +176,7 @@ const validationSchema: SchemaOf<EquipmentRequest> = object().shape({
   component: string().required("Componente é obrigatório"),
   componentCode: string().required("Componente é obrigatório"),
   description: string().required("Descrição é obrigatório"),
+  group: number().required("Grupo é obrigatório"),
 });
 
 export default EquipmentForm;

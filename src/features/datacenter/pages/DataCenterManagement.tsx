@@ -10,6 +10,7 @@ import EquipmentAdmin from "./EquipmentAdmin";
 import ImportButton from "app/components/ImportButton";
 import {
   BuildingsResponse,
+  EEquipmentGroup,
   EquipmentRequest,
   useAddMultipleEquipmentsMutation,
   useListBuildingsQuery,
@@ -23,6 +24,7 @@ type EquipmentPlain = {
   building: string;
   floor: string;
   room: string;
+  group: EEquipmentGroup;
 };
 
 const formatPlain = (data: any, buildings: BuildingsResponse | undefined) => {
@@ -36,6 +38,7 @@ const formatPlain = (data: any, buildings: BuildingsResponse | undefined) => {
       building: row[4],
       floor: row[5],
       room: row[6],
+      group: EEquipmentGroup.ENERGY,
     };
     // console.log(equipment);
     if (index > 0) {
@@ -56,6 +59,7 @@ const formatPlain = (data: any, buildings: BuildingsResponse | undefined) => {
         component: equipment.component,
         componentCode: equipment.componentCode,
         description: equipment.description,
+        group: equipment.group,
       });
     }
   });

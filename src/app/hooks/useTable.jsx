@@ -81,6 +81,10 @@ const Table = ({ rows, columns, ...props }) => {
     handleClose();
   };
 
+  const handleOnClickRow = (row) => {
+    console.log(row);
+  };
+
   // const renderCustomComponent = (Component, key, ...props) => {
   //   return (
   //     <TableCell key={key} align="right">
@@ -120,7 +124,15 @@ const Table = ({ rows, columns, ...props }) => {
         <TableBody>
           {alteredRows?.map((row) => {
             return (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                sx={(theme) => ({
+                  cursor: "pointer",
+                  "&:hover": { backgroundColor: theme.palette.action.hover },
+                  transition: "background-color 0.1s ease-in-out",
+                })}
+                onClick={() => handleOnClickRow(row)}
+              >
                 {fields.map((field, index) => {
                   return renderField(
                     row[field],
