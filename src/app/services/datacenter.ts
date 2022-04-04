@@ -64,6 +64,22 @@ export interface EquipmentResponse extends EquipmentRequest {
   status: EEquipmentStatus;
   alarms: number;
   createdDate: Date;
+  equipmentParameters?: EquipmentParameterResponse[];
+}
+
+export interface EquipmentParameterRequest {
+  equipmentId: string;
+  Name: string;
+  unit: string;
+  lowLimit: number;
+  highLimit: number;
+  scale: number;
+  dataSource: string;
+  address: string;
+}
+
+export interface EquipmentParameterResponse extends EquipmentParameterRequest {
+  id: string;
 }
 
 export type BuildingMerged = {
@@ -196,6 +212,12 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
+    findEquipmentById: builder.mutation<EquipmentResponse, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/equipment/${id}`,
+        method: "GET",
+      }),
+    }),
     addMultipleEquipments: builder.mutation<
       BuildingsResponse,
       MultipleEquipmentsRequest
@@ -223,6 +245,7 @@ export const {
   useAddEquipmentMutation,
   useListEquipmentsQuery,
   useDeleteEquipmentMutation,
+  useFindEquipmentByIdMutation,
   useFindBuildingByIdMutation,
   useAddMultipleEquipmentsMutation,
 } = datacenterApi;

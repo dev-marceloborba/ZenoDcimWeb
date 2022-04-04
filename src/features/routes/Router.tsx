@@ -85,7 +85,7 @@ export const SubRoutes: React.FC = () => {
           element={<AutomationRegisterManagement />}
         />
         <Route
-          path="/automation/management/equipment"
+          path="/automation/management/equipment/:id"
           element={<NewEnergyEquipment />}
         />
         <Route

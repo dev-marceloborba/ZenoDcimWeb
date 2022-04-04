@@ -26,7 +26,13 @@ const Table = ({ rows, columns, ...props }) => {
   let fields = [];
   let alteredColumns = [];
   let alteredRows = [];
-  const { showActions, showCustomComponent, editPage, handleDelete } = props;
+  const {
+    showActions,
+    showCustomComponent,
+    editPage,
+    handleDelete,
+    onRowClick,
+  } = props;
   const [selectedRow, setSelectedRow] = React.useState(null);
 
   const navigate = useNavigate();
@@ -82,7 +88,9 @@ const Table = ({ rows, columns, ...props }) => {
   };
 
   const handleOnClickRow = (row) => {
-    console.log(row);
+    if (onRowClick) {
+      onRowClick(row);
+    }
   };
 
   // const renderCustomComponent = (Component, key, ...props) => {

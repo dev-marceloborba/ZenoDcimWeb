@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
@@ -13,7 +14,7 @@ import ControlledTextInput from "app/components/ControlledTextInput";
 import { EnergyEquipmentRequest } from "app/services/automation-register";
 import PageTitle from "app/components/PageTitle";
 import Table from "app/hooks/useTable";
-import { automationParameters } from "app/data/automation-parameters";
+// import { automationParameters } from "app/data/automation-parameters";
 import EtcFilters from "../components/EtcFilters";
 
 //icons
@@ -28,15 +29,19 @@ import Row from "app/components/Row";
 import Form from "app/components/Form";
 import Column from "app/components/Column";
 import { useToast } from "app/components/Toast";
+import { useFindEquipmentByIdMutation } from "app/services/datacenter";
 
 const NewEnergyEquipment: React.FC = () => {
   const toast = useToast();
-  const [tabIndex, setTabIndex] = React.useState(0);
-  const [parameterModalOpen, setParameterModalOpen] = React.useState(false);
-  const [connectionModalOpen, setConnectionModalOpen] = React.useState(false);
+  const params = useParams();
+  const [findEquipmentByid, { data: equipment }] =
+    useFindEquipmentByIdMutation();
+  const [tabIndex, setTabIndex] = useState(0);
+  const [parameterModalOpen, setParameterModalOpen] = useState(false);
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const columns = [
     {
-      name: "parameter",
+      name: "name",
       label: "Parâmetro",
       align: "left",
     },
@@ -46,7 +51,7 @@ const NewEnergyEquipment: React.FC = () => {
       align: "right",
     },
     {
-      name: "controller",
+      name: "dataSource",
       label: "Controlador",
       align: "right",
     },
@@ -56,12 +61,12 @@ const NewEnergyEquipment: React.FC = () => {
       align: "right",
     },
     {
-      name: "minLimit",
+      name: "lowLimit",
       label: "Limit min",
       align: "right",
     },
     {
-      name: "maxLimit",
+      name: "highLimit",
       label: "Limite max",
       align: "right",
     },
@@ -81,6 +86,15 @@ const NewEnergyEquipment: React.FC = () => {
     resolver: yupResolver(validationSchema),
   });
   const { handleSubmit } = methods;
+
+  useEffect(() => {
+    async function fetchEquipmentData() {
+      if (params.id) {
+        await findEquipmentByid(params.id).unwrap();
+      }
+    }
+    fetchEquipmentData();
+  }, [findEquipmentByid, params]);
 
   const onSubmit: SubmitHandler<EnergyEquipmentRequest> = async (data) => {
     console.log(data);
@@ -210,7 +224,7 @@ const NewEnergyEquipment: React.FC = () => {
 
         <Column sx={{ mt: 2 }}>
           <Typography variant="h4">Parâmetros</Typography>
-          <Table columns={columns} rows={automationParameters} />
+          <Table columns={columns} rows={equipment?.equipmentParameters} />
         </Column>
       </TabPanel>
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>

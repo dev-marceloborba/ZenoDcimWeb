@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
@@ -24,6 +24,7 @@ import { EquipmentData } from "app/data/automation-management";
 
 const AutomationRegisterManagement: React.FC = () => {
   const { buildings, building, floor, room } = useAutomationFilters();
+  const navigate = useNavigate();
   const columns = [
     {
       name: "name",
@@ -68,7 +69,14 @@ const AutomationRegisterManagement: React.FC = () => {
       ?.floors?.find((x) => x.id === floor)
       ?.rooms?.find((x) => x.id === room)?.equipments ?? [];
 
-  console.log(equipments);
+  const navigateToEquipmentDetails = (row: any) => {
+    const seletectedEquipment = equipments.find(
+      (x) => x.component === row.name
+    );
+    navigate(
+      `/zeno/automation/management/equipment/${seletectedEquipment!.id}`
+    );
+  };
 
   return (
     <HeroContainer>
@@ -130,6 +138,7 @@ const AutomationRegisterManagement: React.FC = () => {
             status: x.status.toString(),
             name: x.component,
           }))}
+          onRowClick={navigateToEquipmentDetails}
         />
       </Row>
     </HeroContainer>
