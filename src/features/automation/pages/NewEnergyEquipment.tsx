@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
@@ -34,6 +34,7 @@ import { useFindEquipmentByIdMutation } from "app/services/datacenter";
 const NewEnergyEquipment: React.FC = () => {
   const toast = useToast();
   const params = useParams();
+  const navigate = useNavigate();
   const [findEquipmentByid, { data: equipment }] =
     useFindEquipmentByIdMutation();
   const [tabIndex, setTabIndex] = useState(0);
@@ -130,6 +131,17 @@ const NewEnergyEquipment: React.FC = () => {
     }, 500);
   };
 
+  const handleSelectedEquipmentParameter = (parameter: any) => {
+    const selectedParameter = equipment?.equipmentParameters?.find(
+      (x) => x.name === parameter.name
+    );
+    navigate(`/zeno/automation/management/equipment/parameter/form`, {
+      state: {
+        parameterId: selectedParameter?.id,
+      },
+    });
+  };
+
   return (
     <HeroContainer>
       <PageTitle>Cadastros de automação</PageTitle>
@@ -224,7 +236,11 @@ const NewEnergyEquipment: React.FC = () => {
 
         <Column sx={{ mt: 2 }}>
           <Typography variant="h4">Parâmetros</Typography>
-          <Table columns={columns} rows={equipment?.equipmentParameters} />
+          <Table
+            columns={columns}
+            rows={equipment?.equipmentParameters}
+            onRowClick={handleSelectedEquipmentParameter}
+          />
         </Column>
       </TabPanel>
       <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>

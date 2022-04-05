@@ -69,7 +69,7 @@ export interface EquipmentResponse extends EquipmentRequest {
 
 export interface EquipmentParameterRequest {
   equipmentId: string;
-  Name: string;
+  name: string;
   unit: string;
   lowLimit: number;
   highLimit: number;
@@ -228,6 +228,15 @@ export const datacenterApi = createApi({
         body: params,
       }),
     }),
+    findEquipmentParameterById: builder.mutation<
+      EquipmentParameterResponse,
+      string
+    >({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/equipment/parameter/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -248,4 +257,5 @@ export const {
   useFindEquipmentByIdMutation,
   useFindBuildingByIdMutation,
   useAddMultipleEquipmentsMutation,
+  useFindEquipmentParameterByIdMutation,
 } = datacenterApi;

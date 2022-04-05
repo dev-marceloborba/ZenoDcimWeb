@@ -37,6 +37,7 @@ import BuildingForm from "features/datacenter/components/BuilldingForm";
 import RoomForm from "features/datacenter/components/RoomForm";
 import FloorForm from "features/datacenter/components/FloorForm";
 import EquipmentForm from "features/datacenter/components/EquipmentForm";
+import EquipmentParameterForm from "features/automation/pages/EquipmentParameterForm";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -113,6 +114,16 @@ export const SubRoutes: React.FC = () => {
           path="/automation/management/equipment/new"
           element={<EquipmentForm />}
         />
+
+        <Route
+          path="/automation/management/equipment/parameter/form"
+          element={<EquipmentParameterForm />}
+        />
+
+        {/* <Route
+          path="/automation/management/equipment/:equipmentId/parameter/:equipmentParameterId"
+          element={<EquipmentParameterForm />}
+        /> */}
 
         <Route path="/settings/new-user" element={<CreateUser />} />
         <Route path="/settings/edit-user" element={<EditUser />} />
