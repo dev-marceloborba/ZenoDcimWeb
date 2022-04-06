@@ -1,36 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { RootState } from "../store";
-import { ApiResponse } from "./api-response";
-
-export interface PlcResponse extends PlcRequest {
-  id: string;
-  modbusTags?: ModbusTagResponse[];
-}
-
-export interface PlcRequest {
-  name: string;
-  manufactor: string;
-  model: string;
-  ipAddress: string;
-  tcpPort: number;
-  scan: number;
-}
-
-export type ModbusDataType = "Holding Register" | "Coil";
-
-export interface ModbusTagResponse extends ModbusTagRequest {
-  id: string;
-}
-
-export interface ModbusTagRequest {
-  modbusDevice: string;
-  address: number;
-  size: number;
-  dataType: ModbusDataType;
-  name: string;
-  deadband: number;
-}
+import { ApiResponse } from "../models/api-response";
+import {
+  ModbusTagRequest,
+  ModbusTagResponse,
+  PlcRequest,
+  PlcResponse,
+} from "app/models/automation.model";
 
 export const automationApi = createApi({
   reducerPath: "automationApi",

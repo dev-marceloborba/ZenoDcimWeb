@@ -7,13 +7,14 @@ import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import MaskedControlledTextInput from "app/components/MaskedControlledTextInput";
 
-import { CompanyRequest, useCreateCompanyMutation } from "app/services/company";
+import { useCreateCompanyMutation } from "app/services/company";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, string } from "yup";
 import Card from "app/components/Card";
 import Loading from "app/components/Loading";
 import { useToast } from "app/components/Toast";
+import { CompanyRequest } from "app/models/company.model";
 
 const NewCompany: React.FC = () => {
   const [createCompany, { isLoading }] = useCreateCompanyMutation();

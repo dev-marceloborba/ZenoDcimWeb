@@ -6,34 +6,52 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import type { NewAutomationParameterRequest } from "app/services/automation-register";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import { modalStyle } from "app/styles/modal-style";
+import { useAutomationFilters } from "./AutomationFiltersProvider";
+import { EquipmentParameterRequest } from "app/models/data-center.model";
 
 type ParameterModalProps = {
+  requestParameters: {
+    buildingId: string;
+    floorId: string;
+    roomId: string;
+    equipmentId: string;
+  };
   closeModal(): void;
-  onSaveData(): void;
+  onSaveData(data: EquipmentParameterRequest): void;
 };
 
 const ParameterModal: React.FC<ParameterModalProps> = ({
   closeModal,
   onSaveData,
+  requestParameters: { equipmentId },
 }) => {
-  const methods = useForm<NewAutomationParameterRequest>({
+  const {
+    building: buildingId,
+    floor: floorId,
+    room: roomId,
+  } = useAutomationFilters();
+  const methods = useForm<EquipmentParameterRequest>({
     resolver: yupResolver(validationSchema),
   });
-  const { handleSubmit } = methods;
 
-  const onSubmit: SubmitHandler<NewAutomationParameterRequest> = async (
-    data
-  ) => {
+  const { handleSubmit, setValue } = methods;
+
+  const onSubmit: SubmitHandler<EquipmentParameterRequest> = async (data) => {
     try {
-      console.log(data);
-      onSaveData();
+      onSaveData(data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  setValue("equipmentId", equipmentId);
+
+  console.log(buildingId);
+  console.log(floorId);
+  console.log(roomId);
+  console.log(equipmentId);
 
   return (
     <Container maxWidth="md">
@@ -51,10 +69,11 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
       >
         <Typography variant="h5">Novo parâmetro</Typography>
         <FormProvider {...methods}>
-          <ControlledTextInput name="parameter" label="Parâmetro" />
+          <ControlledTextInput name="equipmentId" label="Equipamento" />
+          <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
-          <ControlledTextInput name="limitMin" label="Limite inferior" />
-          <ControlledTextInput name="limitMax" label="Limite superior" />
+          <ControlledTextInput name="lowLimit" label="Limite inferior" />
+          <ControlledTextInput name="highLimit" label="Limite superior" />
           <ControlledTextInput name="scale" label="Escala" />
           <ControlledTextInput name="dataSource" label="Fonte de dados" />
           <ControlledTextInput name="address" label="Endereço" />
@@ -67,15 +86,15 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
   );
 };
 
-const validationSchema: SchemaOf<NewAutomationParameterRequest> =
-  object().shape({
-    parameter: string().required("Parâmetro é obrigatório"),
-    unit: string().required("Unidade é obrigatória"),
-    limitMin: number().required("Limite mínimo é obrigatório"),
-    limitMax: number().required("Limite máximo é obrigatório"),
-    scale: number().required("Escala é obrigatória"),
-    dataSource: string().required("Fonte de dados é obrigatória"),
-    address: string().required("Endereço é obrigatório"),
-  });
+const validationSchema: SchemaOf<EquipmentParameterRequest> = object().shape({
+  name: string().required("Parâmetro é obrigatório"),
+  unit: string().required("Unidade é obrigatória"),
+  lowLimit: number().required("Limite mínimo é obrigatório"),
+  highLimit: number().required("Limite máximo é obrigatório"),
+  scale: number().required("Escala é obrigatória"),
+  dataSource: string().required("Fonte de dados é obrigatória"),
+  address: string().required("Endereço é obrigatório"),
+  equipmentId: string().required("Equipamento é obrigatório"),
+});
 
 export default ParameterModal;

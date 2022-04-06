@@ -5,12 +5,13 @@ import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
-import { RackRequest, useCreateRackMutation } from "app/services/rack";
+import { useCreateRackMutation } from "app/services/rack";
 
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, number, string } from "yup";
 import ControlledTextInput from "app/components/ControlledTextInput";
+import { RackRequest } from "app/models/rack.model";
 
 const CreateRack: React.FC = () => {
   const methods = useForm<RackRequest>({
@@ -18,7 +19,7 @@ const CreateRack: React.FC = () => {
   });
   const [addRack, { isLoading, isError, error }] = useCreateRackMutation();
 
-  const { handleSubmit } = methods
+  const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<RackRequest> = async (data) => {
     try {
@@ -37,18 +38,12 @@ const CreateRack: React.FC = () => {
         noValidate
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ maxWidth: "640px", '& .MuiTextField-root': { mt: 2 } }}
+        sx={{ maxWidth: "640px", "& .MuiTextField-root": { mt: 2 } }}
       >
         <FormProvider {...methods}>
-          <ControlledTextInput
-            name="localization"
-            label="Localização"
-          />
+          <ControlledTextInput name="localization" label="Localização" />
 
-          <ControlledTextInput 
-            name="size"
-            label="Tamanho"
-          />
+          <ControlledTextInput name="size" label="Tamanho" />
 
           <Button fullWidth type="submit" variant="contained" sx={{ mt: 2 }}>
             Criar rack

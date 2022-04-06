@@ -3,13 +3,13 @@ import Table from "app/hooks/useTable";
 import Dropdown from "app/components/Dropdown";
 import Column from "app/components/Column";
 import {
-  FloorResponse,
   useDeleteFloorMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 import Row from "app/components/Row";
 import ButtonLink from "app/components/ButtonLink";
+import { FloorResponse } from "app/models/data-center.model";
 
 const columns = [
   // {

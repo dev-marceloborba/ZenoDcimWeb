@@ -9,12 +9,10 @@ import Form from "app/components/Form";
 import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
-import {
-  BuildingRequest,
-  useAddBuildingMutation,
-} from "app/services/datacenter";
+import { useAddBuildingMutation } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
+import { BuildingRequest } from "app/models/data-center.model";
 
 const BuildingForm: React.FC = () => {
   const [addBuilding, { isLoading, error, isError }] = useAddBuildingMutation();

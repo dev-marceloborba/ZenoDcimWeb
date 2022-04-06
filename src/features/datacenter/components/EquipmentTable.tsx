@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import Table from "app/hooks/useTable";
 import {
-  BuildingResponse,
-  EquipmentResponse,
-  FloorResponse,
-  RoomResponse,
   useDeleteEquipmentMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
@@ -12,6 +8,12 @@ import Row from "app/components/Row";
 import Dropdown from "app/components/Dropdown";
 import Loading from "app/components/Loading";
 import ButtonLink from "app/components/ButtonLink";
+import {
+  BuildingResponse,
+  EquipmentResponse,
+  FloorResponse,
+  RoomResponse,
+} from "app/models/data-center.model";
 
 const columns = [
   // {

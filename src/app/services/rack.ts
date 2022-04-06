@@ -1,64 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
+import {
+  BaseEquipmentRequest,
+  BaseEquipmentResponse,
+  ERackEquipmentType,
+  RackEquipmentMerged,
+  RackEquipmentRequest,
+  RackEquipmentResponse,
+  RackRequest,
+  RackResponse,
+  RacksResponse,
+} from "app/models/rack.model";
 import { RootState } from "app/store";
-import { ApiResponse } from "./api-response";
-
-export interface BaseEquipmentResponse extends BaseEquipmentRequest {
-  id: string;
-}
-
-export interface BaseEquipmentRequest {
-  name: string;
-  model: string;
-  manufactor: string;
-  serialNumber: string;
-}
-
-export interface RackEquipmentResponse extends RackEquipmentRequest {
-  id: string;
-}
-
-export interface RackEquipmentRequest {
-  id: string;
-  baseEquipment: BaseEquipmentResponse;
-  initialPosition: number;
-  finalPosition: number;
-  rackEquipmentType: number;
-}
-
-export interface RackResponse {
-  id: string;
-  size: string;
-  localization: string;
-  rackEquipments?: RackEquipmentResponse[];
-}
-
-export interface RackRequest {
-  size: number;
-  localization: string;
-}
-
-export enum ERackEquipmentType {
-  SERVER = 0,
-  SWITCH = 1,
-  STORAGE = 2,
-  BACKUP_ROBOT = 3,
-}
-
-export type RackEquipmentMerged = {
-  rackId: string;
-  size: string;
-  localization: string;
-  equipmentType?: string;
-  name?: string;
-  model?: string;
-  manufactor?: string;
-  serialNumber?: string;
-  initialPosition?: number;
-  finalPosition?: number;
-};
-
-export type RacksResponse = RackResponse[];
+import { ApiResponse } from "../models/api-response";
 
 function getEquipmentDescription(
   rackEquipmentType: ERackEquipmentType

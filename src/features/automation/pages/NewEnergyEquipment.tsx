@@ -11,7 +11,6 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
 import ControlledTextInput from "app/components/ControlledTextInput";
-import { EnergyEquipmentRequest } from "app/services/automation-register";
 import PageTitle from "app/components/PageTitle";
 import Table from "app/hooks/useTable";
 // import { automationParameters } from "app/data/automation-parameters";
@@ -29,7 +28,17 @@ import Row from "app/components/Row";
 import Form from "app/components/Form";
 import Column from "app/components/Column";
 import { useToast } from "app/components/Toast";
-import { useFindEquipmentByIdMutation } from "app/services/datacenter";
+import {
+  FloorResponse,
+  RoomResponse,
+  EquipmentParameterRequest,
+  EquipmentRequest,
+} from "app/models/data-center.model";
+import {
+  useCreateEquipmentParameterMutation,
+  useFindEquipmentByIdMutation,
+  useListBuildingsQuery,
+} from "app/services/datacenter";
 
 const NewEnergyEquipment: React.FC = () => {
   const toast = useToast();
@@ -37,56 +46,15 @@ const NewEnergyEquipment: React.FC = () => {
   const navigate = useNavigate();
   const [findEquipmentByid, { data: equipment }] =
     useFindEquipmentByIdMutation();
+  const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
+
+  const { data: buildings } = useListBuildingsQuery();
+  const [floors, setFloors] = useState<FloorResponse[]>([]);
+  const [rooms, setRooms] = useState<RoomResponse[]>([]);
+
   const [tabIndex, setTabIndex] = useState(0);
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
-  const columns = [
-    {
-      name: "name",
-      label: "Parâmetro",
-      align: "left",
-    },
-    {
-      name: "unit",
-      label: "Unidade",
-      align: "right",
-    },
-    {
-      name: "dataSource",
-      label: "Controlador",
-      align: "right",
-    },
-    {
-      name: "address",
-      label: "Endereço",
-      align: "right",
-    },
-    {
-      name: "lowLimit",
-      label: "Limit min",
-      align: "right",
-    },
-    {
-      name: "highLimit",
-      label: "Limite max",
-      align: "right",
-    },
-    {
-      name: "scale",
-      label: "Escala",
-      align: "right",
-    },
-    {
-      name: "rules",
-      label: "Regras",
-      align: "right",
-    },
-  ];
-
-  const methods = useForm<EnergyEquipmentRequest>({
-    resolver: yupResolver(validationSchema),
-  });
-  const { handleSubmit } = methods;
 
   useEffect(() => {
     async function fetchEquipmentData() {
@@ -97,8 +65,14 @@ const NewEnergyEquipment: React.FC = () => {
     fetchEquipmentData();
   }, [findEquipmentByid, params]);
 
-  const onSubmit: SubmitHandler<EnergyEquipmentRequest> = async (data) => {
-    console.log(data);
+  const methods = useForm<EquipmentRequest>({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const { handleSubmit, watch } = methods;
+
+  const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
+    console.log("data", data);
   };
 
   const handleOpenParameterModal = () => {
@@ -124,11 +98,36 @@ const NewEnergyEquipment: React.FC = () => {
     setTabIndex(newValue);
   };
 
-  const handleSaveParameter = () => {
+  const buildingId = watch("buildingId");
+  const floorId = watch("floorId");
+  const roomId = watch("roomId");
+  const equipmentId = params.id ?? "";
+
+  useEffect(() => {
+    const filteredBuilding = buildings?.find(
+      (building) => building.id === buildingId
+    );
+    setFloors(filteredBuilding?.floors ?? []);
+  }, [buildingId, buildings]);
+
+  useEffect(() => {
+    const filteredFloors = floors?.find((floor) => floor.id === floorId);
+    setRooms(filteredFloors?.rooms ?? []);
+  }, [floorId, floors]);
+
+  const handleSaveParameter = async (parameter: EquipmentParameterRequest) => {
     handleCloseParameterModal();
-    setTimeout(() => {
+    try {
+      const result = await createEquipmentParameter(parameter).unwrap();
+      console.log(result);
       toast.open("Parametro salvo com sucesso", 2000, "success");
-    }, 500);
+    } catch (error) {
+      toast.open(
+        `Erro ao criar parâmetro: ${parameter.name}: ${error}`,
+        2000,
+        "error"
+      );
+    }
   };
 
   const handleSelectedEquipmentParameter = (parameter: any) => {
@@ -187,13 +186,36 @@ const NewEnergyEquipment: React.FC = () => {
                     <ControlledTextInput name="campus" label="Campus" />
                   </Grid>
                   <Grid item md={6}>
-                    <ControlledTextInput name="floor" label="Andar" />
+                    <ControlledTextInput
+                      name="floor"
+                      label="Andar"
+                      forceSelect
+                      items={floors?.map((floor) => ({
+                        description: floor.name,
+                        value: floor.id,
+                      }))}
+                    />
                   </Grid>
                   <Grid item md={6}>
-                    <ControlledTextInput name="building" label="Prédio" />
+                    <ControlledTextInput
+                      name="building"
+                      label="Prédio"
+                      items={buildings?.map((building) => ({
+                        description: building.name,
+                        value: building.id,
+                      }))}
+                    />
                   </Grid>
                   <Grid item md={6}>
-                    <ControlledTextInput name="room" label="Sala" />
+                    <ControlledTextInput
+                      name="room"
+                      label="Sala"
+                      forceSelect
+                      items={rooms?.map((room) => ({
+                        description: room.name,
+                        value: room.id,
+                      }))}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -247,6 +269,7 @@ const NewEnergyEquipment: React.FC = () => {
         <ParameterModal
           closeModal={handleCloseParameterModal}
           onSaveData={handleSaveParameter}
+          requestParameters={{ buildingId, floorId, roomId, equipmentId }}
         />
       </Modal>
       <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>
@@ -258,10 +281,53 @@ const NewEnergyEquipment: React.FC = () => {
 
 export default NewEnergyEquipment;
 
-const validationSchema: SchemaOf<EnergyEquipmentRequest> = object().shape({
+const columns = [
+  {
+    name: "name",
+    label: "Parâmetro",
+    align: "left",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+    align: "right",
+  },
+  {
+    name: "dataSource",
+    label: "Fonte de dados",
+    align: "right",
+  },
+  {
+    name: "address",
+    label: "Endereço",
+    align: "right",
+  },
+  {
+    name: "lowLimit",
+    label: "Limit min",
+    align: "right",
+  },
+  {
+    name: "highLimit",
+    label: "Limite max",
+    align: "right",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+    align: "right",
+  },
+  {
+    name: "rules",
+    label: "Regras",
+    align: "right",
+  },
+];
+
+const validationSchema = object().shape({
   name: string().required("Nomenclatura é obrigatório"),
   campus: string().required("Campus é obrigatório"),
-  floor: string().required("Andar é obrigatório"),
+  floorId: string().required("Andar é obrigatório"),
   building: string().required("Prédio é obrigatório"),
   room: string().required("Sala é obrigatória"),
 });

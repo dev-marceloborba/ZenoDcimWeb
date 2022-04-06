@@ -10,11 +10,11 @@ import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
-  FloorRequest,
   useAddFloorMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
+import { FloorRequest } from "app/models/data-center.model";
 
 const FloorForm: React.FC = () => {
   const [addFloor, { isLoading, error, isError }] = useAddFloorMutation();

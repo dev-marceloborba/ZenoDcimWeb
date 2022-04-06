@@ -5,10 +5,11 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 
-import { PlcRequest, useAddPlcMutation } from "app/services/automation";
+import { useAddPlcMutation } from "app/services/automation";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, number, string } from "yup";
+import { PlcRequest } from "app/models/automation.model";
 
 const NewClp: React.FC = () => {
   const methods = useForm<PlcRequest>({

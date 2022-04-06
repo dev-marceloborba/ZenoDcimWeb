@@ -21,7 +21,7 @@ import Logo from "app/assets/logo-horizontal-white.svg";
 
 //business logic
 import { useLoginMutation } from "app/services/authentication";
-import type { LoginRequest } from "app/services/authentication";
+import type { LoginRequest } from "app/models/authentication.model";
 import getErrorMessage from "app/utils/apiErrorHandler";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";

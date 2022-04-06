@@ -1,8 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import {
-  BuildingsResponse,
-  useListBuildingsQuery,
-} from "app/services/datacenter";
+import { useListBuildingsQuery } from "app/services/datacenter";
+import { BuildingsResponse } from "app/models/data-center.model";
 
 export type FilterData = {
   energy: boolean;

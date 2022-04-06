@@ -10,13 +10,15 @@ import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
-  EquipmentRequest,
-  FloorResponse,
-  RoomResponse,
   useAddEquipmentMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
+import {
+  EquipmentRequest,
+  FloorResponse,
+  RoomResponse,
+} from "app/models/data-center.model";
 
 const EquipmentForm: React.FC = () => {
   const [addEquipment, { isLoading, error, isError }] =
@@ -34,6 +36,8 @@ const EquipmentForm: React.FC = () => {
 
   const buildingId = watch("buildingId");
   const floorId = watch("floorId");
+
+  console.log(buildingId, floorId);
 
   useEffect(() => {
     const filteredBuilding = buildings?.find(

@@ -1,29 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
+import {
+  CompanyRequest,
+  CompanyResponse,
+  ContractRequest,
+  ContractResponse,
+} from "app/models/company.model";
 import { RootState } from "app/store";
-import { ApiResponse } from "./api-response";
-
-export interface CompanyRequest {
-  companyName: string;
-  tradingName: string;
-  registrationNumber: string;
-}
-
-export interface CompanyResponse extends CompanyRequest {
-  id: string;
-}
-
-export interface ContractRequest {
-  companyId: string;
-  startDate: Date;
-  endDate: Date;
-  powerConsumptionDailyLimit: number;
-  intervalEndingNotification: number;
-}
-
-export interface ContractResponse extends ContractRequest {
-  id: string;
-}
+import { ApiResponse } from "../models/api-response";
 
 export const companyApi = createApi({
   reducerPath: "companiesApi",

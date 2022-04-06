@@ -6,10 +6,7 @@ import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import { useToast } from "app/components/Toast";
 
-import {
-  useCreateUserMutation,
-  UserRequest,
-} from "app/services/authentication";
+import { useCreateUserMutation } from "app/services/authentication";
 
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,6 +17,7 @@ import getErrorMessage from "app/utils/apiErrorHandler";
 import { useListCompaniesQuery } from "app/services/company";
 import Card from "app/components/Card";
 import Loading from "app/components/Loading";
+import { UserRequest } from "app/models/authentication.model";
 
 const CreateUser: React.FC = () => {
   const methods = useForm<UserRequest>({

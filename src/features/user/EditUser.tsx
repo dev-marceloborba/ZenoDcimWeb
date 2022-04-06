@@ -4,15 +4,13 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
-import {
-  EditUserRequest,
-  useEditUserMutation,
-} from "app/services/authentication";
+import { useEditUserMutation } from "app/services/authentication";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";
 import Card from "app/components/Card";
 import Loading from "app/components/Loading";
 import { useToast } from "app/components/Toast";
+import { EditUserRequest } from "app/models/authentication.model";
 
 const EditUser: React.FC = () => {
   const [editUser, { isError, isLoading, error }] = useEditUserMutation();
