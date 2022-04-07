@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
-import TransferList from "app/components/TransferList";
-import Typography from "@mui/material/Typography";
-import Dropdown from "app/components/Dropdown";
+import TransferList, { TransferListItem } from "app/components/TransferList";
+
 import {
-  useFindEquipmentParameterByIdMutation,
+  // useFindEquipmentParameterByIdMutation,
   useListAllEquipmentsQuery,
 } from "app/services/datacenter";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
@@ -13,8 +12,8 @@ import { EquipmentParameterResponse } from "app/models/data-center.model";
 
 const EquipmentParameterTransfer: React.FC = () => {
   const { data: equipments, isLoading } = useListAllEquipmentsQuery();
-  const [findParameter, { data: parameter }] =
-    useFindEquipmentParameterByIdMutation();
+  // const [findParameter, { data: parameter }] =
+  //   useFindEquipmentParameterByIdMutation();
   const [sourceEquipment, setSourceEquipment] = useState<string | null>(null);
   const [sourceInputValue, setSourceInputValue] = React.useState("");
 
@@ -32,6 +31,23 @@ const EquipmentParameterTransfer: React.FC = () => {
 
   const handleChangeTargetEquipment = (target: string) => {
     setTargetEquipment(target);
+  };
+
+  const handleSaveParameters = (transferList: TransferListItem[]) => {
+    console.log(transferList);
+    const parameters =
+      equipments?.find((x) => x.component === sourceEquipment)
+        ?.equipmentParameters ?? [];
+    let selectedParameters: EquipmentParameterResponse[] = [];
+
+    parameters.forEach((value) => {
+      const item = transferList.find((x) => value.id === x.id);
+      if (item) {
+        selectedParameters.push(value);
+      }
+    });
+
+    console.log(selectedParameters);
   };
 
   useEffect(() => {
@@ -81,6 +97,7 @@ const EquipmentParameterTransfer: React.FC = () => {
             label: parameter.name,
           })) ?? []
         }
+        onSave={handleSaveParameters}
       />
     </HeroContainer>
   );

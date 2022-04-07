@@ -13,9 +13,10 @@ type TransferListProps = {
   sx?: SxProps<Theme>;
   leftItems: TransferListItem[];
   rightItems: TransferListItem[];
+  onSave(rightItems: TransferListItem[]): void;
 };
 
-type TransferListItem = {
+export type TransferListItem = {
   id: string;
   label: string;
 };
@@ -31,17 +32,23 @@ function intersection(
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-const TransferList: React.FC<TransferListProps> = ({ ...props }) => {
+const TransferList: React.FC<TransferListProps> = ({
+  sx,
+  leftItems,
+  rightItems,
+  onSave,
+}) => {
   const [checked, setChecked] = React.useState<readonly TransferListItem[]>([]);
-  // const [left, setLeft] = React.useState<readonly number[]>([0, 1, 2, 3]);
-  // const [right, setRight] = React.useState<readonly number[]>([4, 5, 6, 7]);
+  const [left, setLeft] = React.useState<TransferListItem[]>([]);
+  const [right, setRight] = React.useState<TransferListItem[]>([]);
 
-  const [left, setLeft] = React.useState<TransferListItem[]>(props.leftItems);
-  const [right, setRight] = React.useState<TransferListItem[]>(
-    props.rightItems
-  );
+  React.useEffect(() => {
+    setLeft(leftItems);
+  }, [leftItems]);
 
-  console.log(left);
+  React.useEffect(() => {
+    setRight(rightItems);
+  }, [rightItems]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -81,13 +88,15 @@ const TransferList: React.FC<TransferListProps> = ({ ...props }) => {
     setRight([]);
   };
 
+  const handleOnSave = () => {
+    onSave(right);
+  };
+
   const customList = (items: readonly TransferListItem[]) => (
     <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
       <List dense component="div" role="list">
         {items.map((value: TransferListItem) => {
           const labelId = `transfer-list-item-${value}-label`;
-
-          console.log(value.label);
 
           return (
             <ListItem
@@ -116,60 +125,65 @@ const TransferList: React.FC<TransferListProps> = ({ ...props }) => {
   );
 
   return (
-    <Grid
-      container
-      spacing={2}
-      justifyContent="center"
-      alignItems="center"
-      sx={props.sx}
-    >
-      <Grid item>{customList(left)}</Grid>
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleAllRight}
-            disabled={left.length === 0}
-            aria-label="move all right"
-          >
-            ≫
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
-            aria-label="move selected right"
-          >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
-            aria-label="move selected left"
-          >
-            &lt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
-            onClick={handleAllLeft}
-            disabled={right.length === 0}
-            aria-label="move all left"
-          >
-            ≪
-          </Button>
+    <>
+      <Grid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+        sx={sx}
+      >
+        <Grid item>{customList(left)}</Grid>
+        <Grid item>
+          <Grid container direction="column" alignItems="center">
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleAllRight}
+              disabled={left.length === 0}
+              aria-label="move all right"
+            >
+              ≫
+            </Button>
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleCheckedRight}
+              disabled={leftChecked.length === 0}
+              aria-label="move selected right"
+            >
+              &gt;
+            </Button>
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleCheckedLeft}
+              disabled={rightChecked.length === 0}
+              aria-label="move selected left"
+            >
+              &lt;
+            </Button>
+            <Button
+              sx={{ my: 0.5 }}
+              variant="outlined"
+              size="small"
+              onClick={handleAllLeft}
+              disabled={right.length === 0}
+              aria-label="move all left"
+            >
+              ≪
+            </Button>
+          </Grid>
         </Grid>
+        <Grid item>{customList(right)}</Grid>
+        <Button sx={{ ml: 2 }} variant="contained" onClick={handleOnSave}>
+          Salvar
+        </Button>
       </Grid>
-      <Grid item>{customList(right)}</Grid>
-    </Grid>
+    </>
   );
 };
 
