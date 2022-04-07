@@ -13,6 +13,8 @@ import {
   EquipmentResponse,
   FloorRequest,
   FloorResponse,
+  MultipleEquipmentParameterRequest,
+  MultipleEquipmentParameterResponse,
   MultipleEquipmentsRequest,
   RoomRequest,
   RoomResponse,
@@ -174,6 +176,16 @@ export const datacenterApi = createApi({
         body: params,
       }),
     }),
+    createMultipleEquipmentParameters: builder.mutation<
+      MultipleEquipmentParameterResponse,
+      MultipleEquipmentParameterRequest
+    >({
+      query: (params) => ({
+        url: "v1/data-center/building/floor/room/equipment/parameter/multiple",
+        method: "POST",
+        body: params,
+      }),
+    }),
   }),
 });
 
@@ -197,4 +209,5 @@ export const {
   useFindEquipmentParameterByIdMutation,
   useCreateEquipmentParameterMutation,
   useListAllEquipmentsQuery,
+  useCreateMultipleEquipmentParametersMutation,
 } = datacenterApi;

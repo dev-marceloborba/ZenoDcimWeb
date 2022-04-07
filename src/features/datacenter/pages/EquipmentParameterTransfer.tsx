@@ -4,7 +4,7 @@ import PageTitle from "app/components/PageTitle";
 import TransferList, { TransferListItem } from "app/components/TransferList";
 
 import {
-  // useFindEquipmentParameterByIdMutation,
+  useCreateMultipleEquipmentParametersMutation,
   useListAllEquipmentsQuery,
 } from "app/services/datacenter";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
@@ -12,8 +12,9 @@ import { EquipmentParameterResponse } from "app/models/data-center.model";
 
 const EquipmentParameterTransfer: React.FC = () => {
   const { data: equipments, isLoading } = useListAllEquipmentsQuery();
-  // const [findParameter, { data: parameter }] =
-  //   useFindEquipmentParameterByIdMutation();
+  const [createMultipleParameters] =
+    useCreateMultipleEquipmentParametersMutation();
+
   const [sourceEquipment, setSourceEquipment] = useState<string | null>(null);
   const [sourceInputValue, setSourceInputValue] = React.useState("");
 
@@ -33,8 +34,7 @@ const EquipmentParameterTransfer: React.FC = () => {
     setTargetEquipment(target);
   };
 
-  const handleSaveParameters = (transferList: TransferListItem[]) => {
-    console.log(transferList);
+  const handleSaveParameters = async (transferList: TransferListItem[]) => {
     const parameters =
       equipments?.find((x) => x.component === sourceEquipment)
         ?.equipmentParameters ?? [];
@@ -47,7 +47,11 @@ const EquipmentParameterTransfer: React.FC = () => {
       }
     });
 
-    console.log(selectedParameters);
+    const result = await createMultipleParameters({
+      parameters: selectedParameters,
+    }).unwrap();
+
+    console.log(result);
   };
 
   useEffect(() => {

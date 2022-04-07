@@ -90,3 +90,10 @@ export type BuildingMerged = {
 export type MultipleEquipmentsRequest = {
   equipments: EquipmentRequest[];
 };
+
+export interface MultipleEquipmentParameterRequest {
+  parameters: EquipmentParameterRequest[];
+}
+
+export interface MultipleEquipmentParameterResponse
+  extends MultipleEquipmentParameterRequest {}
