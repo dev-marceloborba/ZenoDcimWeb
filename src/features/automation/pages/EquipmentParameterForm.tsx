@@ -60,10 +60,10 @@ const EquipmentParameterForm: React.FC = () => {
       >
         <Typography variant="h5">Novo parâmetro</Typography>
         <FormProvider {...methods}>
-          <ControlledTextInput name="parameter" label="Parâmetro" />
+          <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
-          <ControlledTextInput name="limitMin" label="Limite inferior" />
-          <ControlledTextInput name="limitMax" label="Limite superior" />
+          <ControlledTextInput name="lowLimit" label="Limite inferior" />
+          <ControlledTextInput name="highLimit" label="Limite superior" />
           <ControlledTextInput name="scale" label="Escala" />
           <ControlledTextInput name="dataSource" label="Fonte de dados" />
           <ControlledTextInput name="address" label="Endereço" />

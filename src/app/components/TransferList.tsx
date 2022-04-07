@@ -7,24 +7,46 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import { SxProps, Theme } from "@mui/material/styles";
 
-function not(a: readonly number[], b: readonly number[]) {
+type TransferListProps = {
+  sx?: SxProps<Theme>;
+  leftItems: TransferListItem[];
+  rightItems: TransferListItem[];
+};
+
+type TransferListItem = {
+  id: string;
+  label: string;
+};
+
+function not(a: readonly TransferListItem[], b: readonly TransferListItem[]) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-function intersection(a: readonly number[], b: readonly number[]) {
+function intersection(
+  a: readonly TransferListItem[],
+  b: readonly TransferListItem[]
+) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-const TransferList: React.FC = () => {
-  const [checked, setChecked] = React.useState<readonly number[]>([]);
-  const [left, setLeft] = React.useState<readonly number[]>([0, 1, 2, 3]);
-  const [right, setRight] = React.useState<readonly number[]>([4, 5, 6, 7]);
+const TransferList: React.FC<TransferListProps> = ({ ...props }) => {
+  const [checked, setChecked] = React.useState<readonly TransferListItem[]>([]);
+  // const [left, setLeft] = React.useState<readonly number[]>([0, 1, 2, 3]);
+  // const [right, setRight] = React.useState<readonly number[]>([4, 5, 6, 7]);
+
+  const [left, setLeft] = React.useState<TransferListItem[]>(props.leftItems);
+  const [right, setRight] = React.useState<TransferListItem[]>(
+    props.rightItems
+  );
+
+  console.log(left);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = (value: number) => () => {
+  const handleToggle = (value: TransferListItem) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -59,15 +81,17 @@ const TransferList: React.FC = () => {
     setRight([]);
   };
 
-  const customList = (items: readonly number[]) => (
+  const customList = (items: readonly TransferListItem[]) => (
     <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
       <List dense component="div" role="list">
-        {items.map((value: number) => {
+        {items.map((value: TransferListItem) => {
           const labelId = `transfer-list-item-${value}-label`;
+
+          console.log(value.label);
 
           return (
             <ListItem
-              key={value}
+              key={value.label}
               role="listitem"
               button
               onClick={handleToggle(value)}
@@ -82,7 +106,7 @@ const TransferList: React.FC = () => {
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={value.label} />
             </ListItem>
           );
         })}
@@ -92,7 +116,13 @@ const TransferList: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      alignItems="center"
+      sx={props.sx}
+    >
       <Grid item>{customList(left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
