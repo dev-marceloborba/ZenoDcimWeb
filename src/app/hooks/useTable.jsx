@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
-import Box from "@mui/material/Box";
+
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+
 import IconButton from "@mui/material/IconButton";
 import TableContainer from "@mui/material/TableContainer";
 import MuiTable from "@mui/material/Table";
@@ -22,6 +24,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NoDataText from "app/components/NoDataText";
 
+import Row from "app/components/Row";
+
 const Table = ({ rows, columns, ...props }) => {
   let fields = [];
   let alteredColumns = [];
@@ -38,7 +42,7 @@ const Table = ({ rows, columns, ...props }) => {
   const navigate = useNavigate();
 
   const renderActions = (row, key) => (
-    <Box key={key} component="div">
+    <Row>
       <IconButton onClick={() => handleEdit(row)}>
         <EditIcon />
       </IconButton>
@@ -46,7 +50,7 @@ const Table = ({ rows, columns, ...props }) => {
       <IconButton onClick={() => handleShowModal(row)}>
         <DeleteIcon />
       </IconButton>
-    </Box>
+    </Row>
   );
 
   if (showActions) {
@@ -68,6 +72,7 @@ const Table = ({ rows, columns, ...props }) => {
   }
 
   const handleEdit = (row) => {
+    console.log("***-> edit");
     navigate({
       pathname: editPage,
       search: `?${createSearchParams(row)}`,
@@ -88,6 +93,7 @@ const Table = ({ rows, columns, ...props }) => {
   };
 
   const handleOnClickRow = (row) => {
+    console.log("***-> click row");
     if (onRowClick) {
       onRowClick(row);
     }
@@ -118,65 +124,72 @@ const Table = ({ rows, columns, ...props }) => {
   };
 
   return (
-    <TableContainer>
-      <MuiTable>
-        <TableHead>
-          <TableRow>
-            {alteredColumns.map((column) => (
-              <TableCell key={column.label} align={column.align}>
-                {column.label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {alteredRows?.map((row) => {
-            return (
-              <TableRow
-                key={row.id}
-                sx={(theme) => ({
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: theme.palette.action.hover },
-                  transition: "background-color 0.1s ease-in-out",
-                })}
-                onClick={() => handleOnClickRow(row)}
-              >
-                {fields.map((field, index) => {
-                  return renderField(
-                    row[field],
-                    `${row[field]}-${index}`,
-                    index,
-                    field
-                  );
-                })}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </MuiTable>
-      <Dialog
-        open={!!selectedRow}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Confirmar ação</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja apagar o registro?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleClose}>
-            Fechar
-          </Button>
-          <Button variant="contained" onClick={handleConfirmDeletion} autoFocus>
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {alteredRows?.length === 0 && <NoDataText />}
-    </TableContainer>
+    <Card>
+      <TableContainer>
+        <MuiTable>
+          <TableHead>
+            <TableRow>
+              {alteredColumns.map((column) => (
+                <TableCell key={column.label} align={column.align}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {alteredRows?.map((row) => {
+              return (
+                <TableRow
+                  key={row.id}
+                  sx={(theme) => ({
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: theme.palette.action.hover },
+                    transition: "background-color 0.1s ease-in-out",
+                    zIndex: 1,
+                  })}
+                  onClick={() => handleOnClickRow(row)}
+                >
+                  {fields.map((field, index) => {
+                    return renderField(
+                      row[field],
+                      `${row[field]}-${index}`,
+                      index,
+                      field
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </MuiTable>
+        <Dialog
+          open={!!selectedRow}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Confirmar ação</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Tem certeza que deseja apagar o registro?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="outlined" onClick={handleClose}>
+              Fechar
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleConfirmDeletion}
+              autoFocus
+            >
+              Confirmar
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {alteredRows?.length === 0 && <NoDataText />}
+      </TableContainer>
+    </Card>
   );
 };
 

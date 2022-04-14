@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -9,6 +9,7 @@ import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import RoomDropdown from "../components/RoomDropdown";
 import Table from "app/hooks/useTable";
+import MuiDataTable from "mui-datatables";
 
 // icons
 import AddIcon from "@mui/icons-material/Add";
@@ -22,61 +23,166 @@ import AccessButton from "app/components/AccessButton";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import { EquipmentData } from "app/data/automation-management";
 
+import tableOptions from "app/utils/tableOptions";
+import Column from "app/components/Column";
+import tableActions from "app/utils/tableActions";
+import findIdByName from "app/utils/findIdByName";
+import { useListAllEquipmentsQuery } from "app/services/datacenter";
+import findObjectByProperty from "app/utils/findObjectByProperty";
+import {
+  EquipmentRequest,
+  EquipmentResponse,
+} from "app/models/data-center.model";
+
 const AutomationRegisterManagement: React.FC = () => {
-  const { buildings, building, floor, room } = useAutomationFilters();
+  const [tableData, setTableData] = useState<any>();
+  // const { buildings, building, floor, room } = useAutomationFilters();
+  const { buildings } = useAutomationFilters();
+  const { data: equipments } = useListAllEquipmentsQuery();
   const navigate = useNavigate();
   const columns = [
     {
       name: "name",
       label: "Componente",
       align: "left",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "building",
       label: "Prédio",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "floor",
       label: "Andar",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "room",
       label: "Sala",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "status",
       label: "Status",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "alarms",
       label: "Alarmes",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
     {
       name: "createdAt",
       label: "Data de criação",
       align: "right",
+      options: {
+        filter: true,
+        sort: true,
+      },
     },
+    // {
+    //   ...tableActions(navigate, "/automation/register/edit"),
+    // },
+    // {
+    //   name: "actions",
+    //   label: "Ações",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     empty: false,
+    //     customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+    //       const onDetailsClick = () => {
+    //         const { rowData } = tableMeta;
+    //         console.log(rowData);
+    //       };
+
+    //       return (
+    //         <Row
+    //           sx={{
+    //             " & .MuiButton-root": {
+    //               fontSize: "0.75rem",
+    //             },
+    //             " & .MuiButton-root:nth-child(even)": {
+    //               // margin: "12px 0",
+    //               margin: "0 12px",
+    //             },
+    //           }}
+    //         >
+    //           <Button variant="outlined" color="info" onClick={onDetailsClick}>
+    //             Detalhes
+    //           </Button>
+    //           <Button variant="outlined">Editar</Button>
+    //           <Button variant="outlined" color="error">
+    //             Apagar
+    //           </Button>
+    //         </Row>
+    //       );
+    //     },
+    //   },
+    // },
   ];
 
-  const equipments =
-    buildings
-      ?.find((x) => x.id === building)
-      ?.floors?.find((x) => x.id === floor)
-      ?.rooms?.find((x) => x.id === room)?.equipments ?? [];
+  useEffect(() => {
+    const vet: any = [];
+    buildings?.forEach((b) =>
+      b.floors?.forEach((f) =>
+        f.rooms?.forEach((r) =>
+          r.equipments?.forEach((e) => {
+            vet.push({
+              building: b.name,
+              floor: f.name,
+              alarms: e.alarms,
+              createdAt: new Date().toLocaleDateString(),
+              room: r.name,
+              status: e.status.toString(),
+              name: e.component,
+            });
+          })
+        )
+      )
+    );
 
-  const navigateToEquipmentDetails = (row: any) => {
-    const seletectedEquipment = equipments.find(
-      (x) => x.component === row.name
-    );
-    navigate(
-      `/zeno/automation/management/equipment/${seletectedEquipment!.id}`
-    );
-  };
+    setTableData(vet);
+  }, [buildings, setTableData]);
+
+  // const equipments =
+  //   buildings
+  //     ?.find((x) => x.id === building)
+  //     ?.floors?.find((x) => x.id === floor)
+  //     ?.rooms?.find((x) => x.id === room)?.equipments ?? [];
+
+  // const navigateToEquipmentDetails = (row: any) => {
+  //   const seletectedEquipment = equipments.find(
+  //     (x) => x.component === row.name
+  //   );
+  //   navigate(
+  //     `/zeno/automation/management/equipment/${seletectedEquipment!.id}`
+  //   );
+  // };
 
   return (
     <HeroContainer>
@@ -92,11 +198,11 @@ const AutomationRegisterManagement: React.FC = () => {
         <EtcFilters />
       </Row>
 
-      <Row sx={{ mt: 2, maxWidth: "480px" }}>
+      {/* <Row sx={{ mt: 2, maxWidth: "480px" }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />
         <RoomDropdown sx={{ ml: 2 }} />
-      </Row>
+      </Row> */}
 
       <Divider sx={{ mt: 2 }} />
 
@@ -126,19 +232,37 @@ const AutomationRegisterManagement: React.FC = () => {
         />
       </Row>
 
-      <Row sx={{ mt: 4 }}>
-        <Table
+      <Row
+        sx={{
+          mt: 2,
+          " & .MuiPaper-root": {
+            width: "100%",
+          },
+        }}
+      >
+        {/* <Table
           columns={columns}
-          rows={equipments?.map<EquipmentData>((x) => ({
-            building,
-            floor,
-            alarms: x.alarms,
-            createdAt: new Date().toLocaleDateString(),
-            room: room,
-            status: x.status.toString(),
-            name: x.component,
-          }))}
+          rows={tableData}
           onRowClick={navigateToEquipmentDetails}
+          showActions
+        /> */}
+        <MuiDataTable
+          title="Equipamentos de Energia"
+          data={tableData}
+          columns={columns}
+          options={{
+            ...tableOptions,
+            onRowClick: (rowData) => {
+              const selectedEquipment = findObjectByProperty(
+                equipments ?? [],
+                "component",
+                rowData[0]
+              ) as EquipmentResponse;
+              navigate(
+                `/zeno/automation/management/equipment/${selectedEquipment.id}`
+              );
+            },
+          }}
         />
       </Row>
     </HeroContainer>

@@ -125,11 +125,6 @@ export const datacenterApi = createApi({
         body: newEquipment,
       }),
     }),
-    listEquipments: builder.query<EquipmentResponse[], void>({
-      query: () => ({
-        url: "v1/data-center/building/floor/room/equipment",
-      }),
-    }),
     deleteEquipment: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/equipment/${id}`,
@@ -201,7 +196,6 @@ export const {
   useListRoomQuery,
   useDeleteRoomMutation,
   useAddEquipmentMutation,
-  useListEquipmentsQuery,
   useDeleteEquipmentMutation,
   useFindEquipmentByIdMutation,
   useFindBuildingByIdMutation,
