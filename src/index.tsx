@@ -15,14 +15,12 @@ import Toast from "app/components/Toast";
 import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig } from "app/config/env";
-// import GlobalStyle from "app/styles/global-style";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={brandingDarkTheme}>
         <CssBaseLine />
-        {/* <GlobalStyle /> */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Connector
             brokerUrl={brokerUrl}

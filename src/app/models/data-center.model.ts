@@ -97,3 +97,13 @@ export interface MultipleEquipmentParameterRequest {
 
 export interface MultipleEquipmentParameterResponse
   extends MultipleEquipmentParameterRequest {}
+
+export interface EquipmentParameterGroupRequest {
+  name: string;
+  parameters: EquipmentParameterRequest[];
+}
+
+export interface EquipmentParameterGroupResponse
+  extends EquipmentParameterGroupRequest {
+  id: string;
+}

@@ -5,10 +5,10 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import PageTitle from "app/components/PageTitle";
 import EtcFilters from "../components/EtcFilters";
-import BuildingDropdown from "../components/BuildingDropdown";
-import FloorDropdown from "../components/FloorDropdown";
-import RoomDropdown from "../components/RoomDropdown";
-import Table from "app/hooks/useTable";
+// import BuildingDropdown from "../components/BuildingDropdown";
+// import FloorDropdown from "../components/FloorDropdown";
+// import RoomDropdown from "../components/RoomDropdown";
+// import Table from "app/hooks/useTable";
 import MuiDataTable from "mui-datatables";
 
 // icons
@@ -21,18 +21,12 @@ import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
 import AccessButton from "app/components/AccessButton";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
-import { EquipmentData } from "app/data/automation-management";
 
 import tableOptions from "app/utils/tableOptions";
-import Column from "app/components/Column";
-import tableActions from "app/utils/tableActions";
-import findIdByName from "app/utils/findIdByName";
+// import Column from "app/components/Column";
 import { useListAllEquipmentsQuery } from "app/services/datacenter";
 import findObjectByProperty from "app/utils/findObjectByProperty";
-import {
-  EquipmentRequest,
-  EquipmentResponse,
-} from "app/models/data-center.model";
+import { EquipmentResponse } from "app/models/data-center.model";
 
 const AutomationRegisterManagement: React.FC = () => {
   const [tableData, setTableData] = useState<any>();

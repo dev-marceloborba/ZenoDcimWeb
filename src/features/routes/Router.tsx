@@ -39,6 +39,8 @@ import FloorForm from "features/datacenter/components/FloorForm";
 import EquipmentForm from "features/datacenter/components/EquipmentForm";
 import EquipmentParameterForm from "features/automation/pages/EquipmentParameterForm";
 import EquipmentParameterTransfer from "features/datacenter/pages/EquipmentParameterTransfer";
+import EquipmentParameterGroupForm from "features/datacenter/components/EquipmentParameterGroupForm";
+import ModalProvider from "app/hooks/useModal";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -59,7 +61,6 @@ export const SubRoutes: React.FC = () => {
       <Routes>
         <Route path="/automation/etc" element={<Etc />} />
         <Route path="/automation/etc/details" element={<EtcDetails />} />
-
         <Route path="/automation/fire-system" element={<FireSystem />} />
         <Route
           path="/automation/fire-system/details"
@@ -69,19 +70,15 @@ export const SubRoutes: React.FC = () => {
           path="/automation/fire-system/events"
           element={<FireSystemEvents />}
         />
-
         <Route
           path="automation/equipment-conectivity"
           element={<EquipmentConectivity />}
         />
-
         <Route
           path="automation/equipment-conectivity/rack"
           element={<RackEquipmentConnectivity />}
         />
-
         <Route path="/automation/access-control" element={<AccessControl />} />
-
         <Route
           path="/automation/management"
           element={<AutomationRegisterManagement />}
@@ -94,14 +91,11 @@ export const SubRoutes: React.FC = () => {
           path="/automation/management/building"
           element={<DataCenterManagement />}
         />
-
         <Route
           path="/automation/flow-diagram-editor"
           element={<FlowDiagramEditor />}
         />
-
         <Route path="/settings" element={<UserSettings />} />
-
         <Route
           path="/automation/management/building/new"
           element={<BuildingForm />}
@@ -115,26 +109,30 @@ export const SubRoutes: React.FC = () => {
           path="/automation/management/equipment/new"
           element={<EquipmentForm />}
         />
-
         <Route
           path="/automation/management/equipment/parameter/form"
           element={<EquipmentParameterForm />}
         />
-
         <Route
           path="/automation/management/equipment/parameter/transfer"
           element={<EquipmentParameterTransfer />}
+        />
+        <Route
+          path="/automation/management/equipment/parameter/group/form"
+          element={
+            <ModalProvider>
+              <EquipmentParameterGroupForm />
+            </ModalProvider>
+          }
         />
 
         {/* <Route
           path="/automation/management/equipment/:equipmentId/parameter/:equipmentParameterId"
           element={<EquipmentParameterForm />}
         /> */}
-
         <Route path="/settings/new-user" element={<CreateUser />} />
         <Route path="/settings/edit-user" element={<EditUser />} />
         <Route path="/settings/new-company" element={<NewCompany />} />
-
         {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />
                 <Route path="admin/edit" element={<EditUser />} />

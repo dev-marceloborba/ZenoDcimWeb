@@ -7,6 +7,8 @@ import {
   BuildingRequest,
   BuildingResponse,
   BuildingsResponse,
+  EquipmentParameterGroupRequest,
+  EquipmentParameterGroupResponse,
   EquipmentParameterRequest,
   EquipmentParameterResponse,
   EquipmentRequest,
@@ -181,6 +183,29 @@ export const datacenterApi = createApi({
         body: params,
       }),
     }),
+    createEquipmentParameterGroup: builder.mutation<
+      EquipmentParameterGroupResponse,
+      EquipmentParameterGroupRequest
+    >({
+      query: (params) => ({
+        url: "v1/data-center/building/floor/room/equipment/parameter/group",
+        method: "POST",
+        body: params,
+      }),
+    }),
+    listAllParameterGroups: builder.query<
+      EquipmentParameterGroupResponse[],
+      void
+    >({
+      query: () => ({
+        url: "v1/data-center/building/floor/room/equipment/parameter/group",
+      }),
+    }),
+    listAllParameters: builder.query<EquipmentParameterResponse[], void>({
+      query: () => ({
+        url: "v1/data-center/building/floor/room/equipment/parameters",
+      }),
+    }),
   }),
 });
 
@@ -204,4 +229,7 @@ export const {
   useCreateEquipmentParameterMutation,
   useListAllEquipmentsQuery,
   useCreateMultipleEquipmentParametersMutation,
+  useCreateEquipmentParameterGroupMutation,
+  useListAllParameterGroupsQuery,
+  useListAllParametersQuery,
 } = datacenterApi;
