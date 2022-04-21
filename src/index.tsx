@@ -15,6 +15,7 @@ import Toast from "app/components/Toast";
 import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig } from "app/config/env";
+import ModalProvider from "app/hooks/useModal";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,7 +30,9 @@ ReactDOM.render(
             <Toast>
               <AutomationFiltersProvider>
                 <ReactFlowProvider>
-                  <App />
+                  <ModalProvider>
+                    <App />
+                  </ModalProvider>
                 </ReactFlowProvider>
               </AutomationFiltersProvider>
             </Toast>

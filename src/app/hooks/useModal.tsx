@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 
@@ -12,15 +18,27 @@ const ModalContext = createContext<ModalContextProps>({} as ModalContextProps);
 const ModalProvider: React.FC = ({ children }) => {
   const [_open, _setOpen] = useState(false);
   const [_title, _setTitle] = useState("");
-  const [_component, _setComponent] = useState<ReactNode>();
+  const [_component, _setComponent] = useState<ReactNode | null>(null);
 
-  const handleClose = () => _setOpen(false);
+  // const handleClose = () => {
+  //   console.log("closing modal");
+  //   _setOpen(false);
+  // };
+  const handleClose = useCallback(() => {
+    _setOpen(false);
+  }, []);
 
-  const handleOpen = (title: string, Component: ReactNode) => {
+  // const handleOpen =  (title: string, Component: ReactNode) => {
+  //   _setTitle(title);
+  //   _setOpen(true);
+  //   _setComponent(Component);
+  // };
+
+  const handleOpen = useCallback((title: string, component: ReactNode) => {
     _setTitle(title);
     _setOpen(true);
-    _setComponent(Component);
-  };
+    _setComponent(component);
+  }, []);
 
   return (
     <ModalContext.Provider
@@ -29,7 +47,7 @@ const ModalProvider: React.FC = ({ children }) => {
       {children}
       <Dialog onClose={handleClose} open={_open}>
         <DialogTitle>{_title}</DialogTitle>
-        {_component}
+        {_component ? _component : null}
       </Dialog>
     </ModalContext.Provider>
   );

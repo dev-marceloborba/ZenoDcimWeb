@@ -1,7 +1,5 @@
 import React from "react";
 import Table from "app/hooks/useTable";
-import HeroContainer from "app/components/HeroContainer";
-import PageTitle from "app/components/PageTitle";
 import { useListAllParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
@@ -39,15 +37,14 @@ const ParametersTable: React.FC = () => {
     console.log(parameter);
   };
   return (
-    <HeroContainer>
-      <PageTitle>Parâmetros</PageTitle>
+    <div>
       <Table
         columns={columns}
         rows={parameters}
         onRowClick={handleSelectedParameter}
       />
       <Loading open={isLoading} />
-    </HeroContainer>
+    </div>
   );
 };
 

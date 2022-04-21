@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
 import Form from "app/components/Form";
@@ -11,33 +11,70 @@ import MuiDataTable from "mui-datatables";
 import { useModal } from "app/hooks/useModal";
 import ParameterSelection from "./ParameterSelection";
 
+const columns = [
+  {
+    name: "name",
+    label: "Nome",
+    align: "left",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+    align: "right",
+  },
+  {
+    name: "lowLimit",
+    label: "Limite minimo",
+    align: "right",
+  },
+  {
+    name: "highLimit",
+    label: "Limite máximo",
+    align: "right",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+    align: "right",
+  },
+];
+
 const EquipmentParameterGroupForm: React.FC = () => {
-  const { openModal } = useModal();
+  const [open, setOpen] = useState(false);
+  const [selectedParameter, setSelectedParameter] = useState<any>();
   const methods = useForm({
     resolver: yupResolver(validationSchema),
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    const obj = {
+      name: data.name,
+      parameters: selectedParameter,
+    };
+    console.log(obj);
   };
 
   const { handleSubmit } = methods;
+
+  console.log(selectedParameter);
+
   return (
     <HeroContainer>
       <PageTitle>Grupo de parametros</PageTitle>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Nome" />
-          <Button onClick={() => openModal("Titulo", ParameterSelection)}>
-            Incluir parâmetro
-          </Button>
+          <Button onClick={() => setOpen(true)}>Incluir parâmetro</Button>
           <MuiDataTable
             title="Parâmetros"
-            columns={[]}
-            data={[]}
+            columns={columns}
+            data={selectedParameter}
             options={{
               download: false,
               print: false,
+              search: false,
+              viewColumns: false,
+              filter: false,
             }}
           />
           <Button type="submit" variant="contained" sx={{ mt: 2 }}>
@@ -45,6 +82,12 @@ const EquipmentParameterGroupForm: React.FC = () => {
           </Button>
         </FormProvider>
       </Form>
+      <ParameterSelection
+        open={open}
+        handleCloseModal={() => setOpen(false)}
+        setSelectedParameter={setSelectedParameter}
+        previousParameters={selectedParameter}
+      />
     </HeroContainer>
   );
 };

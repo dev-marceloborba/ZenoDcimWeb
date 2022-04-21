@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
 
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+
 import Card from "@mui/material/Card";
 
 import IconButton from "@mui/material/IconButton";
@@ -38,6 +40,7 @@ const Table = ({ rows, columns, ...props }) => {
     onRowClick,
   } = props;
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [selected, setSelected] = React.useState([]);
 
   const navigate = useNavigate();
 
@@ -99,6 +102,35 @@ const Table = ({ rows, columns, ...props }) => {
     }
   };
 
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
   // const renderCustomComponent = (Component, key, ...props) => {
   //   return (
   //     <TableCell key={key} align="right">
@@ -106,6 +138,8 @@ const Table = ({ rows, columns, ...props }) => {
   //     </TableCell>
   //   );
   // };
+
+  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const renderField = (data, key, index, field) => {
     return (
@@ -139,25 +173,40 @@ const Table = ({ rows, columns, ...props }) => {
           <TableBody>
             {alteredRows?.map((row) => {
               return (
-                <TableRow
-                  key={row.id}
-                  sx={(theme) => ({
-                    cursor: "pointer",
-                    "&:hover": { backgroundColor: theme.palette.action.hover },
-                    transition: "background-color 0.1s ease-in-out",
-                    zIndex: 1,
-                  })}
-                  onClick={() => handleOnClickRow(row)}
-                >
-                  {fields.map((field, index) => {
-                    return renderField(
-                      row[field],
-                      `${row[field]}-${index}`,
-                      index,
-                      field
-                    );
-                  })}
-                </TableRow>
+                <>
+                  {/* <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      indeterminate={numSelected > 0 && numSelected < rowCount}
+                      checked={rowCount > 0 && numSelected === rowCount}
+                      onChange={onSelectAllClick}
+                      inputProps={{
+                        "aria-label": "select all desserts",
+                      }}
+                    />
+                  </TableCell> */}
+                  <TableRow
+                    key={row.id}
+                    sx={(theme) => ({
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                      transition: "background-color 0.1s ease-in-out",
+                      zIndex: 1,
+                    })}
+                    onClick={() => handleOnClickRow(row)}
+                  >
+                    {fields.map((field, index) => {
+                      return renderField(
+                        row[field],
+                        `${row[field]}-${index}`,
+                        index,
+                        field
+                      );
+                    })}
+                  </TableRow>
+                </>
               );
             })}
           </TableBody>

@@ -119,11 +119,7 @@ export const SubRoutes: React.FC = () => {
         />
         <Route
           path="/automation/management/equipment/parameter/group/form"
-          element={
-            <ModalProvider>
-              <EquipmentParameterGroupForm />
-            </ModalProvider>
-          }
+          element={<EquipmentParameterGroupForm />}
         />
 
         {/* <Route
