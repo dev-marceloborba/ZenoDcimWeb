@@ -8,7 +8,7 @@ import { object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import MuiDataTable from "mui-datatables";
-import { useModal } from "app/hooks/useModal";
+
 import ParameterSelection from "./ParameterSelection";
 
 const columns = [
@@ -55,8 +55,6 @@ const EquipmentParameterGroupForm: React.FC = () => {
   };
 
   const { handleSubmit } = methods;
-
-  console.log(selectedParameter);
 
   return (
     <HeroContainer>
