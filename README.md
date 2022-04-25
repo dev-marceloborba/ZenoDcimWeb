@@ -34,7 +34,7 @@ Você poderá ver erros no console.
 ### `yarn build`
 
 Builda a aplicação para produção na pasta `build`.\
-Gera o bundle otimizado para melhor performance. \
+Gera o bundle otimizado para melhor performance.
 
 A build é minificada e os arquivos incluem hashes.\
 A aplicação está pronta para deploy!

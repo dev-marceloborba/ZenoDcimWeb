@@ -20,6 +20,8 @@ import {
   MultipleEquipmentsRequest,
   RoomRequest,
   RoomResponse,
+  SiteRequest,
+  SiteResponse,
 } from "app/models/data-center.model";
 
 export const datacenterApi = createApi({
@@ -35,6 +37,22 @@ export const datacenterApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    addSite: builder.mutation<ApiResponse<SiteResponse>, SiteRequest>({
+      query: (params) => ({
+        url: "v1/data-center/site",
+        method: "POST",
+        data: params,
+      }),
+    }),
+    listSites: builder.query<SiteResponse[], void>({
+      query: () => ({ url: "v1/data-center/site" }),
+    }),
+    deleteSite: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/site/${id}`,
+        method: "DELETE",
+      }),
+    }),
     addBuilding: builder.mutation<
       ApiResponse<BuildingResponse>,
       BuildingRequest
@@ -210,6 +228,9 @@ export const datacenterApi = createApi({
 });
 
 export const {
+  useAddSiteMutation,
+  useListSitesQuery,
+  useDeleteSiteMutation,
   useAddBuildingMutation,
   useListBuildingsQuery,
   useListBuildingsDeepQuery,

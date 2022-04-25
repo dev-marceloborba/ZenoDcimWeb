@@ -1,3 +1,12 @@
+export interface SiteRequest {
+  name: string;
+}
+
+export interface SiteResponse extends SiteRequest {
+  id: string;
+  buildings: BuildingResponse[];
+}
+
 export type BuildingRequest = {
   campus: string;
   name: string;
