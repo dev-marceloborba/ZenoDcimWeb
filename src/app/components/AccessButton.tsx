@@ -10,12 +10,12 @@ type AccessButtonProps = {
   startIcon?: React.ReactNode;
 };
 
-const AccessButton: React.FC<AccessButtonProps> = ({ label, ...props }) => {
-  return (
-    <Button component={RouterLink} variant="text" {...props}>
-      {label}
+const AccessButton = React.forwardRef<HTMLAnchorElement, AccessButtonProps>(
+  (props, ref) => (
+    <Button component={RouterLink} variant="text" {...props} ref={ref}>
+      {props.label}
     </Button>
-  );
-};
+  )
+);
 
 export default AccessButton;

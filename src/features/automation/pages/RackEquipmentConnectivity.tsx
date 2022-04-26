@@ -7,11 +7,13 @@ import FloorDropdown from "../components/FloorDropdown";
 import ConnectivityFlowDiagram from "../components/ConnectivityFlowDiagram";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
+import InDevelopMessage from "app/components/InDevelopMessage";
 
 const RackEquipmentConnectivity: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Conectividade de equipamento</PageTitle>
+      <InDevelopMessage />
       <Row sx={{ display: "flex", mt: 2, mb: 2, maxWidth: "640px" }}>
         <BuildingDropdown />
         <FloorDropdown sx={{ ml: 2 }} />

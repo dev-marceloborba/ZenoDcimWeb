@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 import PageTitle from "app/components/PageTitle";
 import EtcFilters from "../components/EtcFilters";
 // import BuildingDropdown from "../components/BuildingDropdown";
@@ -201,29 +202,40 @@ const AutomationRegisterManagement: React.FC = () => {
       <Divider sx={{ mt: 2 }} />
 
       <Row sx={{ mt: 2 }}>
-        <Button
-          variant="text"
-          startIcon={<AddIcon />}
-          component={RouterLink}
-          to="/zeno/automation/management/equipment"
-        >
-          Novo equipamento
-        </Button>
-        <AccessButton
-          startIcon={<CallSplitIcon />}
-          label="Nova conexão"
-          to="/zeno"
-        />
-        <AccessButton
-          startIcon={<AccountBalanceIcon />}
-          label="Novo prédio"
-          to="/zeno/automation/management/building"
-        />
-        <AccessButton
-          startIcon={<StoreMallDirectoryIcon />}
-          label="Nova sala"
-          to="/zeno/automation/management/building"
-        />
+        <Tooltip title="Criar novo equipamento">
+          <Button
+            variant="text"
+            startIcon={<AddIcon />}
+            component={RouterLink}
+            to="/zeno/automation/management/equipment"
+          >
+            Novo equipamento
+          </Button>
+        </Tooltip>
+
+        <Tooltip title="Criar nova conexão">
+          <AccessButton
+            startIcon={<CallSplitIcon />}
+            label="Nova conexão"
+            to="/zeno"
+          />
+        </Tooltip>
+
+        <Tooltip title="Criar novo prédio">
+          <AccessButton
+            startIcon={<AccountBalanceIcon />}
+            label="Novo prédio"
+            to="/zeno/automation/management/building"
+          />
+        </Tooltip>
+
+        <Tooltip title="Criar nova sala">
+          <AccessButton
+            startIcon={<StoreMallDirectoryIcon />}
+            label="Nova sala"
+            to="/zeno/automation/management/building"
+          />
+        </Tooltip>
       </Row>
 
       <Row
