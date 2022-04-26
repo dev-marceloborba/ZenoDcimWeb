@@ -9,12 +9,11 @@ import { LayoutProvider } from "app/hooks/useLayout";
 import { SubRoutes } from "features/routes/Router";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-// import { useSubscription } from 'mqtt-react-hooks'
+import Footer from "app/components/Footer";
 
 const Zeno: React.FC = () => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
-  // const { message } = useSubscription("topic")
 
   return (
     <LayoutProvider>
@@ -35,12 +34,10 @@ const Zeno: React.FC = () => {
             ml: matches ? "220px" : "0px",
           }}
         >
-          {/* <div>
-                        <h3>{message?.message}</h3>
-                    </div> */}
           <SubRoutes />
         </Box>
       </Box>
+      {/* <Footer /> */}
     </LayoutProvider>
   );
 };

@@ -26,6 +26,7 @@ import getErrorMessage from "app/utils/apiErrorHandler";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";
 import { useToast } from "app/components/Toast";
+import Copyright from "app/components/Copyright";
 
 const Login: React.FC = () => {
   const [login, { isLoading, error, isError }] = useLoginMutation();
@@ -93,18 +94,7 @@ const Login: React.FC = () => {
               </Fade>
             </FormProvider>
           </Form>
-          <Copyright color="primary">
-            © 2019-{new Date().getFullYear()}{" "}
-            <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="https://www.google.com"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Mindcloud
-            </a>{" "}
-            - Todos os direitos reservados.
-          </Copyright>
+          <Copyright />
           <Loading open={isLoading} />
         </FormContainer>
       </PageGrid>
@@ -195,17 +185,6 @@ const LoginButton = styled(Button)<ButtonProps>(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     width: "100%",
     marginBottom: theme.spacing(4),
-  },
-}));
-
-const Copyright = styled(Typography)<TypographyProps>(({ theme }) => ({
-  marginTop: theme.spacing(4),
-  whiteSpace: "nowrap",
-  fontSize: 14,
-  [theme.breakpoints.up("md")]: {
-    position: "absolute",
-    bottom: theme.spacing(2),
-    fontSize: 16,
   },
 }));
 

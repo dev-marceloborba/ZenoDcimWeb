@@ -14,6 +14,7 @@ import LabelTabs from "app/components/LabelTabs";
 import { TabContextProvider, useTabContext } from "app/components/TabContext";
 import Admin from "./Admin";
 import TabPanel from "app/components/TabPanel";
+import InDevelopMessage from "app/components/InDevelopMessage";
 
 const UserSettings: React.FC = () => {
   return (
@@ -51,6 +52,7 @@ const SystemPanel: React.FC = () => {
         <Typography>Modo escuro</Typography>
         <Switch />
       </Row>
+      <InDevelopMessage />
     </TabPanel>
   );
 };

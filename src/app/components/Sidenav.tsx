@@ -3,7 +3,6 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import ListSubHeader from "@mui/material/ListSubheader";
 
 import { useLayout } from "app/hooks/useLayout";
 import ListItemLink, { ListItemLinkProps } from "./ListItemLink";
@@ -22,32 +21,25 @@ const Sidenav: React.FC = () => {
 
   if (drawerOpened) {
     return (
-      <Drawer
-        anchor="left"
-        variant="permanent"
-        open={false}
-        sx={{
-          ".MuiPaper-root": {
-            mt: "4rem",
-            width: "220px",
-          },
-        }}
-      >
-        <List sx={{ height: "100%", position: "relative" }}>
-          {menuItems.map((props, index) => (
-            <ListItemLink key={index} {...props} />
-          ))}
-          <Box
-            sx={{ position: "absolute", bottom: 60, left: -5, width: "100%" }}
-          >
-            <ListItemLink
-              to="/zeno/settings"
-              primary="Configurações"
-              icon={<SettingsIcon />}
-            />
-          </Box>
-        </List>
-      </Drawer>
+      <Box sx={{ position: "absolute", left: 0, top: 0 }}>
+        <Drawer
+          anchor="left"
+          variant="permanent"
+          open={false}
+          sx={{
+            ".MuiPaper-root": {
+              mt: "4rem",
+              width: "230px",
+            },
+          }}
+        >
+          <List sx={{ height: "100%" }}>
+            {menuItems.map((props, index) => (
+              <ListItemLink key={index} {...props} />
+            ))}
+          </List>
+        </Drawer>
+      </Box>
     );
   } else {
     return <></>;
@@ -111,11 +103,11 @@ const menuItems: ListItemLinkProps[] = [
       { primary: "Registrar manutenção", to: "/zeno/maintenance/register" },
     ],
   },
-  // {
-  //   to: "/zeno/settings",
-  //   primary: "Configurações",
-  //   icon: <SettingsIcon />
-  // },
+  {
+    to: "/zeno/settings",
+    primary: "Configurações",
+    icon: <SettingsIcon />,
+  },
 ];
 
 export default Sidenav;

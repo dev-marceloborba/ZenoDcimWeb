@@ -46,7 +46,7 @@ const FireSystemDetails: React.FC = () => {
       <Card sx={{ p: 2, mt: 2 }}>
         <Typography variant="h5">Laço 1</Typography>
         <Row sx={{ justifyContent: "space-between" }}>
-          <Column sx={{ width: "220px" }}>
+          <Column sx={{ width: "230px" }}>
             <BmsIndicator
               status={EEquipmentStatus.ONLINE}
               parameterStatus={EParameterStatus.NORMAL}
