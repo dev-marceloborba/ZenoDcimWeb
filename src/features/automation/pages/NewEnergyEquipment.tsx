@@ -9,7 +9,7 @@ import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaOf, string, object } from "yup";
+import { string, object } from "yup";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import PageTitle from "app/components/PageTitle";
 import Table from "app/hooks/useTable";
@@ -100,7 +100,6 @@ const NewEnergyEquipment: React.FC = () => {
 
   const buildingId = watch("buildingId");
   const floorId = watch("floorId");
-  const roomId = watch("roomId");
   const equipmentId = params.id ?? "";
 
   useEffect(() => {
@@ -118,8 +117,7 @@ const NewEnergyEquipment: React.FC = () => {
   const handleSaveParameter = async (parameter: EquipmentParameterRequest) => {
     handleCloseParameterModal();
     try {
-      const result = await createEquipmentParameter(parameter).unwrap();
-      console.log(result);
+      await createEquipmentParameter(parameter).unwrap();
       toast.open("Parametro salvo com sucesso", 2000, "success");
     } catch (error) {
       toast.open(
@@ -269,7 +267,7 @@ const NewEnergyEquipment: React.FC = () => {
         <ParameterModal
           closeModal={handleCloseParameterModal}
           onSaveData={handleSaveParameter}
-          requestParameters={{ buildingId, floorId, roomId, equipmentId }}
+          equipmentId={equipmentId}
         />
       </Modal>
       <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>

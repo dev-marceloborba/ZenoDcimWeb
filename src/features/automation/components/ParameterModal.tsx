@@ -1,23 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaOf, string, object, number } from "yup";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import { string, object, number } from "yup";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
+import Form from "app/components/Form";
+import SubmitButton from "app/components/SubmitButton";
+import Typography from "@mui/material/Typography";
 import { modalStyle } from "app/styles/modal-style";
-import { useAutomationFilters } from "./AutomationFiltersProvider";
 import { EquipmentParameterRequest } from "app/models/data-center.model";
+import { useFindEquipmentByIdMutation } from "app/services/datacenter";
 
 type ParameterModalProps = {
-  requestParameters: {
-    buildingId: string;
-    floorId: string;
-    roomId: string;
-    equipmentId: string;
-  };
+  equipmentId: string;
+
   closeModal(): void;
   onSaveData(data: EquipmentParameterRequest): void;
 };
@@ -25,40 +21,30 @@ type ParameterModalProps = {
 const ParameterModal: React.FC<ParameterModalProps> = ({
   closeModal,
   onSaveData,
-  requestParameters: { equipmentId },
+  equipmentId,
 }) => {
-  const {
-    building: buildingId,
-    floor: floorId,
-    room: roomId,
-  } = useAutomationFilters();
+  const [findEquipment, { data: equipment }] = useFindEquipmentByIdMutation();
   const methods = useForm<EquipmentParameterRequest>({
     resolver: yupResolver(validationSchema),
   });
 
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<EquipmentParameterRequest> = async (data) => {
-    try {
-      onSaveData(data);
-    } catch (error) {
-      console.log(error);
-    }
+    onSaveData({ ...data, equipmentId });
+    closeModal();
   };
 
-  setValue("equipmentId", equipmentId);
-
-  console.log(buildingId);
-  console.log(floorId);
-  console.log(roomId);
-  console.log(equipmentId);
+  useEffect(() => {
+    async function getEquipment() {
+      await findEquipment(equipmentId).unwrap();
+    }
+    getEquipment();
+  }, [equipmentId, findEquipment]);
 
   return (
     <Container maxWidth="md">
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
+      <Form
         onSubmit={handleSubmit(onSubmit)}
         sx={{
           ...modalStyle,
@@ -68,8 +54,10 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
         }}
       >
         <Typography variant="h5">Novo parâmetro</Typography>
+        <Typography sx={{ my: 1 }}>{`Equipamento: ${
+          equipment?.component ?? ""
+        }`}</Typography>
         <FormProvider {...methods}>
-          <ControlledTextInput name="equipmentId" label="Equipamento" />
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
           <ControlledTextInput name="lowLimit" label="Limite inferior" />
@@ -77,16 +65,14 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
           <ControlledTextInput name="scale" label="Escala" />
           <ControlledTextInput name="dataSource" label="Fonte de dados" />
           <ControlledTextInput name="address" label="Endereço" />
-          <Button fullWidth variant="contained" type="submit">
-            Salvar
-          </Button>
+          <SubmitButton label="Salvar" fullWidth />
         </FormProvider>
-      </Box>
+      </Form>
     </Container>
   );
 };
 
-const validationSchema: SchemaOf<EquipmentParameterRequest> = object().shape({
+const validationSchema = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   lowLimit: number().required("Limite mínimo é obrigatório"),
@@ -94,7 +80,6 @@ const validationSchema: SchemaOf<EquipmentParameterRequest> = object().shape({
   scale: number().required("Escala é obrigatória"),
   dataSource: string().required("Fonte de dados é obrigatória"),
   address: string().required("Endereço é obrigatório"),
-  equipmentId: string().required("Equipamento é obrigatório"),
 });
 
 export default ParameterModal;

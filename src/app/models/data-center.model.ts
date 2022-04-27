@@ -72,7 +72,7 @@ export interface EquipmentResponse extends EquipmentRequest {
 }
 
 export interface EquipmentParameterRequest {
-  equipmentId: string;
+  equipmentId?: string;
   name: string;
   unit: string;
   lowLimit: number;
