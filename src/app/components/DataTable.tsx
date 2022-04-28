@@ -30,6 +30,8 @@ interface DataTableProps {
   options: {
     selectedItems: (items: any[]) => void;
     previousItems?: any[];
+    rowsInPage?: number;
+    rowsPerPageOptions?: number[];
   };
 }
 
@@ -218,13 +220,18 @@ const DataTable: React.FC<DataTableProps> = ({
   rows,
   columns,
   title,
-  options,
+  options: {
+    previousItems,
+    selectedItems,
+    rowsPerPageOptions = [5, 10, 25],
+    rowsInPage = 5,
+  },
 }) => {
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState(columns[0].name);
-  const [selected, setSelected] = useState<any[]>(options.previousItems || []);
+  const [selected, setSelected] = useState<any[]>(previousItems || []);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsInPage);
   const [filter, setFilter] = useState("");
 
   const handleRequestSort = (
@@ -282,17 +289,17 @@ const DataTable: React.FC<DataTableProps> = ({
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const filteredRows = rows
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .sort(getComparator(order, orderBy))
     .filter((row) =>
       columns.some((column) =>
         row[column.name].toString().toLowerCase().includes(filter.toLowerCase())
       )
-    );
+    )
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .sort(getComparator(order, orderBy));
 
   useEffect(() => {
-    options.selectedItems(selected);
-  }, [options, selected]);
+    selectedItems(selected);
+  }, [selected, selectedItems]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -369,7 +376,7 @@ const DataTable: React.FC<DataTableProps> = ({
           {filteredRows.length === 0 && <NoDataText />}
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={rowsPerPageOptions}
           component="div"
           count={rows?.length ?? 0}
           rowsPerPage={rowsPerPage}
