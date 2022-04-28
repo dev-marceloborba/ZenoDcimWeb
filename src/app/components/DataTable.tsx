@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import InputAdornment from "@mui/material/InputAdornment";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -17,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
 
 interface DataTableProps {
@@ -140,10 +143,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 interface EnhancedTableToolbarProps {
   numSelected: number;
   title: string;
+  filter: string;
+  setFilter: (fillter: string) => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, title } = props;
+  const { numSelected, title, filter, setFilter } = props;
 
   return (
     <Toolbar
@@ -169,14 +174,15 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           {numSelected} selecionados
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {title}
-        </Typography>
+        // <Typography
+        //   sx={{ flex: "1 1 100%" }}
+        //   variant="h6"
+        //   id="tableTitle"
+        //   component="div"
+        // >
+        //   {title}
+        // </Typography>
+        <SearchInput value={filter} setValue={setFilter} />
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -195,6 +201,32 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   );
 };
 
+type SearchInputProps = {
+  value: string;
+  setValue: (value: string) => void;
+};
+
+const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
+  return (
+    <TextField
+      name="searchTable"
+      variant="standard"
+      label="Procurar..."
+      defaultValue=""
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      sx={{ flex: "1 1 100%" }}
+    />
+  );
+};
+
 const DataTable: React.FC<DataTableProps> = ({
   rows,
   columns,
@@ -206,6 +238,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [selected, setSelected] = useState<any[]>(options.previousItems || []);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filter, setFilter] = useState("");
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -265,10 +298,17 @@ const DataTable: React.FC<DataTableProps> = ({
     options.selectedItems(selected);
   }, [options, selected]);
 
+  useEffect(() => {}, []);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} title={title} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          title={title}
+          filter={filter}
+          setFilter={setFilter}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -287,6 +327,14 @@ const DataTable: React.FC<DataTableProps> = ({
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .filter((row) =>
+                  columns.some((column) =>
+                    row[column.name]
+                      .toString()
+                      .toLowerCase()
+                      .includes(filter.toLowerCase())
+                  )
+                )
                 .map((row, index) => {
                   const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
