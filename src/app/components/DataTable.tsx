@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -21,6 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
+import NoDataText from "./NoDataText";
 
 interface DataTableProps {
   columns: Column[];
@@ -54,20 +55,6 @@ function getComparator<Key extends keyof any>(
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
 }
 
 interface Column {
@@ -294,11 +281,18 @@ const DataTable: React.FC<DataTableProps> = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  const filteredRows = rows
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .sort(getComparator(order, orderBy))
+    .filter((row) =>
+      columns.some((column) =>
+        row[column.name].toString().toLowerCase().includes(filter.toLowerCase())
+      )
+    );
+
   useEffect(() => {
     options.selectedItems(selected);
   }, [options, selected]);
-
-  useEffect(() => {}, []);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -325,52 +319,42 @@ const DataTable: React.FC<DataTableProps> = ({
               columns={columns}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .filter((row) =>
-                  columns.some((column) =>
-                    row[column.name]
-                      .toString()
-                      .toLowerCase()
-                      .includes(filter.toLowerCase())
-                  )
-                )
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+              {filteredRows.map((row, index) => {
+                const isItemSelected = isSelected(row);
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={index}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      {columns.map((column, index) => {
-                        return (
-                          <TableCell
-                            key={index}
-                            align={index === 0 ? "left" : "right"}
-                          >
-                            {row[column.name]}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) => handleClick(event, row)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={index}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          "aria-labelledby": labelId,
+                        }}
+                      />
+                    </TableCell>
+                    {columns.map((column, index) => {
+                      return (
+                        <TableCell
+                          key={index}
+                          align={index === 0 ? "left" : "right"}
+                        >
+                          {row[column.name]}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
@@ -382,6 +366,7 @@ const DataTable: React.FC<DataTableProps> = ({
               )}
             </TableBody>
           </Table>
+          {filteredRows.length === 0 && <NoDataText />}
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
