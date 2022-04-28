@@ -49,7 +49,13 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
         rows={parameters ?? []}
         columns={columns}
         title="Parâmetros"
-        options={{ selectedItems: setSelected, previousItems: selected }}
+        options={{
+          selectedItems: setSelected,
+          previousItems: selected,
+          onRowClick: (row) => {
+            console.log(row);
+          },
+        }}
       />
       <Button variant="contained" onClick={handleSaveSelection}>
         Selecionar

@@ -32,6 +32,7 @@ interface DataTableProps {
     previousItems?: any[];
     rowsInPage?: number;
     rowsPerPageOptions?: number[];
+    onRowClick?: (row: any) => void;
   };
 }
 
@@ -224,6 +225,7 @@ const DataTable: React.FC<DataTableProps> = ({
     selectedItems,
     rowsPerPageOptions = [5, 10, 25],
     rowsInPage = 5,
+    onRowClick,
   },
 }) => {
   const [order, setOrder] = useState<Order>("asc");
@@ -296,6 +298,12 @@ const DataTable: React.FC<DataTableProps> = ({
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     .sort(getComparator(order, orderBy));
 
+  const handleRowClick = (row: any) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
+  };
+
   useEffect(() => {
     selectedItems(selected);
   }, [selected, selectedItems]);
@@ -356,6 +364,7 @@ const DataTable: React.FC<DataTableProps> = ({
                         <TableCell
                           key={index}
                           align={index === 0 ? "left" : "right"}
+                          onClick={() => handleRowClick(row)}
                         >
                           {row[column.name]}
                         </TableCell>
