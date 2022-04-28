@@ -201,7 +201,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
       name="searchTable"
       variant="standard"
       label="Procurar..."
-      defaultValue=""
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
@@ -333,17 +332,20 @@ const DataTable: React.FC<DataTableProps> = ({
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={index}
                     selected={isItemSelected}
+                    sx={{
+                      cursor: "pointer",
+                    }}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
+                        onClick={(event) => handleClick(event, row)}
                         inputProps={{
                           "aria-labelledby": labelId,
                         }}
