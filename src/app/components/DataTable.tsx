@@ -33,6 +33,7 @@ interface DataTableProps {
     rowsInPage?: number;
     rowsPerPageOptions?: number[];
     onRowClick?: (row: any) => void;
+    onDeleteSelection?: (row: any[]) => void;
   };
 }
 
@@ -92,7 +93,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
   return (
     <TableHead>
-      <TableRow>
+      <TableRow
+        sx={(theme) => ({
+          backgroundColor: theme.palette.background.paper,
+        })}
+      >
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
@@ -135,10 +140,11 @@ interface EnhancedTableToolbarProps {
   title: string;
   filter: string;
   setFilter: (fillter: string) => void;
+  onDelete: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, title, filter, setFilter } = props;
+  const { numSelected, title, filter, setFilter, onDelete } = props;
 
   return (
     <Toolbar
@@ -176,7 +182,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -226,6 +232,7 @@ const DataTable: React.FC<DataTableProps> = ({
     rowsPerPageOptions = [5, 10, 25],
     rowsInPage = 5,
     onRowClick,
+    onDeleteSelection,
   },
 }) => {
   const [order, setOrder] = useState<Order>("asc");
@@ -269,7 +276,6 @@ const DataTable: React.FC<DataTableProps> = ({
         selected.slice(selectedIndex + 1)
       );
     }
-
     setSelected(newSelected);
   };
 
@@ -304,6 +310,12 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
+  const handleDeleteSelection = () => {
+    if (onDeleteSelection) {
+      onDeleteSelection(selected);
+    }
+  };
+
   useEffect(() => {
     selectedItems(selected);
   }, [selected, selectedItems]);
@@ -316,6 +328,7 @@ const DataTable: React.FC<DataTableProps> = ({
           title={title}
           filter={filter}
           setFilter={setFilter}
+          onDelete={handleDeleteSelection}
         />
         <TableContainer>
           <Table

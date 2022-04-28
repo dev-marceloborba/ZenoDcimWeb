@@ -55,6 +55,9 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
           onRowClick: (row) => {
             console.log(row);
           },
+          // onDeleteSelection: (rows) => {
+          //   console.log(rows);
+          // },
         }}
       />
       <Button variant="contained" onClick={handleSaveSelection}>
