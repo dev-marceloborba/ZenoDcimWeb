@@ -28,10 +28,10 @@ interface DataTableProps {
   rows: any[];
   title: string;
   options: {
-    selectedItems: (items: any[]) => void;
     previousItems?: any[];
     rowsInPage?: number;
     rowsPerPageOptions?: number[];
+    onSelectedItems?: (items: any[]) => void;
     onRowClick?: (row: any) => void;
     onDeleteSelection?: (row: any[]) => void;
   };
@@ -228,11 +228,11 @@ const DataTable: React.FC<DataTableProps> = ({
   title,
   options: {
     previousItems,
-    selectedItems,
     rowsPerPageOptions = [5, 10, 25],
     rowsInPage = 5,
     onRowClick,
     onDeleteSelection,
+    onSelectedItems,
   },
 }) => {
   const [order, setOrder] = useState<Order>("asc");
@@ -317,8 +317,8 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   useEffect(() => {
-    selectedItems(selected);
-  }, [selected, selectedItems]);
+    if (onSelectedItems) onSelectedItems(selected);
+  }, [selected, onSelectedItems]);
 
   return (
     <Box sx={{ width: "100%" }}>

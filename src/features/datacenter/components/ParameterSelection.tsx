@@ -50,7 +50,7 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
         columns={columns}
         title="Parâmetros"
         options={{
-          selectedItems: setSelected,
+          onSelectedItems: setSelected,
           previousItems: selected,
           onRowClick: (row) => {
             console.log(row);

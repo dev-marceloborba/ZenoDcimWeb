@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import ToolBar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -8,35 +9,14 @@ import {
   useGetUsersQuery,
 } from "app/services/authentication";
 import ButtonLink from "app/components/ButtonLink";
-import Table from "app/hooks/useTable";
+import DataTable from "app/components/DataTable";
 import { useToast } from "app/components/Toast";
 
 const Admin: React.FC = () => {
   const { isLoading, isError, data: users, error } = useGetUsersQuery();
   const [deleteUser] = useDeleteUserMutation();
   const toast = useToast();
-  const columns = [
-    {
-      label: "Nome",
-      name: "firstName",
-      align: "left",
-    },
-    {
-      label: "E-mail",
-      name: "email",
-      align: "right",
-    },
-    {
-      label: "Grupo",
-      name: "role",
-      align: "right",
-    },
-    {
-      label: "Status",
-      name: "active",
-      align: "right",
-    },
-  ];
+  const navigate = useNavigate();
 
   const handleDelete = async (row: any) => {
     try {
@@ -64,15 +44,39 @@ const Admin: React.FC = () => {
         </ButtonLink>
       </Box>
       <Loading open={isLoading} />
-      <Table
+      <DataTable
         columns={columns}
-        rows={users}
-        showActions
-        editPage={"/zeno/settings/edit-user"}
-        handleDelete={handleDelete}
+        rows={users ?? []}
+        title="Usuários"
+        options={{
+          onRowClick: (row) => {
+            navigate(`/zeno/settings/user/${row.id}`);
+          },
+        }}
+        // editPage={"/zeno/settings/edit-user"}
+        // handleDelete={handleDelete}
       />
     </Container>
   );
 };
+
+const columns = [
+  {
+    label: "Nome",
+    name: "firstName",
+  },
+  {
+    label: "E-mail",
+    name: "email",
+  },
+  {
+    label: "Grupo",
+    name: "role",
+  },
+  {
+    label: "Status",
+    name: "active",
+  },
+];
 
 export default Admin;
