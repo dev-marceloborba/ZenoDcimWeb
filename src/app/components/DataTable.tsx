@@ -37,6 +37,12 @@ interface DataTableProps {
   };
 }
 
+export interface Column {
+  name: string;
+  label: string;
+  renderComponent?: (row: any) => JSX.Element;
+}
+
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -59,11 +65,6 @@ function getComparator<Key extends keyof any>(
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-interface Column {
-  name: string;
-  label: string;
 }
 
 interface EnhancedTableProps {
@@ -379,7 +380,9 @@ const DataTable: React.FC<DataTableProps> = ({
                           align={index === 0 ? "left" : "right"}
                           onClick={() => handleRowClick(row)}
                         >
-                          {row[column.name]}
+                          {column.renderComponent
+                            ? column.renderComponent(row[column.name])
+                            : row[column.name]}
                         </TableCell>
                       );
                     })}
