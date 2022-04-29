@@ -92,7 +92,7 @@ const UserDetails: React.FC = () => {
             />
             <Row sx={{ justifyContent: "space-between", mt: 2 }}>
               <SubmitButton label="Salvar" />
-              <DeleteButton onClick={onDelete} />
+              <DeleteButton onDeleteConfirmation={onDelete} />
             </Row>
           </FormProvider>
         </Form>
