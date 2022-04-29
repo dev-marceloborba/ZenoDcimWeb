@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Table from "app/hooks/useTable";
+import DataTable from "app/components/DataTable";
 import {
   useDeleteEquipmentMutation,
   useListBuildingsQuery,
@@ -14,34 +14,6 @@ import {
   FloorResponse,
   RoomResponse,
 } from "app/models/data-center.model";
-
-const columns = [
-  // {
-  //   name: "id",
-  //   label: "Id",
-  //   align: "left",
-  // },
-  {
-    name: "class",
-    label: "Classe",
-    align: "left",
-  },
-  {
-    name: "component",
-    label: "Componente",
-    align: "right",
-  },
-  {
-    name: "componentCode",
-    label: "Código do componente",
-    align: "right",
-  },
-  {
-    name: "description",
-    label: "Descrição",
-    align: "right",
-  },
-];
 
 const EquipmentTable: React.FC = () => {
   const { data: buildings, isLoading } = useListBuildingsQuery();
@@ -130,13 +102,11 @@ const EquipmentTable: React.FC = () => {
           Criar equipamento
         </ButtonLink>
       </Row>
-      <Table
+      <DataTable
+        title="Equipamentos"
         columns={columns}
         rows={equipments}
-        showActions
-        handleDelete={async (row: any) =>
-          await deleteEquipment(row.id).unwrap()
-        }
+        options={{ onRowClick: (row) => console.log(row) }}
       />
       <Loading open={isLoading} />
     </>
@@ -144,3 +114,26 @@ const EquipmentTable: React.FC = () => {
 };
 
 export default EquipmentTable;
+
+const columns = [
+  {
+    name: "class",
+    label: "Classe",
+    align: "left",
+  },
+  {
+    name: "component",
+    label: "Componente",
+    align: "right",
+  },
+  {
+    name: "componentCode",
+    label: "Código do componente",
+    align: "right",
+  },
+  {
+    name: "description",
+    label: "Descrição",
+    align: "right",
+  },
+];

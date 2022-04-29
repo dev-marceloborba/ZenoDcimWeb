@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Table from "app/hooks/useTable";
+import DataTable from "app/components/DataTable";
 import {
   useDeleteRoomMutation,
   useListBuildingsQuery,
@@ -14,19 +14,6 @@ import {
   FloorResponse,
   RoomResponse,
 } from "app/models/data-center.model";
-
-const columns = [
-  // {
-  //   name: "id",
-  //   label: "Id",
-  //   align: "left",
-  // },
-  {
-    name: "name",
-    label: "Nome",
-    align: "left",
-  },
-];
 
 const RoomTable: React.FC = () => {
   const { data: buildings, isLoading } = useListBuildingsQuery();
@@ -96,11 +83,11 @@ const RoomTable: React.FC = () => {
           Criar sala
         </ButtonLink>
       </Row>
-      <Table
+      <DataTable
+        title="Salas"
         columns={columns}
-        rows={rooms}
-        showActions
-        handleDelete={async (row: any) => await deleteRoom(row.id).unwrap()}
+        rows={rooms ?? []}
+        options={{ onRowClick: (row) => console.log(row) }}
       />
       <Loading open={isLoading} />
     </>
@@ -108,3 +95,10 @@ const RoomTable: React.FC = () => {
 };
 
 export default RoomTable;
+
+const columns = [
+  {
+    name: "name",
+    label: "Nome",
+  },
+];

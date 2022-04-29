@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Table from "app/hooks/useTable";
+import DataTable from "app/components/DataTable";
 import Dropdown from "app/components/Dropdown";
 import Column from "app/components/Column";
 import {
@@ -10,19 +10,6 @@ import Loading from "app/components/Loading";
 import Row from "app/components/Row";
 import ButtonLink from "app/components/ButtonLink";
 import { FloorResponse } from "app/models/data-center.model";
-
-const columns = [
-  // {
-  //   name: "id",
-  //   label: "Id",
-  //   align: "left",
-  // },
-  {
-    name: "name",
-    label: "Andar",
-    align: "left",
-  },
-];
 
 const FloorTable: React.FC = () => {
   const { data: buildings, isLoading } = useListBuildingsQuery();
@@ -56,7 +43,7 @@ const FloorTable: React.FC = () => {
               value: building.id,
             })) ?? []
           }
-          label="Andar"
+          label="Prédio"
           defaultValue={""}
           value={selectedBuilding}
           callback={onApplyFilter}
@@ -68,11 +55,13 @@ const FloorTable: React.FC = () => {
           Criar andar
         </ButtonLink>
       </Row>
-      <Table
-        rows={filteredBuilding}
+      <DataTable
+        title="Andares"
+        rows={filteredBuilding ?? []}
         columns={columns}
-        showActions
-        handleDelete={async (row: any) => await deleteFloor(row.id).unwrap()}
+        options={{
+          onRowClick: (row) => console.log(row),
+        }}
       />
       <Loading open={isLoading} />
     </Column>
@@ -80,3 +69,10 @@ const FloorTable: React.FC = () => {
 };
 
 export default FloorTable;
+
+const columns = [
+  {
+    name: "name",
+    label: "Andar",
+  },
+];

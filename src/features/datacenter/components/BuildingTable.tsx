@@ -1,5 +1,5 @@
 import React from "react";
-import Table from "app/hooks/useTable";
+import { useNavigate } from "react-router-dom";
 import {
   useDeleteBuildingMutation,
   useListBuildingsQuery,
@@ -7,24 +7,13 @@ import {
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
 import Column from "app/components/Column";
-
-const columns = [
-  // {
-  //   name: "id",
-  //   label: "Id",
-  //   align: "left",
-  // },
-  {
-    name: "name",
-    label: "Nome",
-    align: "left",
-  },
-];
+import DataTable from "app/components/DataTable";
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useListBuildingsQuery();
   const [deleteBuilding] = useDeleteBuildingMutation();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleDeleteBuilding = async (row: any) => {
     try {
@@ -37,11 +26,11 @@ const BuildingTable: React.FC = () => {
 
   return (
     <Column sx={{ mt: 2 }}>
-      <Table
+      <DataTable
         columns={columns}
-        rows={buildings}
-        showActions
-        handleDelete={handleDeleteBuilding}
+        rows={buildings ?? []}
+        title="Prédios"
+        options={{ onRowClick: (row) => console.log(row) }}
       />
       <Loading open={isLoading} />
     </Column>
@@ -49,3 +38,14 @@ const BuildingTable: React.FC = () => {
 };
 
 export default BuildingTable;
+
+const columns = [
+  {
+    name: "name",
+    label: "Nome",
+  },
+  {
+    name: "site",
+    label: "Site",
+  },
+];

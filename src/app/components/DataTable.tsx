@@ -407,6 +407,7 @@ const DataTable: React.FC<DataTableProps> = ({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="Linhas por página"
         />
       </Paper>
     </Box>

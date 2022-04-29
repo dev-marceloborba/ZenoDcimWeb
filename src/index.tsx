@@ -16,11 +16,12 @@ import AutomationFiltersProvider from "features/automation/components/Automation
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig } from "app/config/env";
 import ModalProvider from "app/hooks/useModal";
+import { ptBR } from "@mui/material/locale";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={brandingDarkTheme}>
+      <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
         <CssBaseLine />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Connector
