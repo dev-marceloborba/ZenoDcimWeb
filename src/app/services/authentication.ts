@@ -74,7 +74,7 @@ export const api = createApi({
         body: user,
       }),
     }),
-    deleteUser: builder.mutation<ApiResponse<UserResponse>, { id: string }>({
+    deleteUser: builder.mutation<ApiResponse<UserResponse>, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "DELETE",
@@ -87,6 +87,12 @@ export const api = createApi({
         body: user,
       }),
     }),
+    findUserById: builder.mutation<UserResponse, string>({
+      query: (id) => ({
+        url: `v1/users/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -96,4 +102,5 @@ export const {
   useCreateUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,
+  useFindUserByIdMutation,
 } = api;

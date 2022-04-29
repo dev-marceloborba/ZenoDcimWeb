@@ -6,7 +6,6 @@ import Zeno from "features/home/Zeno";
 //pages
 import Admin from "features/user/Admin";
 import CreateUser from "features/user/CreateUser";
-import EditUser from "features/user/EditUser";
 import RackList from "features/rack/RackList";
 import CreateRack from "features/rack/CreateRack";
 import ClpList from "features/automation/ClpList";
@@ -41,6 +40,7 @@ import EquipmentParameterForm from "features/automation/pages/EquipmentParameter
 import EquipmentParameterTransfer from "features/datacenter/pages/EquipmentParameterTransfer";
 import EquipmentParameterGroupForm from "features/datacenter/components/EquipmentParameterGroupForm";
 import ModalProvider from "app/hooks/useModal";
+import UserDetails from "features/user/UserDetails";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -127,7 +127,7 @@ export const SubRoutes: React.FC = () => {
           element={<EquipmentParameterForm />}
         /> */}
         <Route path="/settings/new-user" element={<CreateUser />} />
-        <Route path="/settings/edit-user" element={<EditUser />} />
+        <Route path="/settings/user/:id" element={<UserDetails />} />
         <Route path="/settings/new-company" element={<NewCompany />} />
         {/* <Route path="admin" element={<Admin />} />
                 <Route path="admin/new" element={<CreateUser />} />

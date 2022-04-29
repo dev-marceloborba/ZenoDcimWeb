@@ -7,7 +7,7 @@ type SubmitButtonProps = {
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({ label, ...props }) => {
   return (
-    <Button type="submit" variant="contained" fullWidth {...props}>
+    <Button type="submit" variant="contained" {...props}>
       {label}
     </Button>
   );

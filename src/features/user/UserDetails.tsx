@@ -1,36 +1,34 @@
-import React from "react";
-import { useSearchParams } from "react-router-dom";
-import Button from "@mui/material/Button";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
-import { useEditUserMutation } from "app/services/authentication";
+import {
+  useDeleteUserMutation,
+  useEditUserMutation,
+  useFindUserByIdMutation,
+} from "app/services/authentication";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";
 import Card from "app/components/Card";
 import Loading from "app/components/Loading";
 import { useToast } from "app/components/Toast";
 import { EditUserRequest } from "app/models/authentication.model";
+import SubmitButton from "app/components/SubmitButton";
+import DeleteButton from "app/components/DeleteButton";
+import Row from "app/components/Row";
 
-const EditUser: React.FC = () => {
+const UserDetails: React.FC = () => {
   const [editUser, { isError, isLoading, error }] = useEditUserMutation();
-  const [searchParams] = useSearchParams();
+  const [findUserById] = useFindUserByIdMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const toast = useToast();
-  const methods = useForm<EditUserRequest>({
-    defaultValues: {
-      firstName: searchParams.get("firstName") ?? "",
-      lastName: searchParams.get("lastName") ?? "",
-      email: searchParams.get("email") ?? "",
-      active: 1,
-      role: 1,
-    },
-  });
+  const methods = useForm<EditUserRequest>();
+  const { id } = useParams();
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue } = methods;
 
   const onSubmit: SubmitHandler<EditUserRequest> = async (data) => {
-    data.id = searchParams.get("id") ?? "";
-    console.log(data);
     try {
       await editUser(data).unwrap();
       toast.open("Usuário editado com sucesso", 2000, "success");
@@ -38,6 +36,28 @@ const EditUser: React.FC = () => {
       toast.open(`Erro ao editar o usuário: ${error}`, 2000, "error");
     }
   };
+
+  const onDelete = async () => {
+    try {
+      await deleteUser(id!).unwrap();
+      toast.open("Usuário deletado com sucesso", 2000, "success");
+    } catch (error) {
+      toast.open(`Erro ao deletar o usuário: ${error}`, 2000, "error");
+    }
+  };
+
+  useEffect(() => {
+    async function getUser() {
+      const user = await findUserById(id!).unwrap();
+      setValue("id", user.id);
+      setValue("firstName", user.firstName);
+      setValue("lastName", user.lastName);
+      setValue("email", user.email);
+      setValue("active", Number(user.active));
+      setValue("role", user.role);
+    }
+    if (id) getUser();
+  }, [findUserById, id, setValue]);
 
   return (
     <Container maxWidth="xs">
@@ -70,15 +90,10 @@ const EditUser: React.FC = () => {
                 { value: 5, description: "Cliente" },
               ]}
             />
-            <Button
-              sx={{ mt: 2 }}
-              fullWidth
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              Salvar
-            </Button>
+            <Row sx={{ justifyContent: "space-between", mt: 2 }}>
+              <SubmitButton label="Salvar" />
+              <DeleteButton onClick={onDelete} />
+            </Row>
           </FormProvider>
         </Form>
       </Card>
@@ -87,4 +102,4 @@ const EditUser: React.FC = () => {
   );
 };
 
-export default EditUser;
+export default UserDetails;
