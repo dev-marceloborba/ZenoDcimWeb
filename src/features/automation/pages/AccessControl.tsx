@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PageTitle from "app/components/PageTitle";
 import FloorDropdown from "../components/FloorDropdown";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
@@ -13,46 +13,52 @@ import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
 import Column from "app/components/Column";
+import BuildingDropdown from "../components/BuildingDropdown";
 
 const AccessControl: React.FC = () => {
   const { accessEvents, doorControlEvents } = accessControl;
   const { floor } = useAutomationFilters();
 
-  const [filteredAccessEvents, setFilteredAccessEvents] = React.useState<
+  const [filteredAccessEvents, setFilteredAccessEvents] = useState<
     AccessEvent[]
   >([...accessEvents]);
 
-  const [filteredDoorControlEvents, setFilteredDoorControlEvents] =
-    React.useState<DoorControlEvent[]>([...doorControlEvents]);
+  const [filteredDoorControlEvents, setFilteredDoorControlEvents] = useState<
+    DoorControlEvent[]
+  >([...doorControlEvents]);
 
-  const [user, setUser] = React.useState<string | null>(null);
-  const [inputValue, setInputValue] = React.useState("");
+  console.log(accessControl);
+  console.log(accessEvents);
 
-  React.useEffect(() => {
-    const events =
-      floor === "Todos"
-        ? accessEvents
-        : accessEvents.filter((event) => event.place === floor);
+  const [user, setUser] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState("");
 
-    const eventsByUser = user
-      ? events.filter((event) => event.name === user)
-      : events;
-    setFilteredAccessEvents(eventsByUser);
-  }, [floor, accessEvents, user]);
+  // useEffect(() => {
+  //   const events =
+  //     floor === "Todos"
+  //       ? accessEvents
+  //       : accessEvents.filter((event) => event.place === floor);
 
-  React.useEffect(() => {
-    const events =
-      floor === "Todos"
-        ? doorControlEvents
-        : doorControlEvents.filter((event) => event.place === floor);
-    setFilteredDoorControlEvents(events);
-  }, [floor, doorControlEvents]);
+  //   const eventsByUser = user
+  //     ? events.filter((event) => event.name === user)
+  //     : events;
+  //   setFilteredAccessEvents(eventsByUser);
+  // }, [floor, accessEvents, user]);
+
+  // useEffect(() => {
+  //   const events =
+  //     floor === "Todos"
+  //       ? doorControlEvents
+  //       : doorControlEvents.filter((event) => event.place === floor);
+  //   setFilteredDoorControlEvents(events);
+  // }, [floor, doorControlEvents]);
 
   return (
     <HeroContainer>
       <PageTitle>Controle de acesso</PageTitle>
       <Row sx={{ alignItems: "center", mt: 2 }}>
-        <FloorDropdown sx={{ maxWidth: "280px" }} />
+        <BuildingDropdown sx={{ maxWidth: "280px" }} />
+        <FloorDropdown sx={{ maxWidth: "280px", ml: 2 }} />
         <AutoCompleteDropdown
           name="user"
           label="Usuário"
@@ -73,25 +79,6 @@ const AccessControl: React.FC = () => {
 };
 
 export default AccessControl;
-
-// const users = [
-//   {
-//     label: "Marcelo Borba",
-//     id: 1,
-//   },
-//   {
-//     label: "Linus Schuster",
-//     id: 2,
-//   },
-//   {
-//     label: "Gustavo Dal Molin",
-//     id: 3,
-//   },
-//   {
-//     label: "Benhur Branco",
-//     id: 4,
-//   },
-// ];
 
 const users = [
   "Marcelo Borba",
