@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import DataTable from "app/components/DataTable";
+import DataTable, { Column } from "app/components/DataTable";
 import { AccessEvent } from "app/data/access-control";
 
 type AccessControlEventsTableProps = {
@@ -26,7 +26,7 @@ const AccessControlEventsTable: React.FC<AccessControlEventsTableProps> = ({
 
 export default AccessControlEventsTable;
 
-const columns = [
+const columns: Column[] = [
   {
     label: "Nome",
     name: "name",

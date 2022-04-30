@@ -31,6 +31,7 @@ interface DataTableProps {
     previousItems?: any[];
     rowsInPage?: number;
     rowsPerPageOptions?: number[];
+    selectionMode?: SelectionMode;
     onSelectedItems?: (items: any[]) => void;
     onRowClick?: (row: any) => void;
     onDeleteSelection?: (row: any[]) => void;
@@ -54,6 +55,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 }
 
 type Order = "asc" | "desc";
+type SelectionMode = "show" | "hide";
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -75,6 +77,7 @@ interface EnhancedTableProps {
   orderBy: string;
   rowCount: number;
   columns: Column[];
+  selectionMode: SelectionMode;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -86,6 +89,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     rowCount,
     onRequestSort,
     columns,
+    selectionMode,
   } = props;
   const createSortHandler =
     (property: string) => (event: React.MouseEvent<unknown>) => {
@@ -99,17 +103,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           backgroundColor: theme.palette.background.paper,
         })}
       >
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
-          />
-        </TableCell>
+        {selectionMode === "show" && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                "aria-label": "select all desserts",
+              }}
+            />
+          </TableCell>
+        )}
         {columns.map((column, index) => (
           <TableCell
             key={column.name}
@@ -231,6 +237,7 @@ const DataTable: React.FC<DataTableProps> = ({
     previousItems,
     rowsPerPageOptions = [5, 10, 25],
     rowsInPage = 5,
+    selectionMode = "show",
     onRowClick,
     onDeleteSelection,
     onSelectedItems,
@@ -339,6 +346,7 @@ const DataTable: React.FC<DataTableProps> = ({
           >
             <EnhancedTableHead
               numSelected={selected.length}
+              selectionMode={selectionMode}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -363,16 +371,18 @@ const DataTable: React.FC<DataTableProps> = ({
                       cursor: "pointer",
                     }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        onClick={(event) => handleClick(event, row)}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
+                    {selectionMode === "show" && (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          onClick={(event) => handleClick(event, row)}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </TableCell>
+                    )}
                     {columns.map((column, index) => {
                       return (
                         <TableCell
