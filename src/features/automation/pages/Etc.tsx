@@ -55,7 +55,10 @@ const Etc: React.FC = () => {
                 ))}
               </Grid>
               <Center>
-                <ButtonLink to="/zeno/automation/etc/details" sx={{ mt: 1 }}>
+                <ButtonLink
+                  to={`/zeno/automation/etc/details/${room.id}`}
+                  sx={{ mt: 1 }}
+                >
                   Ver mais
                 </ButtonLink>
               </Center>

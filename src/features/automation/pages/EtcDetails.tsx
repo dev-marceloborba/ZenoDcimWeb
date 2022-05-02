@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { building01 } from "app/data/bms";
 import EquipmentCard from "../components/EquipmentCard";
@@ -13,6 +14,7 @@ const EtcDetails: React.FC = () => {
   const { floors } = building01;
   const { rooms } = floors[0];
   const { equipments } = rooms[0];
+  const { id } = useParams();
 
   return (
     <HeroContainer>

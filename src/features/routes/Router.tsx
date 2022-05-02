@@ -60,7 +60,7 @@ export const SubRoutes: React.FC = () => {
     <Suspense fallback={<h3>loading...</h3>}>
       <Routes>
         <Route path="/automation/etc" element={<Etc />} />
-        <Route path="/automation/etc/details" element={<EtcDetails />} />
+        <Route path="/automation/etc/details/:id" element={<EtcDetails />} />
         <Route path="/automation/fire-system" element={<FireSystem />} />
         <Route
           path="/automation/fire-system/details"
