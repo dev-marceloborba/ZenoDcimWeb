@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useListAllParametersQuery } from "app/services/datacenter";
+import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
 import { EquipmentParameterResponse } from "app/models/data-center.model";
@@ -21,7 +21,7 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
   setSelectedParameter,
   previousParameters,
 }) => {
-  const { data: parameters, isLoading } = useListAllParametersQuery();
+  const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
   const [selected, setSelected] = useState<EquipmentParameterResponse[]>([]);
 
   useEffect(() => {

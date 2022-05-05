@@ -18,6 +18,8 @@ import {
   MultipleEquipmentParameterRequest,
   MultipleEquipmentParameterResponse,
   MultipleEquipmentsRequest,
+  ParameterRequest,
+  ParameterResponse,
   RoomRequest,
   RoomResponse,
   SiteRequest,
@@ -219,9 +221,27 @@ export const datacenterApi = createApi({
         url: "v1/data-center/building/floor/room/equipment/parameter/group",
       }),
     }),
-    listAllParameters: builder.query<EquipmentParameterResponse[], void>({
+    listAllEquipmentParameters: builder.query<
+      EquipmentParameterResponse[],
+      void
+    >({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment/parameters",
+      }),
+    }),
+    listAllParameters: builder.query<ParameterResponse[], void>({
+      query: () => ({
+        url: "v1/data-center/parameters",
+      }),
+    }),
+    createParameter: builder.mutation<
+      ApiResponse<ParameterResponse>,
+      ParameterRequest
+    >({
+      query: (params) => ({
+        url: "v1/data-center/parameters",
+        method: "POST",
+        body: params,
       }),
     }),
   }),
@@ -252,5 +272,7 @@ export const {
   useCreateMultipleEquipmentParametersMutation,
   useCreateEquipmentParameterGroupMutation,
   useListAllParameterGroupsQuery,
+  useListAllEquipmentParametersQuery,
   useListAllParametersQuery,
+  useCreateParameterMutation,
 } = datacenterApi;

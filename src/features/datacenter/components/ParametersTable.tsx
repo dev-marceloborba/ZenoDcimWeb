@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "app/hooks/useTable";
-import { useListAllParametersQuery } from "app/services/datacenter";
+import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
 const columns = [
@@ -32,7 +32,7 @@ const columns = [
 ];
 
 const ParametersTable: React.FC = () => {
-  const { data: parameters, isLoading } = useListAllParametersQuery();
+  const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
   const handleSelectedParameter = (parameter: any) => {
     console.log(parameter);
   };

@@ -116,3 +116,16 @@ export interface EquipmentParameterGroupResponse
   extends EquipmentParameterGroupRequest {
   id: string;
 }
+
+export interface ParameterRequest {
+  name: string;
+  unit: string;
+  lowLimit: number;
+  highLimit: number;
+  scale: number;
+  groupId: string;
+}
+
+export interface ParameterResponse extends ParameterRequest {
+  id: string;
+}

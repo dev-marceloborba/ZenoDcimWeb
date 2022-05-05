@@ -20,7 +20,7 @@ import EtcFilters from "../components/EtcFilters";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
-import ParameterModal from "../components/ParameterModal";
+import ParameterModal from "../components/EquipmentParameterModal";
 import ConnectionModal from "../components/ConnectionModal";
 import HeroContainer from "app/components/HeroContainer";
 import TabPanel from "app/components/TabPanel";
