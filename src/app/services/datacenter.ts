@@ -244,6 +244,12 @@ export const datacenterApi = createApi({
         body: params,
       }),
     }),
+    deleteParameter: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `v1/data-center/parameters/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -275,4 +281,5 @@ export const {
   useListAllEquipmentParametersQuery,
   useListAllParametersQuery,
   useCreateParameterMutation,
+  useDeleteParameterMutation,
 } = datacenterApi;

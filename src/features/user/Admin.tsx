@@ -9,7 +9,7 @@ import {
   useGetUsersQuery,
 } from "app/services/authentication";
 import ButtonLink from "app/components/ButtonLink";
-import DataTable, { Column } from "app/components/DataTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { useToast } from "app/components/Toast";
 
 const Admin: React.FC = () => {
@@ -60,7 +60,7 @@ const Admin: React.FC = () => {
   );
 };
 
-const columns: Column[] = [
+const columns: ColumnHeader[] = [
   {
     label: "Nome",
     name: "firstName",

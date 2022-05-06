@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
-import DataTable, { Column } from "app/components/DataTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { DoorControlEvent, EDoorStatus } from "app/data/access-control";
 
 type AccessControlDoorEventsTableProps = {
@@ -27,7 +27,7 @@ const AccessControlDoorEventsTable: React.FC<
 
 export default AccessControlDoorEventsTable;
 
-const columns: Column[] = [
+const columns: ColumnHeader[] = [
   {
     label: "Prédio",
     name: "building",

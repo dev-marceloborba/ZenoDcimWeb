@@ -24,7 +24,7 @@ import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
 
 interface DataTableProps {
-  columns: Column[];
+  columns: ColumnHeader[];
   rows: any[];
   title: string;
   options: {
@@ -38,7 +38,7 @@ interface DataTableProps {
   };
 }
 
-export interface Column {
+export interface ColumnHeader {
   name: string;
   label: string;
   renderComponent?: (row: any) => JSX.Element;
@@ -76,7 +76,7 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
-  columns: Column[];
+  columns: ColumnHeader[];
   selectionMode: SelectionMode;
 }
 

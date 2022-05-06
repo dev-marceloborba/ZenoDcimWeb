@@ -12,7 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { string, object } from "yup";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import PageTitle from "app/components/PageTitle";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 // import { automationParameters } from "app/data/automation-parameters";
 import EtcFilters from "../components/EtcFilters";
 
@@ -118,7 +118,7 @@ const NewEnergyEquipment: React.FC = () => {
     handleCloseParameterModal();
     try {
       await createEquipmentParameter(parameter).unwrap();
-      toast.open("Parametro salvo com sucesso", 2000, "success");
+      toast.open("Parâmetro salvo com sucesso", 2000, "success");
     } catch (error) {
       toast.open(
         `Erro ao criar parâmetro: ${parameter.name}: ${error}`,
@@ -255,11 +255,13 @@ const NewEnergyEquipment: React.FC = () => {
         </Row>
 
         <Column sx={{ mt: 2 }}>
-          <Typography variant="h4">Parâmetros</Typography>
-          <Table
+          <DataTable
+            title="Parâmetros"
             columns={columns}
-            rows={equipment?.equipmentParameters}
-            onRowClick={handleSelectedEquipmentParameter}
+            rows={equipment?.equipmentParameters ?? []}
+            options={{
+              onRowClick: handleSelectedEquipmentParameter,
+            }}
           />
         </Column>
       </TabPanel>
@@ -279,46 +281,38 @@ const NewEnergyEquipment: React.FC = () => {
 
 export default NewEnergyEquipment;
 
-const columns = [
+const columns: ColumnHeader[] = [
   {
     name: "name",
     label: "Parâmetro",
-    align: "left",
   },
   {
     name: "unit",
     label: "Unidade",
-    align: "right",
   },
   {
     name: "dataSource",
     label: "Fonte de dados",
-    align: "right",
   },
   {
     name: "address",
     label: "Endereço",
-    align: "right",
   },
   {
     name: "lowLimit",
     label: "Limit min",
-    align: "right",
   },
   {
     name: "highLimit",
     label: "Limite max",
-    align: "right",
   },
   {
     name: "scale",
     label: "Escala",
-    align: "right",
   },
   {
     name: "rules",
     label: "Regras",
-    align: "right",
   },
 ];
 

@@ -1,5 +1,5 @@
 import React from "react";
-import DataTable, { Column } from "app/components/DataTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { useListAllParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
@@ -22,7 +22,7 @@ const ParameterTable: React.FC = () => {
 
 export default ParameterTable;
 
-const columns: Column[] = [
+const columns: ColumnHeader[] = [
   {
     name: "name",
     label: "Parâmetro",
