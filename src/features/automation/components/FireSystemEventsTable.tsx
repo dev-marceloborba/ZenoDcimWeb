@@ -1,36 +1,37 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 
 const FireSytemEventsTable: React.FC = () => {
-  const columns = [
-    {
-      label: "Equipamento",
-      name: "equipment",
-      align: "left",
-    },
-    {
-      label: "Evento",
-      name: "event",
-      align: "right",
-    },
-    {
-      label: "Severidade",
-      name: "severity",
-      align: "right",
-    },
-    {
-      label: "Data de entrada",
-      name: "dateIn",
-      align: "right",
-    },
-  ];
-
   return (
     <Card>
-      <Table rows={[]} columns={columns} />
+      <DataTable
+        title="Eventos de incêndio"
+        rows={[]}
+        columns={columns}
+        options={{}}
+      />
     </Card>
   );
 };
 
 export default FireSytemEventsTable;
+
+const columns: ColumnHeader[] = [
+  {
+    label: "Equipamento",
+    name: "equipment",
+  },
+  {
+    label: "Evento",
+    name: "event",
+  },
+  {
+    label: "Severidade",
+    name: "severity",
+  },
+  {
+    label: "Data de entrada",
+    name: "dateIn",
+  },
+];

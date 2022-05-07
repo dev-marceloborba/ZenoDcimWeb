@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { FireSystemEvent } from "app/data/fire-system";
 
 type FireSystemEventsProps = {
@@ -10,28 +10,29 @@ type FireSystemEventsProps = {
 const FireSystemEvents: React.FC<FireSystemEventsProps> = ({ events }) => {
   return (
     <Card>
-      <Table
-        columns={[
-          {
-            label: "Equipamento",
-            name: "equipment",
-            align: "left",
-          },
-          {
-            label: "Evento",
-            name: "event",
-            align: "right",
-          },
-          {
-            label: "Data",
-            name: "date",
-            align: "right",
-          },
-        ]}
+      <DataTable
+        title="Eventos de incêndio"
+        columns={columns}
         rows={events}
+        options={{}}
       />
     </Card>
   );
 };
 
 export default FireSystemEvents;
+
+const columns: ColumnHeader[] = [
+  {
+    label: "Equipamento",
+    name: "equipment",
+  },
+  {
+    label: "Evento",
+    name: "event",
+  },
+  {
+    label: "Data",
+    name: "date",
+  },
+];

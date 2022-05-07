@@ -9,7 +9,6 @@ import EtcFilters from "../components/EtcFilters";
 // import BuildingDropdown from "../components/BuildingDropdown";
 // import FloorDropdown from "../components/FloorDropdown";
 // import RoomDropdown from "../components/RoomDropdown";
-// import Table from "app/hooks/useTable";
 import MuiDataTable from "mui-datatables";
 
 // icons

@@ -1,55 +1,55 @@
 import React from "react";
 import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
-import Table from "app/hooks/useTable";
 import { useListBuildingsDeepQuery } from "app/services/datacenter";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
+import Loading from "app/components/Loading";
 
 const DataCenterEquipmentsTable: React.FC = () => {
-  const columns = [
-    {
-      label: "Classe",
-      name: "class",
-      align: "left",
-    },
-    {
-      label: "Componente",
-      name: "component",
-      align: "right",
-    },
-    {
-      label: "Código do componente",
-      name: "componentCode",
-      align: "right",
-    },
-    {
-      label: "Descrição",
-      name: "description",
-      align: "right",
-    },
-    {
-      label: "Prédio",
-      name: "building",
-      align: "right",
-    },
-    {
-      label: "Andar",
-      name: "floor",
-      align: "right",
-    },
-    {
-      label: "Sala",
-      name: "room",
-      align: "right",
-    },
-  ];
-
-  const { isError, isLoading, error, data } = useListBuildingsDeepQuery();
+  const { data: equipments, isLoading } = useListBuildingsDeepQuery();
   return (
     <HeroContainer>
       <PageTitle>Equipamentos do Data center</PageTitle>
-      <Table columns={columns} rows={data} />
+      <DataTable
+        title="Equipamentos"
+        columns={columns}
+        rows={equipments ?? []}
+        options={{}}
+      />
+      <Loading open={isLoading} />
     </HeroContainer>
   );
 };
 
 export default DataCenterEquipmentsTable;
+
+const columns: ColumnHeader[] = [
+  {
+    label: "Classe",
+    name: "class",
+  },
+  {
+    label: "Componente",
+    name: "component",
+  },
+  {
+    label: "Código do componente",
+    name: "componentCode",
+  },
+  {
+    label: "Descrição",
+    name: "description",
+  },
+  {
+    label: "Prédio",
+    name: "building",
+  },
+  {
+    label: "Andar",
+    name: "floor",
+  },
+  {
+    label: "Sala",
+    name: "room",
+  },
+];

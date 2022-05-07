@@ -5,7 +5,7 @@ import BuildingDropdown from "../components/BuildingDropdown";
 import FloorDropdown from "../components/FloorDropdown";
 import Typography from "@mui/material/Typography";
 import BmsIndicator from "app/components/BmsIndicator";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { fireSystem } from "app/data/fire-system";
 import HeroContainer from "app/components/HeroContainer";
@@ -14,28 +14,7 @@ import Column from "app/components/Column";
 
 const FireSystemDetails: React.FC = () => {
   const { events } = fireSystem;
-  const columns = [
-    {
-      label: "Equipamento",
-      name: "equipment",
-      align: "left",
-    },
-    {
-      label: "Evento",
-      name: "event",
-      align: "right",
-    },
-    {
-      label: "Severidade",
-      name: "priority",
-      align: "right",
-    },
-    {
-      label: "Data",
-      name: "date",
-      align: "right",
-    },
-  ];
+
   return (
     <HeroContainer>
       <PageTitle>Incêndio - Eventos</PageTitle>
@@ -89,7 +68,12 @@ const FireSystemDetails: React.FC = () => {
             />
           </Column>
           <Column sx={{ ml: 0, width: "80%" }}>
-            <Table columns={columns} rows={events} />
+            <DataTable
+              title="Eventos"
+              columns={columns}
+              rows={events ?? []}
+              options={{}}
+            />
           </Column>
         </Row>
       </Card>
@@ -98,3 +82,22 @@ const FireSystemDetails: React.FC = () => {
 };
 
 export default FireSystemDetails;
+
+const columns: ColumnHeader[] = [
+  {
+    label: "Equipamento",
+    name: "equipment",
+  },
+  {
+    label: "Evento",
+    name: "event",
+  },
+  {
+    label: "Severidade",
+    name: "priority",
+  },
+  {
+    label: "Data",
+    name: "date",
+  },
+];
