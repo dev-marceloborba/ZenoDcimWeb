@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
+import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
@@ -9,17 +9,14 @@ import { EquipmentParameterResponse } from "app/models/data-center.model";
 import DataTable from "app/components/DataTable";
 
 type ParameterSelectionProps = {
-  open: boolean;
-  handleCloseModal: () => void;
   setSelectedParameter: (parameter: any) => void;
   previousParameters: any;
-};
+} & Omit<DialogProps, "children">;
 
 const ParameterSelection: React.FC<ParameterSelectionProps> = ({
-  open,
-  handleCloseModal,
   setSelectedParameter,
   previousParameters,
+  ...props
 }) => {
   const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
   const [selected, setSelected] = useState<EquipmentParameterResponse[]>([]);
@@ -39,11 +36,10 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
 
   const handleSaveSelection = () => {
     setSelectedParameter(selected);
-    handleCloseModal();
   };
 
   return (
-    <Dialog open={open} onClose={handleCloseModal}>
+    <Dialog {...props}>
       <DialogTitle>Selecionar parâmetro</DialogTitle>
       <DataTable
         rows={parameters ?? []}
@@ -52,12 +48,6 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
         options={{
           onSelectedItems: setSelected,
           previousItems: selected,
-          onRowClick: (row) => {
-            console.log(row);
-          },
-          // onDeleteSelection: (rows) => {
-          //   console.log(rows);
-          // },
         }}
       />
       <Button variant="contained" onClick={handleSaveSelection}>

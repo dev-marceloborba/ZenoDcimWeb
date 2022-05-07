@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { string, object } from "yup";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import Modal from "@mui/material/Modal";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { string, object } from "yup";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import PageTitle from "app/components/PageTitle";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
-// import { automationParameters } from "app/data/automation-parameters";
 import EtcFilters from "../components/EtcFilters";
-
-//icons
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import SmsFailedIcon from "@mui/icons-material/SmsFailed";
-import CallSplitIcon from "@mui/icons-material/CallSplit";
-import ParameterModal from "../components/EquipmentParameterModal";
 import ConnectionModal from "../components/ConnectionModal";
 import HeroContainer from "app/components/HeroContainer";
 import TabPanel from "app/components/TabPanel";
@@ -39,6 +31,13 @@ import {
   useFindEquipmentByIdMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
+import { useModal } from "mui-modal-provider";
+
+//icons
+import ThermostatIcon from "@mui/icons-material/Thermostat";
+import SmsFailedIcon from "@mui/icons-material/SmsFailed";
+import CallSplitIcon from "@mui/icons-material/CallSplit";
+import ParameterModal from "../components/EquipmentParameterModal";
 
 const NewEnergyEquipment: React.FC = () => {
   const toast = useToast();
@@ -53,17 +52,8 @@ const NewEnergyEquipment: React.FC = () => {
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
 
   const [tabIndex, setTabIndex] = useState(0);
-  const [parameterModalOpen, setParameterModalOpen] = useState(false);
-  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
 
-  useEffect(() => {
-    async function fetchEquipmentData() {
-      if (params.id) {
-        await findEquipmentByid(params.id).unwrap();
-      }
-    }
-    fetchEquipmentData();
-  }, [findEquipmentByid, params]);
+  const { showModal } = useModal();
 
   const methods = useForm<EquipmentRequest>({
     resolver: yupResolver(validationSchema),
@@ -71,24 +61,26 @@ const NewEnergyEquipment: React.FC = () => {
 
   const { handleSubmit, watch } = methods;
 
+  const buildingId = watch("buildingId");
+  const floorId = watch("floorId");
+  const equipmentId = params.id ?? "";
+
   const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
     console.log("data", data);
   };
 
   const handleOpenParameterModal = () => {
-    setParameterModalOpen(true);
-  };
-
-  const handleCloseParameterModal = () => {
-    setParameterModalOpen(false);
+    const modal = showModal(ParameterModal, {
+      onConfirm: async (data) => {
+        await handleSaveParameter(data);
+        modal.hide();
+      },
+      equipmentId,
+    });
   };
 
   const handleOpenConnectionModal = () => {
-    setConnectionModalOpen(true);
-  };
-
-  const handleCloseConnectionModal = () => {
-    setConnectionModalOpen(false);
+    const modal = showModal(ConnectionModal);
   };
 
   const handleChangeTabIndex = (
@@ -98,24 +90,7 @@ const NewEnergyEquipment: React.FC = () => {
     setTabIndex(newValue);
   };
 
-  const buildingId = watch("buildingId");
-  const floorId = watch("floorId");
-  const equipmentId = params.id ?? "";
-
-  useEffect(() => {
-    const filteredBuilding = buildings?.find(
-      (building) => building.id === buildingId
-    );
-    setFloors(filteredBuilding?.floors ?? []);
-  }, [buildingId, buildings]);
-
-  useEffect(() => {
-    const filteredFloors = floors?.find((floor) => floor.id === floorId);
-    setRooms(filteredFloors?.rooms ?? []);
-  }, [floorId, floors]);
-
   const handleSaveParameter = async (parameter: EquipmentParameterRequest) => {
-    handleCloseParameterModal();
     try {
       await createEquipmentParameter(parameter).unwrap();
       toast.open("Parâmetro salvo com sucesso", 2000, "success");
@@ -138,6 +113,27 @@ const NewEnergyEquipment: React.FC = () => {
       },
     });
   };
+
+  useEffect(() => {
+    const filteredBuilding = buildings?.find(
+      (building) => building.id === buildingId
+    );
+    setFloors(filteredBuilding?.floors ?? []);
+  }, [buildingId, buildings]);
+
+  useEffect(() => {
+    const filteredFloors = floors?.find((floor) => floor.id === floorId);
+    setRooms(filteredFloors?.rooms ?? []);
+  }, [floorId, floors]);
+
+  useEffect(() => {
+    async function fetchEquipmentData() {
+      if (params.id) {
+        await findEquipmentByid(params.id).unwrap();
+      }
+    }
+    fetchEquipmentData();
+  }, [findEquipmentByid, params]);
 
   return (
     <HeroContainer>
@@ -252,6 +248,14 @@ const NewEnergyEquipment: React.FC = () => {
           <Button startIcon={<SmsFailedIcon />} variant="text">
             Nova regra
           </Button>
+
+          <Button
+            startIcon={<ThermostatIcon />}
+            variant="text"
+            onClick={() => navigate("/")}
+          >
+            Novo parâmetro
+          </Button>
         </Row>
 
         <Column sx={{ mt: 2 }}>
@@ -265,16 +269,6 @@ const NewEnergyEquipment: React.FC = () => {
           />
         </Column>
       </TabPanel>
-      <Modal open={parameterModalOpen} onClose={handleCloseParameterModal}>
-        <ParameterModal
-          closeModal={handleCloseParameterModal}
-          onSaveData={handleSaveParameter}
-          equipmentId={equipmentId}
-        />
-      </Modal>
-      <Modal open={connectionModalOpen} onClose={handleCloseConnectionModal}>
-        <ConnectionModal />
-      </Modal>
     </HeroContainer>
   );
 };

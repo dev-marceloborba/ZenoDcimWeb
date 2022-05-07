@@ -8322,6 +8322,11 @@ mui-datatables@^4.2.2:
     react-to-print "^2.8.0"
     tss-react "^3.6.0"
 
+mui-modal-provider@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/mui-modal-provider/-/mui-modal-provider-2.0.0.tgz#fc828957da0de7845440a3c99881d1bd6bdd3260"
+  integrity sha512-wL12KqqIstGzD4a3YxXdAihT8gZrvOtEtA5NoDnxa+6FEyYljQIdaM8PqlsyBOpirHGkWwL/5idB6eCtMDlbYg==
+
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/multicast-dns-service-types/-/multicast-dns-service-types-1.1.0.tgz#899f11d9686e5e05cb91b35d5f0e63b773cfc901"

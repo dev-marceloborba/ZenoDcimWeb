@@ -15,7 +15,8 @@ import Toast from "app/components/Toast";
 import AutomationFiltersProvider from "features/automation/components/AutomationFiltersProvider";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig } from "app/config/env";
-import ModalProvider from "app/hooks/useModal";
+// import ModalProvider from "app/hooks/useModal";
+import ModalProvider from "mui-modal-provider";
 import { ptBR } from "@mui/material/locale";
 
 ReactDOM.render(

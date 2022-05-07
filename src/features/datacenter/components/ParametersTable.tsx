@@ -37,14 +37,14 @@ const ParametersTable: React.FC = () => {
     console.log(parameter);
   };
   return (
-    <div>
+    <>
       <Table
         columns={columns}
         rows={parameters}
         onRowClick={handleSelectedParameter}
       />
       <Loading open={isLoading} />
-    </div>
+    </>
   );
 };
 

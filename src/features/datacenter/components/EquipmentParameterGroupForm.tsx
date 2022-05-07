@@ -7,44 +7,18 @@ import Button from "@mui/material/Button";
 import { object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import MuiDataTable from "mui-datatables";
+import DataTable from "app/components/DataTable";
+import { useModal } from "mui-modal-provider";
 
 import ParameterSelection from "./ParameterSelection";
-
-const columns = [
-  {
-    name: "name",
-    label: "Nome",
-    align: "left",
-  },
-  {
-    name: "unit",
-    label: "Unidade",
-    align: "right",
-  },
-  {
-    name: "lowLimit",
-    label: "Limite minimo",
-    align: "right",
-  },
-  {
-    name: "highLimit",
-    label: "Limite máximo",
-    align: "right",
-  },
-  {
-    name: "scale",
-    label: "Escala",
-    align: "right",
-  },
-];
+import SubmitButton from "app/components/SubmitButton";
 
 const EquipmentParameterGroupForm: React.FC = () => {
-  const [open, setOpen] = useState(false);
   const [selectedParameter, setSelectedParameter] = useState<any>();
   const methods = useForm({
     resolver: yupResolver(validationSchema),
   });
+  const { showModal } = useModal();
 
   const onSubmit = async (data: any) => {
     const obj = {
@@ -52,6 +26,16 @@ const EquipmentParameterGroupForm: React.FC = () => {
       parameters: selectedParameter,
     };
     console.log(obj);
+  };
+
+  const handleOpenParameterModal = () => {
+    const modal = showModal(ParameterSelection, {
+      previousParameters: selectedParameter,
+      setSelectedParameter: (parameter) => {
+        setSelectedParameter(parameter);
+        modal.hide();
+      },
+    });
   };
 
   const { handleSubmit } = methods;
@@ -62,30 +46,18 @@ const EquipmentParameterGroupForm: React.FC = () => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Nome" />
-          <Button onClick={() => setOpen(true)}>Incluir parâmetro</Button>
-          <MuiDataTable
+          <Button onClick={handleOpenParameterModal}>Incluir parâmetro</Button>
+          <DataTable
             title="Parâmetros"
             columns={columns}
-            data={selectedParameter}
+            rows={selectedParameter ?? []}
             options={{
-              download: false,
-              print: false,
-              search: false,
-              viewColumns: false,
-              filter: false,
+              onSelectedItems: (items) => console.log(items),
             }}
           />
-          <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-            Salvar
-          </Button>
+          <SubmitButton label="Salvar" sx={{ mt: 2 }} />
         </FormProvider>
       </Form>
-      <ParameterSelection
-        open={open}
-        handleCloseModal={() => setOpen(false)}
-        setSelectedParameter={setSelectedParameter}
-        previousParameters={selectedParameter}
-      />
     </HeroContainer>
   );
 };
@@ -93,5 +65,28 @@ const EquipmentParameterGroupForm: React.FC = () => {
 const validationSchema = object().shape({
   name: string().required("Nome do grupo é obrigatório"),
 });
+
+const columns = [
+  {
+    name: "name",
+    label: "Nome",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+  },
+  {
+    name: "lowLimit",
+    label: "Limite minimo",
+  },
+  {
+    name: "highLimit",
+    label: "Limite máximo",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+  },
+];
 
 export default EquipmentParameterGroupForm;
