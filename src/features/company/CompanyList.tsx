@@ -11,12 +11,7 @@ const CompanyList: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <Toolbar />
-      <DataTable
-        title="Empresas"
-        columns={columns}
-        rows={companies ?? []}
-        options={{}}
-      />
+      <DataTable title="Empresas" columns={columns} rows={companies ?? []} />
       <Loading open={isLoading} />
     </Container>
   );

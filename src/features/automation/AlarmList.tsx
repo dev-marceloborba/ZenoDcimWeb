@@ -7,7 +7,7 @@ const AlarmList: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <Toolbar />
-      <DataTable title={"Alarmes"} columns={columns} rows={[]} options={{}} />
+      <DataTable title={"Alarmes"} columns={columns} rows={[]} />
     </Container>
   );
 };

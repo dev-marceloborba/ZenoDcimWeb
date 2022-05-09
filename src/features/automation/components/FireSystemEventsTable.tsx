@@ -5,12 +5,7 @@ import DataTable, { ColumnHeader } from "app/components/DataTable";
 const FireSytemEventsTable: React.FC = () => {
   return (
     <Card>
-      <DataTable
-        title="Eventos de incêndio"
-        rows={[]}
-        columns={columns}
-        options={{}}
-      />
+      <DataTable title="Eventos de incêndio" rows={[]} columns={columns} />
     </Card>
   );
 };

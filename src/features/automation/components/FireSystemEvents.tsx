@@ -10,12 +10,7 @@ type FireSystemEventsProps = {
 const FireSystemEvents: React.FC<FireSystemEventsProps> = ({ events }) => {
   return (
     <Card>
-      <DataTable
-        title="Eventos de incêndio"
-        columns={columns}
-        rows={events}
-        options={{}}
-      />
+      <DataTable title="Eventos de incêndio" columns={columns} rows={events} />
     </Card>
   );
 };

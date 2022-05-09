@@ -68,12 +68,7 @@ const FireSystemDetails: React.FC = () => {
             />
           </Column>
           <Column sx={{ ml: 0, width: "80%" }}>
-            <DataTable
-              title="Eventos"
-              columns={columns}
-              rows={events ?? []}
-              options={{}}
-            />
+            <DataTable title="Eventos" columns={columns} rows={events ?? []} />
           </Column>
         </Row>
       </Card>

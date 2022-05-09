@@ -18,12 +18,7 @@ const Racks: React.FC = () => {
           Novo rack
         </ButtonLink>
       </Box>
-      <DataTable
-        title="Racks"
-        columns={columns}
-        rows={racks ?? []}
-        options={{}}
-      />
+      <DataTable title="Racks" columns={columns} rows={racks ?? []} />
       <Loading open={isLoading} />
     </Container>
   );

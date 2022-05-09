@@ -18,24 +18,27 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
+// import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
+import ConditionalRender from "./ConditionalRender";
 
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
   title: string;
-  options: {
-    previousItems?: any[];
-    rowsInPage?: number;
-    rowsPerPageOptions?: number[];
-    selectionMode?: SelectionMode;
-    onSelectedItems?: (items: any[]) => void;
-    onRowClick?: (row: any) => void;
-    onDeleteSelection?: (row: any[]) => void;
-  };
+  options?: DataTableOptions;
+}
+
+interface DataTableOptions {
+  previousItems?: any[];
+  rowsInPage?: number;
+  rowsPerPageOptions?: number[];
+  selectionMode?: SelectionMode;
+  onSelectedItems?: (items: any[]) => void;
+  onRowClick?: (row: any) => void;
+  onDeleteSelection?: (row: any[]) => void;
 }
 
 export interface ColumnHeader {
@@ -149,10 +152,19 @@ interface EnhancedTableToolbarProps {
   openSearch: boolean;
   setFilter: (fillter: string) => void;
   onDelete: () => void;
+  toggleTitleAndSearch: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, title, filter, openSearch, setFilter, onDelete } = props;
+  const {
+    numSelected,
+    title,
+    filter,
+    openSearch,
+    setFilter,
+    onDelete,
+    toggleTitleAndSearch,
+  } = props;
 
   return (
     <Toolbar
@@ -178,15 +190,20 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           {numSelected} selecionados
         </Typography>
       ) : (
-        // <Typography
-        //   sx={{ flex: "1 1 100%" }}
-        //   variant="h6"
-        //   id="tableTitle"
-        //   component="div"
-        // >
-        //   {title}
-        // </Typography>
-        <SearchInput value={filter} setValue={setFilter} />
+        <ConditionalRender
+          condition={openSearch}
+          falseCondition={
+            <Typography
+              sx={{ flex: "1 1 100%" }}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              {title}
+            </Typography>
+          }
+          trueCondition={<SearchInput value={filter} setValue={setFilter} />}
+        />
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -196,7 +213,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton onClick={toggleTitleAndSearch}>
             <SearchIcon />
           </IconButton>
         </Tooltip>
@@ -234,7 +251,10 @@ const DataTable: React.FC<DataTableProps> = ({
   rows,
   columns,
   title,
-  options: {
+  ...props
+}) => {
+  const options = props.options ?? ({} as DataTableOptions);
+  const {
     previousItems,
     rowsPerPageOptions = [5, 10, 25],
     rowsInPage = 5,
@@ -242,8 +262,8 @@ const DataTable: React.FC<DataTableProps> = ({
     onRowClick,
     onDeleteSelection,
     onSelectedItems,
-  },
-}) => {
+  } = options;
+
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState(columns[0].name);
   const [selected, setSelected] = useState<any[]>(previousItems || []);
@@ -326,6 +346,10 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
+  const handleToggleSearchAndTitle = () => {
+    setOpenSearch(!openSearch);
+  };
+
   useEffect(() => {
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
@@ -340,6 +364,7 @@ const DataTable: React.FC<DataTableProps> = ({
           openSearch={openSearch}
           setFilter={setFilter}
           onDelete={handleDeleteSelection}
+          toggleTitleAndSearch={handleToggleSearchAndTitle}
         />
         <TableContainer>
           <Table

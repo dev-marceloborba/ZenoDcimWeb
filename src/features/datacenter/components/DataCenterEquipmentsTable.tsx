@@ -14,7 +14,6 @@ const DataCenterEquipmentsTable: React.FC = () => {
         title="Equipamentos"
         columns={columns}
         rows={equipments ?? []}
-        options={{}}
       />
       <Loading open={isLoading} />
     </HeroContainer>
