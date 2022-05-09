@@ -23,6 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
 import ConditionalRender from "./ConditionalRender";
+import Visible from "./Visible";
 
 interface DataTableProps {
   columns: ColumnHeader[];
@@ -36,6 +37,7 @@ interface DataTableOptions {
   rowsInPage?: number;
   rowsPerPageOptions?: number[];
   selectionMode?: SelectionMode;
+  hideSearch?: boolean;
   onSelectedItems?: (items: any[]) => void;
   onRowClick?: (row: any) => void;
   onDeleteSelection?: (row: any[]) => void;
@@ -150,6 +152,7 @@ interface EnhancedTableToolbarProps {
   title: string;
   filter: string;
   openSearch: boolean;
+  hideSearch: boolean;
   setFilter: (fillter: string) => void;
   onDelete: () => void;
   toggleTitleAndSearch: () => void;
@@ -161,6 +164,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     title,
     filter,
     openSearch,
+    hideSearch,
     setFilter,
     onDelete,
     toggleTitleAndSearch,
@@ -212,11 +216,13 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton onClick={toggleTitleAndSearch}>
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
+        <Visible show={!hideSearch}>
+          <Tooltip title="Filter list">
+            <IconButton onClick={toggleTitleAndSearch}>
+              <SearchIcon />
+            </IconButton>
+          </Tooltip>
+        </Visible>
       )}
     </Toolbar>
   );
@@ -262,6 +268,7 @@ const DataTable: React.FC<DataTableProps> = ({
     onRowClick,
     onDeleteSelection,
     onSelectedItems,
+    hideSearch = false,
   } = options;
 
   const [order, setOrder] = useState<Order>("asc");
@@ -362,6 +369,7 @@ const DataTable: React.FC<DataTableProps> = ({
           title={title}
           filter={filter}
           openSearch={openSearch}
+          hideSearch={hideSearch}
           setFilter={setFilter}
           onDelete={handleDeleteSelection}
           toggleTitleAndSearch={handleToggleSearchAndTitle}
