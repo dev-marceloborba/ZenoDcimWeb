@@ -43,7 +43,6 @@ const Admin: React.FC = () => {
           Criar usuário
         </ButtonLink>
       </Box>
-      <Loading open={isLoading} />
       <DataTable
         columns={columns}
         rows={users ?? []}
@@ -56,6 +55,7 @@ const Admin: React.FC = () => {
         // editPage={"/zeno/settings/edit-user"}
         // handleDelete={handleDelete}
       />
+      <Loading open={isLoading} />
     </Container>
   );
 };

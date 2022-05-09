@@ -146,12 +146,13 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
   title: string;
   filter: string;
+  openSearch: boolean;
   setFilter: (fillter: string) => void;
   onDelete: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, title, filter, setFilter, onDelete } = props;
+  const { numSelected, title, filter, openSearch, setFilter, onDelete } = props;
 
   return (
     <Toolbar
@@ -196,7 +197,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
-            <FilterListIcon />
+            <SearchIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -249,6 +250,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsInPage);
   const [filter, setFilter] = useState("");
+  const [openSearch, setOpenSearch] = useState(false);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -335,6 +337,7 @@ const DataTable: React.FC<DataTableProps> = ({
           numSelected={selected.length}
           title={title}
           filter={filter}
+          openSearch={openSearch}
           setFilter={setFilter}
           onDelete={handleDeleteSelection}
         />
