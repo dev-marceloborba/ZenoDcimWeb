@@ -1,5 +1,4 @@
 import React from "react";
-import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
 import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
@@ -13,8 +12,14 @@ import { number, object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useToast } from "app/components/Toast";
+import Modal, { ModalProps } from "@mui/material/Modal";
+import { modalStyle } from "app/styles/modal-style";
 
-const ParameterModal: React.FC = () => {
+type ParameterModalProps = {
+  onConfirm: () => void;
+} & Omit<ModalProps, "children">;
+
+const ParameterModal: React.FC<ParameterModalProps> = ({ ...props }) => {
   const { data: parameterGroups, isLoading } = useListAllParameterGroupsQuery();
   const [createParameter] = useCreateParameterMutation();
   const toast = useToast();
@@ -36,9 +41,8 @@ const ParameterModal: React.FC = () => {
   };
 
   return (
-    <HeroContainer>
-      <PageTitle>Parâmetro</PageTitle>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+    <Modal {...props}>
+      <Form onSubmit={handleSubmit(onSubmit)} sx={modalStyle}>
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
@@ -55,9 +59,9 @@ const ParameterModal: React.FC = () => {
           />
           <SubmitButton label="Criar" />
         </FormProvider>
+        <Loading open={isLoading} />
       </Form>
-      <Loading open={isLoading} />
-    </HeroContainer>
+    </Modal>
   );
 };
 

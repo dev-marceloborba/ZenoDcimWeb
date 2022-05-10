@@ -239,7 +239,7 @@ const NewEnergyEquipment: React.FC = () => {
             variant="text"
             onClick={handleOpenParameterModal}
           >
-            Novo parâmetro
+            Associar parâmetro
           </Button>
           <Button startIcon={<SmsFailedIcon />} variant="text">
             Novo alarme
@@ -252,7 +252,7 @@ const NewEnergyEquipment: React.FC = () => {
           <Button
             startIcon={<ThermostatIcon />}
             variant="text"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/zeno/automation/management/parameters")}
           >
             Novo parâmetro
           </Button>

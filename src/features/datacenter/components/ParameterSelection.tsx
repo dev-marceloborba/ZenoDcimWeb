@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
+import { useListAllParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
-import { EquipmentParameterResponse } from "app/models/data-center.model";
+import { ParameterResponse } from "app/models/data-center.model";
 import DataTable from "app/components/DataTable";
 
 type ParameterSelectionProps = {
@@ -18,12 +18,12 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
   previousParameters,
   ...props
 }) => {
-  const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
-  const [selected, setSelected] = useState<EquipmentParameterResponse[]>([]);
+  const { data: parameters, isLoading } = useListAllParametersQuery();
+  const [selected, setSelected] = useState<ParameterResponse[]>([]);
 
   useEffect(() => {
     if (parameters) {
-      const arr: EquipmentParameterResponse[] = [];
+      const arr: ParameterResponse[] = [];
 
       previousParameters?.forEach((parameter: any) => {
         const _parameter = parameters.find((p) => p.id === parameter.id)!;
