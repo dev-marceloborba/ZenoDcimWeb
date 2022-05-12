@@ -1,35 +1,7 @@
 import React from "react";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
-
-const columns = [
-  {
-    name: "name",
-    label: "Nome",
-    align: "left",
-  },
-  {
-    name: "unit",
-    label: "Unidade",
-    align: "right",
-  },
-  {
-    name: "lowLimit",
-    label: "Limite baixo",
-    align: "right",
-  },
-  {
-    name: "highLimit",
-    label: "Limite alto",
-    align: "right",
-  },
-  {
-    name: "scale",
-    label: "Escala",
-    align: "right",
-  },
-];
 
 const ParametersTable: React.FC = () => {
   const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
@@ -38,10 +10,13 @@ const ParametersTable: React.FC = () => {
   };
   return (
     <>
-      <Table
+      <DataTable
+        title="Parâmetros"
         columns={columns}
-        rows={parameters}
-        onRowClick={handleSelectedParameter}
+        rows={parameters ?? []}
+        options={{
+          onRowClick: handleSelectedParameter,
+        }}
       />
       <Loading open={isLoading} />
     </>
@@ -49,3 +24,26 @@ const ParametersTable: React.FC = () => {
 };
 
 export default ParametersTable;
+
+const columns: ColumnHeader[] = [
+  {
+    name: "name",
+    label: "Nome",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+  },
+  {
+    name: "lowLimit",
+    label: "Limite baixo",
+  },
+  {
+    name: "highLimit",
+    label: "Limite alto",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+  },
+];

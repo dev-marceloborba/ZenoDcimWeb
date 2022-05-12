@@ -1,5 +1,5 @@
 import React from "react";
-import Table from "app/hooks/useTable";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 import {
   useListSitesQuery,
   useDeleteSiteMutation,
@@ -7,36 +7,31 @@ import {
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
 import Column from "app/components/Column";
-
-const columns = [
-  {
-    name: "name",
-    label: "Nome",
-    align: "left",
-  },
-];
+import { SiteResponse } from "app/models/data-center.model";
 
 const SiteTable: React.FC = () => {
   const { data: sites, isLoading } = useListSitesQuery();
   const [deleteSite] = useDeleteSiteMutation();
   const toast = useToast();
 
-  const handleDeleteSite = async (row: any) => {
+  const handleDeleteSite = (sites: SiteResponse[]) => {
     try {
-      await deleteSite(row.id).unwrap();
-      toast.open(`Site ${row.name} excluído com sucesso`, 2000, "success");
+      sites.forEach(async (site) => await deleteSite(site.id).unwrap());
+      toast.open(`Site(s) excluído(s) com sucesso`, 2000, "success");
     } catch (error) {
-      toast.open(`Erro ao excluir o site ${row.name}`, 2000, "error");
+      toast.open(`Erro ao excluir o site ${error}`, 2000, "error");
     }
   };
 
   return (
     <Column sx={{ mt: 2 }}>
-      <Table
+      <DataTable
+        title="Sites"
         columns={columns}
-        rows={sites}
-        showActions
-        handleDelete={handleDeleteSite}
+        rows={sites ?? []}
+        options={{
+          onDeleteSelection: handleDeleteSite,
+        }}
       />
       <Loading open={isLoading} />
     </Column>
@@ -44,3 +39,10 @@ const SiteTable: React.FC = () => {
 };
 
 export default SiteTable;
+
+const columns: ColumnHeader[] = [
+  {
+    name: "name",
+    label: "Nome",
+  },
+];

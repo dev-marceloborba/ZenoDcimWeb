@@ -15,7 +15,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
 import AccessButton from "app/components/AccessButton";
 
-import Table from "app/hooks/useTable";
 import { styled } from "@mui/system";
 
 type Equipment = {

@@ -70,13 +70,17 @@ const NewEnergyEquipment: React.FC = () => {
   };
 
   const handleOpenParameterModal = () => {
-    const modal = showModal(ParameterModal, {
-      onConfirm: async (data) => {
-        await handleSaveParameter(data);
-        modal.hide();
-      },
-      equipmentId,
-    });
+    // navigate(
+    //   `/zeno/automation/management/equipment/parameter/transfer/${equipmentId}`
+    // );
+    navigate(`/zeno/automation/management/equipment/parameter/transfer`);
+    // const modal = showModal(ParameterModal, {
+    //   onConfirm: async (data) => {
+    //     await handleSaveParameter(data);
+    //     modal.hide();
+    //   },
+    //   equipmentId,
+    // });
   };
 
   const handleOpenConnectionModal = () => {

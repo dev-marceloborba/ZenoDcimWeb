@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import Table from "app/hooks/useTable";
+import DataTable from "./DataTable";
 
 import { readFile, exportFile } from "app/utils/excel.handler";
 import ImportButton from "./ImportButton";
@@ -54,12 +54,10 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
           Exportar
         </Button>
       </Box>
-      <Table
+      <DataTable
+        title="Dados"
         columns={props.columns}
-        rows={props.rows ?? null}
-        showActions
-        editPage="/zeno/clp/edit"
-        handleDelete={(data: any) => console.log(data)}
+        rows={props.rows ?? []}
       />
     </Container>
   );

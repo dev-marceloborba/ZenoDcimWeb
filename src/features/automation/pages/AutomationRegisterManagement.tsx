@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -9,7 +8,7 @@ import EtcFilters from "../components/EtcFilters";
 // import BuildingDropdown from "../components/BuildingDropdown";
 // import FloorDropdown from "../components/FloorDropdown";
 // import RoomDropdown from "../components/RoomDropdown";
-import MuiDataTable from "mui-datatables";
+import DataTable, { ColumnHeader } from "app/components/DataTable";
 
 // icons
 import AddIcon from "@mui/icons-material/Add";
@@ -22,123 +21,18 @@ import Row from "app/components/Row";
 import AccessButton from "app/components/AccessButton";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 
-import tableOptions from "app/utils/tableOptions";
 // import Column from "app/components/Column";
 import { useListAllEquipmentsQuery } from "app/services/datacenter";
 import findObjectByProperty from "app/utils/findObjectByProperty";
 import { EquipmentResponse } from "app/models/data-center.model";
+import Loading from "app/components/Loading";
 
 const AutomationRegisterManagement: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   // const { buildings, building, floor, room } = useAutomationFilters();
   const { buildings } = useAutomationFilters();
-  const { data: equipments } = useListAllEquipmentsQuery();
+  const { data: equipments, isLoading } = useListAllEquipmentsQuery();
   const navigate = useNavigate();
-  const columns = [
-    {
-      name: "name",
-      label: "Componente",
-      align: "left",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "building",
-      label: "Prédio",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "floor",
-      label: "Andar",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "room",
-      label: "Sala",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "status",
-      label: "Status",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "alarms",
-      label: "Alarmes",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    {
-      name: "createdAt",
-      label: "Data de criação",
-      align: "right",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-    // {
-    //   ...tableActions(navigate, "/automation/register/edit"),
-    // },
-    // {
-    //   name: "actions",
-    //   label: "Ações",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     empty: false,
-    //     customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
-    //       const onDetailsClick = () => {
-    //         const { rowData } = tableMeta;
-    //         console.log(rowData);
-    //       };
-
-    //       return (
-    //         <Row
-    //           sx={{
-    //             " & .MuiButton-root": {
-    //               fontSize: "0.75rem",
-    //             },
-    //             " & .MuiButton-root:nth-child(even)": {
-    //               // margin: "12px 0",
-    //               margin: "0 12px",
-    //             },
-    //           }}
-    //         >
-    //           <Button variant="outlined" color="info" onClick={onDetailsClick}>
-    //             Detalhes
-    //           </Button>
-    //           <Button variant="outlined">Editar</Button>
-    //           <Button variant="outlined" color="error">
-    //             Apagar
-    //           </Button>
-    //         </Row>
-    //       );
-    //     },
-    //   },
-    // },
-  ];
 
   useEffect(() => {
     const vet: any = [];
@@ -202,14 +96,11 @@ const AutomationRegisterManagement: React.FC = () => {
 
       <Row sx={{ mt: 2 }}>
         <Tooltip title="Criar novo equipamento">
-          <Button
-            variant="text"
+          <AccessButton
             startIcon={<AddIcon />}
-            component={RouterLink}
+            label="Novo equipamento"
             to="/zeno/automation/management/equipment"
-          >
-            Novo equipamento
-          </Button>
+          />
         </Tooltip>
 
         <Tooltip title="Criar nova conexão">
@@ -245,33 +136,51 @@ const AutomationRegisterManagement: React.FC = () => {
           },
         }}
       >
-        {/* <Table
-          columns={columns}
-          rows={tableData}
-          onRowClick={navigateToEquipmentDetails}
-          showActions
-        /> */}
-        <MuiDataTable
+        <DataTable
           title="Equipamentos de Energia"
-          data={tableData}
+          rows={tableData ?? []}
           columns={columns}
           options={{
-            ...tableOptions,
-            onRowClick: (rowData) => {
-              const selectedEquipment = findObjectByProperty(
-                equipments ?? [],
-                "component",
-                rowData[0]
-              ) as EquipmentResponse;
-              navigate(
-                `/zeno/automation/management/equipment/${selectedEquipment.id}`
-              );
+            onRowClick: (row: EquipmentResponse) => {
+              navigate(`/zeno/automation/management/equipment/${row.id}`);
             },
           }}
         />
       </Row>
+      <Loading open={isLoading} />
     </HeroContainer>
   );
 };
 
 export default AutomationRegisterManagement;
+
+const columns: ColumnHeader[] = [
+  {
+    name: "name",
+    label: "Componente",
+  },
+  {
+    name: "building",
+    label: "Prédio",
+  },
+  {
+    name: "floor",
+    label: "Andar",
+  },
+  {
+    name: "room",
+    label: "Sala",
+  },
+  {
+    name: "status",
+    label: "Status",
+  },
+  {
+    name: "alarms",
+    label: "Alarmes",
+  },
+  {
+    name: "createdAt",
+    label: "Data de criação",
+  },
+];

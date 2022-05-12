@@ -3,6 +3,8 @@ import environment from "app/config/env";
 import { RootState } from "../store";
 import { ApiResponse } from "../models/api-response";
 import {
+  AlarmRequest,
+  AlarmResponse,
   ModbusTagRequest,
   ModbusTagResponse,
   PlcRequest,
@@ -57,6 +59,25 @@ export const automationApi = createApi({
         method: "DELETE",
       }),
     }),
+    createAlarm: builder.mutation<ApiResponse<AlarmResponse>, AlarmRequest>({
+      query: (data) => ({
+        url: "v1/alarms",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    findAllAlarms: builder.query<AlarmResponse[], void>({
+      query: () => ({ url: "v1/alarms" }),
+    }),
+    findAlarmById: builder.query<AlarmResponse, string>({
+      query: (id) => ({ url: `v1/alarms/${id}`, method: "GET" }),
+    }),
+    deleteAlarm: builder.mutation<ApiResponse<any>, string>({
+      query: (id) => ({
+        url: `v1/alarms/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -67,4 +88,8 @@ export const {
   useAddPlcMutation,
   useDeletePlcMutation,
   useDeleteModbusTagMutation,
+  useCreateAlarmMutation,
+  useFindAllAlarmsQuery,
+  useFindAlarmByIdQuery,
+  useDeleteAlarmMutation,
 } = automationApi;

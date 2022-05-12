@@ -14,7 +14,6 @@ import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
 import Row from "app/components/Row";
 import TransferList, { TransferListItem } from "app/components/TransferList";
-import Table from "app/hooks/useTable";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -246,7 +245,7 @@ const EquipmentParameterTransfer: React.FC = () => {
               {selectedGroup ? `Parâmetros - ${selectedGroup}` : "Parâmetros"}
             </Typography>
             <Row>
-              <Table columns={columns} rows={filteredTable} />
+              {/* <Table columns={columns} rows={filteredTable} /> */}
               <Column
                 sx={{
                   justifyContent: "center",

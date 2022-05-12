@@ -3,26 +3,24 @@ import PageTitle from "app/components/PageTitle";
 import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
-import {
-  useCreateParameterMutation,
-  useListAllParameterGroupsQuery,
-} from "app/services/datacenter";
+import { useListAllParameterGroupsQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 import { number, object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useToast } from "app/components/Toast";
 import Modal, { ModalProps } from "@mui/material/Modal";
 import { modalStyle } from "app/styles/modal-style";
+import { ParameterRequest } from "app/models/data-center.model";
 
 type ParameterModalProps = {
-  onConfirm: () => void;
+  onConfirm: (data: ParameterRequest) => void;
 } & Omit<ModalProps, "children">;
 
-const ParameterModal: React.FC<ParameterModalProps> = ({ ...props }) => {
+const ParameterModal: React.FC<ParameterModalProps> = ({
+  onConfirm,
+  ...props
+}) => {
   const { data: parameterGroups, isLoading } = useListAllParameterGroupsQuery();
-  const [createParameter] = useCreateParameterMutation();
-  const toast = useToast();
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
@@ -30,19 +28,19 @@ const ParameterModal: React.FC<ParameterModalProps> = ({ ...props }) => {
 
   const { handleSubmit } = methods;
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    // try {
-    //   await createParameter(data).unwrap();
-    //   toast.open("Parâmetro criado com sucesso", 2000, "success");
-    // } catch (e) {
-    //   toast.open(`Erro ao criar parâmetro: ${e}`, 2000, "error");
-    // }
-  };
+  const onSubmit = async (data: ParameterRequest) => onConfirm(data);
 
   return (
     <Modal {...props}>
-      <Form onSubmit={handleSubmit(onSubmit)} sx={modalStyle}>
+      <Form
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{
+          ...modalStyle,
+          " & .MuiTextField-root, .MuiButton-root": {
+            marginTop: 1,
+          },
+        }}
+      >
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />

@@ -6,18 +6,18 @@ Este repositório retém o código da interface Web para opearar o DCIM, uso loc
 
 ## Tecnologias usadas:
 
-- React
-- TypeScript
-- Material UI
-- React Router
-- React Hook Form
-- Emotion
-- Redux Toolkit
-- Yup
-- React MQTT Client Hook
-- Apex Charts
-- React Flow Renderer
-- React Full Screen
+- React (biblioteca JavaScript para criação de interfaces)
+- TypeScript (super set para linguagem JavaScript)
+- Material UI (biblioteca de componentes Material Design para React)
+- React Router (biblioteca para navegação por rotas nomeadas)
+- React Hook Form (biblioteca para validação de formulários)
+- Emotion (biblioteca para estilização via CSS-in-JS)
+- Redux Toolkit (biblioteca para gerenciar estado)
+- Yup (biblioteca que acrescenta suporte a validação de formulários)
+- React MQTT Client Hook (biblioteca para comunicação em MQTT com React Hooks)
+- Apex Charts (biblioteca para gráficos)
+- React Flow Renderer (biblioteca para componentes interativos)
+- React Full Screen (biblioteca para gerenciar tela cheia)
 
 Bootstrap do projeto feito com [Create React App](https://github.com/facebook/create-react-app).
 

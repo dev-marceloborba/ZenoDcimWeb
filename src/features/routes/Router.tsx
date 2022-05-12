@@ -37,7 +37,7 @@ import RoomForm from "features/datacenter/components/RoomForm";
 import FloorForm from "features/datacenter/components/FloorForm";
 import EquipmentForm from "features/datacenter/components/EquipmentForm";
 import EquipmentParameterForm from "features/automation/pages/EquipmentParameterForm";
-import EquipmentParameterTransfer from "features/datacenter/pages/EquipmentParameterTransfer";
+import EquipmentParameterRelation from "features/datacenter/pages/EquipmentParameterRelation";
 import EquipmentParameterGroupForm from "features/datacenter/components/EquipmentParameterGroupForm";
 import ModalProvider from "app/hooks/useModal";
 import UserDetails from "features/user/UserDetails";
@@ -116,7 +116,7 @@ export const SubRoutes: React.FC = () => {
         />
         <Route
           path="/automation/management/equipment/parameter/transfer"
-          element={<EquipmentParameterTransfer />}
+          element={<EquipmentParameterRelation />}
         />
         <Route
           path="/automation/management/equipment/parameter/group/form"

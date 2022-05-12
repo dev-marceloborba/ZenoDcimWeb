@@ -26,3 +26,31 @@ export interface ModbusTagRequest {
   name: string;
   deadband: number;
 }
+
+export interface AlarmRequest {
+  name: string;
+  messageOn: string;
+  messageOff: string;
+  priority: EAlarmPriority;
+  status: EAlarmStatus;
+  setpoint: number;
+  enabled: boolean;
+  tagName: string;
+}
+
+export interface AlarmResponse extends AlarmRequest {
+  id: string;
+}
+
+export enum EAlarmPriority {
+  VERY_LOW = 0,
+  LOW = 1,
+  HIGH = 2,
+  VERY_HIGH = 3,
+}
+
+export enum EAlarmStatus {
+  INACTIVE = 1,
+  ACTIVE = 2,
+  ACKED = 3,
+}
