@@ -42,6 +42,7 @@ import EquipmentParameterGroupForm from "features/datacenter/components/Equipmen
 import ModalProvider from "app/hooks/useModal";
 import UserDetails from "features/user/UserDetails";
 import ParameterIndex from "features/automation/pages/ParameterIndex";
+import IncludeParameter from "features/datacenter/components/IncludeParameter";
 
 const Dashboard = React.lazy(() => import("features/dcim/Dashboard"));
 
@@ -126,6 +127,11 @@ export const SubRoutes: React.FC = () => {
         <Route
           path="/automation/management/parameters"
           element={<ParameterIndex />}
+        />
+
+        <Route
+          path="/automation/equipment-parameter-relation/include"
+          element={<IncludeParameter />}
         />
 
         {/* <Route

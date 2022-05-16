@@ -53,7 +53,9 @@ const EquipmentParameterRelation: React.FC = () => {
     // console.log(result);
   };
 
-  const handleIncludeParameter = () => {};
+  const handleIncludeParameter = () => {
+    navigate("/zeno/automation/equipment-parameter-relation/include");
+  };
 
   return (
     <HeroContainer>
