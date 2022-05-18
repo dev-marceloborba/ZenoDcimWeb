@@ -256,6 +256,12 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
+    findParameterByGroup: builder.mutation<void, string>({
+      query: (group) => ({
+        url: `v1/data-center/parametersByGroup/${group}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -289,4 +295,5 @@ export const {
   useCreateParameterMutation,
   useDeleteParameterMutation,
   useDeleteEquipmentParameterMutation,
+  useFindParameterByGroupMutation,
 } = datacenterApi;
