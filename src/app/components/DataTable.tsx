@@ -361,6 +361,11 @@ const DataTable: React.FC<DataTableProps> = ({
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
 
+  // reset selection state on new rows
+  useEffect(() => {
+    if (rows) setSelected([]);
+  }, [rows]);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
