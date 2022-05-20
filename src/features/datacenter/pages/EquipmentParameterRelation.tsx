@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Column from "app/components/Column";
 
@@ -10,22 +10,32 @@ import DataTable, { ColumnHeader } from "app/components/DataTable";
 
 import {
   useCreateMultipleEquipmentParametersMutation,
-  useListAllEquipmentParametersQuery,
-  useListAllEquipmentsQuery,
   useDeleteEquipmentParameterMutation,
+  useFindEquipmentParametersByEquipmentIdMutation,
 } from "app/services/datacenter";
 import { EquipmentParameterResponse } from "app/models/data-center.model";
 import Loading from "app/components/Loading";
 import { useToast } from "app/components/Toast";
 
 const EquipmentParameterRelation: React.FC = () => {
-  const { data: equipments, isLoading } = useListAllEquipmentsQuery();
-  const { data: equipmentParameters } = useListAllEquipmentParametersQuery();
+  const [findEquipmentParameters, { data: equipmentParameters, isLoading }] =
+    useFindEquipmentParametersByEquipmentIdMutation();
+
   const [createMultipleParameters] =
     useCreateMultipleEquipmentParametersMutation();
   const [deleteEquipmentParameter] = useDeleteEquipmentParameterMutation();
   const navigate = useNavigate();
+  const params = useParams();
   const toast = useToast();
+
+  useEffect(() => {
+    async function fetchParameters() {
+      if (params.id) {
+        await findEquipmentParameters(params.id).unwrap();
+      }
+    }
+    fetchParameters();
+  }, [findEquipmentParameters, params.id]);
 
   const handleDeleteEquipmentParameters = (
     selection: EquipmentParameterResponse[]
@@ -36,25 +46,10 @@ const EquipmentParameterRelation: React.FC = () => {
     toast.open("Parâmetros de equipamento excluídos com sucesso", 2000, "info");
   };
 
-  const handleSaveParameters = async (transferList: any) => {
-    // const parameters =
-    //   equipments?.find((x) => x.component === sourceEquipment)
-    //     ?.equipmentParameters ?? [];
-    // let selectedParameters: EquipmentParameterResponse[] = [];
-    // parameters.forEach((value) => {
-    //   const item = transferList.find((x) => value.id === x.id);
-    //   if (item) {
-    //     selectedParameters.push(value);
-    //   }
-    // });
-    // const result = await createMultipleParameters({
-    //   parameters: selectedParameters,
-    // }).unwrap();
-    // console.log(result);
-  };
-
   const handleIncludeParameter = () => {
-    navigate("/zeno/automation/equipment-parameter-relation/include");
+    navigate(
+      `/zeno/automation/equipment-parameter-relation/include/${params.id}`
+    );
   };
 
   return (
@@ -65,7 +60,7 @@ const EquipmentParameterRelation: React.FC = () => {
           <Button onClick={handleIncludeParameter} variant="contained">
             Incluir parâmetro
           </Button>
-          <Button>Salvar</Button>
+          {/* <Button>Salvar</Button> */}
         </Column>
       </Row>
       <DataTable

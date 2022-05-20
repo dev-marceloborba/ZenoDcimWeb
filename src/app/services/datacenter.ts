@@ -178,6 +178,15 @@ export const datacenterApi = createApi({
         method: "GET",
       }),
     }),
+    findEquipmentParametersByEquipmentId: builder.mutation<
+      EquipmentParameterResponse[],
+      string
+    >({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/equipment/parameters/${id}`,
+        method: "GET",
+      }),
+    }),
     listAllEquipments: builder.query<EquipmentResponse[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment",
@@ -296,4 +305,5 @@ export const {
   useDeleteParameterMutation,
   useDeleteEquipmentParameterMutation,
   useFindParameterByGroupMutation,
+  useFindEquipmentParametersByEquipmentIdMutation,
 } = datacenterApi;

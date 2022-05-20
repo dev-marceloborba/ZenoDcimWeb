@@ -116,7 +116,7 @@ export const SubRoutes: React.FC = () => {
           element={<EquipmentParameterForm />}
         />
         <Route
-          path="/automation/management/equipment/parameter/transfer"
+          path="/automation/management/equipment/parameter/transfer/:id"
           element={<EquipmentParameterRelation />}
         />
         <Route
@@ -130,7 +130,7 @@ export const SubRoutes: React.FC = () => {
         />
 
         <Route
-          path="/automation/equipment-parameter-relation/include"
+          path="/automation/equipment-parameter-relation/include/:id"
           element={<IncludeParameter />}
         />
 

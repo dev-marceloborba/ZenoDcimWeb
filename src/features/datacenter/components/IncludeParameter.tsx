@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -35,8 +36,9 @@ const IncludeParameter: React.FC = () => {
   ] = useFindParameterByGroupMutation();
   const [createMultipleEquipmentParameter] =
     useCreateMultipleEquipmentParametersMutation();
+  const params = useParams();
 
-  const handleSaveParameters = () => {
+  const handleSaveParameters = async () => {
     const parametersAsEquipmentParameters =
       parameters.map<EquipmentParameterRequest>((parameter) => ({
         name: parameter.name,
@@ -46,9 +48,12 @@ const IncludeParameter: React.FC = () => {
         scale: parameter.scale,
         address: "",
         dataSource: "",
-        equipmentId: "2",
+        equipmentId: params.id,
       }));
     console.log(parametersAsEquipmentParameters);
+    await createMultipleEquipmentParameter({
+      parameters: parametersAsEquipmentParameters,
+    }).unwrap();
   };
 
   const handleSaveItems = (parameters: ParameterResponse[]) => {

@@ -73,7 +73,9 @@ const NewEnergyEquipment: React.FC = () => {
     // navigate(
     //   `/zeno/automation/management/equipment/parameter/transfer/${equipmentId}`
     // );
-    navigate(`/zeno/automation/management/equipment/parameter/transfer`);
+    navigate(
+      `/zeno/automation/management/equipment/parameter/transfer/${equipmentId}`
+    );
     // const modal = showModal(ParameterModal, {
     //   onConfirm: async (data) => {
     //     await handleSaveParameter(data);

@@ -23,7 +23,6 @@ import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 
 // import Column from "app/components/Column";
 import { useListAllEquipmentsQuery } from "app/services/datacenter";
-import findObjectByProperty from "app/utils/findObjectByProperty";
 import { EquipmentResponse } from "app/models/data-center.model";
 import Loading from "app/components/Loading";
 
@@ -48,6 +47,7 @@ const AutomationRegisterManagement: React.FC = () => {
               room: r.name,
               status: e.status.toString(),
               name: e.component,
+              id: e.id,
             });
           })
         )
