@@ -13,6 +13,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { TabContextProvider, useTabContext } from "app/components/TabContext";
 import TabPanel from "app/components/TabPanel";
 import {
+  useCreateMultipleEquipmentParametersMutation,
   useFindParameterByGroupMutation,
   useListAllParameterGroupsQuery,
   useListAllParametersQuery,
@@ -32,6 +33,8 @@ const IncludeParameter: React.FC = () => {
     findParameterGroup,
     { data: parametersGrouped, isLoading: isLoadingParameters },
   ] = useFindParameterByGroupMutation();
+  const [createMultipleEquipmentParameter] =
+    useCreateMultipleEquipmentParametersMutation();
 
   const handleSaveParameters = () => {
     const parametersAsEquipmentParameters =

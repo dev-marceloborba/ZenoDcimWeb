@@ -363,7 +363,7 @@ const DataTable: React.FC<DataTableProps> = ({
 
   // reset selection state on new rows
   useEffect(() => {
-    if (rows) setSelected([]);
+    if (rows.length > 0) setSelected([]);
   }, [rows]);
 
   return (
