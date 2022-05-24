@@ -131,6 +131,12 @@ export const datacenterApi = createApi({
         url: "v1/data-center/building/floor/room",
       }),
     }),
+    findRoomById: builder.mutation<RoomResponse, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/${id}`,
+        method: "GET",
+      }),
+    }),
     deleteRoom: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/${id}`,
@@ -306,4 +312,5 @@ export const {
   useDeleteEquipmentParameterMutation,
   useFindParameterByGroupMutation,
   useFindEquipmentParametersByEquipmentIdMutation,
+  useFindRoomByIdMutation,
 } = datacenterApi;

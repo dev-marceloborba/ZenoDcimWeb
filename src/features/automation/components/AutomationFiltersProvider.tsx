@@ -27,7 +27,7 @@ type AutomationFiltersData = {
   handleToggleEnergyGroup(): void;
   handleToggleClimGroup(): void;
   handleToggleTelecomGroup(): void;
-  buildings: BuildingsResponse | undefined;
+  buildings?: BuildingsResponse;
 };
 
 export const AutomationFiltersContext = createContext<AutomationFiltersData>(
@@ -41,7 +41,7 @@ type AutomationFilterStateProps = {
   zone: string;
   loop: string;
   groups: FilterData;
-  buildings: BuildingsResponse | undefined;
+  buildings?: BuildingsResponse;
 };
 
 const AutomationFiltersProvider: React.FC = ({ children }) => {

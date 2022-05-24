@@ -66,6 +66,7 @@ export interface EquipmentRequest {
 export interface EquipmentResponse extends EquipmentRequest {
   id: string;
   status: EEquipmentStatus;
+  group: EEquipmentGroup;
   alarms: number;
   createdDate: Date;
   equipmentParameters?: EquipmentParameterResponse[];

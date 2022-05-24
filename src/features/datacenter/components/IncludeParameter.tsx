@@ -50,7 +50,6 @@ const IncludeParameter: React.FC = () => {
         dataSource: "",
         equipmentId: params.id,
       }));
-    console.log(parametersAsEquipmentParameters);
     await createMultipleEquipmentParameter({
       parameters: parametersAsEquipmentParameters,
     }).unwrap();

@@ -12,14 +12,23 @@ type EquipmentCardProps = BmsEquipment &
   };
 
 const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
-  const { name, status, groups, energy, clim, telecom, showGroupTitle } = props;
+  const {
+    name,
+    status,
+    groupName,
+    informations,
+    energy,
+    clim,
+    telecom,
+    showGroupTitle,
+  } = props;
 
-  const filteredGroup = groups.filter(
-    (group) =>
-      (energy && group.name.includes("Energia")) ||
-      (clim && group.name.includes("Clima")) ||
-      (telecom && group.name.includes("Telecom"))
-  );
+  // const filteredGroup = groups.filter(
+  //   (group) =>
+  //     (energy && group.name.includes("Energia")) ||
+  //     (clim && group.name.includes("Clima")) ||
+  //     (telecom && group.name.includes("Telecom"))
+  // );
 
   return (
     <Card sx={{ p: 4, m: 2 }}>
@@ -39,14 +48,18 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        {filteredGroup.map((group) => (
-          <Box key={group.name}>
-            {showGroupTitle && <Typography>{group.name}</Typography>}
-            {group.informations.map((information, index) => (
+        {/* {filteredGroup.map((group) => ( */}
+        {/* <Box key={group.name}> */}
+        <Box>
+          {/* {showGroupTitle && <Typography>{group.name}</Typography>} */}
+          {/* {group.informations.map((information, index) => (
               <BmsIndicator key={index} {...information} status={status} />
-            ))}
-          </Box>
-        ))}
+            ))} */}
+          {informations?.map((information, index) => (
+            <BmsIndicator key={index} {...information} status={status} />
+          ))}
+        </Box>
+        {/* ))} */}
       </Box>
     </Card>
   );

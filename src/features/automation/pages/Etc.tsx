@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import EquipmentCard from "../components/EquipmentCard";
 import PageTitle from "app/components/PageTitle";
@@ -11,15 +11,13 @@ import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 import Center from "app/components/Center";
 import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
-// import { FloorResponse } from "app/services/datacenter";
+import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
+import { RoomResponse } from "app/models/data-center.model";
 
 const Etc: React.FC = () => {
   const { groups, buildings, building, floor } = useAutomationFilters();
-  // const [currentFloor, setCurrentFloor] = useState<FloorResponse>(
-  //   {} as FloorResponse
-  // );
 
-  const floors = useMemo(
+  const rooms = useMemo(
     () =>
       buildings
         ?.find((x) => x.id === building)
@@ -44,15 +42,32 @@ const Etc: React.FC = () => {
         <EtcFilters />
       </Row>
       <Grid sx={{ mt: 1 }} container spacing={1}>
-        {floors?.map((room, index) => (
+        {rooms?.map((room: RoomResponse, index) => (
           <Grid key={index} item md={6}>
             <RoomCard title={room.name}>
               <Grid container spacing={1} justifyContent="space-between">
-                {room.equipments?.map((equipment, index) => (
-                  <Grid key={index}>
-                    {/* <EquipmentCard {...equipment} {...groups} /> */}
-                  </Grid>
-                ))}
+                {room.equipments?.map((equipment, index) => {
+                  return (
+                    <Grid key={index}>
+                      {/* <EquipmentCard {...equipment} {...groups} /> */}
+                      <EquipmentCard
+                        name={equipment.component}
+                        status={EEquipmentStatus.ONLINE}
+                        mainEquipment={true}
+                        groupName="Energia"
+                        informations={
+                          equipment.equipmentParameters?.map((parameter) => ({
+                            description: parameter.name,
+                            parameterStatus: EParameterStatus.NORMAL,
+                            unit: parameter.unit,
+                            value: 0,
+                          })) ?? []
+                        }
+                        {...groups}
+                      />
+                    </Grid>
+                  );
+                })}
               </Grid>
               <Center>
                 <ButtonLink
