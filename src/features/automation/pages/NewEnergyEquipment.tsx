@@ -25,9 +25,11 @@ import {
   RoomResponse,
   EquipmentParameterRequest,
   EquipmentRequest,
+  EquipmentParameterResponse,
 } from "app/models/data-center.model";
 import {
   useCreateEquipmentParameterMutation,
+  useDeleteEquipmentParameterMutation,
   useFindEquipmentByIdMutation,
   useListBuildingsQuery,
 } from "app/services/datacenter";
@@ -46,6 +48,7 @@ const NewEnergyEquipment: React.FC = () => {
   const [findEquipmentByid, { data: equipment }] =
     useFindEquipmentByIdMutation();
   const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
+  const [deleteEquipmentParameter] = useDeleteEquipmentParameterMutation();
 
   const { data: buildings } = useListBuildingsQuery();
   const [floors, setFloors] = useState<FloorResponse[]>([]);
@@ -118,6 +121,14 @@ const NewEnergyEquipment: React.FC = () => {
         parameterId: selectedParameter?.id,
       },
     });
+  };
+
+  const handleDeleteEquipmentParameters = async (
+    parameters: EquipmentParameterResponse[]
+  ) => {
+    for (let i = 0; i < parameters.length; i++) {
+      await deleteEquipmentParameter(parameters[i].id).unwrap();
+    }
   };
 
   useEffect(() => {
@@ -271,6 +282,7 @@ const NewEnergyEquipment: React.FC = () => {
             rows={equipment?.equipmentParameters ?? []}
             options={{
               onRowClick: handleSelectedEquipmentParameter,
+              onDeleteSelection: handleDeleteEquipmentParameters,
             }}
           />
         </Column>
