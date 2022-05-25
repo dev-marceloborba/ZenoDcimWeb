@@ -13,9 +13,11 @@ import HeroContainer from "app/components/HeroContainer";
 import Row from "app/components/Row";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { RoomResponse } from "app/models/data-center.model";
+import { useSubscription } from "mqtt-react-hooks";
 
 const Etc: React.FC = () => {
   const { groups, buildings, building, floor } = useAutomationFilters();
+  const { message: mqttMessage } = useSubscription(["/Rack DH01.2CG01.A02"]);
 
   const rooms = useMemo(
     () =>
@@ -24,6 +26,20 @@ const Etc: React.FC = () => {
         ?.floors?.find((x) => x.id === floor)?.rooms ?? [],
     [building, buildings, floor]
   );
+
+  function getRealtimeValue(equipmentMqttId: string, variable: string) {
+    if (mqttMessage) {
+      const { topic, message } = mqttMessage;
+
+      if (`/${equipmentMqttId}` === topic && message) {
+        const data = JSON.parse(message as string);
+        const keys = Object.keys(data ?? "");
+        if (keys.includes(variable)) {
+          return data[variable];
+        }
+      }
+    }
+  }
 
   return (
     <HeroContainer>
@@ -60,7 +76,10 @@ const Etc: React.FC = () => {
                             description: parameter.name,
                             parameterStatus: EParameterStatus.NORMAL,
                             unit: parameter.unit,
-                            value: 0,
+                            value: getRealtimeValue(
+                              equipment.component,
+                              parameter.name
+                            ),
                           })) ?? []
                         }
                         {...groups}
