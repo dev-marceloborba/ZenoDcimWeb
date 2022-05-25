@@ -189,7 +189,7 @@ export const datacenterApi = createApi({
       string
     >({
       query: (id) => ({
-        url: `v1/data-center/building/floor/room/equipment/parameters/${id}`,
+        url: `v1/data-center/building/floor/room/equipmentParameterById/${id}`,
         method: "GET",
       }),
     }),

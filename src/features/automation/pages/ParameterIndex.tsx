@@ -22,6 +22,7 @@ const ParameterIndex: React.FC = () => {
         await handleCreateParameter(data);
         modal.hide();
       },
+      title: "Novo parâmetro",
     });
   };
 
