@@ -24,6 +24,7 @@ import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
 import ConditionalRender from "./ConditionalRender";
 import Visible from "./Visible";
+import DeleteButton from "./DeleteButton";
 
 interface DataTableProps {
   columns: ColumnHeader[];
@@ -210,11 +211,12 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         />
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        // <Tooltip title="Delete">
+        //   <IconButton onClick={onDelete}>
+        //     <DeleteIcon />
+        //   </IconButton>
+        // </Tooltip>
+        <DeleteButton mode="icon" onDeleteConfirmation={onDelete} />
       ) : (
         <Visible show={!hideSearch}>
           <Tooltip title="Filter list">
