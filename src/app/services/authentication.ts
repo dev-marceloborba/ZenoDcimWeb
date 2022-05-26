@@ -28,7 +28,7 @@ export const api = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponse<AuthResponse>, LoginRequest>({
       query: (credentials) => ({
-        url: "v2/users/login",
+        url: "v1/users/login",
         method: "POST",
         body: credentials,
       }),
