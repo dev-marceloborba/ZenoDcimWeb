@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, ref, string, number } from "yup";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
-import { useListCompaniesQuery } from "app/services/company";
+import { useFindAllCompaniesQuery } from "app/services/company";
 import Card from "app/components/Card";
 import Loading from "app/components/Loading";
 import { UserRequest } from "app/models/authentication.model";
@@ -23,7 +23,7 @@ const CreateUser: React.FC = () => {
   const methods = useForm<UserRequest>({
     resolver: yupResolver(validationSchema),
   });
-  const { data: companyList } = useListCompaniesQuery();
+  const { data: companyList } = useFindAllCompaniesQuery();
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
   const { open: openToast } = useToast();
 

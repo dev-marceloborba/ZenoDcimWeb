@@ -1,12 +1,12 @@
 import React from "react";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import { useListCompaniesQuery } from "app/services/company";
+import { useFindAllCompaniesQuery } from "app/services/company";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
 import Loading from "app/components/Loading";
 
 const CompanyList: React.FC = () => {
-  const { data: companies, isLoading } = useListCompaniesQuery();
+  const { data: companies, isLoading } = useFindAllCompaniesQuery();
 
   return (
     <Container maxWidth="xl">

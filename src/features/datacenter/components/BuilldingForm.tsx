@@ -9,13 +9,14 @@ import Form from "app/components/Form";
 import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
-import { useAddBuildingMutation } from "app/services/datacenter";
+import { useCreateBuildingMutation } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
 import { BuildingRequest } from "app/models/data-center.model";
 
 const BuildingForm: React.FC = () => {
-  const [addBuilding, { isLoading, error, isError }] = useAddBuildingMutation();
+  const [addBuilding, { isLoading, error, isError }] =
+    useCreateBuildingMutation();
   const toast = useToast();
   const methods = useForm<BuildingRequest>({
     resolver: yupResolver(validationSchema),

@@ -1,7 +1,7 @@
 import React from "react";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
 import {
-  useListSitesQuery,
+  useFindAllSitesQuery,
   useDeleteSiteMutation,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
@@ -10,7 +10,7 @@ import Column from "app/components/Column";
 import { SiteResponse } from "app/models/data-center.model";
 
 const SiteTable: React.FC = () => {
-  const { data: sites, isLoading } = useListSitesQuery();
+  const { data: sites, isLoading } = useFindAllSitesQuery();
   const [deleteSite] = useDeleteSiteMutation();
   const toast = useToast();
 

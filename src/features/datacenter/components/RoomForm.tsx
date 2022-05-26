@@ -10,15 +10,15 @@ import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
-  useAddRoomMutation,
-  useListBuildingsQuery,
+  useCreateRoomMutation,
+  useFindAllBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import { FloorResponse, RoomRequest } from "app/models/data-center.model";
 
 const RoomForm: React.FC = () => {
-  const [addRoom, { isLoading, error, isError }] = useAddRoomMutation();
-  const { data: buildings } = useListBuildingsQuery();
+  const [addRoom, { isLoading, error, isError }] = useCreateRoomMutation();
+  const { data: buildings } = useFindAllBuildingsQuery();
   const [floors, setFloors] = useState<FloorResponse[]>([]);
   const toast = useToast();
 

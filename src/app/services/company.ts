@@ -23,7 +23,7 @@ export const companyApi = createApi({
   }),
   tagTypes: ["CompanyResponse", "ContractResponse"],
   endpoints: (builder) => ({
-    listCompanies: builder.query<CompanyResponse[], void>({
+    findAllCompanies: builder.query<CompanyResponse[], void>({
       query: () => ({ url: "v1/companies" }),
     }),
     createCompany: builder.mutation<
@@ -36,7 +36,7 @@ export const companyApi = createApi({
         body: company,
       }),
     }),
-    listContracts: builder.query<ContractResponse[], void>({
+    findAllContracts: builder.query<ContractResponse[], void>({
       query: () => ({
         url: "v1/contracts",
       }),
@@ -55,8 +55,8 @@ export const companyApi = createApi({
 });
 
 export const {
-  useListCompaniesQuery,
-  useListContractsQuery,
+  useFindAllCompaniesQuery,
+  useFindAllContractsQuery,
   useCreateCompanyMutation,
   useCreateContractMutation,
 } = companyApi;

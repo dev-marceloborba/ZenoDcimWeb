@@ -24,10 +24,10 @@ export const automationApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    listPlcs: builder.query<PlcResponse, void>({
+    findAllPlcs: builder.query<PlcResponse, void>({
       query: () => ({ url: "v1/plcs" }),
     }),
-    addPlc: builder.mutation<ApiResponse<PlcResponse>, PlcRequest>({
+    createPlc: builder.mutation<ApiResponse<PlcResponse>, PlcRequest>({
       query: (newPlc) => ({
         url: "v1/plcs",
         method: "POST",
@@ -40,10 +40,10 @@ export const automationApi = createApi({
         method: "DELETE",
       }),
     }),
-    listModbusTags: builder.query<ModbusTagResponse[], void>({
+    findAllModbusTags: builder.query<ModbusTagResponse[], void>({
       query: () => ({ url: "v1/modbusTags" }),
     }),
-    addModbusTag: builder.mutation<
+    createModbusTag: builder.mutation<
       ApiResponse<ModbusTagResponse>,
       ModbusTagRequest
     >({
@@ -82,10 +82,10 @@ export const automationApi = createApi({
 });
 
 export const {
-  useListPlcsQuery,
-  useListModbusTagsQuery,
-  useAddModbusTagMutation,
-  useAddPlcMutation,
+  useFindAllPlcsQuery,
+  useFindAllModbusTagsQuery,
+  useCreateModbusTagMutation,
+  useCreatePlcMutation,
   useDeletePlcMutation,
   useDeleteModbusTagMutation,
   useCreateAlarmMutation,

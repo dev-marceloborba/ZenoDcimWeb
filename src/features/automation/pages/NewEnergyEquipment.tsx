@@ -31,7 +31,7 @@ import {
   useCreateEquipmentParameterMutation,
   useDeleteEquipmentParameterMutation,
   useFindEquipmentByIdMutation,
-  useListBuildingsQuery,
+  useFindAllBuildingsQuery,
 } from "app/services/datacenter";
 import { useModal } from "mui-modal-provider";
 
@@ -50,7 +50,7 @@ const NewEnergyEquipment: React.FC = () => {
   const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
   const [deleteEquipmentParameter] = useDeleteEquipmentParameterMutation();
 
-  const { data: buildings } = useListBuildingsQuery();
+  const { data: buildings } = useFindAllBuildingsQuery();
   const [floors, setFloors] = useState<FloorResponse[]>([]);
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
 

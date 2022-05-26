@@ -12,8 +12,8 @@ import EquipmentAdmin from "./EquipmentAdmin";
 //   BuildingsResponse,
 //   EEquipmentGroup,
 //   EquipmentRequest,
-//   useAddMultipleEquipmentsMutation,
-//   useListBuildingsQuery,
+//   useCreateMultipleEquipmentsMutation,
+//   useFindAllBuildingsQuery,
 // } from "app/services/datacenter";
 
 // type EquipmentPlain = {
@@ -69,8 +69,8 @@ import EquipmentAdmin from "./EquipmentAdmin";
 
 const DataCenterManagement: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
-  // const { data: buildings } = useListBuildingsQuery();
-  // const [addMultipleEquipments] = useAddMultipleEquipmentsMutation();
+  // const { data: buildings } = useFindAllBuildingsQuery();
+  // const [addMultipleEquipments] = useCreateMultipleEquipmentsMutation();
 
   const onChangeTabIndex = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);

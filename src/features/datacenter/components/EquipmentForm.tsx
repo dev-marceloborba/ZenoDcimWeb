@@ -10,8 +10,8 @@ import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
 import {
-  useAddEquipmentMutation,
-  useListBuildingsQuery,
+  useCreateEquipmentMutation,
+  useFindAllBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import {
@@ -22,8 +22,8 @@ import {
 
 const EquipmentForm: React.FC = () => {
   const [addEquipment, { isLoading, error, isError }] =
-    useAddEquipmentMutation();
-  const { data: buildings } = useListBuildingsQuery();
+    useCreateEquipmentMutation();
+  const { data: buildings } = useFindAllBuildingsQuery();
   const [floors, setFloors] = useState<FloorResponse[]>([]);
   const [rooms, setRooms] = useState<RoomResponse[]>([]);
   const toast = useToast();

@@ -24,7 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import {
   useCreateMultipleEquipmentParametersMutation,
-  useListAllEquipmentsQuery,
+  useFindAllEquipmentsQuery,
 } from "app/services/datacenter";
 import AutoCompleteDropdown from "app/components/AutocompleteDropdown";
 import { EquipmentParameterResponse } from "app/models/data-center.model";
@@ -117,7 +117,7 @@ const EquipmentParameterTransfer: React.FC = () => {
   const [filteredTable, setFilteredTable] = useState<
     typeof tableData | undefined
   >(tableData);
-  const { data: equipments, isLoading } = useListAllEquipmentsQuery();
+  const { data: equipments, isLoading } = useFindAllEquipmentsQuery();
   const [createMultipleParameters] =
     useCreateMultipleEquipmentParametersMutation();
   const navigate = useNavigate();

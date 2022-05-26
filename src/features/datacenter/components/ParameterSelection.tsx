@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useListAllParametersQuery } from "app/services/datacenter";
+import { useFindAllParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
 import { ParameterResponse } from "app/models/data-center.model";
@@ -18,7 +18,7 @@ const ParameterSelection: React.FC<ParameterSelectionProps> = ({
   previousParameters,
   ...props
 }) => {
-  const { data: parameters, isLoading } = useListAllParametersQuery();
+  const { data: parameters, isLoading } = useFindAllParametersQuery();
   const [selected, setSelected] = useState<ParameterResponse[]>([]);
 
   useEffect(() => {

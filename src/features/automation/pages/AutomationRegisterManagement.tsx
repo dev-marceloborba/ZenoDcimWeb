@@ -22,7 +22,7 @@ import AccessButton from "app/components/AccessButton";
 import { useAutomationFilters } from "../components/AutomationFiltersProvider";
 
 // import Column from "app/components/Column";
-import { useListAllEquipmentsQuery } from "app/services/datacenter";
+import { useFindAllEquipmentsQuery } from "app/services/datacenter";
 import { EquipmentResponse } from "app/models/data-center.model";
 import Loading from "app/components/Loading";
 
@@ -30,7 +30,7 @@ const AutomationRegisterManagement: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   // const { buildings, building, floor, room } = useAutomationFilters();
   const { buildings } = useAutomationFilters();
-  const { data: equipments, isLoading } = useListAllEquipmentsQuery();
+  const { data: equipments, isLoading } = useFindAllEquipmentsQuery();
   const navigate = useNavigate();
 
   useEffect(() => {

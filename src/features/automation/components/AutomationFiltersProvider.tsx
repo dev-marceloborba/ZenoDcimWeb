@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
-import { useListBuildingsQuery } from "app/services/datacenter";
+import { useFindAllBuildingsQuery } from "app/services/datacenter";
 import { BuildingsResponse } from "app/models/data-center.model";
 
 export type FilterData = {
@@ -45,7 +45,7 @@ type AutomationFilterStateProps = {
 };
 
 const AutomationFiltersProvider: React.FC = ({ children }) => {
-  const { data } = useListBuildingsQuery();
+  const { data } = useFindAllBuildingsQuery();
 
   const [state, setState] = useState<AutomationFilterStateProps>({
     building: "",

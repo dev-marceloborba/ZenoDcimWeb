@@ -3,7 +3,7 @@ import PageTitle from "app/components/PageTitle";
 import Form from "app/components/Form";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import SubmitButton from "app/components/SubmitButton";
-import { useListAllParameterGroupsQuery } from "app/services/datacenter";
+import { useFindAllParameterGroupsQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 import { number, object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
   onConfirm,
   ...props
 }) => {
-  const { data: parameterGroups, isLoading } = useListAllParameterGroupsQuery();
+  const { data: parameterGroups, isLoading } = useFindAllParameterGroupsQuery();
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),

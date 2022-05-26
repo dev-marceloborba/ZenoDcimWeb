@@ -33,7 +33,7 @@ export const api = createApi({
         body: credentials,
       }),
     }),
-    getUsers: builder.query<UserResponseNormalized[], void>({
+    findAllUsers: builder.query<UserResponseNormalized[], void>({
       query: () => ({ url: "v1/users", method: "GET" }),
       transformResponse: (returnedUsers: UsersResponse) => {
         function getUserRoleDescription(role: EUserRole): string {
@@ -98,7 +98,7 @@ export const api = createApi({
 
 export const {
   useLoginMutation,
-  useGetUsersQuery,
+  useFindAllUsersQuery,
   useCreateUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,

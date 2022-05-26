@@ -1,10 +1,10 @@
 import React from "react";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
-import { useListAllEquipmentParametersQuery } from "app/services/datacenter";
+import { useFindAllEquipmentParametersQuery } from "app/services/datacenter";
 import Loading from "app/components/Loading";
 
 const ParametersTable: React.FC = () => {
-  const { data: parameters, isLoading } = useListAllEquipmentParametersQuery();
+  const { data: parameters, isLoading } = useFindAllEquipmentParametersQuery();
   const handleSelectedParameter = (parameter: any) => {
     console.log(parameter);
   };

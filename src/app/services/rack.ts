@@ -45,7 +45,7 @@ export const rackApi = createApi({
   }),
   tagTypes: ["RackResponse"],
   endpoints: (builder) => ({
-    listRacks: builder.query<RackEquipmentMerged[], void>({
+    findAllRacks: builder.query<RackEquipmentMerged[], void>({
       query: () => ({ url: "v1/racks" }),
       transformResponse: (response: RacksResponse) => {
         const rowsArray: RackEquipmentMerged[] = [];
@@ -96,7 +96,7 @@ export const rackApi = createApi({
         body: equipment,
       }),
     }),
-    listRackEquipments: builder.query<RackEquipmentResponse, void>({
+    findAllRackEquipments: builder.query<RackEquipmentResponse, void>({
       query: () => ({
         url: "v1/racks/rackEquipments",
         method: "GET",
@@ -115,4 +115,8 @@ export const rackApi = createApi({
   }),
 });
 
-export const { useListRacksQuery, useCreateRackMutation } = rackApi;
+export const {
+  useFindAllRacksQuery,
+  useCreateRackMutation,
+  useFindAllRackEquipmentsQuery,
+} = rackApi;

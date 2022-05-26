@@ -1,12 +1,12 @@
 import React from "react";
 import HeroContainer from "app/components/HeroContainer";
 import PageTitle from "app/components/PageTitle";
-import { useListBuildingsDeepQuery } from "app/services/datacenter";
+import { useFindAllBuildingsDeepQuery } from "app/services/datacenter";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
 import Loading from "app/components/Loading";
 
 const DataCenterEquipmentsTable: React.FC = () => {
-  const { data: equipments, isLoading } = useListBuildingsDeepQuery();
+  const { data: equipments, isLoading } = useFindAllBuildingsDeepQuery();
   return (
     <HeroContainer>
       <PageTitle>Equipamentos do Data center</PageTitle>

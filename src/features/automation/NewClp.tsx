@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import ControlledTextInput from "app/components/ControlledTextInput";
 
-import { useAddPlcMutation } from "app/services/automation";
+import { useCreatePlcMutation } from "app/services/automation";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, number, string } from "yup";
@@ -17,7 +17,7 @@ const NewClp: React.FC = () => {
   const methods = useForm<PlcRequest>({
     resolver: yupResolver(validationSchema),
   });
-  const [mutation, { isLoading }] = useAddPlcMutation();
+  const [mutation, { isLoading }] = useCreatePlcMutation();
   const toast = useToast();
 
   const { handleSubmit } = methods;

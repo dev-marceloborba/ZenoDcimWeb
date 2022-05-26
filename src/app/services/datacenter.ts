@@ -39,14 +39,14 @@ export const datacenterApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    addSite: builder.mutation<ApiResponse<SiteResponse>, SiteRequest>({
+    createSite: builder.mutation<ApiResponse<SiteResponse>, SiteRequest>({
       query: (params) => ({
         url: "v1/data-center/site",
         method: "POST",
         data: params,
       }),
     }),
-    listSites: builder.query<SiteResponse[], void>({
+    findAllSites: builder.query<SiteResponse[], void>({
       query: () => ({ url: "v1/data-center/site" }),
     }),
     deleteSite: builder.mutation<void, string>({
@@ -55,7 +55,7 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
-    addBuilding: builder.mutation<
+    createBuilding: builder.mutation<
       ApiResponse<BuildingResponse>,
       BuildingRequest
     >({
@@ -65,13 +65,13 @@ export const datacenterApi = createApi({
         body: newBuilding,
       }),
     }),
-    listBuildings: builder.query<BuildingsResponse, void>({
+    findAllBuildings: builder.query<BuildingsResponse, void>({
       query: () => ({ url: "v1/data-center/building" }),
     }),
     findBuildingById: builder.mutation<BuildingResponse, string>({
       query: (id) => ({ url: `v1/data-center/building/${id}`, method: "GET" }),
     }),
-    listBuildingsDeep: builder.query<BuildingMerged[], void>({
+    findAllBuildingsDeep: builder.query<BuildingMerged[], void>({
       query: () => ({ url: "v1/data-center/building" }),
       transformResponse: (buildings: BuildingsResponse) => {
         const rowsArray: BuildingMerged[] = [];
@@ -103,14 +103,14 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
-    addFloor: builder.mutation<ApiResponse<FloorResponse>, FloorRequest>({
+    createFloor: builder.mutation<ApiResponse<FloorResponse>, FloorRequest>({
       query: (newFloor) => ({
         url: "v1/data-center/building/floor",
         method: "POST",
         body: newFloor,
       }),
     }),
-    listFloor: builder.query<FloorResponse[], void>({
+    findAllFloors: builder.query<FloorResponse[], void>({
       query: () => ({ url: "v1/data-center/building/floor" }),
     }),
     deleteFloor: builder.mutation<void, string>({
@@ -119,14 +119,14 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
-    addRoom: builder.mutation<ApiResponse<RoomResponse>, RoomRequest>({
+    createRoom: builder.mutation<ApiResponse<RoomResponse>, RoomRequest>({
       query: (newRoom) => ({
         url: "v1/data-center/building/floor/room",
         method: "POST",
         body: newRoom,
       }),
     }),
-    listRoom: builder.query<RoomResponse[], void>({
+    findAllRooms: builder.query<RoomResponse[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room",
       }),
@@ -143,7 +143,7 @@ export const datacenterApi = createApi({
         method: "DELETE",
       }),
     }),
-    addEquipment: builder.mutation<
+    createEquipment: builder.mutation<
       ApiResponse<EquipmentResponse>,
       EquipmentRequest
     >({
@@ -165,7 +165,7 @@ export const datacenterApi = createApi({
         method: "GET",
       }),
     }),
-    addMultipleEquipments: builder.mutation<
+    createMultipleEquipments: builder.mutation<
       BuildingsResponse,
       MultipleEquipmentsRequest
     >({
@@ -193,7 +193,7 @@ export const datacenterApi = createApi({
         method: "GET",
       }),
     }),
-    listAllEquipments: builder.query<EquipmentResponse[], void>({
+    findAllEquipments: builder.query<EquipmentResponse[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment",
       }),
@@ -234,7 +234,7 @@ export const datacenterApi = createApi({
         body: params,
       }),
     }),
-    listAllParameterGroups: builder.query<
+    findAllParameterGroups: builder.query<
       EquipmentParameterGroupResponse[],
       void
     >({
@@ -242,7 +242,7 @@ export const datacenterApi = createApi({
         url: "v1/data-center/building/floor/room/equipment/parameter/group",
       }),
     }),
-    listAllEquipmentParameters: builder.query<
+    findAllEquipmentParameters: builder.query<
       EquipmentParameterResponse[],
       void
     >({
@@ -250,7 +250,7 @@ export const datacenterApi = createApi({
         url: "v1/data-center/building/floor/room/equipment/parameters",
       }),
     }),
-    listAllParameters: builder.query<ParameterResponse[], void>({
+    findAllParameters: builder.query<ParameterResponse[], void>({
       query: () => ({
         url: "v1/data-center/parameters",
       }),
@@ -281,32 +281,32 @@ export const datacenterApi = createApi({
 });
 
 export const {
-  useAddSiteMutation,
-  useListSitesQuery,
+  useCreateSiteMutation,
+  useFindAllSitesQuery,
   useDeleteSiteMutation,
-  useAddBuildingMutation,
-  useListBuildingsQuery,
-  useListBuildingsDeepQuery,
+  useCreateBuildingMutation,
+  useFindAllBuildingsQuery,
+  useFindAllBuildingsDeepQuery,
   useDeleteBuildingMutation,
-  useAddFloorMutation,
-  useListFloorQuery,
+  useCreateFloorMutation,
+  useFindAllFloorsQuery,
   useDeleteFloorMutation,
-  useAddRoomMutation,
-  useListRoomQuery,
+  useCreateRoomMutation,
+  useFindAllRoomsQuery,
   useDeleteRoomMutation,
-  useAddEquipmentMutation,
+  useCreateEquipmentMutation,
   useDeleteEquipmentMutation,
   useFindEquipmentByIdMutation,
   useFindBuildingByIdMutation,
-  useAddMultipleEquipmentsMutation,
+  useCreateMultipleEquipmentsMutation,
   useFindEquipmentParameterByIdMutation,
   useCreateEquipmentParameterMutation,
-  useListAllEquipmentsQuery,
+  useFindAllEquipmentsQuery,
   useCreateMultipleEquipmentParametersMutation,
   useCreateEquipmentParameterGroupMutation,
-  useListAllParameterGroupsQuery,
-  useListAllEquipmentParametersQuery,
-  useListAllParametersQuery,
+  useFindAllParameterGroupsQuery,
+  useFindAllEquipmentParametersQuery,
+  useFindAllParametersQuery,
   useCreateParameterMutation,
   useDeleteParameterMutation,
   useDeleteEquipmentParameterMutation,

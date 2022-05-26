@@ -3,12 +3,12 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
-import { useListRacksQuery } from "app/services/rack";
+import { useFindAllRacksQuery } from "app/services/rack";
 import ButtonLink from "app/components/ButtonLink";
 import Loading from "app/components/Loading";
 
 const Racks: React.FC = () => {
-  const { data: racks, isLoading } = useListRacksQuery();
+  const { data: racks, isLoading } = useFindAllRacksQuery();
 
   return (
     <Container maxWidth="xl">

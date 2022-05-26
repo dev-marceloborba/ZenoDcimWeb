@@ -18,7 +18,7 @@ import {
   useCreateMultipleEquipmentParametersMutation,
   useDeleteEquipmentParameterMutation,
   useFindEquipmentParametersByEquipmentIdMutation,
-  useListAllEquipmentsQuery,
+  useFindAllEquipmentsQuery,
 } from "app/services/datacenter";
 import {
   EquipmentParameterRequest,
@@ -37,7 +37,7 @@ const EquipmentParameterRelation: React.FC = () => {
     useState(false);
   const [findEquipmentParameters, { data: equipmentParameters, isLoading }] =
     useFindEquipmentParametersByEquipmentIdMutation();
-  const { data: equipments } = useListAllEquipmentsQuery();
+  const { data: equipments } = useFindAllEquipmentsQuery();
   const [findEquipmentParametersSource, { data: sourceEquipmentParameters }] =
     useFindEquipmentParametersByEquipmentIdMutation();
 

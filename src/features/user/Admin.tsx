@@ -6,14 +6,14 @@ import Container from "@mui/material/Container";
 import Loading from "app/components/Loading";
 import {
   useDeleteUserMutation,
-  useGetUsersQuery,
+  useFindAllUsersQuery,
 } from "app/services/authentication";
 import ButtonLink from "app/components/ButtonLink";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { useToast } from "app/components/Toast";
 
 const Admin: React.FC = () => {
-  const { isLoading, isError, data: users, error } = useGetUsersQuery();
+  const { isLoading, isError, data: users, error } = useFindAllUsersQuery();
   const [deleteUser] = useDeleteUserMutation();
   const toast = useToast();
   const navigate = useNavigate();

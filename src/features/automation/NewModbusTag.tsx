@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import { useAddModbusTagMutation } from "app/services/automation";
+import { useCreateModbusTagMutation } from "app/services/automation";
 
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,7 +17,7 @@ const NewModbusTag: React.FC = () => {
   const methods = useForm<ModbusTagRequest>({
     resolver: yupResolver(validationSchema),
   });
-  const [addModbusTag, { isLoading }] = useAddModbusTagMutation();
+  const [addModbusTag, { isLoading }] = useCreateModbusTagMutation();
   const toast = useToast();
 
   const { handleSubmit } = methods;

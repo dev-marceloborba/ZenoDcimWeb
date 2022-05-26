@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useDeleteBuildingMutation,
-  useListBuildingsQuery,
+  useFindAllBuildingsQuery,
 } from "app/services/datacenter";
 import { useToast } from "app/components/Toast";
 import Loading from "app/components/Loading";
@@ -10,7 +10,7 @@ import Column from "app/components/Column";
 import DataTable from "app/components/DataTable";
 
 const BuildingTable: React.FC = () => {
-  const { data: buildings, isLoading } = useListBuildingsQuery();
+  const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [deleteBuilding] = useDeleteBuildingMutation();
   const toast = useToast();
   const navigate = useNavigate();

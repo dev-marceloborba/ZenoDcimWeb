@@ -16,8 +16,8 @@ import TabPanel from "app/components/TabPanel";
 import {
   useCreateMultipleEquipmentParametersMutation,
   useFindParameterByGroupMutation,
-  useListAllParameterGroupsQuery,
-  useListAllParametersQuery,
+  useFindAllParameterGroupsQuery,
+  useFindAllParametersQuery,
 } from "app/services/datacenter";
 import Dropdown from "app/components/Dropdown";
 import Loading from "app/components/Loading";
@@ -29,7 +29,7 @@ import {
 const IncludeParameter: React.FC = () => {
   const [parameters, setParameters] = useState<any[]>([]);
   const { data: groups, isLoading: isLoadingGroup } =
-    useListAllParameterGroupsQuery();
+    useFindAllParameterGroupsQuery();
   const [
     findParameterGroup,
     { data: parametersGrouped, isLoading: isLoadingParameters },
@@ -120,7 +120,7 @@ const AllParametersPanel: React.FC<ParameterPanelProps> = ({
   setSelection,
 }) => {
   const { tabIndex } = useTabContext();
-  const { data: parameters, isLoading } = useListAllParametersQuery();
+  const { data: parameters, isLoading } = useFindAllParametersQuery();
   return (
     <TabPanel index={0} value={tabIndex}>
       <DataTable
@@ -141,7 +141,7 @@ const ParameterGroupPanel: React.FC<ParameterPanelProps> = ({
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const { tabIndex } = useTabContext();
   const { data: groups, isLoading: isLoadingGroup } =
-    useListAllParameterGroupsQuery();
+    useFindAllParameterGroupsQuery();
   const [
     findParameterGroup,
     { data: parametersGrouped, isLoading: isLoadingParameters },

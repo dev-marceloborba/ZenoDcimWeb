@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DataTable from "app/components/DataTable";
 import {
   useDeleteEquipmentMutation,
-  useListBuildingsQuery,
+  useFindAllBuildingsQuery,
 } from "app/services/datacenter";
 import Row from "app/components/Row";
 import Dropdown from "app/components/Dropdown";
@@ -16,7 +16,7 @@ import {
 } from "app/models/data-center.model";
 
 const EquipmentTable: React.FC = () => {
-  const { data: buildings, isLoading } = useListBuildingsQuery();
+  const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [selectedBuilding, setSelectedBuilding] = useState<BuildingResponse>();
   const [selectedFloor, setSelectedFloor] = useState<FloorResponse>();
   const [selectedRoom, setSelectedRoom] = useState<FloorResponse>();
