@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -25,7 +26,8 @@ const CreateUser: React.FC = () => {
   });
   const { data: companyList } = useFindAllCompaniesQuery();
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
-  const { open: openToast } = useToast();
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const { handleSubmit } = methods;
 
@@ -33,18 +35,20 @@ const CreateUser: React.FC = () => {
     function errorHandler() {
       if (isError) {
         const message = getErrorMessage(error);
-        openToast(message, 3000, "error");
+        toast.open(message, 3000, "error");
       }
     }
     errorHandler();
-  }, [error, openToast, isError]);
+  }, [error, isError, toast]);
 
   const onSubmit: SubmitHandler<UserRequest> = async (data) => {
     try {
       await createUser(data).unwrap();
-      openToast("Usuário criado com sucesso", 2000, "success");
+      toast
+        .open("Usuário criado com sucesso", 2000, "success")
+        .then(() => navigate(-1));
     } catch (err) {
-      openToast(`Erro ao criar o usuário: ${err}`, 2000, "error");
+      toast.open(`Erro ao criar o usuário: ${err}`, 2000, "error");
     }
   };
 

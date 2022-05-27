@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
-// import IconButton from "@mui/material/IconButton";
-// import CloseIcon from "@mui/icons-material/Close";
 
 type ToastContextProps = {
-  open(message: string, autoHideDuration: number, severity: AlertColor): void;
+  open(
+    message: string,
+    autoHideDuration: number,
+    severity: AlertColor
+  ): Promise<void>;
   close(): void;
   options: {
     message: string;
@@ -71,6 +73,32 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
     [props]
   );
 
+  function handleOpen2(
+    message: string,
+    autoHideDuration: number,
+    severity: typeof props.severity = "error"
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      setState((prevState) => ({
+        ...prevState,
+        open: true,
+        message,
+        autoHideDuration,
+        variant: "filled",
+        severity,
+      }));
+      setTimeout(() => {
+        resolve();
+      }, autoHideDuration);
+    });
+  }
+
+  // function delayCallback(delay: number): Promise<any> {
+  //   return new Promise((resolve) => {
+  //     setTimeout(resolve, delay);
+  //   });
+  // }
+
   function handleToastPosition(mode: Pick<ToastProps, "mode">): SnackbarOrigin {
     switch (mode) {
       case "bottom-right":
@@ -104,7 +132,7 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
   return (
     <ToastContext.Provider
       value={{
-        open: handleOpen,
+        open: handleOpen2,
         close: handleClose,
         options: {
           message: state.message,
