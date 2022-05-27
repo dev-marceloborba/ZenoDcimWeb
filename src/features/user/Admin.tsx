@@ -14,7 +14,7 @@ import { useToast } from "app/components/Toast";
 import { UserResponseNormalized } from "app/models/authentication.model";
 
 const Admin: React.FC = () => {
-  const { isLoading, isError, data: users, error } = useFindAllUsersQuery();
+  const { isLoading, data: users } = useFindAllUsersQuery();
   const [deleteUser] = useDeleteUserMutation();
   const toast = useToast();
   const navigate = useNavigate();
@@ -49,8 +49,6 @@ const Admin: React.FC = () => {
           },
           onDeleteSelection: handleDelete,
         }}
-        // editPage={"/zeno/settings/edit-user"}
-        // handleDelete={handleDelete}
       />
       <Loading open={isLoading} />
     </Container>
