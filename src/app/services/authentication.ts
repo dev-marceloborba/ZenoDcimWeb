@@ -25,6 +25,7 @@ export const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ["UserResponseNormalized", "UsersResponse"],
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponse<AuthResponse>, LoginRequest>({
       query: (credentials) => ({
@@ -66,6 +67,7 @@ export const api = createApi({
         });
         return users;
       },
+      providesTags: ["UserResponseNormalized"],
     }),
     createUser: builder.mutation<ApiResponse<UserResponse>, UserRequest>({
       query: (user) => ({
@@ -73,12 +75,14 @@ export const api = createApi({
         method: "POST",
         body: user,
       }),
+      invalidatesTags: ["UserResponseNormalized"],
     }),
     deleteUser: builder.mutation<ApiResponse<UserResponse>, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["UserResponseNormalized"],
     }),
     editUser: builder.mutation<ApiResponse<UserResponse>, EditUserRequest>({
       query: (user) => ({
@@ -86,6 +90,7 @@ export const api = createApi({
         method: "POST",
         body: user,
       }),
+      invalidatesTags: ["UserResponseNormalized"],
     }),
     findUserById: builder.mutation<UserResponse, string>({
       query: (id) => ({

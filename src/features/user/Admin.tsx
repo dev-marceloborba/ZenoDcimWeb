@@ -11,6 +11,7 @@ import {
 import ButtonLink from "app/components/ButtonLink";
 import DataTable, { ColumnHeader } from "app/components/DataTable";
 import { useToast } from "app/components/Toast";
+import { UserResponseNormalized } from "app/models/authentication.model";
 
 const Admin: React.FC = () => {
   const { isLoading, isError, data: users, error } = useFindAllUsersQuery();
@@ -18,20 +19,15 @@ const Admin: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleDelete = async (row: any) => {
+  const handleDelete = async (users: UserResponseNormalized[]) => {
     try {
-      await deleteUser(row.id).unwrap();
-      toast.open(
-        `Usuário ${row.firstName} excluído com sucesso`,
-        2000,
-        "success"
-      );
+      for (let i = 0; i < users.length; i++) {
+        await deleteUser(users[i].id).unwrap();
+      }
+
+      toast.open(`Usuário's excluído's com sucesso`, 2000, "success");
     } catch (error) {
-      toast.open(
-        `Erro ao excluido o usuário ${row.firstName}: ${error}`,
-        2000,
-        "error"
-      );
+      toast.open(`Erro ao excluido o usuário's: ${error}`, 2000, "error");
     }
   };
 
@@ -51,6 +47,7 @@ const Admin: React.FC = () => {
           onRowClick: (row) => {
             navigate(`/zeno/settings/user/${row.id}`);
           },
+          onDeleteSelection: handleDelete,
         }}
         // editPage={"/zeno/settings/edit-user"}
         // handleDelete={handleDelete}
