@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import ToolBar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Loading from "app/components/Loading";
+import Loading from "modules/shared/components/Loading";
 import {
   useDeleteUserMutation,
   useFindAllUsersQuery,
 } from "app/services/authentication";
-import ButtonLink from "app/components/ButtonLink";
-import DataTable, { ColumnHeader } from "app/components/DataTable";
-import { useToast } from "app/components/Toast";
-import { UserResponseNormalized } from "app/models/authentication.model";
+import ButtonLink from "modules/shared/components/ButtonLink";
+import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import { useToast } from "modules/shared/components/Toast";
+import { UserModelNormalized } from "modules/user/models/user-model";
 
 const UserAdmin: React.FC = () => {
   const { isLoading, data: users } = useFindAllUsersQuery();
@@ -19,7 +19,7 @@ const UserAdmin: React.FC = () => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleDelete = async (users: UserResponseNormalized[]) => {
+  const handleDelete = async (users: UserModelNormalized[]) => {
     try {
       for (let i = 0; i < users.length; i++) {
         await deleteUser(users[i].id).unwrap();

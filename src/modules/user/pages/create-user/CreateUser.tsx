@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Form from "app/components/Form";
-import ControlledTextInput from "app/components/ControlledTextInput";
-import { useToast } from "app/components/Toast";
+import Form from "modules/shared/components/Form";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
+import { useToast } from "modules/shared/components/Toast";
 
-import { useCreateUserMutation } from "app/services/authentication";
+import { useCreateUserMutation } from "modules/user/services/authentication-service";
 
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,12 +16,12 @@ import { SchemaOf, object, ref, string, number } from "yup";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
 import { useFindAllCompaniesQuery } from "app/services/company";
-import Card from "app/components/Card";
-import Loading from "app/components/Loading";
-import { UserRequest } from "app/models/authentication.model";
+import Card from "modules/shared/components/Card";
+import Loading from "modules/shared/components/Loading";
+import { UserViewModel } from "modules/user/models/user-model";
 
 const CreateUser: React.FC = () => {
-  const methods = useForm<UserRequest>({
+  const methods = useForm<UserViewModel>({
     resolver: yupResolver(validationSchema),
   });
   const { data: companyList } = useFindAllCompaniesQuery();
@@ -41,7 +41,7 @@ const CreateUser: React.FC = () => {
     errorHandler();
   }, [error, isError, toast]);
 
-  const onSubmit: SubmitHandler<UserRequest> = async (data) => {
+  const onSubmit: SubmitHandler<UserViewModel> = async (data) => {
     try {
       await createUser(data).unwrap();
       toast
@@ -118,7 +118,7 @@ const items: RoleItem[] = [
   { value: 5, description: "Cliente" },
 ];
 
-const validationSchema: SchemaOf<UserRequest> = object().shape({
+const validationSchema: SchemaOf<UserViewModel> = object().shape({
   firstName: string().required("Nome é obrigatorio"),
   lastName: string().required("Sobrenome é obrigatorio"),
   email: string().email("E-mail inválido").required("E-mail é obrigatorio"),

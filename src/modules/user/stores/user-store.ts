@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { userApi } from "modules/user/services/authentication-service";
 import authReducer, {
   reHydrateStore,
-} from "features/authentication/authenticationSlice";
+} from "modules/user/stores/slices/AuthenticationSlice";
 
 export const userStore = configureStore({
   reducer: {
