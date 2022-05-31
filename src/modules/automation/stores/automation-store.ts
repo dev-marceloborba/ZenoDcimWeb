@@ -4,6 +4,9 @@ import { buildingApi } from "modules/automation/services/building-service";
 import { floorApi } from "modules/automation/services/floor-service";
 import { roomApi } from "modules/automation/services/room-service";
 import { equipmentApi } from "modules/automation/services/equipment-service";
+import { equipmentParametersApi } from "modules/automation/services/equipment-parameter-service";
+import { parameterGroupApi } from "modules/automation/services/parameter-group-service";
+import { parameterApi } from "modules/automation/services/parameter-service";
 import authReducer, {
   reHydrateStore,
 } from "modules/user/stores/slices/AuthenticationSlice";
@@ -15,6 +18,9 @@ export const automationStore = configureStore({
     [floorApi.reducerPath]: floorApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
+    [equipmentParametersApi.reducerPath]: equipmentParametersApi.reducer,
+    [parameterGroupApi.reducerPath]: parameterGroupApi.reducer,
+    [parameterApi.reducerPath]: parameterApi.reducer,
     auth: authReducer,
   },
   preloadedState: {
@@ -26,7 +32,10 @@ export const automationStore = configureStore({
       buildingApi.middleware,
       floorApi.middleware,
       roomApi.middleware,
-      equipmentApi.middleware
+      equipmentApi.middleware,
+      equipmentParametersApi.middleware,
+      parameterGroupApi.middleware,
+      parameterApi.middleware
     ),
 });
 
