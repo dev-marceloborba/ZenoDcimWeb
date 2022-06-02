@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { siteApi } from "modules/automation/services/site-service";
-import { buildingApi } from "modules/automation/services/building-service";
-import { floorApi } from "modules/automation/services/floor-service";
-import { roomApi } from "modules/automation/services/room-service";
+import { siteApi } from "modules/datacenter/services/site-service";
+import { buildingApi } from "modules/datacenter/services/building-service";
+import { floorApi } from "modules/datacenter/services/floor-service";
+import { roomApi } from "modules/datacenter/services/room-service";
 import { equipmentApi } from "modules/automation/services/equipment-service";
 import { equipmentParametersApi } from "modules/automation/services/equipment-parameter-service";
 import { parameterGroupApi } from "modules/automation/services/parameter-group-service";

@@ -1,43 +1,43 @@
-export interface SiteRequest {
+export interface SiteViewModel {
   name: string;
 }
 
-export interface SiteResponse extends SiteRequest {
+export interface SiteModel extends SiteViewModel {
   id: string;
-  buildings: BuildingResponse[];
+  buildings: BuildingModel[];
 }
 
-export type BuildingRequest = {
+export type BuildingViewModel = {
   campus: string;
   name: string;
 };
 
-export interface BuildingResponse extends BuildingRequest {
+export interface BuildingModel extends BuildingViewModel {
   id: string;
-  floors?: FloorResponse[];
+  floors?: FloorModel[];
 }
 
-export type BuildingsResponse = BuildingResponse[];
+export type BuildingsModel = BuildingModel[];
 
-export interface FloorRequest {
+export interface FloorViewModel {
   buildingId: string;
   name: string;
 }
 
-export interface FloorResponse extends FloorRequest {
+export interface FloorModel extends FloorViewModel {
   id: string;
-  rooms?: RoomResponse[];
+  rooms?: RoomModel[];
 }
 
-export interface RoomRequest {
+export interface RoomViewModel {
   buildingId: string;
   floorId: string;
   name: string;
 }
 
-export interface RoomResponse extends RoomRequest {
+export interface RoomModel extends RoomViewModel {
   id: string;
-  equipments?: EquipmentResponse[];
+  equipments?: EquipmentModel[];
 }
 
 export enum EEquipmentGroup {
@@ -52,7 +52,7 @@ export enum EEquipmentStatus {
   INDETERMINATE = 2,
 }
 
-export interface EquipmentRequest {
+export interface EquipmentViewModel {
   buildingId: string;
   floorId: string;
   roomId: string;
@@ -63,16 +63,16 @@ export interface EquipmentRequest {
   group: EEquipmentGroup;
 }
 
-export interface EquipmentResponse extends EquipmentRequest {
+export interface EquipmentModel extends EquipmentViewModel {
   id: string;
   status: EEquipmentStatus;
   group: EEquipmentGroup;
   alarms: number;
   createdDate: Date;
-  equipmentParameters?: EquipmentParameterResponse[];
+  equipmentParameters?: EquipmentParameterModel[];
 }
 
-export interface EquipmentParameterRequest {
+export interface EquipmentParameterViewModel {
   equipmentId?: string;
   name: string;
   unit: string;
@@ -83,42 +83,32 @@ export interface EquipmentParameterRequest {
   address: string;
 }
 
-export interface EquipmentParameterResponse extends EquipmentParameterRequest {
+export interface EquipmentParameterModel extends EquipmentParameterViewModel {
   id: string;
 }
 
-export type BuildingMerged = {
-  class: string;
-  component: string;
-  componentCode: string;
-  description: string;
-  building: string;
-  floor: string;
-  room: string;
+export type MultipleEquipmentsViewModel = {
+  equipments: EquipmentViewModel[];
 };
 
-export type MultipleEquipmentsRequest = {
-  equipments: EquipmentRequest[];
-};
-
-export interface MultipleEquipmentParameterRequest {
-  parameters: EquipmentParameterRequest[];
+export interface MultipleEquipmentParameterViewModel {
+  parameters: EquipmentParameterViewModel[];
 }
 
-export interface MultipleEquipmentParameterResponse
-  extends MultipleEquipmentParameterRequest {}
+export interface MultipleEquipmentParameterModel
+  extends MultipleEquipmentParameterViewModel {}
 
-export interface EquipmentParameterGroupRequest {
+export interface EquipmentParameterGroupViewModel {
   name: string;
-  parameters: EquipmentParameterRequest[];
+  parameters: EquipmentParameterViewModel[];
 }
 
-export interface EquipmentParameterGroupResponse
-  extends EquipmentParameterGroupRequest {
+export interface EquipmentParameterGroupModel
+  extends EquipmentParameterGroupViewModel {
   id: string;
 }
 
-export interface ParameterRequest {
+export interface ParameterViewModel {
   name: string;
   unit: string;
   lowLimit: number;
@@ -127,6 +117,6 @@ export interface ParameterRequest {
   groupId: string;
 }
 
-export interface ParameterResponse extends ParameterRequest {
+export interface ParameterModel extends ParameterViewModel {
   id: string;
 }

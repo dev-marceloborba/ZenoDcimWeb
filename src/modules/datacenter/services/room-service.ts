@@ -2,7 +2,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { RootState } from "modules/automation/stores/automation-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
-import { RoomRequest, RoomResponse } from "app/models/data-center.model";
+import {
+  RoomViewModel,
+  RoomModel,
+} from "modules/datacenter/models/datacenter-model";
 
 export const roomApi = createApi({
   reducerPath: "roomApi",
@@ -16,23 +19,23 @@ export const roomApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["RoomResponse"],
+  tagTypes: ["RoomModel"],
   endpoints: (builder) => ({
-    createRoom: builder.mutation<ApiResponseModel<RoomResponse>, RoomRequest>({
+    createRoom: builder.mutation<ApiResponseModel<RoomModel>, RoomViewModel>({
       query: (newRoom) => ({
         url: "v1/data-center/building/floor/room",
         method: "POST",
         body: newRoom,
       }),
-      invalidatesTags: ["RoomResponse"],
+      invalidatesTags: ["RoomModel"],
     }),
-    findAllRooms: builder.query<RoomResponse[], void>({
+    findAllRooms: builder.query<RoomModel[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room",
       }),
-      providesTags: ["RoomResponse"],
+      providesTags: ["RoomModel"],
     }),
-    findRoomById: builder.mutation<RoomResponse, string>({
+    findRoomById: builder.mutation<RoomModel, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/${id}`,
         method: "GET",
@@ -43,7 +46,7 @@ export const roomApi = createApi({
         url: `v1/data-center/building/floor/room/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["RoomResponse"],
+      invalidatesTags: ["RoomModel"],
     }),
   }),
 });

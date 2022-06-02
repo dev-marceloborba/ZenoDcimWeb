@@ -4,10 +4,10 @@ import { RootState } from "modules/automation/stores/automation-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   BuildingMerged,
-  BuildingRequest,
-  BuildingResponse,
-  BuildingsResponse,
-} from "app/models/data-center.model";
+  BuildingViewModel,
+  BuildingModel,
+  BuildingsModel,
+} from "modules/datacenter/models/datacenter-model";
 
 export const buildingApi = createApi({
   reducerPath: "buildingApi",
@@ -21,28 +21,28 @@ export const buildingApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["BuildingResponse", "BuildingMerged"],
+  tagTypes: ["BuildingModel", "BuildingMerged"],
   endpoints: (builder) => ({
     createBuilding: builder.mutation<
-      ApiResponseModel<BuildingResponse>,
-      BuildingRequest
+      ApiResponseModel<BuildingModel>,
+      BuildingViewModel
     >({
       query: (newBuilding) => ({
         url: "v1/data-center/building",
         method: "POST",
         body: newBuilding,
       }),
-      invalidatesTags: ["BuildingResponse", "BuildingMerged"],
+      invalidatesTags: ["BuildingModel", "BuildingMerged"],
     }),
-    findAllBuildings: builder.query<BuildingsResponse, void>({
+    findAllBuildings: builder.query<BuildingsModel, void>({
       query: () => ({ url: "v1/data-center/building" }),
     }),
-    findBuildingById: builder.mutation<BuildingResponse, string>({
+    findBuildingById: builder.mutation<BuildingModel, string>({
       query: (id) => ({ url: `v1/data-center/building/${id}`, method: "GET" }),
     }),
     findAllBuildingsDeep: builder.query<BuildingMerged[], void>({
       query: () => ({ url: "v1/data-center/building" }),
-      transformResponse: (buildings: BuildingsResponse) => {
+      transformResponse: (buildings: BuildingsModel) => {
         const rowsArray: BuildingMerged[] = [];
 
         buildings.forEach((building) => {
@@ -64,14 +64,14 @@ export const buildingApi = createApi({
         });
         return rowsArray;
       },
-      providesTags: ["BuildingResponse", "BuildingMerged"],
+      providesTags: ["BuildingModel", "BuildingMerged"],
     }),
     deleteBuilding: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["BuildingResponse", "BuildingMerged"],
+      invalidatesTags: ["BuildingModel", "BuildingMerged"],
     }),
   }),
 });

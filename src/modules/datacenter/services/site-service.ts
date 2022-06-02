@@ -2,7 +2,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "modules/automation/stores/automation-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import environment from "app/config/env";
-import { SiteRequest, SiteResponse } from "app/models/data-center.model";
+import {
+  SiteViewModel,
+  SiteModel,
+} from "modules/datacenter/models/datacenter-model";
 
 export const siteApi = createApi({
   reducerPath: "siteApi",
@@ -16,26 +19,26 @@ export const siteApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["SiteResponse"],
+  tagTypes: ["SiteModel"],
   endpoints: (builder) => ({
-    createSite: builder.mutation<ApiResponseModel<SiteResponse>, SiteRequest>({
+    createSite: builder.mutation<ApiResponseModel<SiteModel>, SiteViewModel>({
       query: (params) => ({
         url: "v1/data-center/site",
         method: "POST",
         data: params,
       }),
-      invalidatesTags: ["SiteResponse"],
+      invalidatesTags: ["SiteModel"],
     }),
-    findAllSites: builder.query<SiteResponse[], void>({
+    findAllSites: builder.query<SiteModel[], void>({
       query: () => ({ url: "v1/data-center/site" }),
-      providesTags: ["SiteResponse"],
+      providesTags: ["SiteModel"],
     }),
     deleteSite: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/site/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["SiteResponse"],
+      invalidatesTags: ["SiteModel"],
     }),
   }),
 });
