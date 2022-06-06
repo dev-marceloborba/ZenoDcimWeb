@@ -27,5 +27,5 @@ export const datacenterStore = configureStore({
     ),
 });
 
-export type RootState = ReturnType<typeof datacenterStore.getState>;
+export type DatacenterRootState = ReturnType<typeof datacenterStore.getState>;
 export type AppDispatch = typeof datacenterStore.dispatch;

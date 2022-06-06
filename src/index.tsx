@@ -7,7 +7,8 @@ import { Provider } from "react-redux";
 import CssBaseLine from "@mui/material/CssBaseline";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { brandingDarkTheme } from "app/theme/brandingDarkTheme";
-import { store } from "app/store";
+// import { store } from "app/store";
+import { store } from "modules/core/store";
 import { Connector } from "mqtt-react-hooks";
 import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -18,6 +19,7 @@ import { brokerUrl, mqttConfig } from "app/config/env";
 // import ModalProvider from "app/hooks/useModal";
 import ModalProvider from "mui-modal-provider";
 import { ptBR } from "@mui/material/locale";
+import AppRoutes from "modules/AppRoutes";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -33,7 +35,8 @@ ReactDOM.render(
               <AutomationFiltersProvider>
                 <ReactFlowProvider>
                   <ModalProvider>
-                    <App />
+                    {/* <App /> */}
+                    <AppRoutes />
                   </ModalProvider>
                 </ReactFlowProvider>
               </AutomationFiltersProvider>

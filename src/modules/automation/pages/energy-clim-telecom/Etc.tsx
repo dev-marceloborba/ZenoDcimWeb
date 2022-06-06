@@ -7,13 +7,13 @@ import ButtonLink from "modules/shared/components/ButtonLink";
 import BuildingDropdown from "modules/automation/components/BuildingDropdown";
 import FloorDropdown from "modules/automation/components/FloorDropdown";
 import EtcFilters from "modules/automation/components/EtcFilters";
-import { useAutomationFilters } from "modules/automation/components/AutomationFiltersProvider";
 import Center from "modules/shared/components/Center";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { RoomResponse } from "app/models/data-center.model";
 import { useSubscription } from "mqtt-react-hooks";
+import { useAutomationFilters } from "modules/automation/hooks/useAutomationFilters";
 
 const Etc: React.FC = () => {
   const { groups, buildings, building, floor } = useAutomationFilters();

@@ -5,7 +5,7 @@ import Etc from "modules/automation/pages/energy-clim-telecom/Etc";
 const AutomationRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="etc" element={<Etc />} />
+      <Route index element={<Etc />} />
     </Routes>
   );
 };

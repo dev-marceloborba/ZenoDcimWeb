@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
-import { RootState } from "modules/automation/stores/automation-store";
+import { DatacenterRootState } from "modules/datacenter/stores/datacenter-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   RoomViewModel,
@@ -12,7 +12,7 @@ export const roomApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
+      const token = (getState() as DatacenterRootState).auth.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

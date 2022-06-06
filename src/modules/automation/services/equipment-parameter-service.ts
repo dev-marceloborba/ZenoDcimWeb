@@ -1,50 +1,47 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
-import { RootState } from "modules/automation/stores/automation-store";
+import { AutomationRootState } from "modules/automation/stores/automation-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
-  EquipmentParameterRequest,
-  EquipmentParameterResponse,
-  MultipleEquipmentParameterRequest,
-  MultipleEquipmentParameterResponse,
-} from "app/models/data-center.model";
+  EquipmentParameterViewModel,
+  EquipmentParameterModel,
+  MultipleEquipmentParameterViewModel,
+  MultipleEquipmentParameterModel,
+} from "modules/automation/models/automation-model";
 
 export const equipmentParametersApi = createApi({
   reducerPath: "equipmentParametersApi",
   baseQuery: fetchBaseQuery({
     baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
+      const token = (getState() as AutomationRootState).auth.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
   }),
-  tagTypes: ["EquipmentParameterResponse"],
+  tagTypes: ["EquipmentParameterModel"],
   endpoints: (builder) => ({
     createEquipmentParameter: builder.mutation<
-      ApiResponseModel<EquipmentParameterResponse>,
-      EquipmentParameterRequest
+      ApiResponseModel<EquipmentParameterModel>,
+      EquipmentParameterViewModel
     >({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter",
         method: "POST",
         body: params,
       }),
-      invalidatesTags: ["EquipmentParameterResponse"],
+      invalidatesTags: ["EquipmentParameterModel"],
     }),
-    findAllEquipmentParameters: builder.query<
-      EquipmentParameterResponse[],
-      void
-    >({
+    findAllEquipmentParameters: builder.query<EquipmentParameterModel[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment/parameters",
       }),
-      providesTags: ["EquipmentParameterResponse"],
+      providesTags: ["EquipmentParameterModel"],
     }),
     findEquipmentParameterById: builder.mutation<
-      EquipmentParameterResponse,
+      EquipmentParameterModel,
       string
     >({
       query: (id) => ({
@@ -57,11 +54,11 @@ export const equipmentParametersApi = createApi({
         url: `v1/data-center/building/floor/room/equipment/parameter/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["EquipmentParameterResponse"],
+      invalidatesTags: ["EquipmentParameterModel"],
     }),
     createMultipleEquipmentParameters: builder.mutation<
-      MultipleEquipmentParameterResponse,
-      MultipleEquipmentParameterRequest
+      MultipleEquipmentParameterModel,
+      MultipleEquipmentParameterViewModel
     >({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter/multiple",
