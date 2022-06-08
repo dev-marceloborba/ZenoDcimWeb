@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
-import { RootState } from "app/store";
+import { RootState } from "modules/core/store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   AuthModel,

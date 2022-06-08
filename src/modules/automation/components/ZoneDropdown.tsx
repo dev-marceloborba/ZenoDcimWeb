@@ -1,15 +1,14 @@
 import React from "react";
-import Dropdown, { ItemProps } from "app/components/Dropdown";
-import { useAutomationFilters } from "./AutomationFiltersProvider";
+import Dropdown, { ItemProps } from "modules/shared/components/Dropdown";
 import { SxProps, Theme } from "@mui/material";
+import useAutomationFilters from "../data/hooks/useAutomationFilters";
 
 type BuildingDropdownProps = {
   sx?: SxProps<Theme>;
 };
 
-
-const ZoneDropdown: React.FC<BuildingDropdownProps> = ({sx}) => {
-  const { handleZone, zone } = useAutomationFilters()
+const ZoneDropdown: React.FC<BuildingDropdownProps> = ({ sx }) => {
+  const { handleZone, zone } = useAutomationFilters();
   const items: ItemProps[] = [
     {
       label: "Zona 1",

@@ -1,15 +1,14 @@
 import React from "react";
-import Dropdown, { ItemProps } from "app/components/Dropdown";
-import { useAutomationFilters } from "./AutomationFiltersProvider";
+import Dropdown, { ItemProps } from "modules/shared/components/Dropdown";
 import { SxProps, Theme } from "@mui/material";
+import useAutomationFilters from "../data/hooks/useAutomationFilters";
 
 type BuildingDropdownProps = {
   sx?: SxProps<Theme>;
 };
 
-
-const LoopDropdown: React.FC<BuildingDropdownProps> = ({sx}) => {
-  const { handleLoop, loop } = useAutomationFilters()
+const LoopDropdown: React.FC<BuildingDropdownProps> = ({ sx }) => {
+  const { handleLoop, loop } = useAutomationFilters();
   const items: ItemProps[] = [
     {
       label: "Laço 1",

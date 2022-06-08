@@ -9,11 +9,12 @@ import {
   AccessEvent,
   DoorControlEvent,
 } from "app/data/access-control";
-import { useAutomationFilters } from "modules/automation/components/AutomationFiltersProvider";
+
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
 import Column from "modules/shared/components/Column";
 import BuildingDropdown from "modules/automation/components/BuildingDropdown";
+import useAutomationFilters from "modules/automation/data/hooks/useAutomationFilters";
 
 const AccessControl: React.FC = () => {
   const { accessEvents, doorControlEvents } = accessControl;

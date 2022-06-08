@@ -13,7 +13,7 @@ import Row from "modules/shared/components/Row";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { RoomResponse } from "app/models/data-center.model";
 import { useSubscription } from "mqtt-react-hooks";
-import { useAutomationFilters } from "modules/automation/hooks/useAutomationFilters";
+import useAutomationFilters from "modules/automation/data/hooks/useAutomationFilters";
 
 const Etc: React.FC = () => {
   const { groups, buildings, building, floor } = useAutomationFilters();

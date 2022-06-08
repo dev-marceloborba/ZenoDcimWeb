@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 import CssBaseLine from "@mui/material/CssBaseline";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { brandingDarkTheme } from "app/theme/brandingDarkTheme";
-// import { store } from "app/store";
 import { store } from "modules/core/store";
 import { Connector } from "mqtt-react-hooks";
 import { LocalizationProvider } from "@mui/lab";

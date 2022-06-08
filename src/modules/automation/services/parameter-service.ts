@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
-import { AutomationRootState } from "modules/automation/stores/automation-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   ParameterRequest,
   ParameterResponse,
 } from "app/models/data-center.model";
+import { RootState } from "modules/core/store";
 
 export const parameterApi = createApi({
   reducerPath: "parameterApi",
   baseQuery: fetchBaseQuery({
     baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as AutomationRootState).auth.token;
+      const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

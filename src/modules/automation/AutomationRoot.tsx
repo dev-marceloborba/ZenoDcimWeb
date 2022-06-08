@@ -1,15 +1,12 @@
 import React from "react";
-import { Provider } from "react-redux";
-import { automationStore } from "modules/automation/stores/automation-store";
 import AutomationRoutes from "modules/automation/routes/AutomationRoutes";
-import ZenoLayout from "modules/core/layouts/ZenoLayout";
+import AutomationFiltersProvider from "./data/providers/AutomationFiltersProvider";
 
 const AutomationRoot: React.FC = () => {
   return (
-    <Provider store={automationStore}>
-      {/* <ZenoLayout /> */}
+    <AutomationFiltersProvider>
       <AutomationRoutes />
-    </Provider>
+    </AutomationFiltersProvider>
   );
 };
 

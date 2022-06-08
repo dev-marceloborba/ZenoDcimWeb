@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { DatacenterRootState } from "modules/datacenter/stores/datacenter-store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import environment from "app/config/env";
 import {
   SiteViewModel,
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
+import { RootState } from "modules/core/store";
 
 export const siteApi = createApi({
   reducerPath: "siteApi",
   baseQuery: fetchBaseQuery({
     baseUrl: environment,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as DatacenterRootState).auth.token;
+      const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

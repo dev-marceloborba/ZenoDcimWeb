@@ -34,7 +34,6 @@ const ZenoHome: React.FC = () => {
             ml: matches ? "220px" : "0px",
           }}
         >
-          {/* <SubRoutes /> */}
           <Outlet />
         </Box>
       </Box>

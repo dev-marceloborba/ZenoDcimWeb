@@ -1,48 +1,7 @@
-import React, { useState, useEffect, createContext, useContext } from "react";
-import { useFindAllBuildingsQuery } from "app/services/datacenter";
-import { BuildingsResponse } from "app/models/data-center.model";
-
-export type FilterData = {
-  energy: boolean;
-  clim: boolean;
-  telecom: boolean;
-};
-
-type AutomationFiltersData = {
-  building: string;
-  floor: string;
-  room: string;
-  zone: string;
-  loop: string;
-  groups: {
-    energy: boolean;
-    clim: boolean;
-    telecom: boolean;
-  };
-  handleBuilding(building: string): void;
-  handleFloor(floor: string): void;
-  handleRoom(floor: string): void;
-  handleZone(zone: string): void;
-  handleLoop(loop: string): void;
-  handleToggleEnergyGroup(): void;
-  handleToggleClimGroup(): void;
-  handleToggleTelecomGroup(): void;
-  buildings?: BuildingsResponse;
-};
-
-export const AutomationFiltersContext = createContext<AutomationFiltersData>(
-  {} as AutomationFiltersData
-);
-
-type AutomationFilterStateProps = {
-  building: string;
-  floor: string;
-  room: string;
-  zone: string;
-  loop: string;
-  groups: FilterData;
-  buildings?: BuildingsResponse;
-};
+import React, { useState, useEffect } from "react";
+import { AutomationFilterStateProps } from "modules/automation/data/types/automationFilter";
+import AutomationFiltersContext from "../contexts/automationFiltersContext";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 
 const AutomationFiltersProvider: React.FC = ({ children }) => {
   const { data } = useFindAllBuildingsQuery();
@@ -133,5 +92,3 @@ const AutomationFiltersProvider: React.FC = ({ children }) => {
 };
 
 export default AutomationFiltersProvider;
-
-export const useAutomationFilters = () => useContext(AutomationFiltersContext);

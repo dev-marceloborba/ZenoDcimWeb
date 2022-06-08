@@ -2,18 +2,22 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
-import { useAutomationFilters } from "modules/automation/hooks/useAutomationFilters";
+import useAutomationFilters from "../data/hooks/useAutomationFilters";
 
 const EtcFilters: React.FC = () => {
-  const { groups, toogleEnergyGroup, toogleClimGroup, toogleTelecomGroup } =
-    useAutomationFilters();
+  const {
+    groups,
+    handleToggleEnergyGroup,
+    handleToggleClimGroup,
+    handleToggleTelecomGroup,
+  } = useAutomationFilters();
 
   return (
     <Box sx={{ display: "flex" }}>
       <Tooltip title="Filtro pela categoria Energia">
         <Chip
           variant={groups.energy ? "filled" : "outlined"}
-          onClick={toogleEnergyGroup}
+          onClick={handleToggleEnergyGroup}
           label="Energia"
         />
       </Tooltip>
@@ -21,7 +25,7 @@ const EtcFilters: React.FC = () => {
       <Tooltip title="Filtro pela categoria Clima">
         <Chip
           variant={groups.clim ? "filled" : "outlined"}
-          onClick={toogleClimGroup}
+          onClick={handleToggleClimGroup}
           label="Clima"
           sx={{ ml: 1 }}
         />
@@ -30,7 +34,7 @@ const EtcFilters: React.FC = () => {
       <Tooltip title="Filtro pela categoria Telecomunicações">
         <Chip
           variant={groups.telecom ? "filled" : "outlined"}
-          onClick={toogleTelecomGroup}
+          onClick={handleToggleTelecomGroup}
           label="Telecom"
           sx={{ ml: 1 }}
         />

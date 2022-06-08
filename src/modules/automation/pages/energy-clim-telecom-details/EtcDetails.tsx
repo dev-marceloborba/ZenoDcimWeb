@@ -4,13 +4,13 @@ import Grid from "@mui/material/Grid";
 import EquipmentCard from "modules/automation/components/EquipmentCard";
 import PageTitle from "modules/shared/components/PageTitle";
 import EtcFilters from "modules/automation/components/EtcFilters";
-import { useAutomationFilters } from "modules/automation/components/AutomationFiltersProvider";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
 import { EquipmentResponse } from "app/models/data-center.model";
 import { useFindRoomByIdMutation } from "app/services/datacenter";
 import Loading from "modules/shared/components/Loading";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
+import useAutomationFilters from "modules/automation/data/hooks/useAutomationFilters";
 
 const EtcDetails: React.FC = () => {
   const { groups } = useAutomationFilters();
