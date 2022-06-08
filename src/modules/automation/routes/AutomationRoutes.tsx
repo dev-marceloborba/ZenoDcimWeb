@@ -8,15 +8,20 @@ import AutomationRegister from "modules/automation/pages/automation-register/Aut
 import {
   AccessControlPath,
   AutomationRegisterPath,
+  CagePath,
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
   FireSystemPath,
+  RackPath,
 } from "./paths";
+import Etcv2 from "../pages/energy-clim-telecom/Etcv2";
+import Cage from "../pages/cage/Cage";
+import Rack from "../pages/rack/Rack";
 
 const AutomationRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path={EnergyClimTelecomPath} element={<Etc />} />
+      <Route path={EnergyClimTelecomPath} element={<Etcv2 />} />
       <Route path={FireSystemPath} element={<FireSystem />} />
       <Route path={AccessControlPath} element={<AccessControl />} />
       <Route
@@ -24,6 +29,8 @@ const AutomationRoutes: React.FC = () => {
         element={<EquipmentConectivity />}
       />
       <Route path={AutomationRegisterPath} element={<AutomationRegister />} />
+      <Route path={CagePath} element={<Cage />} />
+      <Route path={RackPath} element={<Rack />} />
     </Routes>
   );
 };

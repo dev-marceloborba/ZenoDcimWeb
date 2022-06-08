@@ -16,12 +16,8 @@ import BuildingDropdown from "modules/automation/components/BuildingDropdown";
 import FloorDropdown from "modules/automation/components/FloorDropdown";
 import RoomDropdown from "modules/automation/components/RoomDropdown";
 import Row from "modules/shared/components/Row";
-import compositePathRoute from "modules/utils/compositePathRoute";
-import { HomePath } from "modules/paths";
-import { AutomationPath } from "modules/home/routes/paths";
-import { CagePath } from "modules/automation/routes/paths";
 
-const Etcv2: React.FC = () => {
+const Cage: React.FC = () => {
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
@@ -39,20 +35,20 @@ const Etcv2: React.FC = () => {
       </Row>
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
-          <EquipmentCard title="Terreo" />
+          <EquipmentCard title="DH01.2CG02 - Energia" />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="Data Hall 01" />
+          <EquipmentCard title="DH01.2CG02 - Clima" />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="Data Hall 02" />
+          <EquipmentCard title="DH01.2CG02 - Telecom" />
         </Grid>
       </Grid>
     </HeroContainer>
   );
 };
 
-export default Etcv2;
+export default Cage;
 
 type EquipmentCardProps = {
   title: string;
@@ -123,9 +119,8 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
   const navigate = useNavigate();
 
   const handleOpenEquipmentDetails = (equipment: any) => {
-    // console.log("open equipment details");
+    console.log("open equipment details");
     // navigate(toEquipmentDetails)
-    navigate(compositePathRoute([HomePath, AutomationPath, CagePath]));
   };
   return (
     <TableContainer>
