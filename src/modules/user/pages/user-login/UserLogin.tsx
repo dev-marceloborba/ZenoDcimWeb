@@ -27,6 +27,7 @@ import Typography, { TypographyProps } from "@mui/material/Typography";
 import { useLoginMutation } from "modules/user/services/authentication-service";
 import type { LoginViewModel } from "modules/user/models/user-model";
 import getErrorMessage from "app/utils/apiErrorHandler";
+import { HomePath } from "modules/paths";
 
 const UserLogin: React.FC = () => {
   const [login, { isLoading, error, isError }] = useLoginMutation();
@@ -47,7 +48,7 @@ const UserLogin: React.FC = () => {
       const { data: account } = await login(data).unwrap();
       if (data) {
         dispatch(setCredentials(account));
-        navigate("/zeno");
+        navigate(`/${HomePath}`);
       } else {
         toast.open("Erro ao realizar login: Servidor offline", 2000, "error");
       }
@@ -57,7 +58,7 @@ const UserLogin: React.FC = () => {
   };
 
   if (signed) {
-    return <Navigate to="/zeno" />;
+    return <Navigate to={`/${HomePath}`} />;
   } else {
     return (
       <PageGrid container>

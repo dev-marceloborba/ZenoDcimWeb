@@ -15,6 +15,15 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import LineStyleIcon from "@mui/icons-material/LineStyle";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import {
+  AccessControlPath,
+  AutomationRegisterPath,
+  EnergyClimTelecomPath,
+  EquipmentConnectivityPath,
+  FireSystemPath,
+} from "modules/automation/routes/paths";
 
 const Sidenav: React.FC = () => {
   const { drawerOpened } = useLayout();
@@ -84,14 +93,26 @@ const menuItems: ListItemLinkProps[] = [
     primary: "Automação",
     icon: <LineStyleIcon />,
     items: [
-      { primary: "Energia, Clima e Telecom", to: "/zeno/automation/etc" },
-      { primary: "Incêndio", to: "/zeno/automation/fire-system" },
-      { primary: "Controle de acesso", to: "/zeno/automation/access-control" },
+      {
+        primary: "Energia, Clima e Telecom",
+        to: `/${HomePath}/${AutomationPath}/${EnergyClimTelecomPath}`,
+      },
+      {
+        primary: "Incêndio",
+        to: `/${HomePath}/${AutomationPath}/${FireSystemPath}`,
+      },
+      {
+        primary: "Controle de acesso",
+        to: `/${HomePath}/${AutomationPath}/${AccessControlPath}`,
+      },
       {
         primary: "Conectividade de equipamentos",
-        to: "/zeno/automation/equipment-conectivity",
+        to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
       },
-      { primary: "Cadastros de automação", to: "/zeno/automation/management" },
+      {
+        primary: "Cadastros de automação",
+        to: `/${HomePath}/${AutomationPath}/${AutomationRegisterPath}`,
+      },
     ],
   },
   {

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Loading from "./shared/components/Loading";
 import UserRoot from "./user/UserRoot";
 import HomeRoot from "./home/HomeRoot";
+import { HomePath } from "./paths";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -10,7 +11,7 @@ const AppRoutes: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="*" element={<UserRoot />} />
-          <Route path="zeno/*" element={<HomeRoot />} />
+          <Route path={`${HomePath}/*`} element={<HomeRoot />} />
         </Routes>
       </BrowserRouter>
     </Suspense>
