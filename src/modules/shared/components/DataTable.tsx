@@ -18,15 +18,15 @@ import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-// import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
 import ConditionalRender from "./ConditionalRender";
 import Visible from "./Visible";
 import DeleteButton from "./DeleteButton";
+import Row from "./Row";
 
 interface DataTableProps {
   columns: ColumnHeader[];
@@ -180,8 +180,10 @@ interface EnhancedTableToolbarProps {
   filter: string;
   openSearch: boolean;
   hideSearch: boolean;
+  editMode: boolean;
   setFilter: (fillter: string) => void;
   onDelete: () => void;
+  onAdd: () => void;
   toggleTitleAndSearch: () => void;
 }
 
@@ -192,8 +194,10 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     filter,
     openSearch,
     hideSearch,
+    editMode,
     setFilter,
     onDelete,
+    onAdd,
     toggleTitleAndSearch,
   } = props;
 
@@ -239,13 +243,22 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       {numSelected > 0 ? (
         <DeleteButton mode="icon" onDeleteConfirmation={onDelete} />
       ) : (
-        <Visible show={!hideSearch}>
-          <Tooltip title="Filter list">
-            <IconButton onClick={toggleTitleAndSearch}>
-              <SearchIcon />
-            </IconButton>
-          </Tooltip>
-        </Visible>
+        <Row>
+          <Visible show={!hideSearch}>
+            <Tooltip title="Filter list">
+              <IconButton onClick={toggleTitleAndSearch}>
+                <SearchIcon />
+              </IconButton>
+            </Tooltip>
+          </Visible>
+          <Visible show={editMode}>
+            <Tooltip title="Adicionar linha">
+              <IconButton onClick={onAdd}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          </Visible>
+        </Row>
       )}
     </Toolbar>
   );
@@ -392,8 +405,6 @@ const DataTable: React.FC<DataTableProps> = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  // const currentRows = hidePagination ? rows : filteredRows;
-
   const handleRowClick = (row: any) => {
     if (onRowClick) {
       onRowClick(row);
@@ -437,6 +448,15 @@ const DataTable: React.FC<DataTableProps> = ({
     });
   };
 
+  const handleAddRow = () => {
+    const properties = columns.map((c) => c.name);
+    const newRow: any = properties.map((p) => ({
+      [p]: "",
+    }));
+    newRow.editMode = true;
+    setCurrentRows([...currentRows, newRow]);
+  };
+
   useEffect(() => {
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
@@ -447,6 +467,7 @@ const DataTable: React.FC<DataTableProps> = ({
   }, [rows]);
 
   useEffect(() => {
+    console.log("oizinho");
     setCurrentRows(
       getFilteredRows(rows, columns, filter, page, rowsInPage, order, orderBy)
     );
@@ -461,7 +482,9 @@ const DataTable: React.FC<DataTableProps> = ({
           filter={filter}
           openSearch={openSearch}
           hideSearch={hideSearch}
+          editMode={isEditMode}
           setFilter={setFilter}
+          onAdd={handleAddRow}
           onDelete={handleDeleteSelection}
           toggleTitleAndSearch={handleToggleSearchAndTitle}
         />
