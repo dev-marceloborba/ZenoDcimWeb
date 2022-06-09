@@ -21,12 +21,15 @@ import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
+import DoneIcon from "@mui/icons-material/DoneRounded";
+import CancelIcon from "@mui/icons-material/DoDisturbRounded";
 import { visuallyHidden } from "@mui/utils";
 import NoDataText from "./NoDataText";
 import ConditionalRender from "./ConditionalRender";
 import Visible from "./Visible";
 import DeleteButton from "./DeleteButton";
 import Row from "./Row";
+import Column from "./Column";
 
 interface DataTableProps {
   columns: ColumnHeader[];
@@ -80,25 +83,22 @@ function getComparator<Key extends keyof any>(
 }
 
 function getFilteredRows(
-  _rows: any[],
-  _columns: ColumnHeader[],
-  _filter: string,
-  _page: number,
-  _rowsPerPage: number,
-  _order: Order,
-  _orderBy: string
+  rows: any[],
+  columns: ColumnHeader[],
+  filter: string,
+  page: number,
+  rowsPerPage: number,
+  order: Order,
+  orderBy: string
 ): any[] {
-  return _rows
+  return rows
     .filter((row) =>
-      _columns.some((column) =>
-        row[column.name]
-          .toString()
-          .toLowerCase()
-          .includes(_filter.toLowerCase())
+      columns.some((column) =>
+        row[column.name].toString().toLowerCase().includes(filter.toLowerCase())
       )
     )
-    .sort(getComparator(_order, _orderBy))
-    .slice(_page * _rowsPerPage, _page * _rowsPerPage + _rowsPerPage);
+    .sort(getComparator(order, orderBy))
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }
 
 interface EnhancedTableProps {
@@ -291,7 +291,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
 
 const CustomTableCell = (row: any, columName: string, onChange: any) => {
   const { editMode } = row;
-
   return (
     <>
       {editMode ? (
@@ -299,10 +298,6 @@ const CustomTableCell = (row: any, columName: string, onChange: any) => {
           value={row[columName]}
           onChange={(e) => onChange(e, row)}
           name={columName}
-          sx={{
-            width: 130,
-            height: 40,
-          }}
         />
       ) : (
         row[columName]
@@ -351,6 +346,8 @@ const DataTable: React.FC<DataTableProps> = ({
           orderBy
         ).map((row) => ({ ...row, editMode: false }))
   );
+  const [isEditing, setIsEditing] = useState(false);
+  const [dataBeforeSelection, setDataBeforeSelection] = useState<any>();
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -430,6 +427,13 @@ const DataTable: React.FC<DataTableProps> = ({
         return r;
       });
     });
+    if (isEditing) {
+      setIsEditing(false);
+      setDataBeforeSelection(null);
+    } else {
+      setIsEditing(true);
+      setDataBeforeSelection(row);
+    }
   };
 
   const onChange = (e: any, row: any) => {
@@ -449,12 +453,28 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const handleAddRow = () => {
+    if (isEditing) return;
     const properties = columns.map((c) => c.name);
     const newRow: any = properties.map((p) => ({
       [p]: "",
     }));
     newRow.editMode = true;
+    setIsEditing(true);
     setCurrentRows([...currentRows, newRow]);
+  };
+
+  const handleRestoreDataOnEditing = (row: any) => {
+    if (dataBeforeSelection) {
+      handleEditMode(row);
+      setCurrentRows((oldState) => {
+        return oldState.map((r) => {
+          if (r.id === row.id) {
+            return { ...r, ...dataBeforeSelection };
+          }
+          return r;
+        });
+      });
+    }
   };
 
   useEffect(() => {
@@ -467,11 +487,10 @@ const DataTable: React.FC<DataTableProps> = ({
   }, [rows]);
 
   useEffect(() => {
-    console.log("oizinho");
     setCurrentRows(
-      getFilteredRows(rows, columns, filter, page, rowsInPage, order, orderBy)
+      getFilteredRows(rows, columns, filter, page, rowsPerPage, order, orderBy)
     );
-  }, [columns, filter, order, orderBy, page, rows, rowsInPage]);
+  }, [columns, filter, order, orderBy, page, rows, rowsPerPage]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -508,6 +527,7 @@ const DataTable: React.FC<DataTableProps> = ({
               {currentRows.map((row, index) => {
                 const isItemSelected = isSelected(row);
                 const labelId = `enhanced-table-checkbox-${index}`;
+                const { editMode } = row;
 
                 return (
                   <TableRow
@@ -523,14 +543,32 @@ const DataTable: React.FC<DataTableProps> = ({
                   >
                     {selectionMode === "show" && (
                       <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          onClick={(event) => handleClick(event, row)}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
+                        {editMode ? (
+                          <Column>
+                            <Tooltip title="Confirmar">
+                              <IconButton onClick={() => handleEditMode(row)}>
+                                <DoneIcon />
+                              </IconButton>
+                            </Tooltip>
+
+                            <Tooltip title="Cancelar">
+                              <IconButton
+                                onClick={() => handleRestoreDataOnEditing(row)}
+                              >
+                                <CancelIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Column>
+                        ) : (
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            onClick={(event) => handleClick(event, row)}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        )}
                       </TableCell>
                     )}
                     {columns.map((column, index) => {
@@ -538,12 +576,13 @@ const DataTable: React.FC<DataTableProps> = ({
                         <TableCell
                           key={index}
                           align={index === 0 ? "left" : "right"}
-                          // onClick={() => handleRowClick(row)}
+                          {...(!editMode && {
+                            onClick: () => handleRowClick(row),
+                          })}
                         >
                           {column.renderComponent
                             ? column.renderComponent(row[column.name])
-                            : // : row[column.name]}
-                              CustomTableCell(row, column.name, onChange)}
+                            : CustomTableCell(row, column.name, onChange)}
                         </TableCell>
                       );
                     })}
