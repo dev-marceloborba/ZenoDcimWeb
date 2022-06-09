@@ -13,10 +13,12 @@ import {
   EquipmentConnectivityPath,
   FireSystemPath,
   RackPath,
+  RuleRegisterPath,
 } from "./paths";
 import Etcv2 from "../pages/energy-clim-telecom/Etcv2";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
+import RuleRegister from "../pages/rule-register/RuleRegister";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -31,6 +33,7 @@ const AutomationRoutes: React.FC = () => {
       <Route path={AutomationRegisterPath} element={<AutomationRegister />} />
       <Route path={CagePath} element={<Cage />} />
       <Route path={RackPath} element={<Rack />} />
+      <Route path={RuleRegisterPath} element={<RuleRegister />} />
     </Routes>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,6 +19,7 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 // import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import { visuallyHidden } from "@mui/utils";
@@ -39,6 +41,8 @@ interface DataTableOptions {
   rowsPerPageOptions?: number[];
   selectionMode?: SelectionMode;
   hideSearch?: boolean;
+  hidePagination?: boolean;
+  isEditMode?: boolean;
   onSelectedItems?: (items: any[]) => void;
   onRowClick?: (row: any) => void;
   onDeleteSelection?: (row: any[]) => void;
@@ -73,6 +77,28 @@ function getComparator<Key extends keyof any>(
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function getFilteredRows(
+  _rows: any[],
+  _columns: ColumnHeader[],
+  _filter: string,
+  _page: number,
+  _rowsPerPage: number,
+  _order: Order,
+  _orderBy: string
+): any[] {
+  return _rows
+    .filter((row) =>
+      _columns.some((column) =>
+        row[column.name]
+          .toString()
+          .toLowerCase()
+          .includes(_filter.toLowerCase())
+      )
+    )
+    .sort(getComparator(_order, _orderBy))
+    .slice(_page * _rowsPerPage, _page * _rowsPerPage + _rowsPerPage);
 }
 
 interface EnhancedTableProps {
@@ -211,11 +237,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         />
       )}
       {numSelected > 0 ? (
-        // <Tooltip title="Delete">
-        //   <IconButton onClick={onDelete}>
-        //     <DeleteIcon />
-        //   </IconButton>
-        // </Tooltip>
         <DeleteButton mode="icon" onDeleteConfirmation={onDelete} />
       ) : (
         <Visible show={!hideSearch}>
@@ -255,6 +276,28 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, setValue }) => {
   );
 };
 
+const CustomTableCell = (row: any, columName: string, onChange: any) => {
+  const { editMode } = row;
+
+  return (
+    <>
+      {editMode ? (
+        <Input
+          value={row[columName]}
+          onChange={(e) => onChange(e, row)}
+          name={columName}
+          sx={{
+            width: 130,
+            height: 40,
+          }}
+        />
+      ) : (
+        row[columName]
+      )}
+    </>
+  );
+};
+
 const DataTable: React.FC<DataTableProps> = ({
   rows,
   columns,
@@ -271,6 +314,8 @@ const DataTable: React.FC<DataTableProps> = ({
     onDeleteSelection,
     onSelectedItems,
     hideSearch = false,
+    hidePagination = false,
+    isEditMode = false,
   } = options;
 
   const [order, setOrder] = useState<Order>("asc");
@@ -280,6 +325,19 @@ const DataTable: React.FC<DataTableProps> = ({
   const [rowsPerPage, setRowsPerPage] = useState(rowsInPage);
   const [filter, setFilter] = useState("");
   const [openSearch, setOpenSearch] = useState(false);
+  const [currentRows, setCurrentRows] = useState<any[]>(
+    hidePagination
+      ? rows.map((row) => ({ ...row, editMode: false }))
+      : getFilteredRows(
+          rows,
+          columns,
+          filter,
+          page,
+          rowsInPage,
+          order,
+          orderBy
+        ).map((row) => ({ ...row, editMode: false }))
+  );
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -334,14 +392,7 @@ const DataTable: React.FC<DataTableProps> = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const filteredRows = rows
-    .filter((row) =>
-      columns.some((column) =>
-        row[column.name].toString().toLowerCase().includes(filter.toLowerCase())
-      )
-    )
-    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-    .sort(getComparator(order, orderBy));
+  // const currentRows = hidePagination ? rows : filteredRows;
 
   const handleRowClick = (row: any) => {
     if (onRowClick) {
@@ -359,6 +410,33 @@ const DataTable: React.FC<DataTableProps> = ({
     setOpenSearch(!openSearch);
   };
 
+  const handleEditMode = (row: any) => {
+    setCurrentRows((state) => {
+      return currentRows.map((r) => {
+        if (row.id === r.id) {
+          return { ...row, editMode: !row.editMode };
+        }
+        return r;
+      });
+    });
+  };
+
+  const onChange = (e: any, row: any) => {
+    const value = e.target.value;
+    const name = e.target.name;
+
+    const { id } = row;
+
+    setCurrentRows((oldState) => {
+      return oldState.map((r) => {
+        if (r.id === id) {
+          return { ...r, [name]: value };
+        }
+        return r;
+      });
+    });
+  };
+
   useEffect(() => {
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
@@ -367,6 +445,12 @@ const DataTable: React.FC<DataTableProps> = ({
   useEffect(() => {
     if (rows.length > 0) setSelected([]);
   }, [rows]);
+
+  useEffect(() => {
+    setCurrentRows(
+      getFilteredRows(rows, columns, filter, page, rowsInPage, order, orderBy)
+    );
+  }, [columns, filter, order, orderBy, page, rows, rowsInPage]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -398,7 +482,7 @@ const DataTable: React.FC<DataTableProps> = ({
               columns={columns}
             />
             <TableBody>
-              {filteredRows.map((row, index) => {
+              {currentRows.map((row, index) => {
                 const isItemSelected = isSelected(row);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -431,14 +515,22 @@ const DataTable: React.FC<DataTableProps> = ({
                         <TableCell
                           key={index}
                           align={index === 0 ? "left" : "right"}
-                          onClick={() => handleRowClick(row)}
+                          // onClick={() => handleRowClick(row)}
                         >
                           {column.renderComponent
                             ? column.renderComponent(row[column.name])
-                            : row[column.name]}
+                            : // : row[column.name]}
+                              CustomTableCell(row, column.name, onChange)}
                         </TableCell>
                       );
                     })}
+                    {isEditMode && (
+                      <TableCell>
+                        <IconButton onClick={() => handleEditMode(row)}>
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
@@ -453,18 +545,20 @@ const DataTable: React.FC<DataTableProps> = ({
               )}
             </TableBody>
           </Table>
-          {filteredRows.length === 0 && <NoDataText />}
+          {currentRows.length === 0 && <NoDataText />}
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={rowsPerPageOptions}
-          component="div"
-          count={rows?.length ?? 0}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Linhas por página"
-        />
+        {!hidePagination && (
+          <TablePagination
+            rowsPerPageOptions={rowsPerPageOptions}
+            component="div"
+            count={rows?.length ?? 0}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="Linhas por página"
+          />
+        )}
       </Paper>
     </Box>
   );

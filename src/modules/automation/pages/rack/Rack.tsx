@@ -18,7 +18,15 @@ const Rack: React.FC = () => {
     <HeroContainer>
       <PageTitle>Rack</PageTitle>
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        <Grid item md={6}>
+        <Grid
+          item
+          md={6}
+          sx={{
+            " & .MuiCard-root:nth-child(2)": {
+              my: 2,
+            },
+          }}
+        >
           <ParameterCard {...energyCardData} />
           <ParameterCard {...climCardData} />
           <ParameterCard {...telecomCardData} />
@@ -72,7 +80,10 @@ const ParameterCard: React.FC<ParameterCardProps> = ({
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5">{`${equipment} - ${cardTitle()}`}</Typography>
+        <Typography
+          variant="h5"
+          color="text.secondary"
+        >{`${equipment} - ${cardTitle()}`}</Typography>
         <TableContainer>
           <Table>
             <TableHead>
@@ -236,10 +247,26 @@ type RackOccupationCardProps = {
 const RackOccupationCard: React.FC<RackOccupationCardProps> = ({
   rackEquipments,
 }) => {
+  const isBiggerLine = (equipment: any) => {
+    return equipment.finalPosition - equipment.initialPosition > 2;
+  };
+
+  const calcEquipmentHeight = (equipment: RackEquipmentData) => {
+    const { initialPosition, finalPosition } = equipment;
+    if (initialPosition === finalPosition) {
+      //   return "50px";
+      return "auto";
+    }
+
+    return `${(finalPosition - initialPosition) * 10}px`;
+  };
+
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5">DH01.2CG02.A.RCK01 - Ocupação</Typography>
+        <Typography variant="h5" color="text.secondary">
+          DH01.2CG02.A.RCK01 - Ocupação
+        </Typography>
       </CardContent>
       <TableContainer>
         <Table>
@@ -254,7 +281,13 @@ const RackOccupationCard: React.FC<RackOccupationCardProps> = ({
           </TableHead>
           <TableBody>
             {rackEquipments.map((rackEquipment) => (
-              <TableRow key={rackEquipment.description}>
+              <TableRow
+                key={rackEquipment.description}
+                sx={{
+                  //   height: isBiggerLine(rackEquipment) ? "180px" : "auto",
+                  height: calcEquipmentHeight(rackEquipment),
+                }}
+              >
                 <TableCell>{rackEquipment.rackUnit}</TableCell>
                 <TableCell>{rackEquipment.equipment}</TableCell>
                 <TableCell>{rackEquipment.description}</TableCell>
@@ -308,32 +341,32 @@ const rackOcuppationData: RackOccupationCardProps = {
       finalPosition: 41,
     },
     {
-      rackUnit: "40U",
+      rackUnit: "38U-40U",
       equipment: "Servidor HPE ProLiant ML30 Gen10",
       description: "Servidor proocessamento",
       sku: "ABCDE12345",
       enterDate: "27 Maio 2022",
-      initialPosition: 40,
+      initialPosition: 38,
       finalPosition: 40,
     },
-    {
-      rackUnit: "39U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 39,
-      finalPosition: 39,
-    },
-    {
-      rackUnit: "38U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 38,
-      finalPosition: 38,
-    },
+    // {
+    //   rackUnit: "39U",
+    //   equipment: "-",
+    //   description: "-",
+    //   sku: "-",
+    //   enterDate: "-",
+    //   initialPosition: 39,
+    //   finalPosition: 39,
+    // },
+    // {
+    //   rackUnit: "38U",
+    //   equipment: "-",
+    //   description: "-",
+    //   sku: "-",
+    //   enterDate: "-",
+    //   initialPosition: 38,
+    //   finalPosition: 38,
+    // },
     {
       rackUnit: "03U-37U",
       equipment: "Servidor NAS ASUSTOR AS6404T",
