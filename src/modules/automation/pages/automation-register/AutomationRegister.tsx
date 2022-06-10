@@ -144,10 +144,6 @@ const AutomationRegister: React.FC = () => {
             onRowClick: (row: EquipmentModel) => {
               navigate(`/zeno/automation/management/equipment/${row.id}`);
             },
-            isEditMode: true,
-            onEditOrInsertNewData(data, mode) {
-              console.log(data, mode);
-            },
           }}
         />
       </Row>
@@ -174,14 +170,6 @@ const columns: ColumnHeader[] = [
   {
     name: "room",
     label: "Sala",
-  },
-  {
-    name: "status",
-    label: "Status",
-  },
-  {
-    name: "alarms",
-    label: "Alarmes",
   },
   {
     name: "createdAt",
