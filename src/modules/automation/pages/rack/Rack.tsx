@@ -12,6 +12,9 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import AlarmIndicator, {
+  AlarmStatus,
+} from "modules/automation/components/alarm-indicator/AlarmIndicator";
 
 const Rack: React.FC = () => {
   return (
@@ -77,6 +80,17 @@ const ParameterCard: React.FC<ParameterCardProps> = ({
         return "Telecom";
     }
   };
+
+  function getAlarmStatus(alarms: number): AlarmStatus {
+    if (alarms === 0) {
+      return "normal";
+    } else if (alarms > 0 && alarms < 2) {
+      return "alert";
+    } else {
+      return "danger";
+    }
+  }
+
   return (
     <Card>
       <CardContent>
@@ -101,7 +115,15 @@ const ParameterCard: React.FC<ParameterCardProps> = ({
                   <TableCell>{parameter.parameter}</TableCell>
                   <TableCell>{parameter.description}</TableCell>
                   <TableCell>{`${parameter.value} ${parameter.unit}`}</TableCell>
-                  <TableCell>{parameter.alarms}</TableCell>
+                  {/* <TableCell>{parameter.alarms}</TableCell> */}
+                  <TableCell>
+                    <AlarmIndicator
+                      description=""
+                      status={getAlarmStatus(parameter.alarms)}
+                      routeDestinationPath="/alarms"
+                      clickable
+                    />
+                  </TableCell>
                   <TableCell>{parameter.status}</TableCell>
                 </TableRow>
               ))}
@@ -129,7 +151,7 @@ const energyCardData: ParameterCardProps = {
       description: "Bifásica vinda do TC RPP",
       value: 5,
       unit: "A",
-      alarms: 0,
+      alarms: 1,
       status: EEquipmentStatus.ONLINE,
     },
     {
@@ -137,7 +159,7 @@ const energyCardData: ParameterCardProps = {
       description: "Bifásica vinda da RPP",
       value: 2500,
       unit: "W",
-      alarms: 0,
+      alarms: 3,
       status: EEquipmentStatus.ONLINE,
     },
     {
@@ -145,7 +167,7 @@ const energyCardData: ParameterCardProps = {
       description: "Bifásica vinda da RPP",
       value: 500,
       unit: "Var",
-      alarms: 0,
+      alarms: 5,
       status: EEquipmentStatus.ONLINE,
     },
   ],

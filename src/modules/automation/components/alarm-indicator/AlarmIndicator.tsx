@@ -7,11 +7,19 @@ import TwoLevelIndicator from "./TwoLevelIndicator";
 import OneLevelIndicator from "./OneLevelIndicator";
 import ThreeLevelIndicator from "./ThreeLevelIndicator";
 
+export type AlarmStatus =
+  | "online"
+  | "offline"
+  | "normal"
+  | "alert"
+  | "danger"
+  | "critical";
+
 export type AlarmIndicatorProps = {
   description: string;
   value?: number;
   unit?: string;
-  status: "online" | "offline" | "normal" | "alert" | "danger" | "critical";
+  status: AlarmStatus;
   clickable?: boolean;
   routeDestinationPath?: string;
 };
