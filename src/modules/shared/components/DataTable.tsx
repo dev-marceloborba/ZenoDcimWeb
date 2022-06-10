@@ -49,6 +49,7 @@ interface DataTableOptions {
   onSelectedItems?: (items: any[]) => void;
   onRowClick?: (row: any) => void;
   onDeleteSelection?: (row: any[]) => void;
+  onEditOrInsertNewData?: (data: any, mode: ManualMode) => void;
 }
 
 export interface ColumnHeader {
@@ -69,6 +70,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = "asc" | "desc";
 type SelectionMode = "show" | "hide";
+type ManualMode = "edit" | "insert" | "none";
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -321,6 +323,7 @@ const DataTable: React.FC<DataTableProps> = ({
     onRowClick,
     onDeleteSelection,
     onSelectedItems,
+    onEditOrInsertNewData,
     hideSearch = false,
     hidePagination = false,
     isEditMode = false,
@@ -346,8 +349,8 @@ const DataTable: React.FC<DataTableProps> = ({
           orderBy
         ).map((row) => ({ ...row, editMode: false }))
   );
-  const [isEditing, setIsEditing] = useState(false);
   const [dataBeforeSelection, setDataBeforeSelection] = useState<any>();
+  const [manualMode, setManualMode] = useState<ManualMode>("none");
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -427,11 +430,11 @@ const DataTable: React.FC<DataTableProps> = ({
         return r;
       });
     });
-    if (isEditing) {
-      setIsEditing(false);
+    if (manualMode === "edit" || manualMode === "insert") {
+      setManualMode("none");
       setDataBeforeSelection(null);
     } else {
-      setIsEditing(true);
+      setManualMode("edit");
       setDataBeforeSelection(row);
     }
   };
@@ -453,13 +456,14 @@ const DataTable: React.FC<DataTableProps> = ({
   };
 
   const handleAddRow = () => {
-    if (isEditing) return;
+    if (manualMode === "edit" || manualMode === "insert") return;
     const properties = columns.map((c) => c.name);
-    const newRow: any = properties.map((p) => ({
-      [p]: "",
-    }));
+    const newRow = {} as any;
+    properties.forEach((p) => {
+      newRow[p] = "";
+    });
     newRow.editMode = true;
-    setIsEditing(true);
+    setManualMode("insert");
     setCurrentRows([...currentRows, newRow]);
   };
 
@@ -475,6 +479,14 @@ const DataTable: React.FC<DataTableProps> = ({
         });
       });
     }
+  };
+
+  const handleConfirmChange = (row: any) => {
+    if (onEditOrInsertNewData) {
+      const { editMode, ...data } = row;
+      onEditOrInsertNewData(data, manualMode);
+    }
+    handleEditMode(row);
   };
 
   useEffect(() => {
@@ -546,7 +558,9 @@ const DataTable: React.FC<DataTableProps> = ({
                         {editMode ? (
                           <Column>
                             <Tooltip title="Confirmar">
-                              <IconButton onClick={() => handleEditMode(row)}>
+                              <IconButton
+                                onClick={() => handleConfirmChange(row)}
+                              >
                                 <DoneIcon />
                               </IconButton>
                             </Tooltip>
@@ -588,9 +602,11 @@ const DataTable: React.FC<DataTableProps> = ({
                     })}
                     {isEditMode && (
                       <TableCell>
-                        <IconButton onClick={() => handleEditMode(row)}>
-                          <EditIcon />
-                        </IconButton>
+                        {!isItemSelected && (
+                          <IconButton onClick={() => handleEditMode(row)}>
+                            <EditIcon />
+                          </IconButton>
+                        )}
                       </TableCell>
                     )}
                   </TableRow>

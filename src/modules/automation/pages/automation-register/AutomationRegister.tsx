@@ -145,6 +145,9 @@ const AutomationRegister: React.FC = () => {
               navigate(`/zeno/automation/management/equipment/${row.id}`);
             },
             isEditMode: true,
+            onEditOrInsertNewData(data, mode) {
+              console.log(data, mode);
+            },
           }}
         />
       </Row>
