@@ -6,6 +6,7 @@ import AlarmsRoot from "modules/alarms/AlarmsRoot";
 import AutomationRoot from "modules/automation/AutomationRoot";
 import CustomersRoot from "modules/customers/CustomersRoot";
 import CamerasRoot from "modules/cameras/CamerasRoot";
+import MaintenanceRoot from "modules/maintenance/MaintenanceRoot";
 import UserRoot from "modules/user/UserRoot";
 import {
   AutomationPath,
@@ -14,6 +15,7 @@ import {
   DashboardsPath,
   AlarmsPath,
   CamerasPath,
+  MaintenancePath,
 } from "./paths";
 
 const HomeRoutes: React.FC = () => {
@@ -26,6 +28,7 @@ const HomeRoutes: React.FC = () => {
         <Route path={`${DashboardsPath}/*`} element={<DashboardsRoot />} />
         <Route path={`${AlarmsPath}/*`} element={<AlarmsRoot />} />
         <Route path={`${CamerasPath}/*`} element={<CamerasRoot />} />
+        <Route path={`${MaintenancePath}/*`} element={<MaintenanceRoot />} />
       </Route>
     </Routes>
   );

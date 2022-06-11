@@ -4,3 +4,4 @@ export const CustomersPath = "clients";
 export const DashboardsPath = "dashboard";
 export const AlarmsPath = "alarms";
 export const CamerasPath = "cameras";
+export const MaintenancePath = "maintenance";
