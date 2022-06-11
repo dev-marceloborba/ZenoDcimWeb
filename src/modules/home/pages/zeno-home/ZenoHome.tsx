@@ -3,13 +3,13 @@ import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
 
 import withAuthentication from "app/hocs/withAuthentication";
-import Header from "app/components/Header";
-import Sidenav from "app/components/Sidenav";
+import Header from "modules/shared/components/Header";
+import Sidenav from "modules/shared/components/Sidenav";
 import { LayoutProvider } from "app/hooks/useLayout";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import Footer from "app/components/Footer";
+import Footer from "modules/shared/components/Footer";
 
 const ZenoHome: React.FC = () => {
   const theme = useTheme();

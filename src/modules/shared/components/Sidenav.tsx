@@ -63,7 +63,7 @@ const menuItems: ListItemLinkProps[] = [
     items: [
       { primary: "Energia", to: "/zeno/dashboard/energy" },
       { primary: "Incêndio", to: "/zeno/dashboard/fire-system" },
-      { primary: "Climatização", to: "/zeno/dashboard/fire-system" },
+      { primary: "Climatização", to: "/zeno/dashboard/climate" },
       { primary: "Controle de acesso", to: "/zeno/dashboard/access-control" },
     ],
   },
