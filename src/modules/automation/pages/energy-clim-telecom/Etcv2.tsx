@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -20,6 +19,7 @@ import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { CagePath } from "modules/automation/routes/paths";
+import useRouter from "modules/core/hooks/useRouter";
 
 const Etcv2: React.FC = () => {
   return (
@@ -120,8 +120,7 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
 };
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { navigate, path } = useRouter();
 
   const handleOpenEquipmentDetails = (row: any) => {
     const { equipment } = row;
@@ -133,10 +132,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     navigate(destinationPath, {
       state: {
         data: equipment,
-        from: pathname,
+        from: path,
       },
     });
-    // navigate(compositePathRoute([HomePath, AutomationPath, CagePath]));
   };
   return (
     <TableContainer>
