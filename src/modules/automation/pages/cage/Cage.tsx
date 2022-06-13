@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -16,8 +16,15 @@ import BuildingDropdown from "modules/automation/components/BuildingDropdown";
 import FloorDropdown from "modules/automation/components/FloorDropdown";
 import RoomDropdown from "modules/automation/components/RoomDropdown";
 import Row from "modules/shared/components/Row";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import { CagePath, RackPath } from "modules/automation/routes/paths";
 
 const Cage: React.FC = () => {
+  const {
+    state: { data: equipment },
+  } = useLocation();
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
@@ -35,13 +42,13 @@ const Cage: React.FC = () => {
       </Row>
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
-          <EquipmentCard title="DH01.2CG02 - Energia" />
+          <EquipmentCard title={`${equipment} - Energia`} />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="DH01.2CG02 - Clima" />
+          <EquipmentCard title={`${equipment} - Clima`} />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="DH01.2CG02 - Telecom" />
+          <EquipmentCard title={`${equipment} - Telecom`} />
         </Grid>
       </Grid>
     </HeroContainer>
@@ -117,10 +124,22 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const handleOpenEquipmentDetails = (equipment: any) => {
-    console.log("open equipment details");
-    // navigate(toEquipmentDetails)
+  const handleOpenEquipmentDetails = (data: any) => {
+    const { equipment } = data;
+    const destinationPath = compositePathRoute([
+      HomePath,
+      AutomationPath,
+      CagePath,
+      RackPath,
+    ]);
+    navigate(destinationPath, {
+      state: {
+        data: equipment,
+        from: pathname,
+      },
+    });
   };
   return (
     <TableContainer>

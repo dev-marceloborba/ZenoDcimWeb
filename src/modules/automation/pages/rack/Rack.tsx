@@ -1,7 +1,7 @@
 import React from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import PageTitle from "modules/shared/components/PageTitle";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -17,6 +17,9 @@ import AlarmIndicator, {
 } from "modules/automation/components/alarm-indicator/AlarmIndicator";
 
 const Rack: React.FC = () => {
+  const {
+    state: { data: equipment },
+  } = useLocation();
   return (
     <HeroContainer>
       <PageTitle>Rack</PageTitle>
@@ -30,13 +33,28 @@ const Rack: React.FC = () => {
             },
           }}
         >
-          <ParameterCard {...energyCardData} />
-          <ParameterCard {...climCardData} />
-          <ParameterCard {...telecomCardData} />
+          <ParameterCard
+            equipment={equipment}
+            parameters={energyCardData}
+            type="energy"
+          />
+          <ParameterCard
+            equipment={equipment}
+            parameters={climCardData}
+            type="clim"
+          />
+          <ParameterCard
+            equipment={equipment}
+            parameters={telecomCardData}
+            type="telecom"
+          />
         </Grid>
 
         <Grid item md={6}>
-          <RackOccupationCard {...rackOcuppationData} />
+          <RackOccupationCard
+            equipment={equipment}
+            rackEquipments={rackOcuppationData}
+          />
         </Grid>
       </Grid>
     </HeroContainer>
@@ -135,122 +153,110 @@ const ParameterCard: React.FC<ParameterCardProps> = ({
   );
 };
 
-const energyCardData: ParameterCardProps = {
-  equipment: "DH01.2CG02.A.RCK01",
-  parameters: [
-    {
-      parameter: "Tensão",
-      description: "Bifásica vinda da RPP",
-      value: 120,
-      unit: "V",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Corrente",
-      description: "Bifásica vinda do TC RPP",
-      value: 5,
-      unit: "A",
-      alarms: 1,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Potência Ativa",
-      description: "Bifásica vinda da RPP",
-      value: 2500,
-      unit: "W",
-      alarms: 3,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Potência Reativa",
-      description: "Bifásica vinda da RPP",
-      value: 500,
-      unit: "Var",
-      alarms: 5,
-      status: EEquipmentStatus.ONLINE,
-    },
-  ],
-  type: "energy",
-};
+const energyCardData: ParameterData[] = [
+  {
+    parameter: "Tensão",
+    description: "Bifásica vinda da RPP",
+    value: 120,
+    unit: "V",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Corrente",
+    description: "Bifásica vinda do TC RPP",
+    value: 5,
+    unit: "A",
+    alarms: 1,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Potência Ativa",
+    description: "Bifásica vinda da RPP",
+    value: 2500,
+    unit: "W",
+    alarms: 3,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Potência Reativa",
+    description: "Bifásica vinda da RPP",
+    value: 500,
+    unit: "Var",
+    alarms: 5,
+    status: EEquipmentStatus.ONLINE,
+  },
+];
 
-const climCardData: ParameterCardProps = {
-  equipment: "DH01.2CG02.A.RCK01",
-  parameters: [
-    {
-      parameter: "Temperatura de Entrada",
-      description: "Na frente do Rack",
-      value: 23,
-      unit: "°C",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Temperatura de Saída",
-      description: "Na traseira do Rack",
-      value: 33,
-      unit: "°C",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Temperatura Interna S",
-      description: "Parte interna da porta frontal, área superior",
-      value: 30,
-      unit: "°C",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Temperatura Interna I",
-      description: "Parte interna da porta frontal, área inferior",
-      value: 26,
-      unit: "°C",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-  ],
-  type: "clim",
-};
+const climCardData: ParameterData[] = [
+  {
+    parameter: "Temperatura de Entrada",
+    description: "Na frente do Rack",
+    value: 23,
+    unit: "°C",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Temperatura de Saída",
+    description: "Na traseira do Rack",
+    value: 33,
+    unit: "°C",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Temperatura Interna S",
+    description: "Parte interna da porta frontal, área superior",
+    value: 30,
+    unit: "°C",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Temperatura Interna I",
+    description: "Parte interna da porta frontal, área inferior",
+    value: 26,
+    unit: "°C",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+];
 
-const telecomCardData: ParameterCardProps = {
-  equipment: "DH01.2CG02.A.RCK01",
-  parameters: [
-    {
-      parameter: "Link 01",
-      description: "Unifique link AYH123 SLA 98%",
-      value: 50,
-      unit: "Mbps/s",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Link 02",
-      description: "Quântico Connect SLA 95%",
-      value: 50,
-      unit: "Mbps/s",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Link 03",
-      description: "Claro link JDH234 SLA 99%",
-      value: 50,
-      unit: "Mbps/s",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      parameter: "Link 04",
-      description: "Vivo link JDH234 SLA 101%",
-      value: 50,
-      unit: "Mbps/s",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-  ],
-  type: "telecom",
-};
+const telecomCardData: ParameterData[] = [
+  {
+    parameter: "Link 01",
+    description: "Unifique link AYH123 SLA 98%",
+    value: 50,
+    unit: "Mbps/s",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Link 02",
+    description: "Quântico Connect SLA 95%",
+    value: 50,
+    unit: "Mbps/s",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Link 03",
+    description: "Claro link JDH234 SLA 99%",
+    value: 50,
+    unit: "Mbps/s",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+  {
+    parameter: "Link 04",
+    description: "Vivo link JDH234 SLA 101%",
+    value: 50,
+    unit: "Mbps/s",
+    alarms: 0,
+    status: EEquipmentStatus.ONLINE,
+  },
+];
 
 type RackEquipmentData = {
   rackUnit: string;
@@ -263,18 +269,20 @@ type RackEquipmentData = {
 };
 
 type RackOccupationCardProps = {
+  equipment: string;
   rackEquipments: RackEquipmentData[];
 };
 
 const RackOccupationCard: React.FC<RackOccupationCardProps> = ({
+  equipment,
   rackEquipments,
 }) => {
-  const isBiggerLine = (equipment: any) => {
-    return equipment.finalPosition - equipment.initialPosition > 2;
+  const isBiggerLine = (data: any) => {
+    return data.finalPosition - data.initialPosition > 2;
   };
 
-  const calcEquipmentHeight = (equipment: RackEquipmentData) => {
-    const { initialPosition, finalPosition } = equipment;
+  const calcEquipmentHeight = (data: RackEquipmentData) => {
+    const { initialPosition, finalPosition } = data;
     if (initialPosition === finalPosition) {
       //   return "50px";
       return "auto";
@@ -287,7 +295,7 @@ const RackOccupationCard: React.FC<RackOccupationCardProps> = ({
     <Card>
       <CardContent>
         <Typography variant="h5" color="text.secondary">
-          DH01.2CG02.A.RCK01 - Ocupação
+          {`${equipment} - Ocupação`}
         </Typography>
       </CardContent>
       <TableContainer>
@@ -324,97 +332,95 @@ const RackOccupationCard: React.FC<RackOccupationCardProps> = ({
   );
 };
 
-const rackOcuppationData: RackOccupationCardProps = {
-  rackEquipments: [
-    {
-      rackUnit: "44U",
-      equipment: "Switch Cisco C9200L-24T-4G-E-BR",
-      description: "Switch Top of Rack para distribuição nos Racks 01, 02 e 03",
-      sku: "ABCDE12345",
-      enterDate: "27 Maio 2022",
-      initialPosition: 44,
-      finalPosition: 44,
-    },
-    {
-      rackUnit: "43U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 43,
-      finalPosition: 43,
-    },
-    {
-      rackUnit: "42U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 42,
-      finalPosition: 42,
-    },
-    {
-      rackUnit: "41U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 41,
-      finalPosition: 41,
-    },
-    {
-      rackUnit: "38U-40U",
-      equipment: "Servidor HPE ProLiant ML30 Gen10",
-      description: "Servidor proocessamento",
-      sku: "ABCDE12345",
-      enterDate: "27 Maio 2022",
-      initialPosition: 38,
-      finalPosition: 40,
-    },
-    // {
-    //   rackUnit: "39U",
-    //   equipment: "-",
-    //   description: "-",
-    //   sku: "-",
-    //   enterDate: "-",
-    //   initialPosition: 39,
-    //   finalPosition: 39,
-    // },
-    // {
-    //   rackUnit: "38U",
-    //   equipment: "-",
-    //   description: "-",
-    //   sku: "-",
-    //   enterDate: "-",
-    //   initialPosition: 38,
-    //   finalPosition: 38,
-    // },
-    {
-      rackUnit: "03U-37U",
-      equipment: "Servidor NAS ASUSTOR AS6404T",
-      description: "Servidor de armazenamento",
-      sku: "ABCDE12345",
-      enterDate: "27 Maio 2022",
-      initialPosition: 3,
-      finalPosition: 37,
-    },
-    {
-      rackUnit: "02U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 2,
-      finalPosition: 2,
-    },
-    {
-      rackUnit: "01U",
-      equipment: "-",
-      description: "-",
-      sku: "-",
-      enterDate: "-",
-      initialPosition: 1,
-      finalPosition: 1,
-    },
-  ],
-};
+const rackOcuppationData: RackEquipmentData[] = [
+  {
+    rackUnit: "44U",
+    equipment: "Switch Cisco C9200L-24T-4G-E-BR",
+    description: "Switch Top of Rack para distribuição nos Racks 01, 02 e 03",
+    sku: "ABCDE12345",
+    enterDate: "27 Maio 2022",
+    initialPosition: 44,
+    finalPosition: 44,
+  },
+  {
+    rackUnit: "43U",
+    equipment: "-",
+    description: "-",
+    sku: "-",
+    enterDate: "-",
+    initialPosition: 43,
+    finalPosition: 43,
+  },
+  {
+    rackUnit: "42U",
+    equipment: "-",
+    description: "-",
+    sku: "-",
+    enterDate: "-",
+    initialPosition: 42,
+    finalPosition: 42,
+  },
+  {
+    rackUnit: "41U",
+    equipment: "-",
+    description: "-",
+    sku: "-",
+    enterDate: "-",
+    initialPosition: 41,
+    finalPosition: 41,
+  },
+  {
+    rackUnit: "38U-40U",
+    equipment: "Servidor HPE ProLiant ML30 Gen10",
+    description: "Servidor proocessamento",
+    sku: "ABCDE12345",
+    enterDate: "27 Maio 2022",
+    initialPosition: 38,
+    finalPosition: 40,
+  },
+  // {
+  //   rackUnit: "39U",
+  //   equipment: "-",
+  //   description: "-",
+  //   sku: "-",
+  //   enterDate: "-",
+  //   initialPosition: 39,
+  //   finalPosition: 39,
+  // },
+  // {
+  //   rackUnit: "38U",
+  //   equipment: "-",
+  //   description: "-",
+  //   sku: "-",
+  //   enterDate: "-",
+  //   initialPosition: 38,
+  //   finalPosition: 38,
+  // },
+  {
+    rackUnit: "03U-37U",
+    equipment: "Servidor NAS ASUSTOR AS6404T",
+    description: "Servidor de armazenamento",
+    sku: "ABCDE12345",
+    enterDate: "27 Maio 2022",
+    initialPosition: 3,
+    finalPosition: 37,
+  },
+  {
+    rackUnit: "02U",
+    equipment: "-",
+    description: "-",
+    sku: "-",
+    enterDate: "-",
+    initialPosition: 2,
+    finalPosition: 2,
+  },
+  {
+    rackUnit: "01U",
+    equipment: "-",
+    description: "-",
+    sku: "-",
+    enterDate: "-",
+    initialPosition: 1,
+    finalPosition: 1,
+  },
+];

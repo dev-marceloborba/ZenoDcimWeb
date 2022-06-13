@@ -3,7 +3,6 @@ const compositePathRoute = (paths: string[]) => {
   for (let i = 0; i < paths.length; i++) {
     newPath += `/${paths[i]}`;
   }
-  console.log(newPath);
   return newPath;
 };
 

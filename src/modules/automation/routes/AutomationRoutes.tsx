@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import Etc from "modules/automation/pages/energy-clim-telecom/Etc";
 import FireSystem from "modules/automation/pages/fire-system/FireSystem";
 import AccessControl from "modules/automation/pages/access-control/AccessControl";
@@ -31,7 +31,10 @@ const AutomationRoutes: React.FC = () => {
         element={<EquipmentConectivity />}
       />
       <Route path={AutomationRegisterPath} element={<AutomationRegister />} />
-      <Route path={CagePath} element={<Cage />} />
+      <Route path={CagePath} element={<Outlet />}>
+        <Route index element={<Cage />} />
+        <Route path={RackPath} element={<Rack />} />
+      </Route>
       <Route path={RackPath} element={<Rack />} />
       <Route path={RuleRegisterPath} element={<RuleRegister />} />
     </Routes>

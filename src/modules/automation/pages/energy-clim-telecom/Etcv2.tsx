@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -121,11 +121,22 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const handleOpenEquipmentDetails = (equipment: any) => {
-    // console.log("open equipment details");
-    // navigate(toEquipmentDetails)
-    navigate(compositePathRoute([HomePath, AutomationPath, CagePath]));
+  const handleOpenEquipmentDetails = (row: any) => {
+    const { equipment } = row;
+    const destinationPath = compositePathRoute([
+      HomePath,
+      AutomationPath,
+      CagePath,
+    ]);
+    navigate(destinationPath, {
+      state: {
+        data: equipment,
+        from: pathname,
+      },
+    });
+    // navigate(compositePathRoute([HomePath, AutomationPath, CagePath]));
   };
   return (
     <TableContainer>
