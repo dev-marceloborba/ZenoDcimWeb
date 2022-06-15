@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -19,12 +18,17 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { CagePath, RackPath } from "modules/automation/routes/paths";
+import {
+  CagePath,
+  EnergyClimTelecomPath,
+  RackPath,
+} from "modules/automation/routes/paths";
+import useRouter from "modules/core/hooks/useRouter";
 
 const Cage: React.FC = () => {
   const {
     state: { data: equipment },
-  } = useLocation();
+  } = useRouter();
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
@@ -123,24 +127,25 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
 };
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { navigate, path } = useRouter();
 
   const handleOpenEquipmentDetails = (data: any) => {
     const { equipment } = data;
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
+      EnergyClimTelecomPath,
       CagePath,
       RackPath,
     ]);
     navigate(destinationPath, {
       state: {
         data: equipment,
-        from: pathname,
+        from: path,
       },
     });
   };
+
   return (
     <TableContainer>
       <Table>

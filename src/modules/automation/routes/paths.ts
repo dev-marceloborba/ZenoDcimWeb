@@ -6,3 +6,4 @@ export const AutomationRegisterPath = "management";
 export const CagePath = "cage";
 export const RackPath = "rack";
 export const RuleRegisterPath = "rule-register";
+export const EquipmentFormPath = "equipment-form";

@@ -1,32 +1,42 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
+import Container, { ContainerProps } from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
 import Breadcrumbs from "./Breadcrumbs";
+import { styled } from "@mui/material/styles";
 
-const HeroContainer: React.FC = ({ children }) => {
+type HeroContainerProps = {
+  title?: string;
+} & Pick<ContainerProps, "maxWidth">;
+
+const HeroContainer: React.FC<HeroContainerProps> = ({
+  children,
+  title,
+  maxWidth = "xl",
+}) => {
   return (
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        height: "100vh",
-        overflow: "auto",
-      }}
-    >
+    <Wrapper component="main">
       <Toolbar />
-      <Breadcrumbs />
       <Container
-        maxWidth="xl"
+        maxWidth={maxWidth}
         sx={{
           mt: 4,
-           mb: 8,
+          mb: 8,
         }}
       >
+        <Breadcrumbs />
+        <Typography variant="h4">{title}</Typography>
         {children}
       </Container>
-    </Box>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled(Box)`
+  flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+`;
 
 export default HeroContainer;

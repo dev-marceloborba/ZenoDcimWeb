@@ -7,9 +7,9 @@ import FloorDropdown from "modules/automation/components/FloorDropdown";
 import FireSystemCard from "modules/automation/components/FireSystemCard";
 
 import { fireSystem } from "app/data/fire-system";
-import Center from "app/components/Center";
+import Center from "modules/shared/components/Center";
 import FireSystemEvents from "modules/automation/components/FireSystemEvents";
-import HeroContainer from "app/components/HeroContainer";
+import HeroContainer from "modules/shared/components/HeroContainer";
 
 const FireSystem: React.FC = () => {
   const { groups, events } = fireSystem;

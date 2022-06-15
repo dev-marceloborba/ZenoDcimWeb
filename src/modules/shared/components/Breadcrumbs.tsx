@@ -34,7 +34,7 @@ const Breadcrumbs: React.FC = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   return (
-    <MuiBreadcrumbs aria-label="breadcrumb" sx={{ ml: 4 }}>
+    <MuiBreadcrumbs aria-label="breadcrumb">
       {pathnames.map((_, index) => {
         const last = index === pathnames.length - 1;
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;

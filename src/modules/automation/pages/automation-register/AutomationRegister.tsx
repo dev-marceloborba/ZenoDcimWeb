@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import PageTitle from "modules/shared/components/PageTitle";
 import EtcFilters from "modules/automation/components/EtcFilters";
 // import BuildingDropdown from "modules/automation/components/BuildingDropdown";
 // import FloorDropdown from "modules/automation/components/FloorDropdown";
@@ -25,6 +24,13 @@ import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import Loading from "modules/shared/components/Loading";
 import useAutomationFilters from "modules/automation/data/hooks/useAutomationFilters";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import {
+  AutomationRegisterPath,
+  EquipmentFormPath,
+} from "modules/automation/routes/paths";
 
 const AutomationRegister: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
@@ -73,8 +79,7 @@ const AutomationRegister: React.FC = () => {
   // };
 
   return (
-    <HeroContainer>
-      <PageTitle>Cadastros de automação</PageTitle>
+    <HeroContainer title="Cadastros de automação">
       <Row
         sx={{
           alignItems: "center",
@@ -99,7 +104,12 @@ const AutomationRegister: React.FC = () => {
           <AccessButton
             startIcon={<AddIcon />}
             label="Novo equipamento"
-            to="/zeno/automation/management/equipment"
+            to={compositePathRoute([
+              HomePath,
+              AutomationPath,
+              AutomationRegisterPath,
+              EquipmentFormPath,
+            ])}
           />
         </Tooltip>
 
