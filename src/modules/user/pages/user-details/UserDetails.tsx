@@ -1,12 +1,9 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import {
   useDeleteUserMutation,
   useEditUserMutation,
-  useFindUserByIdMutation,
 } from "app/services/authentication";
 import ControlledTextInput from "app/components/ControlledTextInput";
 import Form from "app/components/Form";
@@ -17,14 +14,21 @@ import { EditUserRequest } from "app/models/authentication.model";
 import SubmitButton from "app/components/SubmitButton";
 import DeleteButton from "app/components/DeleteButton";
 import Row from "app/components/Row";
+import HeroContainer from "modules/shared/components/HeroContainer";
+import useRouter from "modules/core/hooks/useRouter";
 
 const UserDetails: React.FC = () => {
-  const [editUser, { isError, isLoading, error }] = useEditUserMutation();
-  const [findUserById] = useFindUserByIdMutation();
+  const [editUser, { isLoading }] = useEditUserMutation();
   const [deleteUser] = useDeleteUserMutation();
+  const {
+    state: { user, mode },
+  } = useRouter();
+  const { state } = useRouter();
   const toast = useToast();
   const methods = useForm<EditUserRequest>();
-  const { id } = useParams();
+
+  console.log(state);
+  // console.log(user, mode);
 
   const { handleSubmit, setValue } = methods;
 
@@ -39,7 +43,7 @@ const UserDetails: React.FC = () => {
 
   const onDelete = async () => {
     try {
-      await deleteUser(id!).unwrap();
+      // await deleteUser(id!).unwrap();
       toast.open("Usuário deletado com sucesso", 2000, "success");
     } catch (error) {
       toast.open(`Erro ao deletar o usuário: ${error}`, 2000, "error");
@@ -48,7 +52,6 @@ const UserDetails: React.FC = () => {
 
   useEffect(() => {
     async function getUser() {
-      const user = await findUserById(id!).unwrap();
       setValue("id", user.id);
       setValue("firstName", user.firstName);
       setValue("lastName", user.lastName);
@@ -56,11 +59,12 @@ const UserDetails: React.FC = () => {
       setValue("active", Number(user.active));
       setValue("role", user.role);
     }
-    if (id) getUser();
-  }, [findUserById, id, setValue]);
+
+    if (user) getUser();
+  }, [setValue, user]);
 
   return (
-    <Container maxWidth="xs">
+    <HeroContainer maxWidth="md">
       <Card>
         <Typography variant="h5">Editar usuário</Typography>
         <Form
@@ -98,7 +102,7 @@ const UserDetails: React.FC = () => {
         </Form>
       </Card>
       <Loading open={isLoading} />
-    </Container>
+    </HeroContainer>
   );
 };
 

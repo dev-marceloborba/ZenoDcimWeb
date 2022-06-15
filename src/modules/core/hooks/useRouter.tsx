@@ -14,9 +14,7 @@ const useRouter = () => {
     return null;
   };
 
-  const state = navigationState?.data
-    ? navigationState
-    : getDataFromStorage() || {};
+  const state = navigationState ? navigationState : getDataFromStorage() || {};
 
   const navigate = (to: string, options: NavigateOptions) => {
     const { state } = options;

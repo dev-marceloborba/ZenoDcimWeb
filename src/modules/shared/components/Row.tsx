@@ -9,6 +9,7 @@ const Row: React.FC<BoxProps> = ({ children, ...props }) => {
         display: "flex",
         flexDirection: "row",
       }}
+      component="div"
     >
       {children}
     </Box>

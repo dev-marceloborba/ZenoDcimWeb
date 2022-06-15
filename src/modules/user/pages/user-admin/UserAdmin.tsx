@@ -1,8 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import ToolBar from "@mui/material/Toolbar";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Loading from "modules/shared/components/Loading";
 import {
   useDeleteUserMutation,
@@ -12,12 +8,19 @@ import ButtonLink from "modules/shared/components/ButtonLink";
 import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 import { useToast } from "modules/shared/components/Toast";
 import { UserModelNormalized } from "modules/user/models/user-model";
+import HeroContainer from "modules/shared/components/HeroContainer";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { SettingsPath } from "modules/home/routes/paths";
+import { UserDetailsPath } from "modules/user/routes/paths";
+import useRouter from "modules/core/hooks/useRouter";
+import Row from "modules/shared/components/Row";
 
 const UserAdmin: React.FC = () => {
   const { isLoading, data: users } = useFindAllUsersQuery();
   const [deleteUser] = useDeleteUserMutation();
   const toast = useToast();
-  const navigate = useNavigate();
+  const { navigate } = useRouter();
 
   const handleDelete = async (users: UserModelNormalized[]) => {
     try {
@@ -31,26 +34,35 @@ const UserAdmin: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <ToolBar />
-      <Box component="div" sx={{ display: "flex", justifyContent: "flex-end" }}>
+    <HeroContainer>
+      <Row sx={{ justifyContent: "flex-end" }}>
         <ButtonLink to="/zeno/settings/new-user" variant="contained">
           Criar usuário
         </ButtonLink>
-      </Box>
+      </Row>
       <DataTable
         columns={columns}
         rows={users ?? []}
         title="Usuários"
         options={{
           onRowClick: (row) => {
-            navigate(`/zeno/settings/user/${row.id}`);
+            const path = compositePathRoute([
+              HomePath,
+              SettingsPath,
+              UserDetailsPath,
+            ]);
+            navigate(path, {
+              state: {
+                user: row,
+                mode: "edit",
+              },
+            });
           },
           onDeleteSelection: handleDelete,
         }}
       />
       <Loading open={isLoading} />
-    </Container>
+    </HeroContainer>
   );
 };
 
