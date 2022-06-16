@@ -11,7 +11,7 @@ import { useAuth } from "app/hooks/useAuth";
 
 //components
 import { styled } from "@mui/material/styles";
-import { useToast } from "modules/shared/components/Toast";
+import { useToast } from "modules/shared/components/ToastProvider";
 import Box, { BoxProps } from "@mui/material/Box";
 import Button, { ButtonProps } from "@mui/material/Button";
 import Copyright from "modules/shared/components/Copyright";

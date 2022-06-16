@@ -6,7 +6,7 @@ import {
 } from "app/services/authentication";
 import ButtonLink from "modules/shared/components/ButtonLink";
 import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
-import { useToast } from "modules/shared/components/Toast";
+import { useToast } from "modules/shared/components/ToastProvider";
 import { UserModelNormalized } from "modules/user/models/user-model";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import compositePathRoute from "modules/utils/compositePathRoute";

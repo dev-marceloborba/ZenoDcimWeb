@@ -13,7 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, string } from "yup";
 import Card from "modules/shared/components/Card";
 import Loading from "modules/shared/components/Loading";
-import { useToast } from "modules/shared/components/Toast";
+import { useToast } from "modules/shared/components/ToastProvider";
 import { CompanyRequest } from "app/models/company.model";
 
 const CompanyForm: React.FC = () => {

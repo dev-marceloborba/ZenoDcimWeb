@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
-import { useToast } from "modules/shared/components/Toast";
+import { useToast } from "modules/shared/components/ToastProvider";
 import { useCreateEquipmentMutation } from "modules/automation/services/equipment-service";
 import {
   FloorModel,

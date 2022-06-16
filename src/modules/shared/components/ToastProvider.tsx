@@ -34,7 +34,7 @@ type ToastProps = Pick<AlertProps, "variant" | "severity"> & {
     | "bottom-center";
 };
 
-const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
+const ToastProvider: React.FC<ToastProps> = ({ children, ...props }) => {
   const [state, setState] = useState({
     open: false,
     message: "",
@@ -162,6 +162,6 @@ const Toast: React.FC<ToastProps> = ({ children, ...props }) => {
   );
 };
 
-export default Toast;
+export default ToastProvider;
 
 export const useToast = () => useContext(ToastContext);

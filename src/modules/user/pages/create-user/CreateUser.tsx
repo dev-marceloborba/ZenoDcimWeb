@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
-import { useToast } from "modules/shared/components/Toast";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 import { useCreateUserMutation } from "modules/user/services/authentication-service";
 

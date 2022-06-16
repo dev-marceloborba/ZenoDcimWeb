@@ -30,7 +30,13 @@ const Sidenav: React.FC = () => {
 
   if (drawerOpened) {
     return (
-      <Box sx={{ position: "absolute", left: 0, top: 0 }}>
+      <Box
+        sx={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+        }}
+      >
         <Drawer
           anchor="left"
           variant="permanent"
