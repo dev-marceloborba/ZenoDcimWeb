@@ -16,12 +16,12 @@ import {
   RackPath,
   RuleRegisterPath,
 } from "./paths";
+import compositePathRoute from "modules/utils/compositePathRoute";
 import Etcv2 from "../pages/energy-clim-telecom/Etcv2";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
 import RuleRegister from "../pages/rule-register/RuleRegister";
-import compositePathRoute from "modules/utils/compositePathRoute";
-import EquipmentForm from "../pages/equipment-form/EquipmentForm";
+import EnergyEquipmentRegister from "../pages/energy-equipment-register/EnergyEquipmentRegister";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -45,7 +45,7 @@ const AutomationRoutes: React.FC = () => {
       <Route path={AutomationRegisterPath} element={<AutomationRegister />} />
       <Route
         path={compositePathRoute([AutomationRegisterPath, EquipmentFormPath])}
-        element={<EquipmentForm />}
+        element={<EnergyEquipmentRegister />}
       />
 
       <Route path={RuleRegisterPath} element={<RuleRegister />} />

@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Container, { ContainerProps } from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Toolbar from "@mui/material/Toolbar";
+import Divider from "@mui/material/Divider";
 import Breadcrumbs from "./Breadcrumbs";
 import { styled } from "@mui/material/styles";
 
@@ -17,7 +17,6 @@ const HeroContainer: React.FC<HeroContainerProps> = ({
 }) => {
   return (
     <Wrapper component="main">
-      <Toolbar />
       <Container
         maxWidth={maxWidth}
         sx={{
@@ -26,7 +25,9 @@ const HeroContainer: React.FC<HeroContainerProps> = ({
         }}
       >
         <Breadcrumbs />
-        <Typography variant="h4">{title}</Typography>
+        {/* <Separator /> */}
+        <Title variant="h4">{title}</Title>
+        {/* <Separator /> */}
         {children}
       </Container>
     </Wrapper>
@@ -37,6 +38,15 @@ const Wrapper = styled(Box)`
   flex-grow: 1;
   height: 100vh;
   overflow: auto;
+`;
+
+const Separator = styled(Divider)`
+  margin-top: 1rem;
+`;
+
+const Title = styled(Typography)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 export default HeroContainer;
