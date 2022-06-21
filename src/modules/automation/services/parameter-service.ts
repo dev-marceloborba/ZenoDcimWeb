@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
-import {
-  ParameterRequest,
-  ParameterResponse,
-} from "app/models/data-center.model";
 import { RootState } from "modules/core/store";
+import { ParameterModel, ParameterViewModel } from "../models/automation-model";
 
 export const parameterApi = createApi({
   reducerPath: "parameterApi",
@@ -19,33 +16,33 @@ export const parameterApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["ParameterResponse"],
+  tagTypes: ["ParameterModel"],
   endpoints: (builder) => ({
     createParameter: builder.mutation<
-      ApiResponseModel<ParameterResponse>,
-      ParameterRequest
+      ApiResponseModel<ParameterModel>,
+      ParameterViewModel
     >({
       query: (params) => ({
         url: "v1/data-center/parameters",
         method: "POST",
         body: params,
       }),
-      invalidatesTags: ["ParameterResponse"],
+      invalidatesTags: ["ParameterModel"],
     }),
-    findAllParameters: builder.query<ParameterResponse[], void>({
+    findAllParameters: builder.query<ParameterModel[], void>({
       query: () => ({
         url: "v1/data-center/parameters",
       }),
-      providesTags: ["ParameterResponse"],
+      providesTags: ["ParameterModel"],
     }),
     deleteParameter: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/parameters/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["ParameterResponse"],
+      invalidatesTags: ["ParameterModel"],
     }),
-    findParameterByGroup: builder.mutation<ParameterResponse, string>({
+    findParameterByGroup: builder.mutation<ParameterModel, string>({
       query: (group) => ({
         url: `v1/data-center/parametersByGroup/${group}`,
         method: "GET",

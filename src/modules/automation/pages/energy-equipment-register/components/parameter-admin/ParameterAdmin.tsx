@@ -1,10 +1,11 @@
 import React from "react";
 import AccessButton from "modules/shared/components/AccessButton";
 import Row from "modules/shared/components/Row";
+import ParameterList from "modules/automation/pages/energy-equipment-register/components/parameter-list/ParameterList";
+
 //icons
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
-import ParameterList from "../parameter-list/ParameterList";
 
 const ParameterAdmin: React.FC = () => {
   return (

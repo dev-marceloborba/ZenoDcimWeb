@@ -49,7 +49,10 @@ const ListPanel: React.FC<ListPanelProps> = (props) => {
         <ButtonLink to={props.newActionLink} variant="contained">
           {props.newActionLabel}
         </ButtonLink>
-        <ImportButton sx={{ ml: 1 }} callback={(data) => console.log(data)} />
+        <ImportButton
+          sx={{ ml: 1 }}
+          onDataReceived={(data) => console.log(data)}
+        />
         <Button variant="contained" sx={{ ml: 1 }} onClick={handleExport}>
           Exportar
         </Button>

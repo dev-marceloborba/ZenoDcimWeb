@@ -22,6 +22,7 @@ import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
 import RuleRegister from "../pages/rule-register/RuleRegister";
 import EnergyEquipmentRegister from "../pages/energy-equipment-register/EnergyEquipmentRegister";
+import AutomationRegisterv2 from "../pages/automation-register/AutomationRegisterv2";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -42,7 +43,7 @@ const AutomationRoutes: React.FC = () => {
         path={EquipmentConnectivityPath}
         element={<EquipmentConectivity />}
       />
-      <Route path={AutomationRegisterPath} element={<AutomationRegister />} />
+      <Route path={AutomationRegisterPath} element={<AutomationRegisterv2 />} />
       <Route
         path={compositePathRoute([AutomationRegisterPath, EquipmentFormPath])}
         element={<EnergyEquipmentRegister />}

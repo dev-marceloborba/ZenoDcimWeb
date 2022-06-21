@@ -5,15 +5,15 @@ import { SxProps, Theme } from "@mui/material";
 
 type ImportButtonProps = {
   sx?: SxProps<Theme>;
-  callback(data: any): any;
+  onDataReceived(data: any): any;
 };
 
-const ImportButton: React.FC<ImportButtonProps> = ({ sx, callback }) => {
+const ImportButton: React.FC<ImportButtonProps> = ({ sx, onDataReceived }) => {
   const handleFileChange = async (e: any) => {
     const files = e.target.files;
     if (files && files[0]) {
       const result = (await readFile(files[0])) as Array<any>;
-      return callback(result);
+      return onDataReceived(result);
     }
   };
 
