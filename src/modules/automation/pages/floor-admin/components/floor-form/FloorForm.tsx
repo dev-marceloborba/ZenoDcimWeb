@@ -5,16 +5,15 @@ import { SchemaOf, string, object } from "yup";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Form from "app/components/Form";
+import Form from "modules/shared/components/Form";
 import Typography from "@mui/material/Typography";
-import ControlledTextInput from "app/components/ControlledTextInput";
-import SubmitButton from "app/components/SubmitButton";
-import {
-  useCreateFloorMutation,
-  useFindAllBuildingsQuery,
-} from "app/services/datacenter";
-import { useToast } from "app/components/Toast";
-import { FloorRequest } from "app/models/data-center.model";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
+import SubmitButton from "modules/shared/components/SubmitButton";
+
+import { useToast } from "modules/shared/components/ToastProvider";
+import { useCreateFloorMutation } from "modules/datacenter/services/floor-service";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
+import { FloorViewModel } from "modules/datacenter/models/datacenter-model";
 
 const FloorForm: React.FC = () => {
   const [addFloor, { isLoading, error, isError }] = useCreateFloorMutation();
@@ -22,13 +21,13 @@ const FloorForm: React.FC = () => {
     useFindAllBuildingsQuery();
   const toast = useToast();
 
-  const methods = useForm<FloorRequest>({
+  const methods = useForm<FloorViewModel>({
     resolver: yupResolver(validationSchema),
   });
 
   const { handleSubmit } = methods;
 
-  const onSubmit: SubmitHandler<FloorRequest> = async (data) => {
+  const onSubmit: SubmitHandler<FloorViewModel> = async (data) => {
     try {
       await addFloor(data).unwrap();
       toast.open(`Andar ${data.name} criado com sucesso`, 2000, "success");
@@ -83,7 +82,7 @@ const FloorForm: React.FC = () => {
   );
 };
 
-const validationSchema: SchemaOf<FloorRequest> = object().shape({
+const validationSchema: SchemaOf<FloorViewModel> = object().shape({
   name: string().required("Nome é obrigatório"),
   buildingId: string().required("Prédio é obrigatório"),
 });

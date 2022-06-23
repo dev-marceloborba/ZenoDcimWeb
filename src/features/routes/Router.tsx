@@ -34,7 +34,7 @@ import DataCenterManagement from "features/datacenter/pages/DataCenterManagement
 import RoomAdmin from "features/datacenter/pages/RoomAdmin";
 import BuildingForm from "features/datacenter/components/BuilldingForm";
 import RoomForm from "features/datacenter/components/RoomForm";
-import FloorForm from "features/datacenter/components/FloorForm";
+import FloorForm from "modules/automation/pages/floor-admin/components/floor-form/FloorForm";
 import EquipmentForm from "features/datacenter/components/EquipmentForm";
 import EquipmentParameterForm from "features/automation/pages/EquipmentParameterForm";
 import EquipmentParameterRelation from "features/datacenter/pages/EquipmentParameterRelation";

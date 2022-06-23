@@ -4,7 +4,7 @@ import PageTitle from "app/components/PageTitle";
 import DataCenterEquipmentsTable from "./components/DataCenterEquipmentsTable";
 import ImportButton from "app/components/ImportButton";
 import BuildingForm from "./components/BuilldingForm";
-import FloorForm from "./components/FloorForm";
+import FloorForm from "../../modules/automation/pages/floor-admin/components/floor-form/FloorForm";
 import RoomForm from "./components/RoomForm";
 import EquipmentForm from "./components/EquipmentForm";
 

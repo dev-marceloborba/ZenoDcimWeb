@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import DataTable from "app/components/DataTable";
-import Dropdown from "app/components/Dropdown";
-import Column from "app/components/Column";
-import {
-  useDeleteFloorMutation,
-  useFindAllBuildingsQuery,
-} from "app/services/datacenter";
-import Loading from "app/components/Loading";
-import Row from "app/components/Row";
-import ButtonLink from "app/components/ButtonLink";
-import { FloorResponse } from "app/models/data-center.model";
+import DataTable from "modules/shared/components/DataTable";
+import Dropdown from "modules/shared/components/Dropdown";
+import Column from "modules/shared/components/Column";
+import Loading from "modules/shared/components/Loading";
+import Row from "modules/shared/components/Row";
+import ButtonLink from "modules/shared/components/ButtonLink";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
+import { useDeleteFloorMutation } from "modules/datacenter/services/floor-service";
+import { FloorModel } from "modules/datacenter/models/datacenter-model";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import { FloorFormPath } from "modules/automation/routes/paths";
 
 const FloorTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [deleteFloor] = useDeleteFloorMutation();
   const [selectedBuilding, setSelectedBuliding] = useState<string>("");
-  const [filteredBuilding, setFilteredBuilding] = useState<FloorResponse[]>([]);
+  const [filteredBuilding, setFilteredBuilding] = useState<FloorModel[]>([]);
 
   const onApplyFilter = (id: string) => {
     const b = buildings?.find((building) => building.id === id);
@@ -50,7 +52,7 @@ const FloorTable: React.FC = () => {
         />
         <ButtonLink
           variant="contained"
-          to="/zeno/automation/management/floor/new"
+          to={compositePathRoute([HomePath, AutomationPath, FloorFormPath])}
         >
           Criar andar
         </ButtonLink>

@@ -1,7 +1,7 @@
 import React from "react";
 import AccessButton from "modules/shared/components/AccessButton";
 import Row from "modules/shared/components/Row";
-import ParameterList from "modules/automation/pages/energy-equipment-register/components/parameter-list/ParameterList";
+import ParameterList from "modules/automation/pages/equipment-form/components/parameter-list/ParameterList";
 
 //icons
 import ThermostatIcon from "@mui/icons-material/Thermostat";

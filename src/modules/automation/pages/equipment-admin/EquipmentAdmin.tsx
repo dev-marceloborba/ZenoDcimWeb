@@ -12,8 +12,6 @@ import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 // icons
 import AddIcon from "@mui/icons-material/Add";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import StoreMallDirectoryIcon from "@mui/icons-material/StoreMallDirectory";
 
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
@@ -32,7 +30,7 @@ import {
   EquipmentFormPath,
 } from "modules/automation/routes/paths";
 
-const AutomationRegister: React.FC = () => {
+const EquipmentAdmin: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   // const { buildings, building, floor, room } = useAutomationFilters();
   const { buildings } = useAutomationFilters();
@@ -79,7 +77,7 @@ const AutomationRegister: React.FC = () => {
   // };
 
   return (
-    <HeroContainer title="Cadastros de automação">
+    <HeroContainer title="Gestão de equipamentos">
       <Row
         sx={{
           alignItems: "center",
@@ -107,7 +105,6 @@ const AutomationRegister: React.FC = () => {
             to={compositePathRoute([
               HomePath,
               AutomationPath,
-              AutomationRegisterPath,
               EquipmentFormPath,
             ])}
           />
@@ -118,22 +115,6 @@ const AutomationRegister: React.FC = () => {
             startIcon={<CallSplitIcon />}
             label="Nova conexão"
             to="/zeno"
-          />
-        </Tooltip>
-
-        <Tooltip title="Criar novo prédio">
-          <AccessButton
-            startIcon={<AccountBalanceIcon />}
-            label="Novo prédio"
-            to="/zeno/automation/management/building"
-          />
-        </Tooltip>
-
-        <Tooltip title="Criar nova sala">
-          <AccessButton
-            startIcon={<StoreMallDirectoryIcon />}
-            label="Nova sala"
-            to="/zeno/automation/management/building"
           />
         </Tooltip>
       </Row>
@@ -150,11 +131,11 @@ const AutomationRegister: React.FC = () => {
           title="Equipamentos de Energia"
           rows={tableData ?? []}
           columns={columns}
-          options={{
-            onRowClick: (row: EquipmentModel) => {
-              navigate(`/zeno/automation/management/equipment/${row.id}`);
-            },
-          }}
+          // options={{
+          //   onRowClick: (row: EquipmentModel) => {
+          //     navigate(`/zeno/automation/management/equipment/${row.id}`);
+          //   },
+          // }}
         />
       </Row>
       <Loading open={isLoading} />
@@ -162,7 +143,7 @@ const AutomationRegister: React.FC = () => {
   );
 };
 
-export default AutomationRegister;
+export default EquipmentAdmin;
 
 const columns: ColumnHeader[] = [
   {

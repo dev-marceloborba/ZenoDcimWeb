@@ -1,29 +1,28 @@
 import React, { useState } from "react";
-import DataTable from "app/components/DataTable";
+import DataTable from "modules/shared/components/DataTable";
+import Dropdown from "modules/shared/components/Dropdown";
+import Row from "modules/shared/components/Row";
+import Loading from "modules/shared/components/Loading";
+import ButtonLink from "modules/shared/components/ButtonLink";
+
 import {
-  useDeleteRoomMutation,
-  useFindAllBuildingsQuery,
-  // useFindAllRoomsQuery,
-} from "app/services/datacenter";
-import Dropdown from "app/components/Dropdown";
-import Row from "app/components/Row";
-import Loading from "app/components/Loading";
-import ButtonLink from "app/components/ButtonLink";
-import {
-  BuildingResponse,
-  FloorResponse,
-  RoomResponse,
-} from "app/models/data-center.model";
+  BuildingModel,
+  FloorModel,
+  RoomModel,
+} from "modules/datacenter/models/datacenter-model";
+import { useDeleteRoomMutation } from "modules/datacenter/services/room-service";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { RoomFormPath } from "modules/automation/routes/paths";
 
 const RoomTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
-  const [selectedBuilding, setSelectedBuilding] = useState<BuildingResponse>();
-  const [selectedFloor, setSelectedFloor] = useState<FloorResponse>();
-  const [floors, setFloors] = useState<FloorResponse[]>([]);
-  const [rooms, setRooms] = useState<RoomResponse[]>([]);
+  const [selectedBuilding, setSelectedBuilding] = useState<BuildingModel>();
+  const [selectedFloor, setSelectedFloor] = useState<FloorModel>();
+  const [floors, setFloors] = useState<FloorModel[]>([]);
+  const [rooms, setRooms] = useState<RoomModel[]>([]);
   const [deleteRoom] = useDeleteRoomMutation();
 
   const onChangeBuilding = (buildingId: string) => {
@@ -80,7 +79,7 @@ const RoomTable: React.FC = () => {
 
         <ButtonLink
           variant="contained"
-          to={compositePathRoute([AutomationPath, RoomFormPath])}
+          to={compositePathRoute([HomePath, AutomationPath, RoomFormPath])}
           sx={{ marginLeft: "auto" }}
         >
           Criar sala

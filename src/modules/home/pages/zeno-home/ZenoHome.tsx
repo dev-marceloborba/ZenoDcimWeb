@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
 
 import withAuthentication from "app/hocs/withAuthentication";
-import Header from "modules/shared/components/Header";
-import Sidenav from "modules/shared/components/Sidenav";
+import Header from "modules/home/components/Header";
+import Sidenav from "modules/home/components/Sidenav";
 import { LayoutProvider } from "app/hooks/useLayout";
 
 import useMediaQuery from "@mui/material/useMediaQuery";

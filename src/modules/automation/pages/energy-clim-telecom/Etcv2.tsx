@@ -18,10 +18,7 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import {
-  CagePath,
-  EnergyClimTelecomPath,
-} from "modules/automation/routes/paths";
+import { CagePath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 
 const Etcv2: React.FC = () => {
@@ -130,7 +127,6 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      EnergyClimTelecomPath,
       CagePath,
     ]);
     navigate(destinationPath, {

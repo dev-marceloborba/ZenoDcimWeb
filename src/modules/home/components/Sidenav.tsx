@@ -5,7 +5,9 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 
 import { useLayout } from "app/hooks/useLayout";
-import ListItemLink, { ListItemLinkProps } from "./ListItemLink";
+import ListItemLink, {
+  ListItemLinkProps,
+} from "../../shared/components/ListItemLink";
 
 // icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -19,7 +21,7 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import {
   AccessControlPath,
-  AutomationRegisterPath,
+  AutomationSettingsPath,
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
   FireSystemPath,
@@ -116,8 +118,8 @@ const menuItems: ListItemLinkProps[] = [
         to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
       },
       {
-        primary: "Cadastros de automação",
-        to: `/${HomePath}/${AutomationPath}/${AutomationRegisterPath}`,
+        primary: "Configurações de automação",
+        to: `/${HomePath}/${AutomationPath}/${AutomationSettingsPath}`,
       },
     ],
   },

@@ -134,8 +134,6 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      EnergyClimTelecomPath,
-      CagePath,
       RackPath,
     ]);
     navigate(destinationPath, {

@@ -1,41 +1,55 @@
 import React from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
-import Etc from "modules/automation/pages/energy-clim-telecom/Etc";
+import { Routes, Route } from "react-router-dom";
+// import Etc from "modules/automation/pages/energy-clim-telecom/Etc";
 import FireSystem from "modules/automation/pages/fire-system/FireSystem";
 import AccessControl from "modules/automation/pages/access-control/AccessControl";
 import EquipmentConectivity from "modules/automation/pages/equipment-connectivity/EquipmentConectivity";
-import AutomationRegister from "modules/automation/pages/automation-register/AutomationRegister";
+import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAdmin";
 import {
   AccessControlPath,
-  AutomationRegisterPath,
+  AutomationSettingsPath,
+  BuildingFormPath,
+  BuildingManagementPath,
   CagePath,
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
   EquipmentFormPath,
+  EquipmentManagementPath,
   FireSystemPath,
+  FloorFormPath,
+  FloorManagementPath,
+  ParameterFormPath,
+  ParameterManagementPath,
   RackPath,
-  RuleRegisterPath,
+  RoomFormPath,
+  RoomManagementPath,
+  SiteFormPath,
+  SiteManagementPath,
 } from "./paths";
-import compositePathRoute from "modules/utils/compositePathRoute";
 import Etcv2 from "../pages/energy-clim-telecom/Etcv2";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
-import RuleRegister from "../pages/rule-register/RuleRegister";
-import EnergyEquipmentRegister from "../pages/energy-equipment-register/EnergyEquipmentRegister";
-import AutomationRegisterv2 from "../pages/automation-register/AutomationRegisterv2";
+// import RuleRegister from "../pages/rule-register/RuleRegister";
+// import EnergyEquipmentRegister from "../pages/energy-equipment-register/EnergyEquipmentRegister";
+import AutomationSettings from "../pages/automation-settings/AutomationSettings";
+import EquipmentForm from "../pages/equipment-admin/components/equipment-form/EquipmentForm";
+import RoomAdmin from "../pages/room-admin/RoomAdmin";
+import RoomForm from "../pages/room-admin/components/room-form/RoomForm";
+import FloorAdmin from "../pages/floor-admin/FloorAdmin";
+import FloorForm from "../pages/floor-admin/components/floor-form/FloorForm";
+import BuildingAdmin from "../pages/building-admin/BuildingAdmin";
+import BuildingForm from "../pages/building-admin/components/building-form/BuilldingForm";
+import SiteAdmin from "../pages/site-admin/SiteAdmin";
+import SiteForm from "../pages/site-admin/components/site-form/SiteForm";
+import ParameterAdmin from "../pages/parameter-admin/ParameterAdmin";
+import ParameterForm from "../pages/parameter-admin/components/parameter-form/ParameterForm";
 
 const AutomationRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path={EnergyClimTelecomPath} element={<Etcv2 />} />
-      <Route
-        path={compositePathRoute([EnergyClimTelecomPath, CagePath])}
-        element={<Cage />}
-      />
-      <Route
-        path={compositePathRoute([EnergyClimTelecomPath, CagePath, RackPath])}
-        element={<Rack />}
-      />
+      <Route path={CagePath} element={<Cage />} />
+      <Route path={RackPath} element={<Rack />} />
 
       <Route path={FireSystemPath} element={<FireSystem />} />
       <Route path={AccessControlPath} element={<AccessControl />} />
@@ -43,13 +57,26 @@ const AutomationRoutes: React.FC = () => {
         path={EquipmentConnectivityPath}
         element={<EquipmentConectivity />}
       />
-      <Route path={AutomationRegisterPath} element={<AutomationRegisterv2 />} />
-      <Route
-        path={compositePathRoute([AutomationRegisterPath, EquipmentFormPath])}
-        element={<EnergyEquipmentRegister />}
-      />
 
-      <Route path={RuleRegisterPath} element={<RuleRegister />} />
+      <Route path={AutomationSettingsPath} element={<AutomationSettings />} />
+      {/* equipment */}
+      <Route path={EquipmentManagementPath} element={<EquipmentAdmin />} />
+      <Route path={EquipmentFormPath} element={<EquipmentForm />} />
+      {/* parameters */}
+      <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
+      <Route path={ParameterFormPath} element={<ParameterForm />} />
+      {/* rooms */}
+      <Route path={RoomManagementPath} element={<RoomAdmin />} />
+      <Route path={RoomFormPath} element={<RoomForm />} />
+      {/* floors */}
+      <Route path={FloorManagementPath} element={<FloorAdmin />} />
+      <Route path={FloorFormPath} element={<FloorForm />} />
+      {/* buildings */}
+      <Route path={BuildingManagementPath} element={<BuildingAdmin />} />
+      <Route path={BuildingFormPath} element={<BuildingForm />} />
+      {/* sites */}
+      <Route path={SiteManagementPath} element={<SiteAdmin />} />
+      <Route path={SiteFormPath} element={<SiteForm />} />
     </Routes>
   );
 };
