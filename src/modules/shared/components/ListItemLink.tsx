@@ -47,14 +47,13 @@ const AlternativeListItemLink: React.FC<ListItemLinkProps> = (props) => {
       ),
     [to]
   );
-
   return (
     <>
       <ListItem
-        selected={pathname === to}
         button
         {...(!nested && { onClick: handleToggleExpanded })}
         {...(!items && { component: renderLink })}
+        {...(to && { selected: pathname.includes(to) })}
       >
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
         <ListItemText

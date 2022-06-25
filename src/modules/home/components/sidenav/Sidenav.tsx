@@ -7,7 +7,7 @@ import List from "@mui/material/List";
 import { useLayout } from "app/hooks/useLayout";
 import ListItemLink, {
   ListItemLinkProps,
-} from "../../shared/components/ListItemLink";
+} from "modules/shared/components/ListItemLink";
 
 // icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
