@@ -26,7 +26,10 @@ ReactDOM.render(
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Connector
             brokerUrl={brokerUrl}
-            options={{ ...mqttConfig, protocol: "wss" }}
+            options={{
+              ...mqttConfig,
+              protocol: "wss",
+            }}
           >
             <ToastProvider>
               <ReactFlowProvider>

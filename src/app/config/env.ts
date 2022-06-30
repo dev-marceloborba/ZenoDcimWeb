@@ -5,7 +5,7 @@ const environment =
 
 const brokerUrl = `wss://${process.env.REACT_APP_BROKER_URL}`;
 const mqttConfig = {
-  clientId: "zenoWebClient",
+  clientId: "zenoWebClient-" + new Date().getTime(),
   clean: true,
   port: Number(process.env.REACT_APP_MQTT_PORT) ?? 8883,
   username: process.env.REACT_APP_MQTT_USERNAME ?? "",

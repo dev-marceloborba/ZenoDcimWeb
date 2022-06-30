@@ -16,20 +16,26 @@ export type ParameterPlain = {
 };
 
 export const rowToParameterPlain = (data: any[]) => {
-  return data.map<ParameterPlain>((row: any) => ({
-    building: row[0],
-    floor: row[1],
-    room: row[2],
-    equipment: row[3],
-    numRepeat: row[4],
-    parameter: row[5],
-    unit: row[6],
-    min: row[7],
-    max: row[8],
-    dataSample: row[9],
-    aquisitionType: row[10],
-    additionalInfo: row[11],
-  }));
+  let parametersPlain: ParameterPlain[] = [];
+  data.forEach((row: any, index) => {
+    if (index > 0) {
+      parametersPlain.push({
+        building: row[0],
+        floor: row[1],
+        room: row[2],
+        equipment: row[3],
+        numRepeat: row[4],
+        parameter: row[5],
+        unit: row[6],
+        min: row[7],
+        max: row[8],
+        dataSample: row[9],
+        aquisitionType: row[10],
+        additionalInfo: row[11],
+      });
+    }
+  });
+  return parametersPlain;
 };
 
 export const parameterPlainToParameterViewModel = (
@@ -47,13 +53,22 @@ export const parameterPlainToParameterViewModel = (
 };
 
 export const customRules = () => {
-  const splitRowsIntoEquipments = (description: string, repeat: number) => {
-    let equipments = [] as string[];
+  const splitRowsIntoEquipments = (
+    description: string,
+    repeat: number,
+    ...rest: any
+  ) => {
+    const equipments: ParameterViewModel[] = [];
     for (let i = 0; i < repeat; i++) {
-      equipments.push(`${description} - ${i + 1}`);
+      // equipments.push(`${description} - ${i + 1}`);
+      equipments.push({
+        name: `${description} - ${i + 1}`,
+        ...rest,
+      });
     }
     return equipments;
   };
+
   return {
     splitRowsIntoEquipments,
   };

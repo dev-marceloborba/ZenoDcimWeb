@@ -65,7 +65,6 @@ const Sidenav: React.FC = () => {
 
 const menuItems: ListItemLinkProps[] = [
   {
-    to: "/zeno/dashboard",
     primary: "Dashboard",
     icon: <DashboardIcon />,
     items: [

@@ -11,7 +11,10 @@ import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import { useToast } from "modules/shared/components/ToastProvider";
-import { useCreateEquipmentMutation } from "modules/automation/services/equipment-service";
+import {
+  useCreateEquipmentMutation,
+  useFindEquipmentByIdMutation,
+} from "modules/automation/services/equipment-service";
 import {
   FloorModel,
   RoomModel,
@@ -20,6 +23,7 @@ import { EquipmentViewModel } from "modules/automation/models/automation-model";
 import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import Loading from "modules/shared/components/Loading";
 import HeroContainer from "modules/shared/components/HeroContainer";
+import useRouter from "modules/core/hooks/useRouter";
 
 const EquipmentForm: React.FC = () => {
   const [addEquipment, { isLoading }] = useCreateEquipmentMutation();
@@ -27,12 +31,23 @@ const EquipmentForm: React.FC = () => {
   const [floors, setFloors] = useState<FloorModel[]>([]);
   const [rooms, setRooms] = useState<RoomModel[]>([]);
   const toast = useToast();
+  const {
+    state: { data, form },
+  }: {
+    state: {
+      data: {
+        equipmentId: string;
+      };
+      form: string;
+    };
+  } = useRouter();
+  const [findEquipmentById] = useFindEquipmentByIdMutation();
 
   const methods = useForm<EquipmentViewModel>({
     resolver: yupResolver(validationSchema),
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit, watch, reset } = methods;
 
   const buildingId = watch("buildingId");
   const floorId = watch("floorId");
@@ -48,6 +63,16 @@ const EquipmentForm: React.FC = () => {
     const filteredFloors = floors?.find((floor) => floor.id === floorId);
     setRooms(filteredFloors?.rooms ?? []);
   }, [floorId, floors]);
+
+  useEffect(() => {
+    async function fetchEquipment() {
+      if (data && form === "edit") {
+        const result = await findEquipmentById(data.equipmentId).unwrap();
+        reset(result);
+      }
+    }
+    fetchEquipment();
+  }, [data, findEquipmentById, form, reset]);
 
   const onSubmit: SubmitHandler<EquipmentViewModel> = async (data) => {
     try {
