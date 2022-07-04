@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
+import Form from "modules/shared/components/Form";
+import Card from "modules/shared/components/Card";
+import Loading from "modules/shared/components/Loading";
+import { useToast } from "modules/shared/components/ToastProvider";
+import { EditUserRequest } from "app/models/authentication.model";
+import SubmitButton from "modules/shared/components/SubmitButton";
+import DeleteButton from "modules/shared/components/DeleteButton";
+import Row from "modules/shared/components/Row";
+import HeroContainer from "modules/shared/components/HeroContainer";
+import useRouter from "modules/core/hooks/useRouter";
 import {
   useDeleteUserMutation,
   useEditUserMutation,
-} from "app/services/authentication";
-import ControlledTextInput from "app/components/ControlledTextInput";
-import Form from "app/components/Form";
-import Card from "app/components/Card";
-import Loading from "app/components/Loading";
-import { useToast } from "app/components/Toast";
-import { EditUserRequest } from "app/models/authentication.model";
-import SubmitButton from "app/components/SubmitButton";
-import DeleteButton from "app/components/DeleteButton";
-import Row from "app/components/Row";
-import HeroContainer from "modules/shared/components/HeroContainer";
-import useRouter from "modules/core/hooks/useRouter";
+} from "modules/user/services/authentication-service";
+import {
+  getUserRoleInstance,
+  getUserStatusInstance,
+} from "modules/user/models/user-model";
 
 const UserDetails: React.FC = () => {
   const [editUser, { isLoading }] = useEditUserMutation();
@@ -56,8 +60,8 @@ const UserDetails: React.FC = () => {
       setValue("firstName", user.firstName);
       setValue("lastName", user.lastName);
       setValue("email", user.email);
-      setValue("active", Number(user.active));
-      setValue("role", user.role);
+      setValue("active", getUserStatusInstance(user.active));
+      setValue("role", getUserRoleInstance(user.role));
     }
 
     if (user) getUser();

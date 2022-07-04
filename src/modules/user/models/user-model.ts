@@ -16,9 +16,34 @@ export enum EUserRole {
   EXTERNAL_CLIENT = 5,
 }
 
+export function getUserRoleInstance(value: string) {
+  switch (value) {
+    case "Administrador":
+      return EUserRole.ADMIN;
+    case "Operador":
+      return EUserRole.OPERATOR;
+    case "Técnico":
+      return EUserRole.TECHNICIAN;
+    case "Visualizador":
+      return EUserRole.VIEW_ONLY;
+    default:
+      return EUserRole.EXTERNAL_CLIENT;
+  }
+}
+
 export enum EUserStatus {
   INACTIVE = 0,
   ACTIVE = 1,
+}
+
+export function getUserStatusInstance(value: string) {
+  if (value === "Inativo") {
+    return EUserStatus.INACTIVE;
+  } else if (value === "Ativo") {
+    return EUserStatus.ACTIVE;
+  } else {
+    return EUserStatus.INACTIVE;
+  }
 }
 
 export interface UserModel {
