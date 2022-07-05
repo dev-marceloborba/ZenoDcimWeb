@@ -267,6 +267,15 @@ export const getDesignTokens = (mode: "light" | "dark") =>
         fontWeight: 700,
       },
     },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1200,
+        xl: 1920,
+      },
+    },
   } as ThemeOptions);
 
 export function getThemedComponents(theme: Theme) {

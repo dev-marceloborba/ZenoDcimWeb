@@ -17,18 +17,14 @@ const HeroContainer: React.FC<HeroContainerProps> = ({
 }) => {
   return (
     <Wrapper component="main">
-      <Container
-        maxWidth={maxWidth}
-        sx={{
-          mt: 4,
-          mb: 8,
-        }}
-      >
-        <Breadcrumbs />
-        {/* <Separator /> */}
-        <Title variant="h4">{title}</Title>
-        {/* <Separator /> */}
-        {children}
+      <Container maxWidth={maxWidth}>
+        <Box sx={{ marginBottom: "2rem" }}>
+          <Breadcrumbs />
+          {/* <Separator /> */}
+          <Title variant="h4">{title}</Title>
+          {/* <Separator /> */}
+          {children}
+        </Box>
       </Container>
     </Wrapper>
   );
@@ -38,6 +34,7 @@ const Wrapper = styled(Box)`
   flex-grow: 1;
   height: 100vh;
   overflow: auto;
+  padding: 4rem 0;
 `;
 
 const Separator = styled(Divider)`

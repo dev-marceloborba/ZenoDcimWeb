@@ -42,7 +42,7 @@ export const parameterApi = createApi({
       }),
       invalidatesTags: ["ParameterModel"],
     }),
-    findParameterByGroup: builder.mutation<ParameterModel, string>({
+    findParameterByGroup: builder.mutation<ParameterModel[], string>({
       query: (group) => ({
         url: `v1/data-center/parametersByGroup/${group}`,
         method: "GET",

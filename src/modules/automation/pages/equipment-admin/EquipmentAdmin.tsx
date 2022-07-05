@@ -10,6 +10,7 @@ import EtcFilters from "modules/automation/components/EtcFilters";
 // icons
 import AddIcon from "@mui/icons-material/Add";
 import CallSplitIcon from "@mui/icons-material/CallSplit";
+import ParameterIcon from "@mui/icons-material/Thermostat";
 
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
@@ -60,6 +61,14 @@ const EquipmentAdmin: React.FC = () => {
           <AccessButton
             startIcon={<CallSplitIcon />}
             label="Nova conexão"
+            to="/zeno"
+          />
+        </Tooltip>
+
+        <Tooltip title="Associação com parâmetros">
+          <AccessButton
+            startIcon={<ParameterIcon />}
+            label="Associar parâmetro"
             to="/zeno"
           />
         </Tooltip>

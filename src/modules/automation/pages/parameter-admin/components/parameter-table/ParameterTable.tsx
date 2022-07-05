@@ -1,10 +1,9 @@
-import React from "react";
 import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 import Loading from "modules/shared/components/Loading";
-import { useFindAllEquipmentParametersQuery } from "modules/automation/services/equipment-parameter-service";
+import { useFindAllParametersQuery } from "modules/automation/services/parameter-service";
 
-const ParametersTable: React.FC = () => {
-  const { data: parameters, isLoading } = useFindAllEquipmentParametersQuery();
+export default function ParametersTable() {
+  const { data: parameters, isLoading } = useFindAllParametersQuery();
   const handleSelectedParameter = (parameter: any) => {
     console.log(parameter);
   };
@@ -21,14 +20,28 @@ const ParametersTable: React.FC = () => {
       <Loading open={isLoading} />
     </>
   );
-};
-
-export default ParametersTable;
+}
 
 const columns: ColumnHeader[] = [
+  // {
+  //   name: "building",
+  //   label: "Prédio",
+  // },
+  // {
+  //   name: "floor",
+  //   label: "Andar",
+  // },
+  // {
+  //   name: "room",
+  //   label: "Sala",
+  // },
+  // {
+  //   name: "equipment",
+  //   label: "Equipamento",
+  // },
   {
     name: "name",
-    label: "Nome",
+    label: "Parâmetro",
   },
   {
     name: "unit",
@@ -46,4 +59,20 @@ const columns: ColumnHeader[] = [
     name: "scale",
     label: "Escala",
   },
+  // {
+  //   name: "group",
+  //   label: "Grupo",
+  // },
+  // {
+  //   name: "system",
+  //   label: "Sistema",
+  // },
+  // {
+  //   name: "type",
+  //   label: "Tipo",
+  // },
+  // {
+  //   name: "address",
+  //   label: "Endereço",
+  // },
 ];
