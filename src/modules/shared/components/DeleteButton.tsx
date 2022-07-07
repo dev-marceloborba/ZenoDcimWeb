@@ -12,11 +12,13 @@ import Tooltip from "@mui/material/Tooltip";
 interface DeleteButtonProps extends ButtonProps {
   onDeleteConfirmation: () => void;
   mode?: "button" | "icon";
+  deleteMessage?: string;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   onDeleteConfirmation,
   mode = "button",
+  deleteMessage = "Tem certeza que deseja apagar o registro?",
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -52,7 +54,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
         <DialogTitle id="alert-dialog-title">Confirmar ação</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja apagar o registro?
+            {deleteMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

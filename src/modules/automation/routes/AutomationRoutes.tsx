@@ -19,6 +19,7 @@ import {
   FloorFormPath,
   FloorManagementPath,
   ParameterFormPath,
+  ParameterGroupManagementPath,
   ParameterManagementPath,
   RackPath,
   RoomFormPath,
@@ -43,6 +44,7 @@ import SiteAdmin from "../pages/site-admin/SiteAdmin";
 import SiteForm from "../pages/site-admin/components/site-form/SiteForm";
 import ParameterAdmin from "../pages/parameter-admin/ParameterAdmin";
 import ParameterForm from "../pages/parameter-admin/components/parameter-form/ParameterForm";
+import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAdmin";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -65,6 +67,10 @@ const AutomationRoutes: React.FC = () => {
       {/* parameters */}
       <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
       <Route path={ParameterFormPath} element={<ParameterForm />} />
+      <Route
+        path={ParameterGroupManagementPath}
+        element={<ParameterGroupAdmin />}
+      />
       {/* rooms */}
       <Route path={RoomManagementPath} element={<RoomAdmin />} />
       <Route path={RoomFormPath} element={<RoomForm />} />

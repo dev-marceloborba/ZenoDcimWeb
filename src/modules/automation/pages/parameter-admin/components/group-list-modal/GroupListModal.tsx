@@ -30,8 +30,6 @@ export default function GroupListModal(props: GroupListModalProps) {
     setGroupParameters(result);
   };
 
-  console.log(groupParameters);
-
   return (
     <Dialog {...rest}>
       <DialogTitle>{title}</DialogTitle>

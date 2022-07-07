@@ -22,8 +22,8 @@ export const parameterGroupApi = createApi({
   tagTypes: ["EquipmentParameterGroupResponse"],
   endpoints: (builder) => ({
     createEquipmentParameterGroup: builder.mutation<
-      ApiResponseModel<EquipmentParameterGroupRequest>,
-      EquipmentParameterGroupResponse
+      ApiResponseModel<EquipmentParameterGroupResponse>,
+      EquipmentParameterGroupRequest
     >({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter/group",

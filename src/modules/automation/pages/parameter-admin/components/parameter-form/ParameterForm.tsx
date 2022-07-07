@@ -70,7 +70,7 @@ export default function ParameterForm() {
             }))}
           />
           <SubmitButton label="Criar" />
-          <Button onClick={handleOpenGroupModal}>Criar grupo</Button>
+          {/* <Button onClick={handleOpenGroupModal}>Criar grupo</Button> */}
         </FormProvider>
         <Loading open={isLoading} />
       </Form>

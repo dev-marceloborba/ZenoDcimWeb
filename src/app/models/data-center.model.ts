@@ -110,7 +110,6 @@ export interface MultipleEquipmentParameterResponse
 
 export interface EquipmentParameterGroupRequest {
   name: string;
-  parameters: EquipmentParameterRequest[];
 }
 
 export interface EquipmentParameterGroupResponse
