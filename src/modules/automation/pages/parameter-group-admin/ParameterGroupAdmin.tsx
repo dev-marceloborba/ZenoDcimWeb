@@ -12,13 +12,19 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 
-import { ParameterModel } from "modules/automation/models/automation-model";
 import {
+  EquipmentOnGroupViewModel,
+  EquipmentParameterGroupModel,
+  ParameterModel,
+} from "modules/automation/models/automation-model";
+import {
+  useCreateParametersIntoGroupMutation,
   useFindAllParametersQuery,
   useFindParameterByGroupMutation,
 } from "modules/automation/services/parameter-service";
 import {
   useCreateEquipmentParameterGroupMutation,
+  // useCreateParametersIntoGroupMutation,
   useDeleteParameterGroupMutation,
   useFindAllParameterGroupsQuery,
 } from "modules/automation/services/parameter-group-service";
@@ -32,7 +38,8 @@ import Button from "@mui/material/Button";
 
 export default function ParameterGroupAdmin() {
   const [groupParameters, setGroupParameters] = useState<ParameterModel[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedGroup, setSelectedGroup] =
+    useState<EquipmentParameterGroupModel>({} as EquipmentParameterGroupModel);
   const [checked, setChecked] = useState<ParameterModel[]>([]);
   const [findParametersByGroup] = useFindParameterByGroupMutation();
   const { data: groups, isLoading: isLoadingAllParameterGroups } =
@@ -41,10 +48,11 @@ export default function ParameterGroupAdmin() {
     useFindAllParametersQuery();
   const [createGroup] = useCreateEquipmentParameterGroupMutation();
   const [deleteGroup] = useDeleteParameterGroupMutation();
+  const [createParametersIntoGroup] = useCreateParametersIntoGroupMutation();
   const { showModal } = useModal();
 
-  const handleChangeGroup = async (group: string) => {
-    const result = await findParametersByGroup(group).unwrap();
+  const handleChangeGroup = async (group: EquipmentParameterGroupModel) => {
+    const result = await findParametersByGroup(group.name).unwrap();
     setGroupParameters(result);
     setSelectedGroup(group);
   };
@@ -65,8 +73,14 @@ export default function ParameterGroupAdmin() {
     await deleteGroup(groupId).unwrap();
   };
 
-  const handleIncludeSelection = () => {
-    console.log(checked);
+  const handleIncludeSelection = async () => {
+    // console.log(checked);
+    await createParametersIntoGroup({
+      groupId: selectedGroup.id,
+      parameters: checked.map<any>((item) => ({
+        id: item.id,
+      })),
+    }).unwrap();
   };
 
   const handleSelectItem = (value: ParameterModel) => {
@@ -104,8 +118,8 @@ export default function ParameterGroupAdmin() {
                 {groups?.map((group, index) => (
                   <ListItem key={index}>
                     <ListItemButton
-                      onClick={() => handleChangeGroup(group.name)}
-                      selected={group.name === selectedGroup}
+                      onClick={() => handleChangeGroup(group)}
+                      selected={group.name === selectedGroup.name}
                     >
                       <ListItemText primary={group.name} />
                       <DeleteButton

@@ -100,7 +100,6 @@ export interface MultipleEquipmentParameterModel
 
 export interface EquipmentParameterGroupViewModel {
   name: string;
-  parameters: EquipmentParameterViewModel[];
 }
 
 export interface EquipmentParameterGroupModel
@@ -120,3 +119,12 @@ export interface ParameterViewModel {
 export interface ParameterModel extends ParameterViewModel {
   id: string;
 }
+
+export interface EquipmentOnGroupViewModel {
+  groupId: string;
+  parameters: ParameterAssociation[];
+}
+
+type ParameterAssociation = {
+  id: string;
+};

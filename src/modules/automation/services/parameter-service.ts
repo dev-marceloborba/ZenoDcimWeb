@@ -2,7 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import { RootState } from "modules/core/store";
-import { ParameterModel, ParameterViewModel } from "../models/automation-model";
+import {
+  EquipmentOnGroupViewModel,
+  ParameterModel,
+  ParameterViewModel,
+} from "../models/automation-model";
 
 export const parameterApi = createApi({
   reducerPath: "parameterApi",
@@ -47,7 +51,18 @@ export const parameterApi = createApi({
         url: `v1/data-center/parametersByGroup/${group}`,
         method: "GET",
       }),
+      invalidatesTags: ["ParameterModel"],
     }),
+    createParametersIntoGroup: builder.mutation<any, EquipmentOnGroupViewModel>(
+      {
+        query: (params) => ({
+          url: "v1/data-center/parameters/groupAssociation",
+          method: "POST",
+          body: params,
+        }),
+        invalidatesTags: ["ParameterModel"],
+      }
+    ),
   }),
 });
 
@@ -55,5 +70,6 @@ export const {
   useCreateParameterMutation,
   useDeleteParameterMutation,
   useFindAllParametersQuery,
+  useCreateParametersIntoGroupMutation,
   useFindParameterByGroupMutation,
 } = parameterApi;
