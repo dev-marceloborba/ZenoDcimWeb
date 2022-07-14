@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -8,12 +8,22 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 type CreateGroupModalProps = DialogProps & {
-  onConfirm: (data: string) => void;
+  onConfirm: (value: string, data: any) => void;
   onCancel: () => void;
+  mode?: "edit" | "create";
+  previousValue?: string;
+  data: any;
 };
 
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ ...props }) => {
-  const { title, onConfirm, onCancel } = props;
+  const {
+    title,
+    onConfirm,
+    onCancel,
+    mode = "create",
+    previousValue,
+    data,
+  } = props;
   const inputRef = useRef<HTMLInputElement>();
 
   return (
@@ -21,7 +31,9 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ ...props }) => {
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Digite o nome do grupo a ser criado
+          {`Digite o nome do grupo a ser ${
+            mode === "create" ? "criado" : "editado"
+          }`}
         </DialogContentText>
         <TextField
           autoFocus
@@ -31,10 +43,13 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ ...props }) => {
           fullWidth
           variant="standard"
           inputRef={inputRef}
+          {...(mode === "edit" && {
+            defaultValue: previousValue,
+          })}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => onConfirm(inputRef.current?.value ?? "")}>
+        <Button onClick={() => onConfirm(inputRef.current?.value ?? "", data)}>
           Salvar
         </Button>
         <Button onClick={() => onCancel()}>Cancelar</Button>

@@ -3,6 +3,7 @@ import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import { RootState } from "modules/core/store";
 import {
+  EditEquipmentParameterGroupViewModel,
   EquipmentOnGroupViewModel,
   EquipmentParameterGroupModel,
   EquipmentParameterGroupViewModel,
@@ -29,6 +30,17 @@ export const parameterGroupApi = createApi({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter/group",
         method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["EquipmentParameterGroupModel"],
+    }),
+    editEquipmentParameterGroup: builder.mutation<
+      ApiResponseModel<EquipmentParameterGroupModel>,
+      EditEquipmentParameterGroupViewModel
+    >({
+      query: (params) => ({
+        url: `v1/data-center/building/floor/room/equipment/parameter/group/${params.id}`,
+        method: "PUT",
         body: params,
       }),
       invalidatesTags: ["EquipmentParameterGroupModel"],
@@ -63,6 +75,7 @@ export const parameterGroupApi = createApi({
 
 export const {
   useCreateEquipmentParameterGroupMutation,
+  useEditEquipmentParameterGroupMutation,
   useDeleteParameterGroupMutation,
   useFindAllParameterGroupsQuery,
   // useCreateParametersIntoGroupMutation,

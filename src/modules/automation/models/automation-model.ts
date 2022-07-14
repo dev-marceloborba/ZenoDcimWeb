@@ -102,6 +102,11 @@ export interface EquipmentParameterGroupViewModel {
   name: string;
 }
 
+export interface EditEquipmentParameterGroupViewModel {
+  id: string;
+  name: string;
+}
+
 export interface EquipmentParameterGroupModel
   extends EquipmentParameterGroupViewModel {
   id: string;

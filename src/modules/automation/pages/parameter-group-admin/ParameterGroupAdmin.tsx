@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import CardContent from "@mui/material/CardContent";
 import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -12,8 +13,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 
+import EditIcon from "@mui/icons-material/Edit";
+
 import {
-  EquipmentOnGroupViewModel,
   EquipmentParameterGroupModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
@@ -26,6 +28,7 @@ import {
   useCreateEquipmentParameterGroupMutation,
   // useCreateParametersIntoGroupMutation,
   useDeleteParameterGroupMutation,
+  useEditEquipmentParameterGroupMutation,
   useFindAllParameterGroupsQuery,
 } from "modules/automation/services/parameter-group-service";
 import Loading from "modules/shared/components/Loading";
@@ -36,36 +39,76 @@ import DeleteButton from "modules/shared/components/DeleteButton";
 import Column from "modules/shared/components/Column";
 import Button from "@mui/material/Button";
 
+type ParameterCheckedViewModel = ParameterModel & {
+  checked: boolean;
+};
+
 export default function ParameterGroupAdmin() {
   const [groupParameters, setGroupParameters] = useState<ParameterModel[]>([]);
   const [selectedGroup, setSelectedGroup] =
     useState<EquipmentParameterGroupModel>({} as EquipmentParameterGroupModel);
-  const [checked, setChecked] = useState<ParameterModel[]>([]);
-  const [findParametersByGroup] = useFindParameterByGroupMutation();
+  const [findParametersByGroup, { isLoading: isLoadingFindParameterByGroup }] =
+    useFindParameterByGroupMutation();
   const { data: groups, isLoading: isLoadingAllParameterGroups } =
     useFindAllParameterGroupsQuery();
-  const { data: availableParameters, isLoading: isLoadingAllParameters } =
+  const { data: _availableParameters, isLoading: isLoadingAllParameters } =
     useFindAllParametersQuery();
-  const [createGroup] = useCreateEquipmentParameterGroupMutation();
-  const [deleteGroup] = useDeleteParameterGroupMutation();
-  const [createParametersIntoGroup] = useCreateParametersIntoGroupMutation();
+  const [availableParameters, setAvailableParameters] = useState<
+    ParameterCheckedViewModel[]
+  >([]);
+  const [createGroup, { isLoading: isLoadingCreateGroup }] =
+    useCreateEquipmentParameterGroupMutation();
+  const [deleteGroup, { isLoading: isLoadingDeleteGroup }] =
+    useDeleteParameterGroupMutation();
+  const [
+    createParametersIntoGroup,
+    { isLoading: isLoadingCreateParametersIntoGroup },
+  ] = useCreateParametersIntoGroupMutation();
+  const [
+    editEquipmentParameterGroup,
+    { isLoading: isLoadingEditEquipmentParameterGroup },
+  ] = useEditEquipmentParameterGroupMutation();
   const { showModal } = useModal();
+
+  useEffect(() => {
+    setAvailableParameters(
+      _availableParameters?.map<ParameterCheckedViewModel>((ap) => ({
+        ...ap,
+        checked: false,
+      })) ?? []
+    );
+  }, [_availableParameters]);
+
+  const updateParametersChecked = (parameters: ParameterModel[]) => {
+    const ap = [...availableParameters];
+    ap.forEach((v) => {
+      const p = parameters.find((r) => r.id === v.id);
+      if (p) {
+        v.checked = true;
+      } else {
+        v.checked = false;
+      }
+    });
+    setAvailableParameters(ap);
+  };
 
   const handleChangeGroup = async (group: EquipmentParameterGroupModel) => {
     const result = await findParametersByGroup(group.name).unwrap();
     setGroupParameters(result);
     setSelectedGroup(group);
+    updateParametersChecked(result);
   };
 
   const handleNewGroupModal = () => {
     const modal = showModal(CreateGroupModal, {
-      onConfirm: async (data) => {
-        await createGroup({ name: data }).unwrap();
+      onConfirm: async (value, data) => {
+        await createGroup({ name: value }).unwrap();
         modal.hide();
       },
       onCancel: () => {
         modal.hide();
       },
+      data: selectedGroup,
     });
   };
 
@@ -74,26 +117,55 @@ export default function ParameterGroupAdmin() {
   };
 
   const handleIncludeSelection = async () => {
-    // console.log(checked);
     await createParametersIntoGroup({
       groupId: selectedGroup.id,
-      parameters: checked.map<any>((item) => ({
+      parameters: availableParameters
+        .filter((x) => x.checked === true)
+        .map<any>((item) => ({
+          id: item.id,
+        })),
+    }).unwrap();
+    const result = await findParametersByGroup(selectedGroup.name).unwrap();
+    setGroupParameters(result);
+  };
+
+  const handleSelectItem = (value: ParameterCheckedViewModel) => {
+    const newSelection = [...availableParameters];
+    const parameter = newSelection.find((x) => x.id === value.id);
+    if (parameter) parameter.checked = !parameter.checked;
+    setAvailableParameters(newSelection);
+  };
+
+  const handleEditGroup = (value: EquipmentParameterGroupModel) => {
+    const modal = showModal(CreateGroupModal, {
+      onConfirm: async (value, data) => {
+        await editEquipmentParameterGroup({ id: data.id, name: value }).unwrap;
+        modal.hide();
+      },
+      onCancel: () => {
+        modal.hide();
+      },
+      mode: "edit",
+      previousValue: value.name,
+      data: selectedGroup,
+    });
+  };
+
+  const handleDeleteParameter = async (parameter: ParameterModel) => {
+    const newGroupParameters = [...groupParameters];
+    const index = newGroupParameters.indexOf(parameter);
+
+    newGroupParameters.splice(index, 1);
+
+    await createParametersIntoGroup({
+      groupId: selectedGroup.id,
+      parameters: newGroupParameters.map<any>((item) => ({
         id: item.id,
       })),
     }).unwrap();
-  };
-
-  const handleSelectItem = (value: ParameterModel) => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
+    const result = await findParametersByGroup(selectedGroup.name).unwrap();
+    setGroupParameters(result);
+    updateParametersChecked(result);
   };
 
   return (
@@ -122,6 +194,9 @@ export default function ParameterGroupAdmin() {
                       selected={group.name === selectedGroup.name}
                     >
                       <ListItemText primary={group.name} />
+                      <IconButton onClick={() => handleEditGroup(group)}>
+                        <EditIcon />
+                      </IconButton>
                       <DeleteButton
                         onDeleteConfirmation={() => handleDeleteGroup(group.id)}
                         deleteMessage={`Tem certeza que deseja apagar o grupo ${group.name}?`}
@@ -151,14 +226,23 @@ export default function ParameterGroupAdmin() {
                     {groupParameters.length === 0 && (
                       <Typography>Não há parâmetros para o grupo</Typography>
                     )}
-                    {groupParameters.map((gp, index) => (
-                      <ListItem key={index} role="listitem" button>
-                        <ListItemIcon>
-                          <Checkbox tabIndex={-1} />
-                        </ListItemIcon>
-                        <ListItemText primary={gp.name} />
-                      </ListItem>
-                    ))}
+                    {groupParameters.map((gp, index) => {
+                      return (
+                        <ListItem key={index} role="listitem" button>
+                          <ListItemIcon>
+                            <Checkbox tabIndex={-1} />
+                          </ListItemIcon>
+                          <ListItemText primary={gp.name} />
+                          <DeleteButton
+                            onDeleteConfirmation={() =>
+                              handleDeleteParameter(gp)
+                            }
+                            deleteMessage={`Tem certeza que deseja apagar o parâmetro ${gp.name}?`}
+                            mode="icon"
+                          />
+                        </ListItem>
+                      );
+                    })}
                   </List>
                 </CardContent>
               </Card>
@@ -211,7 +295,8 @@ export default function ParameterGroupAdmin() {
                         >
                           <ListItemIcon>
                             <Checkbox
-                              checked={checked.indexOf(ap) !== -1}
+                              // checked={checked.indexOf(ap) !== -1}
+                              checked={ap.checked}
                               tabIndex={-1}
                             />
                           </ListItemIcon>
@@ -278,7 +363,17 @@ export default function ParameterGroupAdmin() {
         </Grid> */}
       </Grid>
 
-      <Loading open={isLoadingAllParameterGroups || isLoadingAllParameters} />
+      <Loading
+        open={
+          isLoadingAllParameterGroups ||
+          isLoadingAllParameters ||
+          isLoadingFindParameterByGroup ||
+          isLoadingCreateGroup ||
+          isLoadingDeleteGroup ||
+          isLoadingCreateParametersIntoGroup ||
+          isLoadingEditEquipmentParameterGroup
+        }
+      />
     </HeroContainer>
   );
 }
