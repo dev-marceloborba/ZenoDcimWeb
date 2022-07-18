@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,15 +14,24 @@ import ParameterIcon from "@mui/icons-material/Thermostat";
 
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
-import AccessButton from "modules/shared/components/AccessButton";
+// import AccessButton from "modules/shared/components/AccessButton";
 
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { EquipmentFormPath } from "modules/automation/routes/paths";
+import {
+  EquipmentFormPath,
+  EquipmentParametersAssociationPath,
+} from "modules/automation/routes/paths";
 import EquipmentTable from "./components/equipment-table/EquipmentTable";
+import { EquipmentParameterModel } from "modules/automation/models/automation-model";
+import AccessButton from "modules/shared/components/access-button/AccessButtonv2";
+import useRouter from "modules/core/hooks/useRouter";
 
 const EquipmentAdmin: React.FC = () => {
+  const [selectedEquipment, setSelectedEquipment] =
+    useState<EquipmentParameterModel | null>(null);
+  const { navigate } = useRouter();
   return (
     <HeroContainer title="Gestão de equipamentos">
       <Row
@@ -68,8 +77,29 @@ const EquipmentAdmin: React.FC = () => {
         <Tooltip title="Associação com parâmetros">
           <AccessButton
             startIcon={<ParameterIcon />}
-            label="Associar parâmetro"
-            to="/zeno"
+            label="Associar parâmetros"
+            // to={compositePathRoute([
+            //   HomePath,
+            //   AutomationPath,
+            //   EquipmentParametersAssociationPath,
+            // ])}
+            mode="regularButton"
+            onClick={() => {
+              if (selectedEquipment) {
+                navigate(
+                  compositePathRoute([
+                    HomePath,
+                    AutomationPath,
+                    EquipmentParametersAssociationPath,
+                  ]),
+                  {
+                    state: {
+                      selectedEquipment,
+                    },
+                  }
+                );
+              }
+            }}
           />
         </Tooltip>
       </Row>
@@ -82,7 +112,11 @@ const EquipmentAdmin: React.FC = () => {
           },
         }}
       >
-        <EquipmentTable />
+        <EquipmentTable
+          handleSelectedEquipment={(equipment) =>
+            setSelectedEquipment(equipment)
+          }
+        />
       </Row>
     </HeroContainer>
   );

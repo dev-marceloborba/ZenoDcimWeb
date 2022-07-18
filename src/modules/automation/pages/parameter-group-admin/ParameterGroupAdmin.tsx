@@ -294,11 +294,7 @@ export default function ParameterGroupAdmin() {
                           onClick={() => handleSelectItem(ap)}
                         >
                           <ListItemIcon>
-                            <Checkbox
-                              // checked={checked.indexOf(ap) !== -1}
-                              checked={ap.checked}
-                              tabIndex={-1}
-                            />
+                            <Checkbox checked={ap.checked} tabIndex={-1} />
                           </ListItemIcon>
                           <ListItemText primary={ap.name} />
                         </ListItem>

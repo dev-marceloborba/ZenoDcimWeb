@@ -8,6 +8,8 @@ export const AutomationSettingsPath = "settings";
 // equipments
 export const EquipmentManagementPath = AutomationSettingsPath + "/equipments";
 export const EquipmentFormPath = EquipmentManagementPath + "/form";
+export const EquipmentParametersAssociationPath =
+  EquipmentManagementPath + "/equipment-parameters-association";
 // parameters
 export const ParameterManagementPath = AutomationSettingsPath + "/parameters";
 export const ParameterFormPath = ParameterManagementPath + "/form";

@@ -6,7 +6,7 @@ import { SxProps, Theme } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 type AccessButtonProps = {
-  mode: "regularButton" | "link";
+  mode?: "regularButton" | "link";
   label: string;
   to?: string;
   // MuiButton props
@@ -40,8 +40,8 @@ const LinkButton = React.forwardRef<HTMLAnchorElement, AccessButtonProps>(
         component={RouterLink}
         variant="text"
         to={to ?? ""}
-        {...rest}
         ref={ref}
+        {...rest}
       >
         {props.label}
       </Button>
@@ -59,7 +59,7 @@ const RegularButton: React.FC<RegularButtonProps> = ({ ...props }) => {
 };
 
 export default function AccessButton(props: AccessButtonProps) {
-  const { mode } = props;
+  const { mode = "link" } = props;
 
   if (mode === "link") return <LinkButton {...props} />;
   else return <RegularButton {...props} />;

@@ -7,7 +7,12 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { EquipmentFormPath } from "modules/automation/routes/paths";
 
-export default function EquipmentTable() {
+type EquipmentTableProps = {
+  handleSelectedEquipment: (equipment: any) => void;
+};
+
+export default function EquipmentTable(props: EquipmentTableProps) {
+  const { handleSelectedEquipment } = props;
   const [tableData, setTableData] = useState<any>();
   const { buildings } = useAutomationFilters();
   const { navigate } = useRouter();
@@ -53,6 +58,9 @@ export default function EquipmentTable() {
               },
             }
           );
+        },
+        onSelectedItems: (items) => {
+          if (items.length === 1) handleSelectedEquipment(items[0]);
         },
       }}
     />
