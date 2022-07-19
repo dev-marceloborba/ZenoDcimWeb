@@ -83,6 +83,17 @@ export interface EquipmentParameterViewModel {
   address: string;
 }
 
+export interface UpdateEquipmentParameterViewModel {
+  id: string;
+  name: string;
+  unit: string;
+  lowLimit: number;
+  highLimit: number;
+  scale: number;
+  dataSource: string;
+  address: string;
+}
+
 export interface EquipmentParameterModel extends EquipmentParameterViewModel {
   id: string;
 }

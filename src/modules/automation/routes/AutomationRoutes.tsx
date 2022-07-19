@@ -15,6 +15,7 @@ import {
   EquipmentConnectivityPath,
   EquipmentFormPath,
   EquipmentManagementPath,
+  EquipmentParameterFormPath,
   EquipmentParametersAssociationPath,
   FireSystemPath,
   FloorFormPath,
@@ -47,6 +48,7 @@ import ParameterAdmin from "../pages/parameter-admin/ParameterAdmin";
 import ParameterForm from "../pages/parameter-admin/components/parameter-form/ParameterForm";
 import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAdmin";
 import EquipmentParametersAssociation from "../pages/equipment-admin/components/equipment-parameters-association/EquipmentParametersAssociation";
+import EquipmentParameterForm from "../pages/equipment-admin/components/equipment-parameter-form/EquipmentParameterForm";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -69,6 +71,10 @@ const AutomationRoutes: React.FC = () => {
       <Route
         path={EquipmentParametersAssociationPath}
         element={<EquipmentParametersAssociation />}
+      />
+      <Route
+        path={EquipmentParameterFormPath}
+        element={<EquipmentParameterForm />}
       />
       {/* parameters */}
       <Route path={ParameterManagementPath} element={<ParameterAdmin />} />

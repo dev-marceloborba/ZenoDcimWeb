@@ -6,6 +6,7 @@ import {
   EquipmentParameterModel,
   MultipleEquipmentParameterViewModel,
   MultipleEquipmentParameterModel,
+  UpdateEquipmentParameterViewModel,
 } from "modules/automation/models/automation-model";
 import { RootState } from "modules/core/store";
 
@@ -30,6 +31,17 @@ export const equipmentParametersApi = createApi({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter",
         method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["EquipmentParameterModel"],
+    }),
+    updateEquipmentParameter: builder.mutation<
+      ApiResponseModel<EquipmentParameterModel>,
+      UpdateEquipmentParameterViewModel
+    >({
+      query: (params) => ({
+        url: `v1/data-center/building/floor/room/equipment/parameter/${params.id}`,
+        method: "PUT",
         body: params,
       }),
       invalidatesTags: ["EquipmentParameterModel"],
@@ -80,6 +92,7 @@ export const equipmentParametersApi = createApi({
 
 export const {
   useCreateEquipmentParameterMutation,
+  useUpdateEquipmentParameterMutation,
   useDeleteEquipmentParameterMutation,
   useFindAllEquipmentParametersQuery,
   useFindEquipmentParameterByIdMutation,

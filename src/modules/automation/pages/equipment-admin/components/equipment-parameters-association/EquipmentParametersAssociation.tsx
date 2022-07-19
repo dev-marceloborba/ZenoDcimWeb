@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
@@ -13,6 +13,7 @@ import { useFindAllParameterGroupsQuery } from "modules/automation/services/para
 import { useFindParameterByGroupMutation } from "modules/automation/services/parameter-service";
 import {
   EquipmentParameterGroupModel,
+  EquipmentParameterModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
 
@@ -28,6 +29,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import Row from "modules/shared/components/Row";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import { EquipmentParameterFormPath } from "modules/automation/routes/paths";
 
 type ParameterCheckedViewModel = ParameterModel & {
   checked: boolean;
@@ -40,6 +45,7 @@ export default function EquipmentParametersAssociation() {
   const [selectedGroup, setSelectedGroup] =
     useState<EquipmentParameterGroupModel | null>(null);
   const {
+    navigate,
     state: { selectedEquipment: equipment },
   } = useRouter();
   const [
@@ -84,20 +90,39 @@ export default function EquipmentParametersAssociation() {
         lowLimit: p.lowLimit,
       })),
     }).unwrap();
+    getParameters();
   };
 
   const handleDeleteParametersSelection = async (items: any[]) => {
     for (let i = 0; i < items.length; i++) {
       await deleteEquipmentParameters(items[i].id).unwrap();
     }
+    getParameters();
   };
 
-  useEffect(() => {
-    async function getParameters() {
-      await findEquipmentParametersByEquipmentId(equipment.id).unwrap();
-    }
-    getParameters();
+  const handleSelectedRow = (parameter: EquipmentParameterModel) => {
+    navigate(
+      compositePathRoute([
+        HomePath,
+        AutomationPath,
+        EquipmentParameterFormPath,
+      ]),
+      {
+        state: {
+          data: parameter,
+          mode: "edit",
+        },
+      }
+    );
+  };
+
+  const getParameters = useCallback(async () => {
+    await findEquipmentParametersByEquipmentId(equipment.id).unwrap();
   }, [equipment.id, findEquipmentParametersByEquipmentId]);
+
+  useEffect(() => {
+    getParameters();
+  }, [equipment.id, findEquipmentParametersByEquipmentId, getParameters]);
 
   return (
     <HeroContainer title="Associar parâmetros a equipamento">
@@ -106,7 +131,8 @@ export default function EquipmentParametersAssociation() {
         columns={columns}
         rows={parameters ?? []}
         options={{
-          onDeleteSelection: (rows) => handleDeleteParametersSelection(rows),
+          onDeleteSelection: handleDeleteParametersSelection,
+          onRowClick: handleSelectedRow,
         }}
       />
       <Grid container columnSpacing={2}>
