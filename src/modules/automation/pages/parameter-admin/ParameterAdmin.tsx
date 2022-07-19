@@ -3,6 +3,7 @@ import {
   ParameterFormPath,
   ParameterGroupManagementPath,
 } from "modules/automation/routes/paths";
+import useRouter from "modules/core/hooks/useRouter";
 import { AutomationPath } from "modules/home/routes/paths";
 import { HomePath } from "modules/paths";
 import AccessButton from "modules/shared/components/access-button/AccessButtonv2";
@@ -13,14 +14,25 @@ import ParameterImport from "./components/parameter-import/ParameterImport";
 import ParameterTable from "./components/parameter-table/ParameterTable";
 
 export default function ParameterAdmin() {
+  const { navigate } = useRouter();
   return (
     <HeroContainer title="Gestão de parâmetros">
       <Divider sx={{ mt: 2 }} />
       <Row sx={{ mt: 2 }}>
         <AccessButton
-          mode="link"
+          mode="regularButton"
           label="Novo parâmetro"
-          to={compositePathRoute([HomePath, AutomationPath, ParameterFormPath])}
+          onClick={() =>
+            navigate(
+              compositePathRoute([HomePath, AutomationPath, ParameterFormPath]),
+              {
+                state: {
+                  data: null,
+                  mode: "new",
+                },
+              }
+            )
+          }
         />
         <AccessButton
           mode="link"

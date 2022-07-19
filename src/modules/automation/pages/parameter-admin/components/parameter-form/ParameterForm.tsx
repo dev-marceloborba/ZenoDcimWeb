@@ -1,52 +1,76 @@
-import { number, object, string } from "yup";
+import { number, object, SchemaOf, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import Loading from "modules/shared/components/Loading";
-import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
-import { ParameterViewModel } from "modules/automation/models/automation-model";
+
+import {
+  ParameterModel,
+  ParameterViewModel,
+} from "modules/automation/models/automation-model";
 import HeroContainer from "modules/shared/components/HeroContainer";
 
-import { useModal } from "mui-modal-provider";
-import Button from "@mui/material/Button";
-import GroupListModal from "../group-list-modal/GroupListModal";
+import {
+  useCreateParameterMutation,
+  useUpdateParameterMutation,
+} from "modules/automation/services/parameter-service";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useToast } from "modules/shared/components/ToastProvider";
+import { useEffect } from "react";
+import useRouter from "modules/core/hooks/useRouter";
+
+type FormMode = "edit" | "new";
 
 export default function ParameterForm() {
-  const { data: parameterGroups, isLoading } = useFindAllParameterGroupsQuery();
-  const { showModal } = useModal();
+  const [createParameter, { isLoading }] = useCreateParameterMutation();
+  const [updateParameter] = useUpdateParameterMutation();
+  const navigate = useNavigate();
+  const {
+    state: { data, mode },
+  }: { state: { data: ParameterModel; mode: FormMode } } = useRouter();
+  const toast = useToast();
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue } = methods;
 
-  const onSubmit = async (data: ParameterViewModel) => {
-    console.log(data);
+  const onSubmit = async (viewModel: ParameterViewModel) => {
+    if (mode === "new") {
+      await createParameter(viewModel).unwrap();
+      toast
+        .open("Parâmetro criado com sucesso!", 2000, "success")
+        .then(() => navigate(-1));
+    } else {
+      await updateParameter({ ...viewModel, id: data.id }).unwrap();
+      toast
+        .open("Parâmetro editado com sucesso!", 2000, "success")
+        .then(() => navigate(-1));
+    }
   };
 
-  const handleOpenGroupModal = () => {
-    const modal = showModal(GroupListModal, {
-      onConfirm: (data) => {
-        console.log(data);
-      },
-      onCancel: () => {
-        modal.hide();
-      },
-      PaperProps: {
-        style: {
-          minHeight: "80vh",
-          minWidth: "80vw",
-        },
-      },
-      title: "Grupos de parâmetros",
-    });
-  };
+  useEffect(() => {
+    function configureParameter() {
+      if (mode === "edit") {
+        setValue("name", data?.name);
+        setValue("unit", data?.unit);
+        setValue("lowLimit", data?.lowLimit);
+        setValue("highLimit", data?.highLimit);
+        setValue("scale", data?.scale);
+      }
+    }
+    if (data) {
+      configureParameter();
+    }
+  }, [data, mode, setValue]);
 
   return (
-    <HeroContainer title="Novo parâmetro">
+    <HeroContainer
+      title={mode === "edit" ? "Editar parâmetro" : "Novo parâmetro"}
+    >
       <Form
         onSubmit={handleSubmit(onSubmit)}
         sx={{
@@ -61,16 +85,7 @@ export default function ParameterForm() {
           <ControlledTextInput name="lowLimit" label="Limite inferior" />
           <ControlledTextInput name="highLimit" label="Limite superior" />
           <ControlledTextInput name="scale" label="Escala" />
-          <ControlledTextInput
-            name="groupId"
-            label="Grupo"
-            items={parameterGroups?.map((parameterGroup) => ({
-              description: parameterGroup.name,
-              value: parameterGroup.id,
-            }))}
-          />
-          <SubmitButton label="Criar" />
-          {/* <Button onClick={handleOpenGroupModal}>Criar grupo</Button> */}
+          <SubmitButton label="Salvar" />
         </FormProvider>
         <Loading open={isLoading} />
       </Form>
@@ -78,11 +93,10 @@ export default function ParameterForm() {
   );
 }
 
-const validationSchema = object().shape({
+const validationSchema: SchemaOf<ParameterViewModel> = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   lowLimit: number().required("Limite inferior é obrigatório"),
   highLimit: number().required("Limite superior é obrigatório"),
   scale: number().required("Escala é obrigatória"),
-  groupId: string().required("Grupo é obrigatório"),
 });

@@ -118,7 +118,15 @@ export interface ParameterViewModel {
   lowLimit: number;
   highLimit: number;
   scale: number;
-  groupId: string;
+}
+
+export interface UpdateParameterViewModel {
+  id: string;
+  name: string;
+  unit: string;
+  lowLimit: number;
+  highLimit: number;
+  scale: number;
 }
 
 export interface ParameterModel extends ParameterViewModel {

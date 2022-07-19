@@ -6,6 +6,7 @@ import {
   EquipmentOnGroupViewModel,
   ParameterModel,
   ParameterViewModel,
+  UpdateParameterViewModel,
 } from "../models/automation-model";
 
 export const parameterApi = createApi({
@@ -29,6 +30,17 @@ export const parameterApi = createApi({
       query: (params) => ({
         url: "v1/data-center/parameters",
         method: "POST",
+        body: params,
+      }),
+      invalidatesTags: ["ParameterModel"],
+    }),
+    updateParameter: builder.mutation<
+      ApiResponseModel<ParameterModel>,
+      UpdateParameterViewModel
+    >({
+      query: (params) => ({
+        url: `v1/data-center/parameters/${params.id}`,
+        method: "PUT",
         body: params,
       }),
       invalidatesTags: ["ParameterModel"],
@@ -68,6 +80,7 @@ export const parameterApi = createApi({
 
 export const {
   useCreateParameterMutation,
+  useUpdateParameterMutation,
   useDeleteParameterMutation,
   useFindAllParametersQuery,
   useCreateParametersIntoGroupMutation,
