@@ -26,10 +26,8 @@ export default function EquipmentTable(props: EquipmentTableProps) {
             vet.push({
               building: b.name,
               floor: f.name,
-              alarms: e.alarms,
               createdAt: new Date().toLocaleDateString(),
               room: r.name,
-              status: e.status.toString(),
               name: e.component,
               id: e.id,
             });

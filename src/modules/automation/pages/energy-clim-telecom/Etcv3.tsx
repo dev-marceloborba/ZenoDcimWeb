@@ -8,10 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import BuildingDropdown from "modules/automation/components/BuildingDropdown";
-
-import FloorDropdown from "modules/automation/components/FloorDropdown";
-import RoomDropdown from "modules/automation/components/RoomDropdown";
 import { CagePath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import { AutomationPath } from "modules/home/routes/paths";
@@ -23,74 +19,73 @@ import compositePathRoute from "modules/utils/compositePathRoute";
 export default function Etcv3() {
   return (
     <HeroContainer title="Energia, clima e telecom">
-      <Row
-        sx={{
-          maxWidth: "60%",
-          " & .MuiFormControl-root:nth-child(2)": {
-            mx: 2,
-          },
-          mt: 2,
-        }}
-      >
-        <BuildingDropdown />
-        <FloorDropdown />
-        <RoomDropdown />
-      </Row>
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
-          <EquipmentCard title="Data Hall" />
+          <RoomCard title="Data Hall" />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="Geradores" />
+          <RoomCard title="Geradores" />
         </Grid>
         <Grid item md={4}>
-          <EquipmentCard title="Subestação" />
+          <RoomCard title="Subestação" />
         </Grid>
       </Grid>
     </HeroContainer>
   );
 }
 
-type EquipmentCardProps = {
+type RoomCardProps = {
   title: string;
 };
 
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ title }) => {
-  const equipments: EquipmentTableData[] = [
+const RoomCard: React.FC<RoomCardProps> = ({ title }) => {
+  const rooms: EquipmentTableData[] = [
     {
-      equipment: "Equipamento 1",
+      room: "Data Hall 1",
       alarms: 0,
       power: 12.3,
     },
     {
-      equipment: "Equipamento 2",
+      room: "Data Hall 2",
       alarms: 1,
       power: 22.9,
     },
   ];
+
   return (
     <Card variant="elevation">
       <CardContent>
-        <Typography variant="h5" color="text.secondary" gutterBottom>
-          {title}
-        </Typography>
-        <EquipmentTable equipments={equipments} />
+        <Row sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h5" color="text.secondary" gutterBottom>
+            {title}
+          </Typography>
+          <Typography>
+            Potência consumida:{" "}
+            <strong>
+              {rooms.reduce((previousValue, currentValue) => {
+                return previousValue + currentValue.power;
+              }, 0)}
+              {" kW"}
+            </strong>
+          </Typography>
+        </Row>
+        <EquipmentTable rooms={rooms} />
       </CardContent>
     </Card>
   );
 };
 
 type EquipmentTableData = {
-  equipment: string;
+  room: string;
   alarms: number;
   power: number;
 };
 
 type EquipmentTableProps = {
-  equipments: EquipmentTableData[];
+  rooms: EquipmentTableData[];
 };
 
-const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
+const EquipmentTable: React.FC<EquipmentTableProps> = ({ rooms }) => {
   const { navigate, path } = useRouter();
 
   const handleOpenEquipmentDetails = (row: any) => {
@@ -118,15 +113,15 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {equipments.map((equipment) => (
+          {rooms.map((room) => (
             <TableRow
-              key={equipment.equipment}
-              onClick={() => handleOpenEquipmentDetails(equipment)}
+              key={room.room}
+              onClick={() => handleOpenEquipmentDetails(room)}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{equipment.equipment}</TableCell>
-              <TableCell>{equipment.alarms}</TableCell>
-              <TableCell>{equipment.power}</TableCell>
+              <TableCell>{room.room}</TableCell>
+              <TableCell>{room.alarms}</TableCell>
+              <TableCell>{room.power}</TableCell>
             </TableRow>
           ))}
         </TableBody>
