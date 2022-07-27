@@ -1,4 +1,5 @@
 import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -20,12 +21,17 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { CagePath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
+import { useFindAllFloorsQuery } from "modules/datacenter/services/floor-service";
+import Loading from "modules/shared/components/Loading";
+import { RoomModel } from "modules/datacenter/models/datacenter-model";
 
-const Etcv2: React.FC = () => {
+const EtcFloor: React.FC = () => {
+  const { data, isLoading } = useFindAllFloorsQuery();
+
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
-      <Row
+      {/* <Row
         sx={{
           maxWidth: "60%",
           " & .MuiFormControl-root:nth-child(2)": {
@@ -37,26 +43,33 @@ const Etcv2: React.FC = () => {
         <BuildingDropdown />
         <FloorDropdown />
         <RoomDropdown />
-      </Row>
+      </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        <Grid item md={4}>
-          <EquipmentCard title="Terreo" />
-        </Grid>
-        <Grid item md={4}>
-          <EquipmentCard title="Data Hall 01" />
-        </Grid>
-        <Grid item md={4}>
-          <EquipmentCard title="Data Hall 02" />
-        </Grid>
+        {data?.map((floor) => (
+          <Grid key={floor.id} item md={4}>
+            <EquipmentCard
+              title={floor.name}
+              rooms={
+                floor.rooms?.map<RoomTableData>((room) => ({
+                  room: room,
+                  alarms: 0,
+                  status: 0,
+                })) ?? []
+              }
+            />
+          </Grid>
+        ))}
       </Grid>
+      <Loading open={isLoading} />
     </HeroContainer>
   );
 };
 
-export default Etcv2;
+export default EtcFloor;
 
-type EquipmentCardProps = {
+type RoomCardProps = {
   title: string;
+  rooms: RoomTableData[];
 };
 
 enum EEquipmentStatus {
@@ -64,39 +77,36 @@ enum EEquipmentStatus {
   ONLINE = 1,
 }
 
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ title }) => {
-  const equipments: EquipmentTableData[] = [
-    {
-      equipment: "Equipamento 1",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      equipment: "Equipamento 2",
-      alarms: 1,
-      status: EEquipmentStatus.OFFLINE,
-    },
-  ];
+const EquipmentCard: React.FC<RoomCardProps> = ({ title, rooms }) => {
   return (
     <Card variant="elevation">
       <CardContent>
-        <Typography variant="h5" color="text.secondary" gutterBottom>
+        <Typography
+          component={RouterLink}
+          variant="h5"
+          color="text.secondary"
+          gutterBottom
+          to="/zeno/automation/etc"
+          sx={{
+            textDecoration: "none",
+          }}
+        >
           {title}
         </Typography>
-        <EquipmentTable equipments={equipments} />
+        <RoomTable rooms={rooms} />
       </CardContent>
     </Card>
   );
 };
 
-type EquipmentTableData = {
-  equipment: string;
+type RoomTableData = {
+  room: RoomModel;
   alarms: number;
   status: EEquipmentStatus;
 };
 
-type EquipmentTableProps = {
-  equipments: EquipmentTableData[];
+type RoomTableProps = {
+  rooms: RoomTableData[];
 };
 
 type EquipmentStatusProps = {
@@ -120,11 +130,11 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
   }
 };
 
-const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
+const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
   const { navigate, path } = useRouter();
 
-  const handleOpenEquipmentDetails = (row: any) => {
-    const { equipment } = row;
+  const handleOpenRoomDetails = (row: RoomTableData) => {
+    const { room } = row;
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
@@ -132,7 +142,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     ]);
     navigate(destinationPath, {
       state: {
-        data: equipment,
+        data: room,
         from: path,
       },
     });
@@ -142,22 +152,22 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Equipamento</TableCell>
+            <TableCell>Sala</TableCell>
             <TableCell>Alarmes</TableCell>
             <TableCell>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {equipments.map((equipment) => (
+          {rooms.map((room) => (
             <TableRow
-              key={equipment.equipment}
-              onClick={() => handleOpenEquipmentDetails(equipment)}
+              key={room.room.id}
+              onClick={() => handleOpenRoomDetails(room)}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{equipment.equipment}</TableCell>
-              <TableCell>{equipment.alarms}</TableCell>
+              <TableCell>{room.room.name}</TableCell>
+              <TableCell>{room.alarms}</TableCell>
               <TableCell>
-                <EquipmentStatus status={equipment.status} />
+                <EquipmentStatus status={room.status} />
               </TableCell>
             </TableRow>
           ))}

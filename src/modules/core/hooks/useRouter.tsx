@@ -22,8 +22,13 @@ const useRouter = () => {
     router(to, { state });
   };
 
+  const back = () => {
+    router(-1);
+  };
+
   return {
     navigate,
+    back,
     path: pathname,
     state,
     params,

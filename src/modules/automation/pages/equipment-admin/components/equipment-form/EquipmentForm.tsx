@@ -41,6 +41,7 @@ const EquipmentForm: React.FC = () => {
       form: string;
     };
   } = useRouter();
+  const { back } = useRouter();
   const [findEquipmentById] = useFindEquipmentByIdMutation();
 
   const methods = useForm<EquipmentViewModel>({
@@ -77,11 +78,13 @@ const EquipmentForm: React.FC = () => {
   const onSubmit: SubmitHandler<EquipmentViewModel> = async (data) => {
     try {
       await addEquipment(data).unwrap();
-      toast.open(
-        `Equipamento ${data.description} criado com sucesso`,
-        2000,
-        "success"
-      );
+      toast
+        .open(
+          `Equipamento ${data.description} criado com sucesso`,
+          2000,
+          "success"
+        )
+        .then(() => back());
     } catch (error) {
       toast.open(
         `Erro ao excluir o equipamento ${data.description}: ${error}`,
@@ -146,22 +149,13 @@ const EquipmentForm: React.FC = () => {
                   />
                   <ControlledTextInput
                     fullWidth
-                    name="class"
-                    label="Classe"
-                    items={Array.from({ length: 11 }).map((_, i) => ({
-                      description: `${i + 1}`,
-                      value: `${i + 1}`,
-                    }))}
-                  />
-                  <ControlledTextInput
-                    fullWidth
                     name="component"
                     label="Componente"
                   />
                   <ControlledTextInput
                     fullWidth
                     name="componentCode"
-                    label="Código do componente"
+                    label="Código/Nº de série"
                   />
                   <ControlledTextInput
                     fullWidth
@@ -187,6 +181,21 @@ const EquipmentForm: React.FC = () => {
                       },
                     ]}
                   />
+                  <ControlledTextInput
+                    fullWidth
+                    name="weight"
+                    label="Peso (kg)"
+                  />
+                  <ControlledTextInput
+                    fullWidth
+                    name="size"
+                    label="Tamanho (LxAxC cm)"
+                  />
+                  <ControlledTextInput
+                    fullWidth
+                    name="powerLimit"
+                    label="Potência limite (W)"
+                  />
                   <SubmitButton label="Salvar" />
                 </FormProvider>
               </Form>
@@ -203,11 +212,13 @@ const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
   buildingId: string().required("Prédio é obrigatório"),
   floorId: string().required("Andar é obrigatório"),
   roomId: string().required("Sala é obrigatória"),
-  class: string().required("Classe é obrigatória"),
   component: string().required("Componente é obrigatório"),
   componentCode: string().required("Componente é obrigatório"),
   description: string().required("Descrição é obrigatório"),
   group: number().required("Grupo é obrigatório"),
+  weight: number().required("Peso é obrigatório"),
+  size: string().required("Classe é obrigatória"),
+  powerLimit: number().required("Potência é obrigatória"),
 });
 
 export default EquipmentForm;

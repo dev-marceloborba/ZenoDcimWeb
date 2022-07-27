@@ -56,11 +56,13 @@ export interface EquipmentViewModel {
   buildingId: string;
   floorId: string;
   roomId: string;
-  class: string;
   component: string;
   componentCode: string;
   description: string;
   group: EEquipmentGroup;
+  weight: number;
+  size: string;
+  powerLimit: number;
 }
 
 export interface EquipmentModel extends EquipmentViewModel {
@@ -70,6 +72,12 @@ export interface EquipmentModel extends EquipmentViewModel {
   alarms: number;
   createdDate: Date;
   equipmentParameters?: EquipmentParameterModel[];
+  weight: number;
+  size: string;
+  powerLimit: number;
+  building?: BuildingModel;
+  floor?: FloorModel;
+  room?: RoomModel;
 }
 
 export interface EquipmentParameterViewModel {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -24,15 +24,65 @@ import {
   RackPath,
 } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
+import { useFindAllRoomsQuery } from "modules/datacenter/services/room-service";
+import Loading from "modules/shared/components/Loading";
+import {
+  EEquipmentGroup,
+  EquipmentModel,
+} from "modules/automation/models/automation-model";
+import { useFindEquipmentsByRoomIdMutation } from "modules/automation/services/equipment-service";
+
+enum EEquipmentStatus {
+  OFFLINE = 0,
+  ONLINE = 1,
+}
+
+type EquipmentState = {
+  energyEquipments: EquipmentModel[];
+  climateEquipments: EquipmentModel[];
+  telecomEquipments: EquipmentModel[];
+};
 
 const Cage: React.FC = () => {
   const {
-    state: { data: equipment },
+    state: { data: room },
   } = useRouter();
+  const [findEquipments, { isLoading }] = useFindEquipmentsByRoomIdMutation();
+  const [equipmentData, setEquipmentData] = useState<EquipmentState>({
+    energyEquipments: [],
+    climateEquipments: [],
+    telecomEquipments: [],
+  });
+
+  useEffect(() => {
+    async function fetchEquipments() {
+      if (room) {
+        const equipments = await findEquipments(room.id).unwrap();
+        const energy = equipments.filter(
+          (x) => x.group === EEquipmentGroup.ENERGY
+        );
+        const climate = equipments.filter(
+          (x) => x.group === EEquipmentGroup.CLIM
+        );
+        const telecom = equipments.filter(
+          (x) => x.group === EEquipmentGroup.TELECOM
+        );
+
+        setEquipmentData({
+          energyEquipments: energy,
+          climateEquipments: climate,
+          telecomEquipments: telecom,
+        });
+      }
+    }
+
+    fetchEquipments();
+  }, [room, findEquipments]);
+
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
-      <Row
+      {/* <Row
         sx={{
           maxWidth: "60%",
           " & .MuiFormControl-root:nth-child(2)": {
@@ -43,18 +93,54 @@ const Cage: React.FC = () => {
         <BuildingDropdown />
         <FloorDropdown />
         <RoomDropdown />
-      </Row>
+      </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
-          <EquipmentCard title={`${equipment} - Energia`} />
+          <EquipmentCard
+            title={`${room.name} - Energia`}
+            equipments={
+              equipmentData.energyEquipments.map<EquipmentTableData>(
+                (equip) => ({
+                  alarms: 0,
+                  equipment: equip.component,
+                  status: EEquipmentStatus.ONLINE,
+                })
+              ) ?? []
+            }
+          />
         </Grid>
+
         <Grid item md={4}>
-          <EquipmentCard title={`${equipment} - Clima`} />
+          <EquipmentCard
+            title={`${room.name} - Clima`}
+            equipments={
+              equipmentData.climateEquipments.map<EquipmentTableData>(
+                (equip) => ({
+                  alarms: 0,
+                  equipment: equip.component,
+                  status: EEquipmentStatus.ONLINE,
+                })
+              ) ?? []
+            }
+          />
         </Grid>
+
         <Grid item md={4}>
-          <EquipmentCard title={`${equipment} - Telecom`} />
+          <EquipmentCard
+            title={`${room.name} - Telecom`}
+            equipments={
+              equipmentData.telecomEquipments.map<EquipmentTableData>(
+                (equip) => ({
+                  alarms: 0,
+                  equipment: equip.component,
+                  status: EEquipmentStatus.ONLINE,
+                })
+              ) ?? []
+            }
+          />
         </Grid>
       </Grid>
+      <Loading open={isLoading} />
     </HeroContainer>
   );
 };
@@ -63,26 +149,10 @@ export default Cage;
 
 type EquipmentCardProps = {
   title: string;
+  equipments: EquipmentTableData[];
 };
 
-enum EEquipmentStatus {
-  OFFLINE = 0,
-  ONLINE = 1,
-}
-
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ title }) => {
-  const equipments: EquipmentTableData[] = [
-    {
-      equipment: "Equipamento 1",
-      alarms: 0,
-      status: EEquipmentStatus.ONLINE,
-    },
-    {
-      equipment: "Equipamento 2",
-      alarms: 1,
-      status: EEquipmentStatus.OFFLINE,
-    },
-  ];
+const EquipmentCard: React.FC<EquipmentCardProps> = ({ title, equipments }) => {
   return (
     <Card variant="elevation">
       <CardContent>
@@ -155,9 +225,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {equipments.map((equipment) => (
+          {equipments.map((equipment, index) => (
             <TableRow
-              key={equipment.equipment}
+              key={index}
               onClick={() => handleOpenEquipmentDetails(equipment)}
               sx={{ cursor: "pointer" }}
             >

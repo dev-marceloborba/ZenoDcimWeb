@@ -12,6 +12,7 @@ import {
   BuildingManagementPath,
   CagePath,
   EnergyClimTelecomPath,
+  EnergyClimTelecomFloorPath,
   EquipmentConnectivityPath,
   EquipmentFormPath,
   EquipmentManagementPath,
@@ -29,7 +30,7 @@ import {
   SiteFormPath,
   SiteManagementPath,
 } from "./paths";
-import Etcv2 from "../pages/energy-clim-telecom/Etcv2";
+import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
 // import RuleRegister from "../pages/rule-register/RuleRegister";
@@ -49,12 +50,13 @@ import ParameterForm from "../pages/parameter-admin/components/parameter-form/Pa
 import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAdmin";
 import EquipmentParametersAssociation from "../pages/equipment-admin/components/equipment-parameters-association/EquipmentParametersAssociation";
 import EquipmentParameterForm from "../pages/equipment-admin/components/equipment-parameter-form/EquipmentParameterForm";
-import Etcv3 from "../pages/energy-clim-telecom/Etcv3";
+import EtcBuilding from "../pages/energy-clim-telecom/EtcBuilding";
 
 const AutomationRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path={EnergyClimTelecomPath} element={<Etcv3 />} />
+      <Route path={EnergyClimTelecomPath} element={<EtcBuilding />} />
+      <Route path={EnergyClimTelecomFloorPath} element={<EtcFloor />} />
       <Route path={CagePath} element={<Cage />} />
       <Route path={RackPath} element={<Rack />} />
 

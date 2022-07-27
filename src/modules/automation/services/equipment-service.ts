@@ -1,13 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
-import {
-  BuildingsResponse,
-  EquipmentRequest,
-  EquipmentResponse,
-  MultipleEquipmentsRequest,
-} from "app/models/data-center.model";
+
 import { RootState } from "modules/core/store";
+import {
+  EquipmentModel,
+  EquipmentViewModel,
+  MultipleEquipmentsViewModel,
+} from "../models/automation-model";
+import { BuildingsModel } from "modules/datacenter/models/datacenter-model";
 
 export const equipmentApi = createApi({
   reducerPath: "equipmentApi",
@@ -21,28 +22,57 @@ export const equipmentApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["EquipmentResponse"],
+  tagTypes: ["EquipmentModel"],
   endpoints: (builder) => ({
     createEquipment: builder.mutation<
-      ApiResponseModel<EquipmentResponse>,
-      EquipmentRequest
+      ApiResponseModel<EquipmentModel>,
+      EquipmentViewModel
     >({
       query: (newEquipment) => ({
         url: "v1/data-center/building/floor/room/equipment",
         method: "POST",
         body: newEquipment,
       }),
-      invalidatesTags: ["EquipmentResponse"],
+      invalidatesTags: ["EquipmentModel"],
     }),
-    findAllEquipments: builder.query<EquipmentResponse[], void>({
+    findAllEquipments: builder.query<EquipmentModel[], void>({
       query: () => ({
         url: "v1/data-center/building/floor/room/equipment",
       }),
-      providesTags: ["EquipmentResponse"],
+      providesTags: ["EquipmentModel"],
     }),
-    findEquipmentById: builder.mutation<EquipmentResponse, string>({
+    findAllEquipmentsDetailed: builder.query<EquipmentModel[], void>({
+      query: () => ({
+        url: "v1/data-center/building/floor/room/equipment",
+      }),
+      transformResponse: (data: any[]) => {
+        const vet: any[] = [];
+        data.forEach((equipment) => {
+          vet.push({
+            id: equipment.id,
+            name: equipment.component,
+            weight: equipment.weight,
+            size: equipment.size,
+            powerLimit: equipment.powerLimit,
+            building: equipment.building?.name,
+            floor: equipment.floor?.name,
+            room: equipment.room?.name,
+            createdAt: equipment.createdDate,
+          });
+        });
+        return vet;
+      },
+      providesTags: ["EquipmentModel"],
+    }),
+    findEquipmentById: builder.mutation<EquipmentModel, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/equipment/${id}`,
+        method: "GET",
+      }),
+    }),
+    findEquipmentsByRoomId: builder.mutation<EquipmentModel[], string>({
+      query: (id) => ({
+        url: `v1/data-center/equipments-by-room/${id}`,
         method: "GET",
       }),
     }),
@@ -51,18 +81,18 @@ export const equipmentApi = createApi({
         url: `v1/data-center/building/floor/room/equipment/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["EquipmentResponse"],
+      invalidatesTags: ["EquipmentModel"],
     }),
     createMultipleEquipments: builder.mutation<
-      BuildingsResponse,
-      MultipleEquipmentsRequest
+      BuildingsModel,
+      MultipleEquipmentsViewModel
     >({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/multiple",
         method: "POST",
         body: params,
       }),
-      invalidatesTags: ["EquipmentResponse"],
+      invalidatesTags: ["EquipmentModel"],
     }),
   }),
 });
@@ -70,6 +100,8 @@ export const equipmentApi = createApi({
 export const {
   useCreateEquipmentMutation,
   useFindAllEquipmentsQuery,
+  useFindAllEquipmentsDetailedQuery,
+  useFindEquipmentsByRoomIdMutation,
   useCreateMultipleEquipmentsMutation,
   useDeleteEquipmentMutation,
   useFindEquipmentByIdMutation,

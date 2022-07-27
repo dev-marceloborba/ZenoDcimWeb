@@ -104,14 +104,14 @@ const menuItems: ListItemLinkProps[] = [
         primary: "Energia, Clima e Telecom",
         to: `/${HomePath}/${AutomationPath}/${EnergyClimTelecomPath}`,
       },
-      {
-        primary: "Incêndio",
-        to: `/${HomePath}/${AutomationPath}/${FireSystemPath}`,
-      },
-      {
-        primary: "Controle de acesso",
-        to: `/${HomePath}/${AutomationPath}/${AccessControlPath}`,
-      },
+      // {
+      //   primary: "Incêndio",
+      //   to: `/${HomePath}/${AutomationPath}/${FireSystemPath}`,
+      // },
+      // {
+      //   primary: "Controle de acesso",
+      //   to: `/${HomePath}/${AutomationPath}/${AccessControlPath}`,
+      // },
       {
         primary: "Conectividade de equipamentos",
         to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,

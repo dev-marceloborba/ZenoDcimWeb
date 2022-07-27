@@ -1,5 +1,6 @@
 export const EnergyClimTelecomPath = "etc";
-export const CagePath = EnergyClimTelecomPath + "/cage";
+export const EnergyClimTelecomFloorPath = EnergyClimTelecomPath + "/floor";
+export const CagePath = EnergyClimTelecomFloorPath + "/cage";
 export const RackPath = CagePath + "/rack";
 export const FireSystemPath = "fire-system";
 export const AccessControlPath = "access-control";

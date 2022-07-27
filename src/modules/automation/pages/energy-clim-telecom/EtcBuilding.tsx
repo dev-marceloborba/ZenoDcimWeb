@@ -8,50 +8,50 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { CagePath } from "modules/automation/routes/paths";
+import { EnergyClimTelecomFloorPath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import { AutomationPath } from "modules/home/routes/paths";
 import { HomePath } from "modules/paths";
 import HeroContainer from "modules/shared/components/HeroContainer";
+import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 
-export default function Etcv3() {
+export default function EtcBuilding() {
+  const { data, isLoading } = useFindAllBuildingsQuery();
+
   return (
     <HeroContainer title="Energia, clima e telecom">
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        <Grid item md={4}>
-          <RoomCard title="Data Hall" />
-        </Grid>
-        <Grid item md={4}>
-          <RoomCard title="Geradores" />
-        </Grid>
-        <Grid item md={4}>
-          <RoomCard title="Subestação" />
-        </Grid>
+        {data?.map((building) => (
+          <Grid key={building.id} item md={4}>
+            <RoomCard
+              title={building.name}
+              roomData={
+                building.floors?.map<RoomTableData>((floor) => {
+                  return {
+                    room: floor.name,
+                    alarms: 0,
+                    power: 0,
+                  };
+                }) ?? []
+              }
+            />
+          </Grid>
+        ))}
       </Grid>
+      <Loading open={isLoading} />
     </HeroContainer>
   );
 }
 
 type RoomCardProps = {
   title: string;
+  roomData: RoomTableData[];
 };
 
-const RoomCard: React.FC<RoomCardProps> = ({ title }) => {
-  const rooms: EquipmentTableData[] = [
-    {
-      room: "Data Hall 1",
-      alarms: 0,
-      power: 12.3,
-    },
-    {
-      room: "Data Hall 2",
-      alarms: 1,
-      power: 22.9,
-    },
-  ];
-
+const RoomCard: React.FC<RoomCardProps> = ({ title, roomData: rooms }) => {
   return (
     <Card variant="elevation">
       <CardContent>
@@ -69,23 +69,23 @@ const RoomCard: React.FC<RoomCardProps> = ({ title }) => {
             </strong>
           </Typography>
         </Row>
-        <EquipmentTable rooms={rooms} />
+        <RoomTable rooms={rooms} />
       </CardContent>
     </Card>
   );
 };
 
-type EquipmentTableData = {
+type RoomTableData = {
   room: string;
   alarms: number;
   power: number;
 };
 
-type EquipmentTableProps = {
-  rooms: EquipmentTableData[];
+type RoomTableProps = {
+  rooms: RoomTableData[];
 };
 
-const EquipmentTable: React.FC<EquipmentTableProps> = ({ rooms }) => {
+const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
   const { navigate, path } = useRouter();
 
   const handleOpenEquipmentDetails = (row: any) => {
@@ -93,7 +93,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ rooms }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      CagePath,
+      EnergyClimTelecomFloorPath,
     ]);
     navigate(destinationPath, {
       state: {
@@ -107,7 +107,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ rooms }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Equipamento</TableCell>
+            <TableCell>Andar</TableCell>
             <TableCell>Alarmes</TableCell>
             <TableCell>Potência (kW)</TableCell>
           </TableRow>
