@@ -21,17 +21,16 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { CagePath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
-import { useFindAllFloorsQuery } from "modules/datacenter/services/floor-service";
 import Loading from "modules/shared/components/Loading";
 import { RoomModel } from "modules/datacenter/models/datacenter-model";
 import { useFindRoomsByFloorIdMutation } from "modules/datacenter/services/room-service";
 
 const EtcFloor: React.FC = () => {
   const {
-    state: { floor },
+    state: { data: floor },
   } = useRouter();
-  const [findRooms, { data: rooms }] = useFindRoomsByFloorIdMutation();
-  const { data, isLoading } = useFindAllFloorsQuery();
+  const [findRooms, { data: rooms, isLoading }] =
+    useFindRoomsByFloorIdMutation();
 
   useEffect(() => {
     async function fetchRooms() {
@@ -39,6 +38,8 @@ const EtcFloor: React.FC = () => {
     }
     fetchRooms();
   }, [findRooms, floor]);
+
+  console.log(rooms);
 
   return (
     <HeroContainer>
@@ -57,20 +58,18 @@ const EtcFloor: React.FC = () => {
         <RoomDropdown />
       </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        {data?.map((room) => (
-          <Grid key={floor.id} item md={4}>
-            <EquipmentCard
-              title={floor.name}
-              rooms={
-                room.rooms?.map<RoomTableData>((room) => ({
-                  room: room,
-                  alarms: 0,
-                  status: 0,
-                })) ?? []
-              }
-            />
-          </Grid>
-        ))}
+        <Grid item md={4}>
+          <RoomCard
+            title={floor.name}
+            rooms={
+              rooms?.map<RoomTableData>((room) => ({
+                alarms: 0,
+                status: 0,
+                room: room,
+              })) ?? []
+            }
+          />
+        </Grid>
       </Grid>
       <Loading open={isLoading} />
     </HeroContainer>
@@ -89,7 +88,7 @@ enum EEquipmentStatus {
   ONLINE = 1,
 }
 
-const EquipmentCard: React.FC<RoomCardProps> = ({ title, rooms }) => {
+const RoomCard: React.FC<RoomCardProps> = ({ title, rooms }) => {
   return (
     <Card variant="elevation">
       <CardContent>

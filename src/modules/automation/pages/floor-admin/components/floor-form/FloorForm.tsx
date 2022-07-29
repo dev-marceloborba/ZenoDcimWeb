@@ -34,10 +34,10 @@ const FloorForm: React.FC = () => {
     try {
       await addFloor(data).unwrap();
       toast
-        .open(`Andar ${data.name} criado com sucesso`, 2000, "success")
+        .open(`${data.name} criado com sucesso`, 2000, "success")
         .then(() => back());
     } catch (error) {
-      toast.open(`Erro ao criar andar ${data.name}: ${error}`, 2000, "error");
+      toast.open(`Erro ao criar ${data.name}: ${error}`, 2000, "error");
     }
   };
 

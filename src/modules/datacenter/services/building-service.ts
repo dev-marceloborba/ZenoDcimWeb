@@ -36,6 +36,7 @@ export const buildingApi = createApi({
     }),
     findAllBuildings: builder.query<BuildingsModel, void>({
       query: () => ({ url: "v1/data-center/building" }),
+      providesTags: ["BuildingModel"],
     }),
     findBuildingById: builder.mutation<BuildingModel, string>({
       query: (id) => ({ url: `v1/data-center/building/${id}`, method: "GET" }),

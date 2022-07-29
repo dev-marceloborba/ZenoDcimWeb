@@ -16,12 +16,15 @@ import {
   RoomViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { useToast } from "modules/shared/components/ToastProvider";
+import useRouter from "modules/core/hooks/useRouter";
+import Loading from "modules/shared/components/Loading";
 
 const RoomForm: React.FC = () => {
-  const [addRoom, { isLoading, error, isError }] = useCreateRoomMutation();
+  const [addRoom, { isLoading }] = useCreateRoomMutation();
   const { data: buildings } = useFindAllBuildingsQuery();
   const [floors, setFloors] = useState<FloorModel[]>([]);
   const toast = useToast();
+  const { back } = useRouter();
 
   const methods = useForm<RoomViewModel>({
     resolver: yupResolver(validationSchema),
@@ -35,19 +38,18 @@ const RoomForm: React.FC = () => {
     const selectedBulding = buildings?.filter(
       (building) => building.id === buildingWatcher
     )[0];
+    console.log(selectedBulding);
     setFloors(selectedBulding?.floors ?? []);
   }, [buildingWatcher, buildings]);
 
   const onSubmit: SubmitHandler<RoomViewModel> = async (data) => {
     try {
       await addRoom(data).unwrap();
-      toast.open(`Sala ${data.name} criada com sucesso`, 2000, "success");
+      toast
+        .open(`Sala ${data.name} criada com sucesso`, 2000, "success")
+        .then(() => back());
     } catch (error) {
-      toast.open(
-        `Erro ao excluir a sala ${data.name}: ${error}`,
-        2000,
-        "error"
-      );
+      toast.open(`Erro ao criar a sala ${data.name}: ${error}`, 2000, "error");
     }
   };
   return (
@@ -99,6 +101,7 @@ const RoomForm: React.FC = () => {
           </Form>
         </Grid>
       </Grid>
+      <Loading open={isLoading} />
     </Card>
   );
 };

@@ -23,19 +23,19 @@ export const siteApi = createApi({
   endpoints: (builder) => ({
     createSite: builder.mutation<ApiResponseModel<SiteModel>, SiteViewModel>({
       query: (params) => ({
-        url: "v1/data-center/site",
+        url: "v1/data-center/sites",
         method: "POST",
-        data: params,
+        body: params,
       }),
       invalidatesTags: ["SiteModel"],
     }),
     findAllSites: builder.query<SiteModel[], void>({
-      query: () => ({ url: "v1/data-center/site" }),
+      query: () => ({ url: "v1/data-center/sites" }),
       providesTags: ["SiteModel"],
     }),
     deleteSite: builder.mutation<void, string>({
       query: (id) => ({
-        url: `v1/data-center/site/${id}`,
+        url: `v1/data-center/sites/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["SiteModel"],
