@@ -14,12 +14,15 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import { useCreateFloorMutation } from "modules/datacenter/services/floor-service";
 import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import { FloorViewModel } from "modules/datacenter/models/datacenter-model";
+import useRouter from "modules/core/hooks/useRouter";
+import Loading from "modules/shared/components/Loading";
 
 const FloorForm: React.FC = () => {
-  const [addFloor, { isLoading, error, isError }] = useCreateFloorMutation();
+  const [addFloor, { isLoading }] = useCreateFloorMutation();
   const { data: buildings, isLoading: isLoadingBuildings } =
     useFindAllBuildingsQuery();
   const toast = useToast();
+  const { back } = useRouter();
 
   const methods = useForm<FloorViewModel>({
     resolver: yupResolver(validationSchema),
@@ -30,7 +33,9 @@ const FloorForm: React.FC = () => {
   const onSubmit: SubmitHandler<FloorViewModel> = async (data) => {
     try {
       await addFloor(data).unwrap();
-      toast.open(`Andar ${data.name} criado com sucesso`, 2000, "success");
+      toast
+        .open(`Andar ${data.name} criado com sucesso`, 2000, "success")
+        .then(() => back());
     } catch (error) {
       toast.open(`Erro ao criar andar ${data.name}: ${error}`, 2000, "error");
     }
@@ -78,6 +83,7 @@ const FloorForm: React.FC = () => {
           </Form>
         </Grid>
       </Grid>
+      <Loading open={isLoading || isLoadingBuildings} />
     </Card>
   );
 };

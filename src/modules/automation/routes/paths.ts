@@ -16,6 +16,8 @@ export const EquipmentParameterFormPath =
 // parameters
 export const ParameterManagementPath = AutomationSettingsPath + "/parameters";
 export const ParameterFormPath = ParameterManagementPath + "/form";
+export const VirtualParameterFormPath =
+  ParameterManagementPath + "/virtual-parameter-form";
 export const ParameterGroupManagementPath = ParameterManagementPath + "/groups";
 // rooms
 export const RoomManagementPath = AutomationSettingsPath + "/rooms";

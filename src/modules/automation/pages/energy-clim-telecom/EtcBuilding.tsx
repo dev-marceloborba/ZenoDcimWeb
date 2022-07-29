@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { EnergyClimTelecomFloorPath } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
+import { FloorModel } from "modules/datacenter/models/datacenter-model";
 import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import { AutomationPath } from "modules/home/routes/paths";
 import { HomePath } from "modules/paths";
@@ -28,10 +29,10 @@ export default function EtcBuilding() {
           <Grid key={building.id} item md={4}>
             <RoomCard
               title={building.name}
-              roomData={
-                building.floors?.map<RoomTableData>((floor) => {
+              floors={
+                building.floors?.map<FloorTableData>((floor) => {
                   return {
-                    room: floor.name,
+                    floor: floor,
                     alarms: 0,
                     power: 0,
                   };
@@ -46,12 +47,12 @@ export default function EtcBuilding() {
   );
 }
 
-type RoomCardProps = {
+type FloorCardProps = {
   title: string;
-  roomData: RoomTableData[];
+  floors: FloorTableData[];
 };
 
-const RoomCard: React.FC<RoomCardProps> = ({ title, roomData: rooms }) => {
+const RoomCard: React.FC<FloorCardProps> = ({ title, floors }) => {
   return (
     <Card variant="elevation">
       <CardContent>
@@ -62,34 +63,34 @@ const RoomCard: React.FC<RoomCardProps> = ({ title, roomData: rooms }) => {
           <Typography>
             Potência consumida:{" "}
             <strong>
-              {rooms.reduce((previousValue, currentValue) => {
+              {floors.reduce((previousValue, currentValue) => {
                 return previousValue + currentValue.power;
               }, 0)}
               {" kW"}
             </strong>
           </Typography>
         </Row>
-        <RoomTable rooms={rooms} />
+        <FloorTable floors={floors} />
       </CardContent>
     </Card>
   );
 };
 
-type RoomTableData = {
-  room: string;
+type FloorTableData = {
+  floor: FloorModel;
   alarms: number;
   power: number;
 };
 
-type RoomTableProps = {
-  rooms: RoomTableData[];
+type FloorTableProps = {
+  floors: FloorTableData[];
 };
 
-const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
+const FloorTable: React.FC<FloorTableProps> = ({ floors }) => {
   const { navigate, path } = useRouter();
 
-  const handleOpenEquipmentDetails = (row: any) => {
-    const { equipment } = row;
+  const handleOpenFloorDetails = (row: FloorTableData) => {
+    const { floor } = row;
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
@@ -97,7 +98,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
     ]);
     navigate(destinationPath, {
       state: {
-        data: equipment,
+        data: floor,
         from: path,
       },
     });
@@ -113,15 +114,15 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rooms.map((room) => (
+          {floors.map((floor) => (
             <TableRow
-              key={room.room}
-              onClick={() => handleOpenEquipmentDetails(room)}
+              key={floor.floor.id}
+              onClick={() => handleOpenFloorDetails(floor)}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{room.room}</TableCell>
-              <TableCell>{room.alarms}</TableCell>
-              <TableCell>{room.power}</TableCell>
+              <TableCell>{floor.floor.name}</TableCell>
+              <TableCell>{floor.alarms}</TableCell>
+              <TableCell>{floor.power}</TableCell>
             </TableRow>
           ))}
         </TableBody>

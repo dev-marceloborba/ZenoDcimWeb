@@ -1,28 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import DataTable from "modules/shared/components/DataTable";
-import Dropdown from "modules/shared/components/Dropdown";
 import Column from "modules/shared/components/Column";
 import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";
 import ButtonLink from "modules/shared/components/ButtonLink";
-import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
-import { useDeleteFloorMutation } from "modules/datacenter/services/floor-service";
+import {
+  useDeleteFloorMutation,
+  useFindAllFloorsQuery,
+} from "modules/datacenter/services/floor-service";
 import { FloorModel } from "modules/datacenter/models/datacenter-model";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { FloorFormPath } from "modules/automation/routes/paths";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 const FloorTable: React.FC = () => {
-  const { data: buildings, isLoading } = useFindAllBuildingsQuery();
+  const { data: floors, isLoading } = useFindAllFloorsQuery();
   const [deleteFloor] = useDeleteFloorMutation();
-  const [selectedBuilding, setSelectedBuliding] = useState<string>("");
-  const [filteredBuilding, setFilteredBuilding] = useState<FloorModel[]>([]);
+  const toast = useToast();
 
-  const onApplyFilter = (id: string) => {
-    const b = buildings?.find((building) => building.id === id);
-    setFilteredBuilding(b?.floors ?? []);
-    setSelectedBuliding(id);
+  const handleDeleteSelection = async (rows: FloorModel[]) => {
+    for (let i = 0; i < rows.length; i++) {
+      await deleteFloor(rows[i].id);
+    }
+    toast.open("Andare(s) excluído(s) com sucesso", 2000, "success");
   };
 
   return (
@@ -38,18 +40,6 @@ const FloorTable: React.FC = () => {
           },
         }}
       >
-        <Dropdown
-          items={
-            buildings?.map((building) => ({
-              label: building.name,
-              value: building.id,
-            })) ?? []
-          }
-          label="Prédio"
-          defaultValue={""}
-          value={selectedBuilding}
-          callback={onApplyFilter}
-        />
         <ButtonLink
           variant="contained"
           to={compositePathRoute([HomePath, AutomationPath, FloorFormPath])}
@@ -59,10 +49,17 @@ const FloorTable: React.FC = () => {
       </Row>
       <DataTable
         title="Andares"
-        rows={filteredBuilding ?? []}
+        rows={
+          floors?.map((floor) => ({
+            id: floor.id,
+            name: floor.name,
+            building: floor.building?.name,
+          })) ?? []
+        }
         columns={columns}
         options={{
           onRowClick: (row) => console.log(row),
+          onDeleteSelection: handleDeleteSelection,
         }}
       />
       <Loading open={isLoading} />
@@ -76,5 +73,9 @@ const columns = [
   {
     name: "name",
     label: "Andar",
+  },
+  {
+    name: "building",
+    label: "Prédio",
   },
 ];

@@ -5,7 +5,12 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { EquipmentFormPath } from "modules/automation/routes/paths";
 import Loading from "modules/shared/components/Loading";
-import { useFindAllEquipmentsDetailedQuery } from "modules/automation/services/equipment-service";
+import {
+  useDeleteEquipmentMutation,
+  useFindAllEquipmentsDetailedQuery,
+} from "modules/automation/services/equipment-service";
+import { EquipmentModel } from "modules/automation/models/automation-model";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 type EquipmentTableProps = {
   handleSelectedEquipment: (equipment: any) => void;
@@ -14,7 +19,16 @@ type EquipmentTableProps = {
 export default function EquipmentTable(props: EquipmentTableProps) {
   const { handleSelectedEquipment } = props;
   const { navigate } = useRouter();
+  const toast = useToast();
   const { data, isLoading } = useFindAllEquipmentsDetailedQuery();
+  const [deleteEquipment] = useDeleteEquipmentMutation();
+
+  const handleDeleteSelection = async (items: EquipmentModel[]) => {
+    for (let i = 0; i < items.length; i++) {
+      await deleteEquipment(items[i].id);
+    }
+    toast.open("Equipamentos apagados com sucesso", 2000, "success");
+  };
 
   return (
     <>
@@ -39,6 +53,7 @@ export default function EquipmentTable(props: EquipmentTableProps) {
           onSelectedItems: (items) => {
             if (items.length === 1) handleSelectedEquipment(items[0]);
           },
+          onDeleteSelection: (items) => handleDeleteSelection(items),
         }}
       />
       <Loading open={isLoading} />

@@ -13,26 +13,29 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import Loading from "modules/shared/components/Loading";
 import { useCreateBuildingMutation } from "modules/datacenter/services/building-service";
 import { BuildingViewModel } from "modules/datacenter/models/datacenter-model";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import useRouter from "modules/core/hooks/useRouter";
 
 const BuildingForm: React.FC = () => {
-  const [addBuilding, { isLoading, error, isError }] =
-    useCreateBuildingMutation();
-  const toast = useToast();
+  const [addBuilding, { isLoading }] = useCreateBuildingMutation();
+  const { data: sites, isLoading: isLoadingSites } = useFindAllSitesQuery();
   const methods = useForm<BuildingViewModel>({
     resolver: yupResolver(validationSchema),
   });
+  const toast = useToast();
+  const { back } = useRouter();
 
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<BuildingViewModel> = async (data) => {
     try {
       const { data: building } = await addBuilding(data).unwrap();
-      console.log(building);
-      toast.open(`Prédio ${data.name} criado com sucesso`, 2000, "success");
+      toast
+        .open(`Prédio ${building.name} criado com sucesso`, 2000, "success")
+        .then(() => back());
     } catch (error) {
-      console.log(error);
       toast.open(
-        `Erro ao excluir prédio ${data.name}: ${error}`,
+        `Erro ao incluir prédio ${data.name}: ${error}`,
         2000,
         "error"
       );
@@ -65,9 +68,14 @@ const BuildingForm: React.FC = () => {
           >
             <FormProvider {...methods}>
               <ControlledTextInput
-                name="campus"
-                label="Campus"
-                items={[{ description: "Canoas", value: "Canoas" }]}
+                name="siteId"
+                label="Site"
+                items={
+                  sites?.map((site) => ({
+                    description: site.name,
+                    value: site.id,
+                  })) ?? []
+                }
               />
               <ControlledTextInput name="name" label="Nome do prédio" />
               <SubmitButton label="Salvar" />
@@ -75,14 +83,14 @@ const BuildingForm: React.FC = () => {
           </Form>
         </Grid>
       </Grid>
-      <Loading open={isLoading} />
+      <Loading open={isLoading || isLoadingSites} />
     </Card>
   );
 };
 
 const validationSchema: SchemaOf<BuildingViewModel> = object().shape({
-  campus: string().required("Campus é obrigatório"),
   name: string().required("Nome é obrigatório"),
+  siteId: string().required("Site é obrigatório"),
 });
 
 export default BuildingForm;

@@ -10,13 +10,14 @@ export interface SiteModel extends SiteViewModel {
 }
 
 export type BuildingViewModel = {
-  campus: string;
   name: string;
+  siteId: string;
 };
 
 export interface BuildingModel extends BuildingViewModel {
   id: string;
   floors?: FloorModel[];
+  site?: SiteModel;
 }
 
 export type BuildingsModel = BuildingModel[];
@@ -38,6 +39,7 @@ export interface FloorViewModel {
 
 export interface FloorModel extends FloorViewModel {
   id: string;
+  building?: BuildingModel;
   rooms?: RoomModel[];
 }
 
@@ -49,5 +51,6 @@ export interface RoomViewModel {
 
 export interface RoomModel extends RoomViewModel {
   id: string;
+  floor?: FloorModel;
   equipments?: EquipmentModel[];
 }

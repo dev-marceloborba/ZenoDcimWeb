@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "modules/shared/components/ToastProvider";
 import Loading from "modules/shared/components/Loading";
 import Column from "modules/shared/components/Column";
@@ -8,19 +7,25 @@ import {
   useDeleteBuildingMutation,
   useFindAllBuildingsQuery,
 } from "modules/datacenter/services/building-service";
+import useRouter from "modules/core/hooks/useRouter";
+import { BuildingModel } from "modules/datacenter/models/datacenter-model";
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [deleteBuilding] = useDeleteBuildingMutation();
   const toast = useToast();
-  const navigate = useNavigate();
+  const { back } = useRouter();
 
-  const handleDeleteBuilding = async (row: any) => {
+  const handleDeleteSelection = async (rows: BuildingModel[]) => {
     try {
-      await deleteBuilding(row.id).unwrap();
-      toast.open(`Prédio ${row.name} excluído com sucesso`, 2000, "success");
+      for (let i = 0; i < rows.length; i++) {
+        await deleteBuilding(rows[i].id).unwrap();
+      }
+      toast
+        .open(`Prédio(s) excluído(s) com sucesso`, 2000, "success")
+        .then(() => back());
     } catch (error) {
-      toast.open(`Erro ao excluir o prédio ${row.name}`, 2000, "error");
+      toast.open(`Erro ao excluir`, 2000, "error");
     }
   };
 
@@ -28,9 +33,18 @@ const BuildingTable: React.FC = () => {
     <Column sx={{ mt: 2 }}>
       <DataTable
         columns={columns}
-        rows={buildings ?? []}
+        rows={
+          buildings?.map((building) => ({
+            id: building.id,
+            name: building.name,
+            site: building.site?.name,
+          })) ?? []
+        }
         title="Prédios"
-        options={{ onRowClick: (row) => console.log(row) }}
+        options={{
+          onRowClick: (row) => console.log(row),
+          onDeleteSelection: handleDeleteSelection,
+        }}
       />
       <Loading open={isLoading} />
     </Column>

@@ -29,6 +29,7 @@ import {
   RoomManagementPath,
   SiteFormPath,
   SiteManagementPath,
+  VirtualParameterFormPath,
 } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
@@ -51,6 +52,7 @@ import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAd
 import EquipmentParametersAssociation from "../pages/equipment-admin/components/equipment-parameters-association/EquipmentParametersAssociation";
 import EquipmentParameterForm from "../pages/equipment-admin/components/equipment-parameter-form/EquipmentParameterForm";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuilding";
+import VirtualParameterForm from "../pages/parameter-admin/components/virtual-parameter-form/VirtualParameterForm";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -82,6 +84,10 @@ const AutomationRoutes: React.FC = () => {
       {/* parameters */}
       <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
       <Route path={ParameterFormPath} element={<ParameterForm />} />
+      <Route
+        path={VirtualParameterFormPath}
+        element={<VirtualParameterForm />}
+      />
       <Route
         path={ParameterGroupManagementPath}
         element={<ParameterGroupAdmin />}

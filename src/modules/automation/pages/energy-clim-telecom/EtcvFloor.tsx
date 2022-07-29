@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -24,9 +24,21 @@ import useRouter from "modules/core/hooks/useRouter";
 import { useFindAllFloorsQuery } from "modules/datacenter/services/floor-service";
 import Loading from "modules/shared/components/Loading";
 import { RoomModel } from "modules/datacenter/models/datacenter-model";
+import { useFindRoomsByFloorIdMutation } from "modules/datacenter/services/room-service";
 
 const EtcFloor: React.FC = () => {
+  const {
+    state: { floor },
+  } = useRouter();
+  const [findRooms, { data: rooms }] = useFindRoomsByFloorIdMutation();
   const { data, isLoading } = useFindAllFloorsQuery();
+
+  useEffect(() => {
+    async function fetchRooms() {
+      if (floor) await findRooms(floor.id).unwrap();
+    }
+    fetchRooms();
+  }, [findRooms, floor]);
 
   return (
     <HeroContainer>
@@ -45,12 +57,12 @@ const EtcFloor: React.FC = () => {
         <RoomDropdown />
       </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        {data?.map((floor) => (
+        {data?.map((room) => (
           <Grid key={floor.id} item md={4}>
             <EquipmentCard
               title={floor.name}
               rooms={
-                floor.rooms?.map<RoomTableData>((room) => ({
+                room.rooms?.map<RoomTableData>((room) => ({
                   room: room,
                   alarms: 0,
                   status: 0,
@@ -148,7 +160,12 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
     });
   };
   return (
-    <TableContainer>
+    <TableContainer
+      sx={{
+        maxHeight: "470px",
+        overflowY: "auto",
+      }}
+    >
       <Table>
         <TableHead>
           <TableRow>

@@ -1,40 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import DataTable from "modules/shared/components/DataTable";
-import Dropdown from "modules/shared/components/Dropdown";
 import Row from "modules/shared/components/Row";
 import Loading from "modules/shared/components/Loading";
 import ButtonLink from "modules/shared/components/ButtonLink";
-
+import { RoomModel } from "modules/datacenter/models/datacenter-model";
 import {
-  BuildingModel,
-  FloorModel,
-  RoomModel,
-} from "modules/datacenter/models/datacenter-model";
-import { useDeleteRoomMutation } from "modules/datacenter/services/room-service";
-import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
+  useDeleteRoomMutation,
+  useFindAllRoomsQuery,
+} from "modules/datacenter/services/room-service";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { RoomFormPath } from "modules/automation/routes/paths";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 const RoomTable: React.FC = () => {
-  const { data: buildings, isLoading } = useFindAllBuildingsQuery();
-  const [selectedBuilding, setSelectedBuilding] = useState<BuildingModel>();
-  const [selectedFloor, setSelectedFloor] = useState<FloorModel>();
-  const [floors, setFloors] = useState<FloorModel[]>([]);
-  const [rooms, setRooms] = useState<RoomModel[]>([]);
+  const { data: rooms, isLoading } = useFindAllRoomsQuery();
   const [deleteRoom] = useDeleteRoomMutation();
+  const toast = useToast();
 
-  const onChangeBuilding = (buildingId: string) => {
-    var _selectedBuilding = buildings?.find((x) => x.id === buildingId);
-    setFloors(_selectedBuilding?.floors ?? []);
-    setSelectedBuilding(_selectedBuilding);
-  };
-
-  const onChangeFloor = (floorId: string) => {
-    var _selectedFloor = floors.find((x) => x.id === floorId);
-    setRooms(_selectedFloor?.rooms ?? []);
-    setSelectedFloor(_selectedFloor);
+  const handleDeleteSelection = async (rows: RoomModel[]) => {
+    for (let i = 0; i < rows.length; i++) {
+      await deleteRoom(rows[i].id).unwrap;
+    }
+    toast.open("Andar(es) excluído(s) com sucesso", 2000, "success");
   };
 
   return (
@@ -52,31 +41,6 @@ const RoomTable: React.FC = () => {
           },
         }}
       >
-        <Dropdown
-          label="Prédio"
-          items={
-            buildings?.map((x) => ({
-              label: x.name,
-              value: x.id,
-            })) ?? []
-          }
-          value={selectedBuilding?.id ?? ""}
-          defaultValue=""
-          callback={onChangeBuilding}
-        />
-        <Dropdown
-          label="Andar"
-          items={
-            floors?.map((x) => ({
-              label: x.name,
-              value: x.id,
-            })) ?? []
-          }
-          value={selectedFloor?.id ?? ""}
-          defaultValue=""
-          callback={onChangeFloor}
-        />
-
         <ButtonLink
           variant="contained"
           to={compositePathRoute([HomePath, AutomationPath, RoomFormPath])}
@@ -88,8 +52,17 @@ const RoomTable: React.FC = () => {
       <DataTable
         title="Salas"
         columns={columns}
-        rows={rooms ?? []}
-        options={{ onRowClick: (row) => console.log(row) }}
+        rows={
+          rooms?.map((room) => ({
+            id: room.id,
+            name: room.name,
+            floor: room.floor?.name,
+          })) ?? []
+        }
+        options={{
+          onRowClick: (row) => console.log(row),
+          onDeleteSelection: handleDeleteSelection,
+        }}
       />
       <Loading open={isLoading} />
     </>
@@ -101,6 +74,10 @@ export default RoomTable;
 const columns = [
   {
     name: "name",
-    label: "Nome",
+    label: "Sala",
+  },
+  {
+    name: "floor",
+    label: "Andar",
   },
 ];

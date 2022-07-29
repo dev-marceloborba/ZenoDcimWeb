@@ -41,6 +41,12 @@ export const roomApi = createApi({
         method: "GET",
       }),
     }),
+    findRoomsByFloorId: builder.mutation<RoomModel[], string>({
+      query: (id) => ({
+        url: `v1/data-center/rooms-by-floor/${id}`,
+        method: "GET",
+      }),
+    }),
     deleteRoom: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/${id}`,
@@ -56,4 +62,5 @@ export const {
   useDeleteRoomMutation,
   useFindAllRoomsQuery,
   useFindRoomByIdMutation,
+  useFindRoomsByFloorIdMutation,
 } = roomApi;

@@ -2,6 +2,7 @@ import { Divider } from "@mui/material";
 import {
   ParameterFormPath,
   ParameterGroupManagementPath,
+  VirtualParameterFormPath,
 } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import { AutomationPath } from "modules/home/routes/paths";
@@ -21,10 +22,29 @@ export default function ParameterAdmin() {
       <Row sx={{ mt: 2 }}>
         <AccessButton
           mode="regularButton"
-          label="Novo parâmetro"
+          label="Novo parâmetro físico"
           onClick={() =>
             navigate(
               compositePathRoute([HomePath, AutomationPath, ParameterFormPath]),
+              {
+                state: {
+                  data: null,
+                  mode: "new",
+                },
+              }
+            )
+          }
+        />
+        <AccessButton
+          mode="regularButton"
+          label="Novo parâmetro virtual"
+          onClick={() =>
+            navigate(
+              compositePathRoute([
+                HomePath,
+                AutomationPath,
+                VirtualParameterFormPath,
+              ]),
               {
                 state: {
                   data: null,

@@ -50,22 +50,6 @@ export default function ParametersTable() {
 }
 
 const columns: ColumnHeader[] = [
-  // {
-  //   name: "building",
-  //   label: "Prédio",
-  // },
-  // {
-  //   name: "floor",
-  //   label: "Andar",
-  // },
-  // {
-  //   name: "room",
-  //   label: "Sala",
-  // },
-  // {
-  //   name: "equipment",
-  //   label: "Equipamento",
-  // },
   {
     name: "name",
     label: "Parâmetro",
@@ -86,20 +70,8 @@ const columns: ColumnHeader[] = [
     name: "scale",
     label: "Escala",
   },
-  // {
-  //   name: "group",
-  //   label: "Grupo",
-  // },
-  // {
-  //   name: "system",
-  //   label: "Sistema",
-  // },
-  // {
-  //   name: "type",
-  //   label: "Tipo",
-  // },
-  // {
-  //   name: "address",
-  //   label: "Endereço",
-  // },
+  {
+    name: "type",
+    label: "Tipo",
+  },
 ];
