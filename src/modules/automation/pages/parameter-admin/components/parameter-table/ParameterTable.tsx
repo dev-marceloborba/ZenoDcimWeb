@@ -38,7 +38,15 @@ export default function ParametersTable() {
       <DataTable
         title="Parâmetros"
         columns={columns}
-        rows={parameters ?? []}
+        rows={
+          parameters?.map((parameter) => ({
+            ...parameter,
+            discriminator:
+              parameter.discriminator === "VirtualParameter"
+                ? "Parâmetro virtual"
+                : "Parâmetro físico",
+          })) ?? []
+        }
         options={{
           onRowClick: handleSelectedParameter,
           onDeleteSelection: handleDeleteParameters,
@@ -71,7 +79,7 @@ const columns: ColumnHeader[] = [
     label: "Escala",
   },
   {
-    name: "type",
+    name: "discriminator",
     label: "Tipo",
   },
 ];

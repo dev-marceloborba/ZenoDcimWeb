@@ -11,6 +11,7 @@ import { siteApi } from "modules/datacenter/services/site-service";
 import { buildingApi } from "modules/datacenter/services/building-service";
 import { floorApi } from "modules/datacenter/services/floor-service";
 import { roomApi } from "modules/datacenter/services/room-service";
+import { virtualParameterApi } from "modules/automation/services/virtual-parameter-service";
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     [equipmentParametersApi.reducerPath]: equipmentParametersApi.reducer,
     [parameterGroupApi.reducerPath]: parameterGroupApi.reducer,
     [parameterApi.reducerPath]: parameterApi.reducer,
+    [virtualParameterApi.reducerPath]: virtualParameterApi.reducer,
     [siteApi.reducerPath]: siteApi.reducer,
     [buildingApi.reducerPath]: buildingApi.reducer,
     [floorApi.reducerPath]: floorApi.reducer,
@@ -35,6 +37,7 @@ export const store = configureStore({
       equipmentParametersApi.middleware,
       parameterGroupApi.middleware,
       parameterApi.middleware,
+      virtualParameterApi.middleware,
       siteApi.middleware,
       buildingApi.middleware,
       floorApi.middleware,

@@ -14,6 +14,7 @@ import Center from "modules/shared/components/Center";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 import {
   EquipmentModel,
+  EquipmentParameterModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
 
@@ -23,7 +24,7 @@ type ParameterBrowserModalProps = {
 } & DialogProps;
 
 type SelectedNodeProps = {
-  parameter: ParameterModel;
+  parameter: EquipmentParameterModel;
   equipment: EquipmentModel;
 };
 
@@ -71,7 +72,7 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
 
   const handleParameterClick = (
     equipment: EquipmentModel,
-    parameter: ParameterModel
+    parameter: EquipmentParameterModel
   ) => {
     setExpression(expression + equipment.component + "." + parameter.name);
     setSelectedNode({ equipment, parameter });

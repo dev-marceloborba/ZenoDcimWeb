@@ -150,6 +150,7 @@ export interface UpdateParameterViewModel {
 
 export interface ParameterModel extends ParameterViewModel {
   id: string;
+  discriminator: string;
 }
 
 export interface EquipmentOnGroupViewModel {
