@@ -38,6 +38,9 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/zeno/automation/settings/sites/form": "Criar ou editar sites",
   "/zeno/automation/settings/parameters/virtual-parameter-form":
     "Criar ou editar parâmetros virtuais",
+  "/zeno/automation/settings/equipments/rules": "Regras de disparo",
+  "/zeno/automation/settings/equipments/rules/form":
+    "Criar ou editar regras de disparo",
   "/zeno/automation/settings/parameters": "Parâmetros",
   "/zeno/settings": "Configurações",
   "/zeno/settings/new-user": "Novo usuário",

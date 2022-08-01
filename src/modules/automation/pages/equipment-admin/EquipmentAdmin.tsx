@@ -3,9 +3,6 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import EtcFilters from "modules/automation/components/EtcFilters";
-// import BuildingDropdown from "modules/automation/components/BuildingDropdown";
-// import FloorDropdown from "modules/automation/components/FloorDropdown";
-// import RoomDropdown from "modules/automation/components/RoomDropdown";
 
 // icons
 import AddIcon from "@mui/icons-material/Add";
@@ -22,6 +19,7 @@ import { AutomationPath } from "modules/home/routes/paths";
 import {
   EquipmentFormPath,
   EquipmentParametersAssociationPath,
+  EquipmentRulesPath,
 } from "modules/automation/routes/paths";
 import EquipmentTable from "./components/equipment-table/EquipmentTable";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
@@ -95,6 +93,29 @@ const EquipmentAdmin: React.FC = () => {
                   {
                     state: {
                       selectedEquipment,
+                    },
+                  }
+                );
+              }
+            }}
+          />
+        </Tooltip>
+
+        <Tooltip title="Regras de alarmes">
+          <AccessButton
+            label="Regras"
+            mode="regularButton"
+            onClick={() => {
+              if (selectedEquipment) {
+                navigate(
+                  compositePathRoute([
+                    HomePath,
+                    AutomationPath,
+                    EquipmentRulesPath,
+                  ]),
+                  {
+                    state: {
+                      data: selectedEquipment,
                     },
                   }
                 );

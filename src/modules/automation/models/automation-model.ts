@@ -1,3 +1,5 @@
+import { AlarmRulesModel } from "./alarm-rule-model";
+
 export interface SiteViewModel {
   name: string;
 }
@@ -69,7 +71,6 @@ export interface EquipmentModel extends EquipmentViewModel {
   id: string;
   status: EEquipmentStatus;
   group: EEquipmentGroup;
-  alarms: number;
   createdDate: Date;
   equipmentParameters?: EquipmentParameterModel[];
   weight: number;
@@ -104,6 +105,7 @@ export interface UpdateEquipmentParameterViewModel {
 
 export interface EquipmentParameterModel extends EquipmentParameterViewModel {
   id: string;
+  alarmRules?: AlarmRulesModel;
 }
 
 export type MultipleEquipmentsViewModel = {

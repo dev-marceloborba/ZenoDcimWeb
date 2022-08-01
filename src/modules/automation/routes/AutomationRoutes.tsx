@@ -30,6 +30,8 @@ import {
   SiteFormPath,
   SiteManagementPath,
   VirtualParameterFormPath,
+  EquipmentRulesPath,
+  EquipmentRulesFormPath,
 } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
@@ -53,6 +55,8 @@ import EquipmentParametersAssociation from "../pages/equipment-admin/components/
 import EquipmentParameterForm from "../pages/equipment-admin/components/equipment-parameter-form/EquipmentParameterForm";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuilding";
 import VirtualParameterForm from "../pages/parameter-admin/components/virtual-parameter-form/VirtualParameterForm";
+import EquipmentParameterRules from "../pages/equipment-admin/components/equipment-parameter-rules/EquipmentParameterRules";
+import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equipment-parameter-rules-form/EquipmentParameterRulesForm";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -80,6 +84,11 @@ const AutomationRoutes: React.FC = () => {
       <Route
         path={EquipmentParameterFormPath}
         element={<EquipmentParameterForm />}
+      />
+      <Route path={EquipmentRulesPath} element={<EquipmentParameterRules />} />
+      <Route
+        path={EquipmentRulesFormPath}
+        element={<EquipmentParameterRulesForm />}
       />
       {/* parameters */}
       <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
