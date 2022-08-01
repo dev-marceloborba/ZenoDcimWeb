@@ -18,6 +18,7 @@ import { useLayout } from "app/hooks/useLayout";
 import Logo from "app/assets/logo-white.svg";
 import { useAuth } from "app/hooks/useAuth";
 import { useFullscreen } from "@straw-hat/react-fullscreen";
+import compositePathRoute from "modules/utils/compositePathRoute";
 
 const Header: React.FC = () => {
   const target = useRef(window.document.body);
@@ -52,6 +53,11 @@ const Header: React.FC = () => {
 
   const handleFullScreen = () => {
     toggleFullscreen();
+  };
+
+  const handleOpenUserHelp = () => {
+    navigate("/zeno/settings/user-help");
+    handleMenuClose();
   };
 
   const menuId = "account-menu";
@@ -128,6 +134,7 @@ const Header: React.FC = () => {
             onClose={handleMenuClose}
           >
             <MenuItem onClick={handleOpenUserSettings}>Configurações</MenuItem>
+            <MenuItem onClick={handleOpenUserHelp}>Ajuda</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </ToolBar>

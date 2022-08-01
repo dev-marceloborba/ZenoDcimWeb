@@ -45,6 +45,7 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/zeno/settings": "Configurações",
   "/zeno/settings/new-user": "Novo usuário",
   "/zeno/settings/new-company": "Nova empresa",
+  "/zeno/settings/user-help": "Ajuda",
   "/zeno/dashboard": "Dashboard",
   "/zeno/dashboard/energy": "Energia",
 };
