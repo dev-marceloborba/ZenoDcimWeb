@@ -13,6 +13,7 @@ import { floorApi } from "modules/datacenter/services/floor-service";
 import { roomApi } from "modules/datacenter/services/room-service";
 import { virtualParameterApi } from "modules/automation/services/virtual-parameter-service";
 import { alarmRuleApi } from "modules/automation/services/alarm-rule-service";
+import { historyApi } from "modules/automation/services/history-service";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     [floorApi.reducerPath]: floorApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
     [alarmRuleApi.reducerPath]: alarmRuleApi.reducer,
+    [historyApi.reducerPath]: historyApi.reducer,
   },
   preloadedState: {
     auth: reHydrateStore(),
@@ -44,7 +46,8 @@ export const store = configureStore({
       buildingApi.middleware,
       floorApi.middleware,
       roomApi.middleware,
-      alarmRuleApi.middleware
+      alarmRuleApi.middleware,
+      historyApi.middleware
     ),
 });
 
