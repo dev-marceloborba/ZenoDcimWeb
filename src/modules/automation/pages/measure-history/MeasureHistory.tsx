@@ -8,7 +8,9 @@ import { useFindAllMeasuresMutation } from "modules/automation/services/history-
 import Loading from "modules/shared/components/Loading";
 import { useEffect, useRef, useState } from "react";
 import Row from "modules/shared/components/Row";
-import { Button, Input } from "@mui/material";
+import { useModal } from "mui-modal-provider";
+import FiltersPopup from "./filters-popup/FiltersPopup";
+import { Button, TextField } from "@mui/material";
 
 export default function MeasureHistory() {
   const [filters, setFilters] = useState<MeasureHistoryViewModel>(
@@ -20,6 +22,8 @@ export default function MeasureHistory() {
   const roomRef = useRef<HTMLInputElement>();
   const equipmentRef = useRef<HTMLInputElement>();
   const parameterRef = useRef<HTMLInputElement>();
+
+  const { showModal } = useModal();
 
   const [findAllMeasures, { data: measures, isLoading }] =
     useFindAllMeasuresMutation();
@@ -35,6 +39,14 @@ export default function MeasureHistory() {
     console.log(row);
   };
 
+  const handleOpenFiltersPopup = () => {
+    const modal = showModal(FiltersPopup, {
+      onCancel: () => {
+        modal.hide();
+      },
+    });
+  };
+
   const handleApplyFilterClick = () => {
     setFilters({
       site: siteRef.current?.value,
@@ -48,15 +60,22 @@ export default function MeasureHistory() {
 
   return (
     <HeroContainer title="Histórico de medições">
-      <Row>
-        <Input name="site" ref={siteRef} />
-        <Input name="building" ref={buildindRef} />
-        <Input name="floor" ref={floorRef} />
-        <Input name="room" ref={roomRef} />
-        <Input name="equipment" ref={equipmentRef} />
-        <Input name="parameter" ref={parameterRef} />
-        <Button onClick={handleApplyFilterClick}>Aplicar filtro</Button>
-      </Row>
+      {/* <Row>
+        <TextField label="Site" name="site" inputRef={siteRef} />
+        <TextField label="Prédio" name="building" inputRef={buildindRef} />
+        <TextField label="Andar" name="floor" inputRef={floorRef} />
+        <TextField label="Sala" name="room" inputRef={roomRef} />
+        <TextField
+          label="Equipamento"
+          name="equipment"
+          inputRef={equipmentRef}
+        />
+        <TextField label="Parâmetro" name="parameter" inputRef={parameterRef} />
+        <Button variant="contained" onClick={handleApplyFilterClick}>
+          Aplicar filtro
+        </Button>
+      </Row> */}
+      <Button onClick={handleOpenFiltersPopup}>Filtros</Button>
       <DataTable
         title="Medições"
         rows={measures ?? []}
@@ -73,15 +92,35 @@ export default function MeasureHistory() {
 
 const columns: ColumnHeader[] = [
   {
+    name: "site",
+    label: "Site",
+  },
+  {
+    name: "building",
+    label: "Prédio",
+  },
+  {
+    name: "floor",
+    label: "Andar",
+  },
+  {
+    name: "room",
+    label: "Sala",
+  },
+  {
+    name: "equipment",
+    label: "Equipamento",
+  },
+  {
+    name: "parameter",
+    label: "Parâmetro",
+  },
+  {
     name: "value",
     label: "Valor",
   },
   {
     name: "timestamp",
     label: "Estampa de tempo",
-  },
-  {
-    name: "parameter",
-    label: "Parâmetro",
   },
 ];

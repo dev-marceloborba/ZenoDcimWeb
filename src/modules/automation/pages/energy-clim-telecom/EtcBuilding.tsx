@@ -20,7 +20,7 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 
 export default function EtcBuilding() {
-  const { data, isLoading } = useFindAllBuildingsQuery();
+  const { data, isLoading, isError } = useFindAllBuildingsQuery();
 
   return (
     <HeroContainer title="Energia, clima e telecom">
@@ -43,6 +43,7 @@ export default function EtcBuilding() {
         ))}
       </Grid>
       <Loading open={isLoading} />
+      <ErrorCard isError={isError} />
     </HeroContainer>
   );
 }
@@ -129,4 +130,24 @@ const FloorTable: React.FC<FloorTableProps> = ({ floors }) => {
       </Table>
     </TableContainer>
   );
+};
+
+type ErrorCardProps = {
+  isError: boolean;
+};
+
+const ErrorCard: React.FC<ErrorCardProps> = ({ isError }) => {
+  if (isError) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography>
+            Não foi possível estabelecer conexão com a API
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  } else {
+    return null;
+  }
 };

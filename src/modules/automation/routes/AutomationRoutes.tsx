@@ -32,6 +32,7 @@ import {
   VirtualParameterFormPath,
   EquipmentRulesPath,
   EquipmentRulesFormPath,
+  MeasureHistoryPath,
 } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
@@ -57,6 +58,7 @@ import EtcBuilding from "../pages/energy-clim-telecom/EtcBuilding";
 import VirtualParameterForm from "../pages/parameter-admin/components/virtual-parameter-form/VirtualParameterForm";
 import EquipmentParameterRules from "../pages/equipment-admin/components/equipment-parameter-rules/EquipmentParameterRules";
 import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equipment-parameter-rules-form/EquipmentParameterRulesForm";
+import MeasureHistory from "../pages/measure-history/MeasureHistory";
 
 const AutomationRoutes: React.FC = () => {
   return (
@@ -65,6 +67,7 @@ const AutomationRoutes: React.FC = () => {
       <Route path={EnergyClimTelecomFloorPath} element={<EtcFloor />} />
       <Route path={CagePath} element={<Cage />} />
       <Route path={RackPath} element={<Rack />} />
+      <Route path={MeasureHistoryPath} element={<MeasureHistory />} />
 
       <Route path={FireSystemPath} element={<FireSystem />} />
       <Route path={AccessControlPath} element={<AccessControl />} />

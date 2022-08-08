@@ -25,6 +25,7 @@ import {
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
   FireSystemPath,
+  MeasureHistoryPath,
 } from "modules/automation/routes/paths";
 
 const Sidenav: React.FC = () => {
@@ -115,6 +116,10 @@ const menuItems: ListItemLinkProps[] = [
       {
         primary: "Conectividade de equipamentos",
         to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
+      },
+      {
+        primary: "Histórico de medições",
+        to: `/${HomePath}/${AutomationPath}/${MeasureHistoryPath}`,
       },
       {
         primary: "Configurações de automação",

@@ -39,8 +39,6 @@ const EtcFloor: React.FC = () => {
     fetchRooms();
   }, [findRooms, floor]);
 
-  console.log(rooms);
-
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
