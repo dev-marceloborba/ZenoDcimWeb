@@ -67,18 +67,6 @@ const columns: ColumnHeader[] = [
     label: "Componente",
   },
   {
-    name: "weight",
-    label: "Peso (kg)",
-  },
-  {
-    name: "size",
-    label: "Tamanho (LxAxC cm)",
-  },
-  {
-    name: "powerLimit",
-    label: "Potência limite (W)",
-  },
-  {
     name: "building",
     label: "Prédio",
   },
@@ -89,6 +77,18 @@ const columns: ColumnHeader[] = [
   {
     name: "room",
     label: "Sala",
+  },
+  {
+    name: "weight",
+    label: "Peso (kg)",
+  },
+  {
+    name: "size",
+    label: "Tamanho (LxAxC cm)",
+  },
+  {
+    name: "powerLimit",
+    label: "Potência limite (W)",
   },
   {
     name: "createdAt",

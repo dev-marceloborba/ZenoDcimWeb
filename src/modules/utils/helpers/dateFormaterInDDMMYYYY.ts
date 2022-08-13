@@ -1,3 +1,4 @@
 export default function dateFormaterInDDMMYYYY(date: Date): string {
-  return date.getDay() + "/" + date.getMonth() + date.getFullYear();
+  const str1 = date.getDay() + "/" + date.getMonth() + date.getFullYear();
+  return str1;
 }

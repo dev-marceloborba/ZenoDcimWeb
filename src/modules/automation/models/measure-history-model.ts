@@ -1,9 +1,17 @@
 import { EquipmentParameterModel } from "./automation-model";
 
-export interface MeasureHistoryModel {
+export interface MeasureModel {
   value: any;
-  timestamp: Date;
-  parameter: EquipmentParameterModel;
+  timestamp: string;
+  name?: string;
+}
+
+export interface MeasureHistoryModel extends MeasureModel {
+  site: string;
+  building: string;
+  floor: string;
+  room: string;
+  equipment: string;
 }
 
 export interface MeasureHistoryViewModel {
@@ -13,8 +21,8 @@ export interface MeasureHistoryViewModel {
   room?: string;
   equipment?: string;
   parameter?: string;
-  initialDate?: Date;
-  finalDate?: Date;
+  initialDate?: Date | null;
+  finalDate?: Date | null;
 }
 
 export type MeasuresHistoryModel = MeasureHistoryModel[];

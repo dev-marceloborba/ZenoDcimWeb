@@ -7,8 +7,6 @@ import CssBaseLine from "@mui/material/CssBaseline";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import { store } from "modules/core/store";
 import { Connector } from "mqtt-react-hooks";
-import { LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig } from "app/config/env";
 // import ModalProvider from "app/hooks/useModal";
@@ -17,6 +15,8 @@ import { ptBR } from "@mui/material/locale";
 import AppRoutes from "modules/AppRoutes";
 import { brandingDarkTheme } from "modules/utils/brandingDarkTheme";
 import ToastProvider from "modules/shared/components/ToastProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 ReactDOM.render(
   <React.StrictMode>

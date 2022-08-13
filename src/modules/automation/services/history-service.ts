@@ -23,13 +23,17 @@ export const historyApi = createApi({
       MeasuresHistoryModel,
       MeasureHistoryViewModel
     >({
-      query: () => ({
-        url: "v1/data-center/parameters",
+      query: (params) => ({
+        url: "v1/measures",
+        params: {
+          initialDate: params.initialDate?.toUTCString(),
+          finalDate: params.finalDate?.toUTCString(),
+        },
       }),
     }),
     findAllMeasuresByEquipment: builder.mutation<MeasuresHistoryModel, string>({
       query: (id) => ({
-        url: `v1/data-center/parameters/${id}`,
+        url: `v1/measures/${id}`,
         method: "GET",
       }),
     }),

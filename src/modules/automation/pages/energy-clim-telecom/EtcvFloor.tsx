@@ -168,7 +168,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
           <TableRow>
             <TableCell>Sala</TableCell>
             <TableCell>Alarmes</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell>Potência (kW)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -180,9 +180,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
             >
               <TableCell>{room.room.name}</TableCell>
               <TableCell>{room.alarms}</TableCell>
-              <TableCell>
-                <EquipmentStatus status={room.status} />
-              </TableCell>
+              <TableCell>0</TableCell>
             </TableRow>
           ))}
         </TableBody>

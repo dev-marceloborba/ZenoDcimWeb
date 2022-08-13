@@ -76,6 +76,8 @@ export default function EquipmentParametersAssociation() {
     setGroupParameters(newSelection);
   };
 
+  console.log(equipment.id);
+
   const handleIncludeSelection = async () => {
     const selected = groupParameters.filter((x) => x.checked === true);
     await createMultipleEquipmentParameters({
@@ -232,10 +234,6 @@ const columns: ColumnHeader[] = [
   {
     label: "Escala",
     name: "scale",
-  },
-  {
-    label: "Endereço",
-    name: "address",
   },
   {
     label: "Fonte de dados",

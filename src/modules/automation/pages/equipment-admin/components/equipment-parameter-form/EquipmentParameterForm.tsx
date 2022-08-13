@@ -55,7 +55,7 @@ export default function EquipmentParameterForm() {
         setValue("scale", data.scale);
         setValue("lowLimit", data.lowLimit);
         setValue("highLimit", data.highLimit);
-        setValue("address", data.address);
+        // setValue("address", data.address);
         setValue("dataSource", data.dataSource);
       }
     }
@@ -65,15 +65,35 @@ export default function EquipmentParameterForm() {
   return (
     <HeroContainer title="Editar parâmetro de equipamento">
       <FormProvider {...methods}>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{
+            "& .MuiFormControl-root": {
+              mt: 2,
+            },
+          }}
+        >
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
           <ControlledTextInput name="scale" label="Escala" />
           <ControlledTextInput name="lowLimit" label="Limite mínimo" />
           <ControlledTextInput name="highLimit" label="Limite máximo" />
-          <ControlledTextInput name="address" label="Endereço" />
-          <ControlledTextInput name="dataSource" label="Fonte de dados" />
-          <SubmitButton label="Salvar" />
+          {/* <ControlledTextInput name="address" label="Endereço" /> */}
+          <ControlledTextInput
+            name="dataSource"
+            label="Fonte de dados"
+            items={[
+              {
+                description: "Modbus",
+                value: "Modbus",
+              },
+              {
+                description: "OPC-UA",
+                value: "OPC-UA",
+              },
+            ]}
+          />
+          <SubmitButton label="Salvar" sx={{ mt: 2 }} />
         </Form>
       </FormProvider>
     </HeroContainer>
@@ -86,6 +106,6 @@ const validationSchema = object().shape({
   scale: number().required("Escala é obrigatória"),
   lowLimit: number().required("Limite mínimo é obrigatório"),
   highLimit: number().required("Limite máximo é obrigatório"),
-  address: string().required("Endereço é obrigatório"),
+  // address: string().required("Endereço é obrigatório"),
   dataSource: string().required("Fonte de dados é obrigatório"),
 });

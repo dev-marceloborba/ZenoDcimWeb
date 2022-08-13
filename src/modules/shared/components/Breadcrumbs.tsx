@@ -49,6 +49,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
   "/zeno/dashboard": "Dashboard",
   "/zeno/dashboard/energy": "Energia",
   "/zeno/automation/measure-history": "Histórico de medições",
+  "/zeno/automation/settings/equipments/equipment-parameters-association/form":
+    "Parâmetro de equipamento",
 };
 
 const LinkRouter = (props: LinkRouterProps) => (
