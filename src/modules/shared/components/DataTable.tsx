@@ -56,6 +56,7 @@ export interface ColumnHeader {
   name: string;
   label: string;
   renderComponent?: (row: any) => JSX.Element;
+  customFunction?: (row: any) => any;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -594,8 +595,16 @@ const DataTable: React.FC<DataTableProps> = ({
                             onClick: () => handleRowClick(row),
                           })}
                         >
+                          {/* {column.renderComponent
+                            ? column.renderComponent(row[column.name])
+                            : CustomTableCell(row, column.name, onChange)}
+                          {column.customFunction
+                            ? column.customFunction(row[column.name])
+                            : CustomTableCell(row, column.name, onChange)} */}
                           {column.renderComponent
                             ? column.renderComponent(row[column.name])
+                            : column.customFunction
+                            ? column.customFunction(row[column.name])
                             : CustomTableCell(row, column.name, onChange)}
                         </TableCell>
                       );

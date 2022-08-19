@@ -22,7 +22,7 @@ type HistoryViewModel = {
   equipment: string;
   name: string;
   value: number;
-  timestamp: any;
+  timestamp: string;
 };
 
 export default function MeasureHistory() {
@@ -121,7 +121,7 @@ export default function MeasureHistory() {
           Aplicar filtro
         </Button>
       </Row> */}
-      <Button onClick={handleOpenFiltersPopup}>Filtros</Button>
+      {/* <Button onClick={handleOpenFiltersPopup}>Filtros</Button> */}
       <DateTimePicker
         label="Data inicial"
         value={filters.initialDate}

@@ -2,6 +2,7 @@ export const EnergyClimTelecomPath = "etc";
 export const EnergyClimTelecomFloorPath = EnergyClimTelecomPath + "/floor";
 export const CagePath = EnergyClimTelecomFloorPath + "/cage";
 export const RackPath = CagePath + "/rack";
+export const ParameterDetailsPath = RackPath + "/parameter-details";
 export const FireSystemPath = "fire-system";
 export const AccessControlPath = "access-control";
 export const EquipmentConnectivityPath = "equipment-connectivity";

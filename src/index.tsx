@@ -17,13 +17,17 @@ import { brandingDarkTheme } from "modules/utils/brandingDarkTheme";
 import ToastProvider from "modules/shared/components/ToastProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import ptBrLocale from "date-fns/locale/pt-BR";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
         <CssBaseLine />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider
+          dateAdapter={AdapterDateFns}
+          adapterLocale={ptBrLocale}
+        >
           <Connector
             brokerUrl={brokerUrl}
             options={{

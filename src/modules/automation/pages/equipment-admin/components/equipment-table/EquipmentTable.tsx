@@ -11,6 +11,7 @@ import {
 } from "modules/automation/services/equipment-service";
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import { useToast } from "modules/shared/components/ToastProvider";
+import getDateFormat from "modules/utils/helpers/getDateFormat";
 
 type EquipmentTableProps = {
   handleSelectedEquipment: (equipment: any) => void;
@@ -93,5 +94,8 @@ const columns: ColumnHeader[] = [
   {
     name: "createdAt",
     label: "Data de criação",
+    customFunction: (row) => {
+      return getDateFormat(row);
+    },
   },
 ];

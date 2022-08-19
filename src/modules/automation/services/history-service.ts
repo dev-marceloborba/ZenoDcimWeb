@@ -31,6 +31,20 @@ export const historyApi = createApi({
         },
       }),
     }),
+    findMeasuresByParameter: builder.mutation<
+      MeasuresHistoryModel,
+      MeasureHistoryViewModel
+    >({
+      query: (params) => ({
+        url: "v1/measures/by-parameter",
+        method: "GET",
+        params: {
+          parameter: params.parameter ?? "",
+          initialDate: params.initialDate?.toUTCString(),
+          finalDate: params.finalDate?.toUTCString(),
+        },
+      }),
+    }),
     findAllMeasuresByEquipment: builder.mutation<MeasuresHistoryModel, string>({
       query: (id) => ({
         url: `v1/measures/${id}`,
@@ -43,4 +57,5 @@ export const historyApi = createApi({
 export const {
   useFindAllMeasuresMutation,
   useFindAllMeasuresByEquipmentMutation,
+  useFindMeasuresByParameterMutation,
 } = historyApi;
