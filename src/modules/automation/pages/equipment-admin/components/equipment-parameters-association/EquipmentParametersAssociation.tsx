@@ -76,8 +76,6 @@ export default function EquipmentParametersAssociation() {
     setGroupParameters(newSelection);
   };
 
-  console.log(equipment.id);
-
   const handleIncludeSelection = async () => {
     const selected = groupParameters.filter((x) => x.checked === true);
     await createMultipleEquipmentParameters({
@@ -90,6 +88,7 @@ export default function EquipmentParametersAssociation() {
         scale: p.scale,
         highLimit: p.highLimit,
         lowLimit: p.lowLimit,
+        expression: p.expression,
       })),
     }).unwrap();
     getParameters();

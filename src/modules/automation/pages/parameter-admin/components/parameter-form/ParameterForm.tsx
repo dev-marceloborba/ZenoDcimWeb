@@ -93,7 +93,7 @@ export default function ParameterForm() {
   );
 }
 
-const validationSchema: SchemaOf<ParameterViewModel> = object().shape({
+const validationSchema = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   lowLimit: number().required("Limite inferior é obrigatório"),

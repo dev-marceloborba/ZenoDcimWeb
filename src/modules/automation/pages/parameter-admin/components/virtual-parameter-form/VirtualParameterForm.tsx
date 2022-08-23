@@ -10,6 +10,7 @@ import ParameterBrowserModal from "../parameter-browser-modal/ParameterBrowserMo
 import {
   useCreateVirtualParameterMutation,
   useFindVirtualParameterByIdQuery,
+  useUpdateVirtualParameterMutation,
 } from "modules/automation/services/virtual-parameter-service";
 import Loading from "modules/shared/components/Loading";
 import { number, object, SchemaOf, string } from "yup";
@@ -41,16 +42,24 @@ export default function VirtualParameterForm() {
     createVirtualParameter,
     { isLoading: isLoadingCreateVirtualParameter },
   ] = useCreateVirtualParameterMutation();
+  const [updateVirtualParameter] = useUpdateVirtualParameterMutation();
   const { data: virtualParameter, isLoading: isLoadingFindVirtualParameter } =
     useFindVirtualParameterByIdQuery(data.id);
 
   const { handleSubmit, setValue } = methods;
 
-  const onSubmit: SubmitHandler<VirtualParameterViewModel> = async (data) => {
-    await createVirtualParameter(data).unwrap();
-    toast
-      .open("Parâmetro virtual criado com sucesso", 2000, "success")
-      .then(() => back());
+  const onSubmit: SubmitHandler<VirtualParameterViewModel> = async (model) => {
+    if (mode === "edit") {
+      await updateVirtualParameter({ ...model, id: data.id });
+      toast
+        .open("Parâmetro virtual atualizado com sucesso", 2000, "success")
+        .then(() => back());
+    } else {
+      await createVirtualParameter(model).unwrap();
+      toast
+        .open("Parâmetro virtual criado com sucesso", 2000, "success")
+        .then(() => back());
+    }
   };
 
   const handleBrowseParameters = () => {

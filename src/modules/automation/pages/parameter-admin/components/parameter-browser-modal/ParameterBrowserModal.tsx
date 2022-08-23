@@ -12,18 +12,17 @@ import TreeItem from "@mui/lab/TreeItem";
 import Loading from "modules/shared/components/Loading";
 import { Button, Grid, Input, TextField } from "@mui/material";
 import Center from "modules/shared/components/Center";
-import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 import {
   EquipmentModel,
   EquipmentParameterModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
-import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
 import {
   BuildingModel,
   FloorModel,
   RoomModel,
 } from "modules/datacenter/models/datacenter-model";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 
 type ParameterBrowserModalProps = {
   onConfirm: (values: any) => void;
@@ -45,10 +44,7 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
   );
   const [expression, setExpression] = useState("");
   const { onConfirm, onCancel } = props;
-  const { data, isLoading } = useFindAllEquipmentsQuery();
-  const { data: buildings } = useFindAllBuildingsQuery();
-
-  console.log(buildings);
+  const { data: sites, isLoading } = useFindAllSitesQuery();
 
   //   const handleToggle = (event: React.SyntheticEvent, nodeIds: string[]) => {
   //     setExpanded(nodeIds);
@@ -81,6 +77,7 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
   };
 
   const handleParameterClick = (
+    site: any,
     building: BuildingModel,
     floor: FloorModel,
     room: RoomModel,
@@ -89,6 +86,8 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
   ) => {
     setExpression(
       expression +
+        site.name +
+        "." +
         building.name +
         "." +
         floor.name +
@@ -145,48 +144,53 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
                   overflowY: "auto",
                 }}
               >
-                {buildings?.map((building) => (
-                  <TreeItem
-                    key={building.id}
-                    nodeId={building.id}
-                    label={building.name}
-                  >
-                    {building.floors?.map((floor) => (
+                {sites?.map((site) => (
+                  <TreeItem key={site.id} nodeId={site.id} label={site.name}>
+                    {site.buildings?.map((building) => (
                       <TreeItem
-                        key={floor.id}
-                        nodeId={floor.id}
-                        label={floor.name}
+                        key={building.id}
+                        nodeId={building.id}
+                        label={building.name}
                       >
-                        {floor.rooms?.map((room) => (
+                        {building.floors?.map((floor) => (
                           <TreeItem
-                            key={room.id}
-                            nodeId={room.id}
-                            label={room.name}
+                            key={floor.id}
+                            nodeId={floor.id}
+                            label={floor.name}
                           >
-                            {room.equipments?.map((equipment) => (
+                            {floor.rooms?.map((room) => (
                               <TreeItem
-                                key={equipment.id}
-                                nodeId={equipment.id}
-                                label={equipment.component}
+                                key={room.id}
+                                nodeId={room.id}
+                                label={room.name}
                               >
-                                {equipment.equipmentParameters?.map(
-                                  (parameter) => (
-                                    <TreeItem
-                                      key={parameter.id}
-                                      nodeId={parameter.id}
-                                      label={parameter.name}
-                                      onClick={() =>
-                                        handleParameterClick(
-                                          building,
-                                          floor,
-                                          room,
-                                          equipment,
-                                          parameter
-                                        )
-                                      }
-                                    />
-                                  )
-                                )}
+                                {room.equipments?.map((equipment) => (
+                                  <TreeItem
+                                    key={equipment.id}
+                                    nodeId={equipment.id}
+                                    label={equipment.component}
+                                  >
+                                    {equipment.equipmentParameters?.map(
+                                      (parameter) => (
+                                        <TreeItem
+                                          key={parameter.id}
+                                          nodeId={parameter.id}
+                                          label={parameter.name}
+                                          onClick={() =>
+                                            handleParameterClick(
+                                              site,
+                                              building,
+                                              floor,
+                                              room,
+                                              equipment,
+                                              parameter
+                                            )
+                                          }
+                                        />
+                                      )
+                                    )}
+                                  </TreeItem>
+                                ))}
                               </TreeItem>
                             ))}
                           </TreeItem>

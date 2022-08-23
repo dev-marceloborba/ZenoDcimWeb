@@ -90,6 +90,7 @@ export interface EquipmentParameterViewModel {
   scale: number;
   dataSource: string;
   address: string;
+  expression?: string;
 }
 
 export interface UpdateEquipmentParameterViewModel {
@@ -101,6 +102,7 @@ export interface UpdateEquipmentParameterViewModel {
   scale: number;
   dataSource: string;
   address: string;
+  expression?: string;
 }
 
 export interface EquipmentParameterModel extends EquipmentParameterViewModel {
@@ -139,6 +141,7 @@ export interface ParameterViewModel {
   lowLimit: number;
   highLimit: number;
   scale: number;
+  expression?: string;
 }
 
 export interface UpdateParameterViewModel {
@@ -148,6 +151,7 @@ export interface UpdateParameterViewModel {
   lowLimit: number;
   highLimit: number;
   scale: number;
+  expression?: string;
 }
 
 export interface ParameterModel extends ParameterViewModel {
