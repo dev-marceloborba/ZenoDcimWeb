@@ -3,6 +3,7 @@ import authReducer, {
   reHydrateStore,
 } from "modules/user/stores/slices/AuthenticationSlice";
 import { userApi } from "modules/user/services/authentication-service";
+import { companyApi } from "modules/user/services/company-service";
 import { equipmentApi } from "modules/automation/services/equipment-service";
 import { equipmentParametersApi } from "modules/automation/services/equipment-parameter-service";
 import { parameterGroupApi } from "modules/automation/services/parameter-group-service";
@@ -19,6 +20,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     [userApi.reducerPath]: userApi.reducer,
+    [companyApi.reducerPath]: companyApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,
     [equipmentParametersApi.reducerPath]: equipmentParametersApi.reducer,
     [parameterGroupApi.reducerPath]: parameterGroupApi.reducer,
@@ -37,6 +39,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       userApi.middleware,
+      companyApi.middleware,
       equipmentApi.middleware,
       equipmentParametersApi.middleware,
       parameterGroupApi.middleware,

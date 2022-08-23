@@ -8,16 +8,26 @@ import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { ParameterFormPath } from "modules/automation/routes/paths";
+import {
+  ParameterFormPath,
+  VirtualParameterFormPath,
+} from "modules/automation/routes/paths";
+import { ParameterModel } from "modules/automation/models/automation-model";
 
 export default function ParametersTable() {
   const { data: parameters, isLoading } = useFindAllParametersQuery();
   const [deleteParameter] = useDeleteParameterMutation();
   const { navigate } = useRouter();
 
-  const handleSelectedParameter = (parameter: any) => {
+  const handleSelectedParameter = (parameter: ParameterModel) => {
     navigate(
-      compositePathRoute([HomePath, AutomationPath, ParameterFormPath]),
+      compositePathRoute([
+        HomePath,
+        AutomationPath,
+        parameter.discriminator === "Parâmetro físico"
+          ? ParameterFormPath
+          : VirtualParameterFormPath,
+      ]),
       {
         state: {
           data: parameter,

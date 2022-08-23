@@ -7,7 +7,6 @@ import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import MaskedControlledTextInput from "modules/shared/components/MaskedControlledTextInput";
 
-import { useCreateCompanyMutation } from "app/services/company";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, string } from "yup";
@@ -15,10 +14,13 @@ import Card from "modules/shared/components/Card";
 import Loading from "modules/shared/components/Loading";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { CompanyRequest } from "app/models/company.model";
+import { useCreateCompanyMutation } from "modules/user/services/company-service";
+import useRouter from "modules/core/hooks/useRouter";
 
 const CompanyForm: React.FC = () => {
   const [createCompany, { isLoading }] = useCreateCompanyMutation();
   const toast = useToast();
+  const { back } = useRouter();
   const methods = useForm<CompanyRequest>({
     resolver: yupResolver(validationSchema),
   });
@@ -28,7 +30,9 @@ const CompanyForm: React.FC = () => {
   const onSubmit: SubmitHandler<CompanyRequest> = async (data) => {
     try {
       await createCompany(data).unwrap();
-      toast.open("Empresa criada com sucesso", 2000, "success");
+      toast
+        .open("Empresa criada com sucesso", 2000, "success")
+        .then(() => back());
     } catch (err) {
       toast.open(`Erro ao criar empresa: ${err}`, 2000, "error");
     }

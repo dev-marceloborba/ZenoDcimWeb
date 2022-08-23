@@ -51,6 +51,12 @@ export const virtualParameterApi = createApi({
       }),
       providesTags: ["VirtualParameterModel"],
     }),
+    findVirtualParameterById: builder.query<VirtualParameterModel, string>({
+      query: (id) => ({
+        url: `v1/data-center/virtual-parameters/${id}`,
+      }),
+      providesTags: ["VirtualParameterModel"],
+    }),
     deleteVirtualParameter: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/virtual-parameters/${id}`,
@@ -58,23 +64,6 @@ export const virtualParameterApi = createApi({
       }),
       invalidatesTags: ["VirtualParameterModel"],
     }),
-    // findParameterByGroup: builder.mutation<VirtualParametersModel, string>({
-    //   query: (group) => ({
-    //     url: `v1/data-center/parametersByGroup/${group}`,
-    //     method: "GET",
-    //   }),
-    //   invalidatesTags: ["VirtualParameterModel"],
-    // }),
-    // createParametersIntoGroup: builder.mutation<any, EquipmentOnGroupViewModel>(
-    //   {
-    //     query: (params) => ({
-    //       url: "v1/data-center/parameters/groupAssociation",
-    //       method: "POST",
-    //       body: params,
-    //     }),
-    //     invalidatesTags: ["VirtualParameterModel"],
-    //   }
-    // ),
   }),
 });
 
@@ -83,6 +72,5 @@ export const {
   useUpdateVirtualParameterMutation,
   useDeleteVirtualParameterMutation,
   useFindAllVirtualParametersQuery,
-  //   useCreateParametersIntoGroupMutation,
-  //   useFindParameterByGroupMutation,
+  useFindVirtualParameterByIdQuery,
 } = virtualParameterApi;

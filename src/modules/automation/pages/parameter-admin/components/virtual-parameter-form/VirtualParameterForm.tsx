@@ -7,13 +7,20 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 import Button from "@mui/material/Button";
 import ParameterBrowserModal from "../parameter-browser-modal/ParameterBrowserModal";
-import { useCreateVirtualParameterMutation } from "modules/automation/services/virtual-parameter-service";
+import {
+  useCreateVirtualParameterMutation,
+  useFindVirtualParameterByIdQuery,
+} from "modules/automation/services/virtual-parameter-service";
 import Loading from "modules/shared/components/Loading";
 import { number, object, SchemaOf, string } from "yup";
-import { VirtualParameterViewModel } from "modules/automation/models/virtual-parameter-model";
+import {
+  VirtualParameterModel,
+  VirtualParameterViewModel,
+} from "modules/automation/models/virtual-parameter-model";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useToast } from "modules/shared/components/ToastProvider";
 import useRouter from "modules/core/hooks/useRouter";
+import { useEffect } from "react";
 
 export default function VirtualParameterForm() {
   const methods = useForm<VirtualParameterViewModel>({
@@ -22,8 +29,20 @@ export default function VirtualParameterForm() {
   const { showModal } = useModal();
   const toast = useToast();
   const { back } = useRouter();
-  const [createVirtualParameter, { isLoading }] =
-    useCreateVirtualParameterMutation();
+  const {
+    state: { data, mode },
+  }: {
+    state: {
+      data: VirtualParameterModel;
+      mode: "new" | "edit";
+    };
+  } = useRouter();
+  const [
+    createVirtualParameter,
+    { isLoading: isLoadingCreateVirtualParameter },
+  ] = useCreateVirtualParameterMutation();
+  const { data: virtualParameter, isLoading: isLoadingFindVirtualParameter } =
+    useFindVirtualParameterByIdQuery(data.id);
 
   const { handleSubmit, setValue } = methods;
 
@@ -45,6 +64,17 @@ export default function VirtualParameterForm() {
       },
     });
   };
+
+  useEffect(() => {
+    if (mode === "edit" && virtualParameter) {
+      setValue("name", virtualParameter.name);
+      setValue("unit", virtualParameter.unit);
+      setValue("lowLimit", virtualParameter.lowLimit);
+      setValue("highLimit", virtualParameter.highLimit);
+      setValue("scale", virtualParameter.scale);
+      setValue("expression", virtualParameter.expression);
+    }
+  }, [mode, setValue, virtualParameter]);
 
   return (
     <HeroContainer title="Criar/editar parâmetro virtual">
@@ -69,7 +99,9 @@ export default function VirtualParameterForm() {
           </Button>
         </Form>
       </FormProvider>
-      <Loading open={isLoading} />
+      <Loading
+        open={isLoadingCreateVirtualParameter || isLoadingFindVirtualParameter}
+      />
     </HeroContainer>
   );
 }

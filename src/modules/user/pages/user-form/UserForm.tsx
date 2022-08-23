@@ -15,13 +15,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, object, ref, string, number } from "yup";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
-
+import { useFindAllCompaniesQuery } from "app/services/company";
 import Card from "modules/shared/components/Card";
 import Loading from "modules/shared/components/Loading";
 import { UserViewModel } from "modules/user/models/user-model";
-import { useFindAllCompaniesQuery } from "modules/user/services/company-service";
 
-const CreateUser: React.FC = () => {
+const UserForm: React.FC = () => {
   const methods = useForm<UserViewModel>({
     resolver: yupResolver(validationSchema),
   });
@@ -133,4 +132,4 @@ const validationSchema: SchemaOf<UserViewModel> = object().shape({
   companyId: string().required("Empresa é obrigatória"),
 });
 
-export default CreateUser;
+export default UserForm;

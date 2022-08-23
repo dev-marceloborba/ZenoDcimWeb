@@ -36,8 +36,15 @@ const UserAdmin: React.FC = () => {
   return (
     <HeroContainer>
       <Row sx={{ justifyContent: "flex-end" }}>
-        <ButtonLink to="/zeno/settings/new-user" variant="contained">
+        <ButtonLink to="/zeno/settings/user-new" variant="contained">
           Criar usuário
+        </ButtonLink>
+        <ButtonLink
+          sx={{ ml: 2 }}
+          to="/zeno/settings/company-form"
+          variant="outlined"
+        >
+          Criar empresa
         </ButtonLink>
       </Row>
       <DataTable

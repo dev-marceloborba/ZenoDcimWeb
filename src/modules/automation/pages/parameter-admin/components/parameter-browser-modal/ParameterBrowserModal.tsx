@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Card from "@mui/material/Card";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -17,6 +18,12 @@ import {
   EquipmentParameterModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
+import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
+import {
+  BuildingModel,
+  FloorModel,
+  RoomModel,
+} from "modules/datacenter/models/datacenter-model";
 
 type ParameterBrowserModalProps = {
   onConfirm: (values: any) => void;
@@ -39,6 +46,9 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
   const [expression, setExpression] = useState("");
   const { onConfirm, onCancel } = props;
   const { data, isLoading } = useFindAllEquipmentsQuery();
+  const { data: buildings } = useFindAllBuildingsQuery();
+
+  console.log(buildings);
 
   //   const handleToggle = (event: React.SyntheticEvent, nodeIds: string[]) => {
   //     setExpanded(nodeIds);
@@ -71,10 +81,24 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
   };
 
   const handleParameterClick = (
+    building: BuildingModel,
+    floor: FloorModel,
+    room: RoomModel,
     equipment: EquipmentModel,
     parameter: EquipmentParameterModel
   ) => {
-    setExpression(expression + equipment.component + "." + parameter.name);
+    setExpression(
+      expression +
+        building.name +
+        "." +
+        floor.name +
+        "." +
+        room.name +
+        "." +
+        equipment.component +
+        "." +
+        parameter.name
+    );
     setSelectedNode({ equipment, parameter });
   };
 
@@ -93,7 +117,7 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
       {...props}
       sx={{
         "& .MuiPaper-root": {
-          width: 500,
+          width: 600,
           height: "auto",
           overflow: "auto",
         },
@@ -101,38 +125,78 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
     >
       <DialogTitle>Navegador de parâmetros</DialogTitle>
       <DialogContent>
-        <Grid container columnSpacing={2} alignItems="center">
+        <Grid
+          container
+          columnSpacing={2}
+          justifyContent="flex-start"
+          // alignItems="center"
+          direction="column"
+        >
           <Grid item md={6}>
-            <TreeView
-              aria-label="file system navigator"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              //   onNodeToggle={handleToggle}
-              //   onNodeSelect={handleSelect}
-              sx={{
-                height: 240,
-                flexGrow: 1,
-                maxWidth: 400,
-                overflowY: "auto",
-              }}
-            >
-              {data?.map((equipment) => (
-                <TreeItem
-                  key={equipment.id}
-                  nodeId={equipment.id}
-                  label={equipment.component}
-                >
-                  {equipment.equipmentParameters?.map((parameter) => (
-                    <TreeItem
-                      key={parameter.id}
-                      nodeId={parameter.id}
-                      label={parameter.name}
-                      onClick={() => handleParameterClick(equipment, parameter)}
-                    />
-                  ))}
-                </TreeItem>
-              ))}
-            </TreeView>
+            <Card sx={{ maxWidth: 550 }}>
+              <TreeView
+                aria-label="file system navigator"
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                sx={{
+                  height: 240,
+                  flexGrow: 1,
+                  maxWidth: 650,
+                  overflowY: "auto",
+                }}
+              >
+                {buildings?.map((building) => (
+                  <TreeItem
+                    key={building.id}
+                    nodeId={building.id}
+                    label={building.name}
+                  >
+                    {building.floors?.map((floor) => (
+                      <TreeItem
+                        key={floor.id}
+                        nodeId={floor.id}
+                        label={floor.name}
+                      >
+                        {floor.rooms?.map((room) => (
+                          <TreeItem
+                            key={room.id}
+                            nodeId={room.id}
+                            label={room.name}
+                          >
+                            {room.equipments?.map((equipment) => (
+                              <TreeItem
+                                key={equipment.id}
+                                nodeId={equipment.id}
+                                label={equipment.component}
+                              >
+                                {equipment.equipmentParameters?.map(
+                                  (parameter) => (
+                                    <TreeItem
+                                      key={parameter.id}
+                                      nodeId={parameter.id}
+                                      label={parameter.name}
+                                      onClick={() =>
+                                        handleParameterClick(
+                                          building,
+                                          floor,
+                                          room,
+                                          equipment,
+                                          parameter
+                                        )
+                                      }
+                                    />
+                                  )
+                                )}
+                              </TreeItem>
+                            ))}
+                          </TreeItem>
+                        ))}
+                      </TreeItem>
+                    ))}
+                  </TreeItem>
+                ))}
+              </TreeView>
+            </Card>
           </Grid>
 
           <Grid item md={6}>
@@ -163,7 +227,15 @@ const ParameterBrowserModal: React.FC<ParameterBrowserModalProps> = ({
             <TextField
               fullWidth
               label="Expressão"
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                "& textarea": {
+                  fontSize: 14,
+                },
+              }}
+              multiline
+              rows={2}
+              maxRows={3}
               value={expression}
               onChange={handleExpressionChange}
             />

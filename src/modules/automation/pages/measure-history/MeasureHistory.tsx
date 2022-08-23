@@ -13,6 +13,7 @@ import FiltersPopup from "./filters-popup/FiltersPopup";
 import { Button, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
+import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 
 type HistoryViewModel = {
   site: string;
@@ -26,9 +27,10 @@ type HistoryViewModel = {
 };
 
 export default function MeasureHistory() {
-  const [filters, setFilters] = useState<MeasureHistoryViewModel>(
-    {} as MeasureHistoryViewModel
-  );
+  const [filters, setFilters] = useState<MeasureHistoryViewModel>({
+    initialDate: addDaysToDate(new Date(), -7),
+    finalDate: new Date(),
+  });
   const [measures, setMeasures] = useState<HistoryViewModel[]>([]);
   const siteRef = useRef<HTMLInputElement>();
   const buildindRef = useRef<HTMLInputElement>();
