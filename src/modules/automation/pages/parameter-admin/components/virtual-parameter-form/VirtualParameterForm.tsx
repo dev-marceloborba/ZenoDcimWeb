@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import ParameterBrowserModal from "../parameter-browser-modal/ParameterBrowserModal";
 import {
   useCreateVirtualParameterMutation,
-  useFindVirtualParameterByIdQuery,
+  useFindVirtualParameterByIdMutation,
   useUpdateVirtualParameterMutation,
 } from "modules/automation/services/virtual-parameter-service";
 import Loading from "modules/shared/components/Loading";
@@ -43,8 +43,10 @@ export default function VirtualParameterForm() {
     { isLoading: isLoadingCreateVirtualParameter },
   ] = useCreateVirtualParameterMutation();
   const [updateVirtualParameter] = useUpdateVirtualParameterMutation();
-  const { data: virtualParameter, isLoading: isLoadingFindVirtualParameter } =
-    useFindVirtualParameterByIdQuery(data.id);
+  const [
+    findVirtualParameterById,
+    { data: virtualParameter, isLoading: isLoadingFindVirtualParameter },
+  ] = useFindVirtualParameterByIdMutation();
 
   const { handleSubmit, setValue } = methods;
 
@@ -73,6 +75,15 @@ export default function VirtualParameterForm() {
       },
     });
   };
+
+  useEffect(() => {
+    async function fetchParameter() {
+      if (mode === "edit" && data) {
+        await findVirtualParameterById(data.id);
+      }
+    }
+    fetchParameter();
+  }, [data, findVirtualParameterById, mode]);
 
   useEffect(() => {
     if (mode === "edit" && virtualParameter) {

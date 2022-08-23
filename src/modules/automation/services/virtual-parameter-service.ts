@@ -51,11 +51,11 @@ export const virtualParameterApi = createApi({
       }),
       providesTags: ["VirtualParameterModel"],
     }),
-    findVirtualParameterById: builder.query<VirtualParameterModel, string>({
+    findVirtualParameterById: builder.mutation<VirtualParameterModel, string>({
       query: (id) => ({
         url: `v1/data-center/virtual-parameters/${id}`,
       }),
-      providesTags: ["VirtualParameterModel"],
+      invalidatesTags: ["VirtualParameterModel"],
     }),
     deleteVirtualParameter: builder.mutation<void, string>({
       query: (id) => ({
@@ -72,5 +72,5 @@ export const {
   useUpdateVirtualParameterMutation,
   useDeleteVirtualParameterMutation,
   useFindAllVirtualParametersQuery,
-  useFindVirtualParameterByIdQuery,
+  useFindVirtualParameterByIdMutation,
 } = virtualParameterApi;
