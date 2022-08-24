@@ -11,7 +11,7 @@ import {
   RackResponse,
   RacksResponse,
 } from "app/models/rack.model";
-import { RootState } from "app/store";
+import { RootState } from "modules/core/store";
 import { ApiResponse } from "../models/api-response";
 
 function getEquipmentDescription(

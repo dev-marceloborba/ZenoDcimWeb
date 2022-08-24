@@ -1,4 +1,4 @@
-import { selectIsAuthenticated } from "features/authentication/authenticationSlice";
+import { selectIsAuthenticated } from "modules/user/stores/slices/AuthenticationSlice";
 import React, { ComponentType } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { useAppSelector } from "../hooks";

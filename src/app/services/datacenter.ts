@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
-import { RootState } from "../store";
+import { RootState } from "modules/core/store";
 import { ApiResponse } from "../models/api-response";
 import {
   BuildingMerged,

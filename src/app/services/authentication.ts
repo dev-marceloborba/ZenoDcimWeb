@@ -1,16 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
+import { RootState } from "modules/core/store";
 import {
-  AuthResponse,
-  EditUserRequest,
+  AuthModel,
+  EditUserViewModel,
   EUserRole,
-  LoginRequest,
-  UserRequest,
-  UserResponse,
-  UserResponseNormalized,
-  UsersResponse,
-} from "app/models/authentication.model";
-import { RootState } from "app/store";
+  LoginViewModel,
+  UserModel,
+  UserModelNormalized,
+  UsersModel,
+  UserViewModel,
+} from "modules/user/models/user-model";
+
 import { ApiResponse } from "../models/api-response";
 
 export const api = createApi({
@@ -25,18 +26,18 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["UserResponseNormalized", "UsersResponse"],
+  tagTypes: ["UserModelNormalized", "UsersModel"],
   endpoints: (builder) => ({
-    login: builder.mutation<ApiResponse<AuthResponse>, LoginRequest>({
+    login: builder.mutation<ApiResponse<AuthModel>, LoginViewModel>({
       query: (credentials) => ({
         url: "v1/users/login",
         method: "POST",
         body: credentials,
       }),
     }),
-    findAllUsers: builder.query<UserResponseNormalized[], void>({
+    findAllUsers: builder.query<UserModelNormalized[], void>({
       query: () => ({ url: "v1/users", method: "GET" }),
-      transformResponse: (returnedUsers: UsersResponse) => {
+      transformResponse: (returnedUsers: UsersModel) => {
         function getUserRoleDescription(role: EUserRole): string {
           switch (role) {
             case EUserRole.ADMIN:
@@ -54,7 +55,7 @@ export const api = createApi({
           }
         }
 
-        const users: UserResponseNormalized[] = [];
+        const users: UserModelNormalized[] = [];
         returnedUsers.forEach((returnedUser) => {
           users.push({
             id: returnedUser.id,
@@ -67,32 +68,32 @@ export const api = createApi({
         });
         return users;
       },
-      providesTags: ["UserResponseNormalized"],
+      providesTags: ["UserModelNormalized"],
     }),
-    createUser: builder.mutation<ApiResponse<UserResponse>, UserRequest>({
+    createUser: builder.mutation<ApiResponse<UserModel>, UserViewModel>({
       query: (user) => ({
         url: "v1/users",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModelNormalized"],
     }),
-    deleteUser: builder.mutation<ApiResponse<UserResponse>, string>({
+    deleteUser: builder.mutation<ApiResponse<UserModel>, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModelNormalized"],
     }),
-    editUser: builder.mutation<ApiResponse<UserResponse>, EditUserRequest>({
+    editUser: builder.mutation<ApiResponse<UserModel>, EditUserViewModel>({
       query: (user) => ({
         url: "v1/users/edit",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModelNormalized"],
     }),
-    findUserById: builder.mutation<UserResponse, string>({
+    findUserById: builder.mutation<UserModel, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "GET",

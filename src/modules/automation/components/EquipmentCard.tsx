@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { BmsEquipment, EEquipmentStatus } from "app/types/bms";
-import { FilterData } from "features/automation/types/filter-data";
 import BmsIndicator from "app/components/BmsIndicator";
+import { FilterData } from "../data/types/automationFilter";
 
 type EquipmentCardProps = BmsEquipment &
   FilterData & {

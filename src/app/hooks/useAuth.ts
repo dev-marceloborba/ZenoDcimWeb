@@ -1,15 +1,19 @@
-import { selectIsAuthenticated, logout, setCredentials } from "features/authentication/authenticationSlice";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import {
+  logout,
+  selectIsAuthenticated,
+  setCredentials,
+} from "modules/user/stores/slices/AuthenticationSlice";
 
 export const useAuth = () => {
-    const signed = useAppSelector(selectIsAuthenticated)
-    const dispatch = useAppDispatch()
+  const signed = useAppSelector(selectIsAuthenticated);
+  const dispatch = useAppDispatch();
 
-    const signout = () => dispatch(logout())
+  const signout = () => dispatch(logout());
 
-    return {
-        signed,
-        signout,
-        setCredentials
-    }
-}
+  return {
+    signed,
+    signout,
+    setCredentials,
+  };
+};

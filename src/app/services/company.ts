@@ -6,7 +6,7 @@ import {
   ContractRequest,
   ContractResponse,
 } from "app/models/company.model";
-import { RootState } from "app/store";
+import { RootState } from "modules/core/store";
 import { ApiResponse } from "../models/api-response";
 
 export const companyApi = createApi({

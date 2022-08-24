@@ -21,6 +21,7 @@ import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import {
   AccessControlPath,
+  AlarmHistoryPath,
   AutomationSettingsPath,
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
@@ -116,6 +117,10 @@ const menuItems: ListItemLinkProps[] = [
       {
         primary: "Conectividade de equipamentos",
         to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
+      },
+      {
+        primary: "Histórico de alarmes",
+        to: `/${HomePath}/${AutomationPath}/${AlarmHistoryPath}`,
       },
       {
         primary: "Histórico de medições",

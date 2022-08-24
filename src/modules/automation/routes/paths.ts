@@ -9,6 +9,8 @@ export const EquipmentConnectivityPath = "equipment-connectivity";
 export const AutomationSettingsPath = "settings";
 // measures history
 export const MeasureHistoryPath = "measure-history";
+// alarm history
+export const AlarmHistoryPath = "alarm-history";
 // equipments
 export const EquipmentManagementPath = AutomationSettingsPath + "/equipments";
 export const EquipmentFormPath = EquipmentManagementPath + "/form";

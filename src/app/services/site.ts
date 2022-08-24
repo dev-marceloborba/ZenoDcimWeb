@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { RootState } from "../store";
+import { RootState } from "modules/core/store";
 import { ApiResponse } from "../models/api-response";
 import environment from "app/config/env";
 import { SiteRequest, SiteResponse } from "app/models/data-center.model";
