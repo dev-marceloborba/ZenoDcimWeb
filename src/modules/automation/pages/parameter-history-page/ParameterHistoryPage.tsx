@@ -1,30 +1,38 @@
-import TextField from "@mui/material/TextField";
+import { useEffect, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { EquipmentParameterModel } from "modules/automation/models/automation-model";
-import { useFindMeasuresByParameterMutation } from "modules/automation/services/history-service";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import useRouter from "modules/core/hooks/useRouter";
 import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
-import { useEffect, useState } from "react";
-
-type ParameterHistoryTableProps = {
-  parameter: EquipmentParameterModel;
-};
+import { EquipmentParameterModel } from "modules/automation/models/automation-model";
+import { MeasuresHistoryModel } from "modules/automation/models/measure-history-model";
+import { useFindMeasuresByParameterMutation } from "modules/automation/services/history-service";
+import ParameterChart from "./components/parameter-chart/ParameterChart";
 
 type FilterState = {
   initialDate: Date | null;
   finalDate: Date | null;
 };
 
-const ParameterHistoryTable: React.FC<ParameterHistoryTableProps> = ({
-  parameter,
-}) => {
+export default function ParameterHistoryPage() {
+  const [measures, setMeasures] = useState<MeasuresHistoryModel>([]);
   const [filter, setFilter] = useState<FilterState>({
-    initialDate: new Date(),
-    finalDate: addDaysToDate(new Date(), -1),
+    initialDate: addDaysToDate(new Date(), -7),
+    finalDate: new Date(),
   });
+  const {
+    state: { data: equipmentParameter },
+  }: {
+    state: {
+      data: any;
+    };
+  } = useRouter();
+  console.log(equipmentParameter);
   const [findMeasuresByParameter, { isLoading }] =
     useFindMeasuresByParameterMutation();
 
@@ -39,17 +47,22 @@ const ParameterHistoryTable: React.FC<ParameterHistoryTableProps> = ({
   useEffect(() => {
     async function fetchMeasures() {
       const result = await findMeasuresByParameter({
-        parameter: parameter.name,
-        initialDate: new Date(),
-        finalDate: new Date(),
+        parameter: equipmentParameter.parameter,
+        initialDate: filter.initialDate,
+        finalDate: filter.finalDate,
       }).unwrap();
-      console.log(result);
+      setMeasures(result);
     }
     fetchMeasures();
-  }, [findMeasuresByParameter, parameter.name]);
+  }, [
+    equipmentParameter.parameter,
+    filter.finalDate,
+    filter.initialDate,
+    findMeasuresByParameter,
+  ]);
 
   return (
-    <>
+    <HeroContainer title="Histórico de parâmetro">
       <Row sx={{ mb: 2 }}>
         <DateTimePicker
           label="Data inicial"
@@ -66,18 +79,25 @@ const ParameterHistoryTable: React.FC<ParameterHistoryTableProps> = ({
           onAccept={handleChangeFinalDate}
         />
       </Row>
-
-      <DataTable
-        title={`Parâmetro - ${parameter.name}`}
-        columns={columns}
-        rows={[]}
-      />
+      <Grid container columnSpacing={1}>
+        <Grid item md={6}>
+          <DataTable
+            title={equipmentParameter.description}
+            rows={measures ?? []}
+            columns={columns}
+          />
+        </Grid>
+        <Grid item md={6}>
+          <ParameterChart
+            measures={measures ?? []}
+            description={equipmentParameter.description}
+          />
+        </Grid>
+      </Grid>
       <Loading open={isLoading} />
-    </>
+    </HeroContainer>
   );
-};
-
-export default ParameterHistoryTable;
+}
 
 const columns: ColumnHeader[] = [
   {

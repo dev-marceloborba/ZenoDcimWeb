@@ -1,0 +1,22 @@
+:root  {
+    --chart-bg: #001E3C;
+    --chart-br: 0.8rem;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+    background: var(--chart-bg) !important;
+    border-radius: var(--chart-br) !important;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
+    background: var(--chart-bg) !important;
+    /* border-radius: 0.8rem !important; */
+    /* border-bottom: 1px solid #000 !important; */
+}
+
+.apexcharts-xaxistooltip {
+    background: var(--chart-bg) !important;
+    /* border: 1px solid #000 !important; */
+    color: #fff !important;
+    border-radius: var(--chart-br) !important;
+}

@@ -14,6 +14,11 @@ import { Button, TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
+import useRouter from "modules/core/hooks/useRouter";
+import compositePathRoute from "modules/utils/compositePathRoute";
+import { HomePath } from "modules/paths";
+import { AutomationPath } from "modules/home/routes/paths";
+import { ParameterDetailsPath } from "modules/automation/routes/paths";
 
 type HistoryViewModel = {
   site: string;
@@ -31,6 +36,7 @@ export default function MeasureHistory() {
     initialDate: addDaysToDate(new Date(), -7),
     finalDate: new Date(),
   });
+  const { navigate } = useRouter();
   const [measures, setMeasures] = useState<HistoryViewModel[]>([]);
   const siteRef = useRef<HTMLInputElement>();
   const buildindRef = useRef<HTMLInputElement>();
@@ -75,6 +81,12 @@ export default function MeasureHistory() {
 
   const handleRowClick = (row: MeasureHistoryModel) => {
     console.log(row);
+    // navigate(
+    //   compositePathRoute([HomePath, AutomationPath, ParameterDetailsPath]),
+    //   {
+    //     state: row.name ?? "",
+    //   }
+    // );
   };
 
   const handleOpenFiltersPopup = () => {
@@ -124,54 +136,31 @@ export default function MeasureHistory() {
         </Button>
       </Row> */}
       {/* <Button onClick={handleOpenFiltersPopup}>Filtros</Button> */}
-      <DateTimePicker
-        label="Data inicial"
-        value={filters.initialDate}
-        onChange={() => {}}
-        renderInput={(params) => <TextField {...params} />}
-        onAccept={handleChangeInitialDate}
-      />
-      {/* <TextField
-        id="datetime-local"
-        label="Data inicial"
-        type="datetime-local"
-        defaultValue={filters.initialDate ?? new Date()}
-        inputRef={initialDateRef}
-        // defaultValue="2017-05-24T10:30"
-        sx={{ width: 250 }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      /> */}
-      <DateTimePicker
-        label="Data final"
-        value={filters.finalDate}
-        onChange={() => {}}
-        renderInput={(params) => <TextField {...params} />}
-        onAccept={handleChangeFinalDate}
-      />
-      {/* <TextField
-        id="datetime-local"
-        label="Data final"
-        type="datetime-local"
-        defaultValue={filters.finalDate ?? new Date()}
-        inputRef={finalDateRef}
-        // defaultValue="2017-05-24T10:30"
-        sx={{ width: 250 }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      /> */}
-      {/* <Button onClick={handleApplyFilterClick}>Aplicar filtro</Button> */}
+      <Row sx={{ mb: 2 }}>
+        <DateTimePicker
+          label="Data inicial"
+          value={filters.initialDate}
+          onChange={() => {}}
+          renderInput={(params) => <TextField {...params} />}
+          onAccept={handleChangeInitialDate}
+        />
+
+        <DateTimePicker
+          label="Data final"
+          value={filters.finalDate}
+          onChange={() => {}}
+          renderInput={(params) => <TextField sx={{ ml: 2 }} {...params} />}
+          onAccept={handleChangeFinalDate}
+        />
+      </Row>
+
       <DataTable
         title="Medições"
         rows={measures ?? []}
-        // rows={[]}
         columns={columns}
         options={{
           onRowClick: handleRowClick,
           rowsInPage: 25,
-          // selectionMode: "hide",
         }}
       />
       <Loading open={isLoading} />

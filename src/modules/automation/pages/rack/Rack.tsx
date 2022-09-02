@@ -1,7 +1,6 @@
 import React from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import PageTitle from "modules/shared/components/PageTitle";
-import { useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
@@ -15,11 +14,12 @@ import Typography from "@mui/material/Typography";
 import AlarmIndicator, {
   AlarmStatus,
 } from "modules/automation/components/alarm-indicator/AlarmIndicator";
+import useRouter from "modules/core/hooks/useRouter";
 
 const Rack: React.FC = () => {
   const {
     state: { data: equipment },
-  } = useLocation();
+  } = useRouter();
   return (
     <HeroContainer>
       <PageTitle>Rack</PageTitle>
@@ -34,17 +34,17 @@ const Rack: React.FC = () => {
           }}
         >
           <ParameterCard
-            equipment={equipment}
+            equipment={equipment.component}
             parameters={energyCardData}
             type="energy"
           />
           <ParameterCard
-            equipment={equipment}
+            equipment={equipment.component}
             parameters={climCardData}
             type="clim"
           />
           <ParameterCard
-            equipment={equipment}
+            equipment={equipment.component}
             parameters={telecomCardData}
             type="telecom"
           />
@@ -52,7 +52,7 @@ const Rack: React.FC = () => {
 
         <Grid item md={6}>
           <RackOccupationCard
-            equipment={equipment}
+            equipment={equipment.component}
             rackEquipments={rackOcuppationData}
           />
         </Grid>

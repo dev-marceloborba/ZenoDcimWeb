@@ -1,8 +1,18 @@
+import { useEffect } from "react";
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableHead from "@mui/material/TableHead";
+import Button from "@mui/material/Button";
 import { useFindAllAlarmsMutation } from "modules/automation/services/alarm-service";
 import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 import Loading from "modules/shared/components/Loading";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
-import { useEffect } from "react";
+import { AlarmTableViewModel } from "modules/automation/models/alarm-model";
+import { useMqttState } from "mqtt-react-hooks";
 
 type AlarmTableProps = {
   initialDate: Date;
@@ -12,6 +22,18 @@ type AlarmTableProps = {
 const AlarmTable: React.FC<AlarmTableProps> = ({ initialDate, finalDate }) => {
   const [findAllAlarms, { data: alarms, isLoading }] =
     useFindAllAlarmsMutation();
+  const { client } = useMqttState();
+
+  const handleOnAck = (alarm: AlarmTableViewModel) => {
+    const data = {
+      id: alarm.id,
+      parameterId: alarm.parameterId,
+      alarmRuleId: alarm.ruleId,
+    };
+    client?.publish("/alarms-recognized", JSON.stringify(data), {
+      retain: false,
+    });
+  };
 
   useEffect(() => {
     async function fetchAlarms() {
@@ -20,55 +42,64 @@ const AlarmTable: React.FC<AlarmTableProps> = ({ initialDate, finalDate }) => {
     fetchAlarms();
   }, [finalDate, findAllAlarms, initialDate]);
 
-  console.log(alarms);
-
   return (
     <>
-      <DataTable title="Alarmes" rows={rows} columns={columns} />
+      <DataTable title="Alarmes" rows={alarms ?? []} columns={columns} />
+      {/* <Card>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Prédio</TableCell>
+                <TableCell align="right">Andar</TableCell>
+                <TableCell align="right">Sala</TableCell>
+                <TableCell align="right">Equipamento</TableCell>
+                <TableCell align="right">Parâmetro</TableCell>
+                <TableCell align="right">Regra</TableCell>
+                <TableCell align="right">Valor</TableCell>
+                <TableCell align="right">Data de entrada</TableCell>
+                <TableCell align="right">Data de saída</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Ação</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {alarms?.map((alarm, index) => (
+                <TableRow key={index}>
+                  <TableCell>{alarm.building}</TableCell>
+                  <TableCell align="right">{alarm.floor}</TableCell>
+                  <TableCell align="right">{alarm.room}</TableCell>
+                  <TableCell align="right">{alarm.equipment}</TableCell>
+                  <TableCell align="right">{alarm.parameter}</TableCell>
+                  <TableCell align="right">{alarm.rule}</TableCell>
+                  <TableCell align="right">{alarm.value}</TableCell>
+                  <TableCell align="right">
+                    {getTimeStampFormat(alarm.inDate.toISOString())}
+                  </TableCell>
+                  <TableCell align="right">
+                    {getTimeStampFormat(alarm.outDate.toISOString())}
+                  </TableCell>
+                  <TableCell align="right">
+                    {alarm.acked ? "Reconhecido" : "Não reconhecido"}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      onClick={() => handleOnAck(alarm)}
+                      variant="outlined"
+                    >
+                      Reconhecer
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card> */}
       <Loading open={isLoading} />
     </>
   );
 };
-
-type AlarmData = {
-  building: string;
-  floor: string;
-  room: string;
-  equipment: string;
-  parameter: string;
-  value: number;
-  rule: string;
-  inDate: Date;
-  outDate: Date;
-  acked: boolean;
-};
-
-const rows: Array<AlarmData> = [
-  {
-    building: "Data Hall 1",
-    floor: "Andar 1",
-    room: "Transformador A",
-    equipment: "Disjuntor 1",
-    parameter: "Tensão",
-    value: 1200,
-    rule: "Tensão muito alta",
-    inDate: new Date(),
-    outDate: new Date(),
-    acked: false,
-  },
-  //   {
-  //     building: "Data Hall 1",
-  //     floor: "Andar 1",
-  //     room: "Transformador A",
-  //     equipment: "Disjuntor 1",
-  //     parameter: "Corrente",
-  //     value: 400,
-  //     rule: "Corrente muito alta",
-  //     inDate: new Date().toLocaleDateString(),
-  //     outDate: new Date().toLocaleDateString(),
-  //     acked: true,
-  //   },
-];
 
 const columns: ColumnHeader[] = [
   {
@@ -110,9 +141,18 @@ const columns: ColumnHeader[] = [
     customFunction: (row) => getTimeStampFormat(row),
   },
   {
-    name: "acked",
-    label: "Reconhecido",
-    customFunction: (row) => (row ? "Reconhecido" : "Não reconhecido"),
+    name: "status",
+    label: "Status",
+    customFunction: (row) => {
+      switch (row) {
+        case 1:
+          return "Inativo";
+        case 2:
+          return "Ativo";
+        case 3:
+          return "Reconhecido";
+      }
+    },
   },
 ];
 

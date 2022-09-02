@@ -35,6 +35,8 @@ import {
   MeasureHistoryPath,
   ParameterDetailsPath,
   AlarmHistoryPath,
+  AlarmRealtimePath,
+  EquipmentParameterDetailsPath,
 } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
@@ -61,68 +63,81 @@ import VirtualParameterForm from "../pages/parameter-admin/components/virtual-pa
 import EquipmentParameterRules from "../pages/equipment-admin/components/equipment-parameter-rules/EquipmentParameterRules";
 import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equipment-parameter-rules-form/EquipmentParameterRulesForm";
 import MeasureHistory from "../pages/measure-history/MeasureHistory";
-import ParameterDetails from "../pages/energy-clim-telecom/components/ParameterDetails/ParameterDetails";
 import AlarmHistory from "../pages/alarm-history/AlarmHistory";
+import AlarmRuntime from "../pages/alarm-history/components/alarm-runtime/AlarmRuntime";
+import EquipmentParametersPage from "../pages/equipment-parameters-page/EquipmentParametersPage";
+import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
+import AutomationRealtimeProvider from "../data/providers/AutomationRealtimeProvider";
 
 const AutomationRoutes: React.FC = () => {
   return (
-    <Routes>
-      <Route path={EnergyClimTelecomPath} element={<EtcBuilding />} />
-      <Route path={EnergyClimTelecomFloorPath} element={<EtcFloor />} />
-      <Route path={CagePath} element={<Cage />} />
-      <Route path={RackPath} element={<Rack />} />
-      <Route path={ParameterDetailsPath} element={<ParameterDetails />} />
-      <Route path={AlarmHistoryPath} element={<AlarmHistory />} />
-      <Route path={MeasureHistoryPath} element={<MeasureHistory />} />
+    <AutomationRealtimeProvider>
+      <Routes>
+        <Route path={EnergyClimTelecomPath} element={<EtcBuilding />} />
+        <Route path={EnergyClimTelecomFloorPath} element={<EtcFloor />} />
+        <Route path={CagePath} element={<Cage />} />
+        <Route path={RackPath} element={<Rack />} />
+        <Route
+          path={EquipmentParameterDetailsPath}
+          element={<EquipmentParametersPage />}
+        />
+        <Route path={ParameterDetailsPath} element={<ParameterHistoryPage />} />
+        <Route path={AlarmHistoryPath} element={<AlarmHistory />} />
+        <Route path={AlarmRealtimePath} element={<AlarmRuntime />} />
+        <Route path={MeasureHistoryPath} element={<MeasureHistory />} />
 
-      <Route path={FireSystemPath} element={<FireSystem />} />
-      <Route path={AccessControlPath} element={<AccessControl />} />
-      <Route
-        path={EquipmentConnectivityPath}
-        element={<EquipmentConectivity />}
-      />
+        <Route path={FireSystemPath} element={<FireSystem />} />
+        <Route path={AccessControlPath} element={<AccessControl />} />
+        <Route
+          path={EquipmentConnectivityPath}
+          element={<EquipmentConectivity />}
+        />
 
-      <Route path={AutomationSettingsPath} element={<AutomationSettings />} />
-      {/* equipment */}
-      <Route path={EquipmentManagementPath} element={<EquipmentAdmin />} />
-      <Route path={EquipmentFormPath} element={<EquipmentForm />} />
-      <Route
-        path={EquipmentParametersAssociationPath}
-        element={<EquipmentParametersAssociation />}
-      />
-      <Route
-        path={EquipmentParameterFormPath}
-        element={<EquipmentParameterForm />}
-      />
-      <Route path={EquipmentRulesPath} element={<EquipmentParameterRules />} />
-      <Route
-        path={EquipmentRulesFormPath}
-        element={<EquipmentParameterRulesForm />}
-      />
-      {/* parameters */}
-      <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
-      <Route path={ParameterFormPath} element={<ParameterForm />} />
-      <Route
-        path={VirtualParameterFormPath}
-        element={<VirtualParameterForm />}
-      />
-      <Route
-        path={ParameterGroupManagementPath}
-        element={<ParameterGroupAdmin />}
-      />
-      {/* rooms */}
-      <Route path={RoomManagementPath} element={<RoomAdmin />} />
-      <Route path={RoomFormPath} element={<RoomForm />} />
-      {/* floors */}
-      <Route path={FloorManagementPath} element={<FloorAdmin />} />
-      <Route path={FloorFormPath} element={<FloorForm />} />
-      {/* buildings */}
-      <Route path={BuildingManagementPath} element={<BuildingAdmin />} />
-      <Route path={BuildingFormPath} element={<BuildingForm />} />
-      {/* sites */}
-      <Route path={SiteManagementPath} element={<SiteAdmin />} />
-      <Route path={SiteFormPath} element={<SiteForm />} />
-    </Routes>
+        <Route path={AutomationSettingsPath} element={<AutomationSettings />} />
+        {/* equipment */}
+        <Route path={EquipmentManagementPath} element={<EquipmentAdmin />} />
+        <Route path={EquipmentFormPath} element={<EquipmentForm />} />
+        <Route
+          path={EquipmentParametersAssociationPath}
+          element={<EquipmentParametersAssociation />}
+        />
+        <Route
+          path={EquipmentParameterFormPath}
+          element={<EquipmentParameterForm />}
+        />
+        <Route
+          path={EquipmentRulesPath}
+          element={<EquipmentParameterRules />}
+        />
+        <Route
+          path={EquipmentRulesFormPath}
+          element={<EquipmentParameterRulesForm />}
+        />
+        {/* parameters */}
+        <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
+        <Route path={ParameterFormPath} element={<ParameterForm />} />
+        <Route
+          path={VirtualParameterFormPath}
+          element={<VirtualParameterForm />}
+        />
+        <Route
+          path={ParameterGroupManagementPath}
+          element={<ParameterGroupAdmin />}
+        />
+        {/* rooms */}
+        <Route path={RoomManagementPath} element={<RoomAdmin />} />
+        <Route path={RoomFormPath} element={<RoomForm />} />
+        {/* floors */}
+        <Route path={FloorManagementPath} element={<FloorAdmin />} />
+        <Route path={FloorFormPath} element={<FloorForm />} />
+        {/* buildings */}
+        <Route path={BuildingManagementPath} element={<BuildingAdmin />} />
+        <Route path={BuildingFormPath} element={<BuildingForm />} />
+        {/* sites */}
+        <Route path={SiteManagementPath} element={<SiteAdmin />} />
+        <Route path={SiteFormPath} element={<SiteForm />} />
+      </Routes>
+    </AutomationRealtimeProvider>
   );
 };
 

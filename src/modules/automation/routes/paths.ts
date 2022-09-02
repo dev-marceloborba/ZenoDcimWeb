@@ -2,6 +2,8 @@ export const EnergyClimTelecomPath = "etc";
 export const EnergyClimTelecomFloorPath = EnergyClimTelecomPath + "/floor";
 export const CagePath = EnergyClimTelecomFloorPath + "/cage";
 export const RackPath = CagePath + "/rack";
+export const EquipmentParameterDetailsPath =
+  CagePath + "/equipment-parameters-details";
 export const ParameterDetailsPath = RackPath + "/parameter-details";
 export const FireSystemPath = "fire-system";
 export const AccessControlPath = "access-control";
@@ -11,6 +13,7 @@ export const AutomationSettingsPath = "settings";
 export const MeasureHistoryPath = "measure-history";
 // alarm history
 export const AlarmHistoryPath = "alarm-history";
+export const AlarmRealtimePath = "alarm-realtime";
 // equipments
 export const EquipmentManagementPath = AutomationSettingsPath + "/equipments";
 export const EquipmentFormPath = EquipmentManagementPath + "/form";

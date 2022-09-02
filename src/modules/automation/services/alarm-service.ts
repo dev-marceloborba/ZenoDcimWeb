@@ -1,7 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { RootState } from "modules/core/store";
-import { AlarmModel, AlarmViewModel } from "../models/alarm-model";
+import {
+  AlarmModel,
+  AlarmTableViewModel,
+  AlarmViewModel,
+} from "../models/alarm-model";
 
 export const alarmApi = createApi({
   reducerPath: "alarmApi",
@@ -17,7 +21,7 @@ export const alarmApi = createApi({
   }),
   tagTypes: ["AlarmModel"],
   endpoints: (builder) => ({
-    findAllAlarms: builder.mutation<AlarmModel[], AlarmViewModel>({
+    findAllAlarms: builder.mutation<AlarmTableViewModel[], AlarmViewModel>({
       query: (params) => ({
         url: "v1/alarms",
         params: {
@@ -25,6 +29,30 @@ export const alarmApi = createApi({
           finalDate: params.finalDate?.toUTCString(),
         },
       }),
+      transformResponse: (baseValue: AlarmModel[]) => {
+        const values: AlarmTableViewModel[] = [];
+        baseValue.forEach((alarm) => {
+          values.push({
+            id: alarm.id,
+            building:
+              alarm.alarmRule.equipmentParameter.equipment.room.floor.building
+                .name,
+            floor: alarm.alarmRule.equipmentParameter.equipment.room.floor.name,
+            room: alarm.alarmRule.equipmentParameter.equipment.room.name,
+            equipment: alarm.alarmRule.equipmentParameter.equipment.name,
+            parameter: alarm.alarmRule.equipmentParameter.name,
+            acked: false,
+            rule: alarm.alarmRule.name,
+            value: alarm.value,
+            inDate: alarm.inDate,
+            outDate: alarm.outDate,
+            parameterId: alarm.alarmRule.equipmentParameter.id,
+            ruleId: alarm.alarmRule.id,
+            status: alarm.status,
+          });
+        });
+        return values;
+      },
       invalidatesTags: ["AlarmModel"],
     }),
     findAlarmById: builder.mutation<AlarmModel, string>({

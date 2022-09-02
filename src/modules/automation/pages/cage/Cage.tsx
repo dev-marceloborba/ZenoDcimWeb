@@ -21,6 +21,7 @@ import { AutomationPath } from "modules/home/routes/paths";
 import {
   CagePath,
   EnergyClimTelecomPath,
+  EquipmentParameterDetailsPath,
   RackPath,
 } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
@@ -102,7 +103,7 @@ const Cage: React.FC = () => {
               equipmentData.energyEquipments.map<EquipmentTableData>(
                 (equip) => ({
                   alarms: 0,
-                  equipment: equip.component,
+                  equipment: equip,
                   status: EEquipmentStatus.ONLINE,
                 })
               ) ?? []
@@ -117,7 +118,7 @@ const Cage: React.FC = () => {
               equipmentData.climateEquipments.map<EquipmentTableData>(
                 (equip) => ({
                   alarms: 0,
-                  equipment: equip.component,
+                  equipment: equip,
                   status: EEquipmentStatus.ONLINE,
                 })
               ) ?? []
@@ -132,7 +133,7 @@ const Cage: React.FC = () => {
               equipmentData.telecomEquipments.map<EquipmentTableData>(
                 (equip) => ({
                   alarms: 0,
-                  equipment: equip.component,
+                  equipment: equip,
                   status: EEquipmentStatus.ONLINE,
                 })
               ) ?? []
@@ -166,7 +167,7 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ title, equipments }) => {
 };
 
 type EquipmentTableData = {
-  equipment: string;
+  equipment: EquipmentModel;
   alarms: number;
   status: EEquipmentStatus;
 };
@@ -199,12 +200,11 @@ const EquipmentStatus: React.FC<EquipmentStatusProps> = ({ status }) => {
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
   const { navigate, path } = useRouter();
 
-  const handleOpenEquipmentDetails = (data: any) => {
-    const { equipment } = data;
+  const handleOpenEquipmentDetails = (equipment: EquipmentModel) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      RackPath,
+      EquipmentParameterDetailsPath,
     ]);
     navigate(destinationPath, {
       state: {
@@ -228,10 +228,10 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
           {equipments.map((equipment, index) => (
             <TableRow
               key={index}
-              onClick={() => handleOpenEquipmentDetails(equipment)}
+              onClick={() => handleOpenEquipmentDetails(equipment.equipment)}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{equipment.equipment}</TableCell>
+              <TableCell>{equipment.equipment.component}</TableCell>
               <TableCell>{equipment.alarms}</TableCell>
               <TableCell>
                 <EquipmentStatus status={equipment.status} />

@@ -603,7 +603,8 @@ const DataTable: React.FC<DataTableProps> = ({
                             : CustomTableCell(row, column.name, onChange)} */}
                           {column.renderComponent
                             ? column.renderComponent(row[column.name])
-                            : column.customFunction
+                            : // <column.renderComponent {...props} />
+                            column.customFunction
                             ? column.customFunction(row[column.name])
                             : CustomTableCell(row, column.name, onChange)}
                         </TableCell>
