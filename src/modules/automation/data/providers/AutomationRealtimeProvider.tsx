@@ -1,4 +1,6 @@
-import { useSubscription } from "mqtt-react-hooks";
+import { AlarmTableViewModel } from "modules/automation/models/alarm-model";
+import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
+import { useMqttState, useSubscription } from "mqtt-react-hooks";
 import { useEffect, useState } from "react";
 import AutomationRealtimeContext from "../contexts/automationRealtimeContext";
 
@@ -28,14 +30,22 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
   const [state, setState] = useState({
     data: new Map(),
   });
-  const { message } = useSubscription("/tags");
+  const [alarms, setAlarms] = useState<AlarmTableViewModel[]>([]);
+  const { message: realtimeTags } = useSubscription("/tags");
+  const { message: realtimeAlarms } = useSubscription("/current-alarms");
+  const { client } = useMqttState();
 
   const getRealtimeValue = (key: string) => state.data.get(key)?.value ?? 0;
 
+  const publish = (topic: string, data: string) => {
+    client?.publish(topic, data, {
+      retain: false,
+    });
+  };
   useEffect(() => {
-    if (message) {
-      if (message?.message) {
-        const payload = message.message.toString();
+    if (realtimeTags) {
+      if (realtimeTags?.message) {
+        const payload = realtimeTags.message.toString();
         const obj = JSON.parse(payload);
         const values = convertMessageToArrayOfTags(obj);
         values.forEach((value: any) => {
@@ -44,13 +54,42 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
         setState({ data });
       }
     }
-  }, [message]);
+  }, [realtimeTags]);
+
+  useEffect(() => {
+    if (realtimeAlarms) {
+      if (realtimeAlarms?.message) {
+        const payload = realtimeAlarms.message.toString();
+        const obj = JSON.parse(payload);
+        setAlarms(
+          obj.map((alarm: any, index: number) => ({
+            id: alarm.id,
+            acked: false,
+            building: "Data Hall 1",
+            equipment: "Disjuntor 1",
+            floor: "Andar 1",
+            inDate: alarm.inDate,
+            outDate: alarm.outDate,
+            parameter: index === 0 ? "Corrente" : "Tensão",
+            parameterId: "",
+            room: "Transformador A",
+            rule: alarm.name,
+            ruleId: alarm.ruleId,
+            status: alarm.status,
+            value: alarm.value,
+          }))
+        );
+      }
+    }
+  }, [realtimeAlarms]);
 
   return (
     <AutomationRealtimeContext.Provider
       value={{
         getRealtimeValue: getRealtimeValue,
+        alarms,
         isLoading: state.data.size === 0,
+        publish,
       }}
     >
       {children}

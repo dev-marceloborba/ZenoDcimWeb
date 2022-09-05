@@ -27,7 +27,6 @@ const AlarmTable: React.FC<AlarmTableProps> = ({ initialDate, finalDate }) => {
   const handleOnAck = (alarm: AlarmTableViewModel) => {
     const data = {
       id: alarm.id,
-      parameterId: alarm.parameterId,
       alarmRuleId: alarm.ruleId,
     };
     client?.publish("/alarms-recognized", JSON.stringify(data), {

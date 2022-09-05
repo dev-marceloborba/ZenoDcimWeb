@@ -3,34 +3,29 @@ import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
-import { useMqttState, useSubscription } from "mqtt-react-hooks";
 import { useModal } from "mui-modal-provider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AlarmAckModal from "../alarm-ack-modal/AlarmAckModal";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 
 export default function AlarmRuntime() {
-  const [alarms, setAlarms] = useState<AlarmTableViewModel[]>([]);
   const [selectedAlarms, setSelectedAlarms] = useState<AlarmTableViewModel[]>(
     []
   );
-  const { message } = useSubscription("/current-alarms");
   const { showModal } = useModal();
-  const { client } = useMqttState();
+  const { alarms, publish } = useAutomationRealtime();
 
   const handleOnAckSelection = () => {
     selectedAlarms.forEach((alarm) => {
       const data = {
         id: alarm.id,
-        parameterId: alarm.parameterId,
         alarmRuleId: alarm.ruleId,
       };
-      client?.publish("/alarms-recognized", JSON.stringify(data), {
-        retain: false,
-      });
+      publish("/alarms-recognized", JSON.stringify(data));
     });
   };
 
@@ -45,34 +40,6 @@ export default function AlarmRuntime() {
       },
     });
   };
-
-  useEffect(() => {
-    if (message?.message) {
-      const payload = message.message.toString();
-      const obj = JSON.parse(payload);
-      console.log(obj);
-      setAlarms(
-        obj.map((alarm: any, index: number) => ({
-          id: alarm.id,
-          acked: false,
-          building: "Data Hall 1",
-          equipment: "Disjuntor 1",
-          floor: "Andar 1",
-          inDate: new Date(),
-          outDate: new Date(),
-          //   inDate: alarm?.inDate,
-          //   outDate: alarm?.outDate,
-          parameter: index === 0 ? "Corrente" : "Tensão",
-          parameterId: "",
-          room: "Transformador A",
-          rule: alarm.name,
-          ruleId: alarm.ruleId,
-          status: alarm.status,
-          value: alarm.value,
-        }))
-      );
-    }
-  }, [message, message?.message]);
 
   return (
     <HeroContainer title="Alarmes em tempo real">
@@ -93,7 +60,7 @@ export default function AlarmRuntime() {
       <DataTable
         title="Alarmes"
         columns={columns}
-        rows={alarms ?? []}
+        rows={alarms}
         options={{
           onSelectedItems: setSelectedAlarms,
         }}
