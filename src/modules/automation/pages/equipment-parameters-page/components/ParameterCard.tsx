@@ -24,6 +24,7 @@ type ParameterData = {
   unit: string;
   alarms: number;
   status: EEquipmentStatus;
+  pathname: string;
 };
 
 type ParameterCardProps = {

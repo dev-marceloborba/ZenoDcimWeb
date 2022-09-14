@@ -5,14 +5,14 @@ import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { useModal } from "mui-modal-provider";
-import AlarmAckModal from "../alarm-ack-modal/AlarmAckModal";
+import AlarmAckModal from "./components/alarm-ack-modal/AlarmAckModal";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 
-export default function AlarmRuntime() {
+export default function AlarmRealtime() {
   const [selectedAlarms, setSelectedAlarms] = useState<AlarmTableViewModel[]>(
     []
   );

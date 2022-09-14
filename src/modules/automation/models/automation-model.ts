@@ -108,6 +108,8 @@ export interface UpdateEquipmentParameterViewModel {
 export interface EquipmentParameterModel extends EquipmentParameterViewModel {
   id: string;
   alarmRules?: AlarmRulesModel;
+  pathname?: string;
+  equipment: EquipmentModel;
 }
 
 export type MultipleEquipmentsViewModel = {

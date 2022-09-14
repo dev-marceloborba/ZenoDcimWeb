@@ -8,5 +8,8 @@ export type AutomationRealtimeProps = {
   getRealtimeValue(key: string): any;
   alarms: any[];
   publish(topic: string, data: string): void;
-  isLoading: boolean;
+  status: RealtimeStatus;
+  activeAlarms: number;
 };
+
+export type RealtimeStatus = "loading" | "offline" | "connected";

@@ -6,6 +6,7 @@ export interface AlarmModel {
   createdDate: string;
   inDate: Date;
   outDate: Date;
+  recognizedDate: Date;
   pathname: string;
   alarmRule: {
     id: string;
@@ -43,6 +44,7 @@ export interface AlarmTableViewModel {
   ruleId: string;
   inDate: Date | null;
   outDate: Date | null;
+  recognizedDate: Date | null;
   acked: boolean;
   status: EAlarmStatus;
 }

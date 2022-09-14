@@ -18,16 +18,19 @@ import LineStyleIcon from "@mui/icons-material/LineStyle";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { HomePath } from "modules/paths";
-import { AutomationPath } from "modules/home/routes/paths";
+import { AutomationPath, AlarmsPath } from "modules/home/routes/paths";
 import {
   AccessControlPath,
-  AlarmHistoryPath,
   AutomationSettingsPath,
   EnergyClimTelecomPath,
   EquipmentConnectivityPath,
   FireSystemPath,
   MeasureHistoryPath,
 } from "modules/automation/routes/paths";
+import {
+  AlarmHistoryPath,
+  AlarmRealtimePath,
+} from "modules/alarms/routes/paths";
 
 const Sidenav: React.FC = () => {
   const { drawerOpened } = useLayout();
@@ -80,6 +83,16 @@ const menuItems: ListItemLinkProps[] = [
     to: "/zeno/alarms",
     primary: "Alarmes",
     icon: <EventNoteIcon />,
+    items: [
+      {
+        primary: "Histórico",
+        to: `/${HomePath}/${AlarmsPath}/${AlarmHistoryPath}`,
+      },
+      {
+        primary: "Tempo real",
+        to: `/${HomePath}/${AlarmsPath}/${AlarmRealtimePath}`,
+      },
+    ],
   },
   {
     primary: "Clientes",
@@ -117,10 +130,6 @@ const menuItems: ListItemLinkProps[] = [
       {
         primary: "Conectividade de equipamentos",
         to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
-      },
-      {
-        primary: "Histórico de alarmes",
-        to: `/${HomePath}/${AutomationPath}/${AlarmHistoryPath}`,
       },
       {
         primary: "Histórico de medições",

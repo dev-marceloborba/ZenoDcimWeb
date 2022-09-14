@@ -1,8 +1,13 @@
-import { AlarmTableViewModel } from "modules/automation/models/alarm-model";
+import {
+  AlarmTableViewModel,
+  EAlarmStatus,
+} from "modules/automation/models/alarm-model";
+import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { useMqttState, useSubscription } from "mqtt-react-hooks";
 import { useEffect, useState } from "react";
 import AutomationRealtimeContext from "../contexts/automationRealtimeContext";
+import { RealtimeStatus } from "../types/automationRealtime";
 
 const data = new Map();
 
@@ -32,10 +37,24 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
   });
   const [alarms, setAlarms] = useState<AlarmTableViewModel[]>([]);
   const { message: realtimeTags } = useSubscription("/tags");
-  const { message: realtimeAlarms } = useSubscription("/current-alarms");
+  const { message: realtimeAlarms, connectionStatus } =
+    useSubscription("/current-alarms");
   const { client } = useMqttState();
 
   const getRealtimeValue = (key: string) => state.data.get(key)?.value ?? 0;
+
+  const getRealtimeStatus = (status: string | Error): RealtimeStatus => {
+    switch (status) {
+      case "Offline":
+        return "offline";
+      case "Connecting":
+        return "loading";
+      case "Connected":
+        return "connected";
+      default:
+        return "offline";
+    }
+  };
 
   const publish = (topic: string, data: string) => {
     client?.publish(topic, data, {
@@ -62,22 +81,25 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
         const payload = realtimeAlarms.message.toString();
         const obj = JSON.parse(payload);
         setAlarms(
-          obj.map((alarm: any, index: number) => ({
-            id: alarm.id,
-            acked: false,
-            building: "Data Hall 1",
-            equipment: "Disjuntor 1",
-            floor: "Andar 1",
-            inDate: alarm.inDate,
-            outDate: alarm.outDate,
-            parameter: index === 0 ? "Corrente" : "Tensão",
-            parameterId: "",
-            room: "Transformador A",
-            rule: alarm.name,
-            ruleId: alarm.ruleId,
-            status: alarm.status,
-            value: alarm.value,
-          }))
+          obj.map((alarm: any, index: number) => {
+            const ds = splitPathnameIntoFields(alarm.pathname);
+            return {
+              id: alarm.id,
+              acked: false,
+              building: ds.building,
+              equipment: ds.equipment,
+              floor: ds.floor,
+              inDate: alarm.inDate,
+              outDate: alarm.outDate,
+              parameter: ds.parameter,
+              parameterId: "",
+              room: ds.room,
+              rule: alarm.name,
+              ruleId: alarm.ruleId,
+              status: alarm.status,
+              value: alarm.value,
+            };
+          })
         );
       }
     }
@@ -88,8 +110,10 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
       value={{
         getRealtimeValue: getRealtimeValue,
         alarms,
-        isLoading: state.data.size === 0,
+        activeAlarms: alarms.filter((x) => x.status === EAlarmStatus.ACTIVE)
+          .length,
         publish,
+        status: getRealtimeStatus(connectionStatus),
       }}
     >
       {children}

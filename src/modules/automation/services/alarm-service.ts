@@ -47,6 +47,7 @@ export const alarmApi = createApi({
             value: alarm.value,
             inDate: alarm.inDate,
             outDate: alarm.outDate,
+            recognizedDate: alarm.recognizedDate,
             ruleId: alarm.alarmRule.id,
             status: alarm.status,
           });

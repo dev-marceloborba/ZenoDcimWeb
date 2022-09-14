@@ -12,6 +12,7 @@ export interface MeasureHistoryModel extends MeasureModel {
   floor: string;
   room: string;
   equipment: string;
+  parameter: string;
 }
 
 export interface MeasureHistoryViewModel {
@@ -26,3 +27,15 @@ export interface MeasureHistoryViewModel {
 }
 
 export type MeasuresHistoryModel = MeasureHistoryModel[];
+
+export type MeasureStatisticsModel = {
+  minimum: number;
+  maximum: number;
+  average: number;
+};
+
+export type MeasureStatisticsViewModel = {
+  initialDate?: Date | null;
+  finalDate?: Date | null;
+  name: string;
+};

@@ -9,9 +9,10 @@ import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
-import { EquipmentParameterModel } from "modules/automation/models/automation-model";
-import { MeasuresHistoryModel } from "modules/automation/models/measure-history-model";
-import { useFindMeasuresByParameterMutation } from "modules/automation/services/history-service";
+import {
+  useFindMeasuresByParameterMutation,
+  useFindMeasureStatisticsMutation,
+} from "modules/automation/services/history-service";
 import ParameterChart from "./components/parameter-chart/ParameterChart";
 
 type FilterState = {
@@ -20,7 +21,6 @@ type FilterState = {
 };
 
 export default function ParameterHistoryPage() {
-  const [measures, setMeasures] = useState<MeasuresHistoryModel>([]);
   const [filter, setFilter] = useState<FilterState>({
     initialDate: addDaysToDate(new Date(), -7),
     finalDate: new Date(),
@@ -32,9 +32,10 @@ export default function ParameterHistoryPage() {
       data: any;
     };
   } = useRouter();
-  console.log(equipmentParameter);
-  const [findMeasuresByParameter, { isLoading }] =
+  const [findMeasuresByParameter, { data: measures, isLoading }] =
     useFindMeasuresByParameterMutation();
+  const [findStatistics, { data: statistics }] =
+    useFindMeasureStatisticsMutation();
 
   const handleChangeInitialDate = (date: Date | null) => {
     setFilter({ ...filter, initialDate: date });
@@ -46,12 +47,11 @@ export default function ParameterHistoryPage() {
 
   useEffect(() => {
     async function fetchMeasures() {
-      const result = await findMeasuresByParameter({
+      await findMeasuresByParameter({
         parameter: equipmentParameter.parameter,
         initialDate: filter.initialDate,
         finalDate: filter.finalDate,
       }).unwrap();
-      setMeasures(result);
     }
     fetchMeasures();
   }, [
@@ -60,6 +60,25 @@ export default function ParameterHistoryPage() {
     filter.initialDate,
     findMeasuresByParameter,
   ]);
+
+  useEffect(() => {
+    async function fetchStatistcs() {
+      await findStatistics({
+        name: equipmentParameter.pathname,
+        initialDate: filter.initialDate,
+        finalDate: filter.finalDate,
+      });
+    }
+    fetchStatistcs();
+  }, [
+    equipmentParameter.parameter,
+    equipmentParameter.pathname,
+    filter.finalDate,
+    filter.initialDate,
+    findStatistics,
+  ]);
+
+  console.log(statistics);
 
   return (
     <HeroContainer title="Histórico de parâmetro">
@@ -101,7 +120,7 @@ export default function ParameterHistoryPage() {
 
 const columns: ColumnHeader[] = [
   {
-    name: "name",
+    name: "parameter",
     label: "Parâmetro",
   },
   {
