@@ -24,7 +24,7 @@ export const supplierApi = createApi({
   endpoints: (builder) => ({
     createSupplier: builder.mutation<SupplierModel, CreateSupplierViewModel>({
       query: (params) => ({
-        url: "v1/maintenance/supplier",
+        url: "v1/suppliers",
         method: "POST",
         body: params,
       }),
@@ -32,7 +32,7 @@ export const supplierApi = createApi({
     }),
     updateSupplier: builder.mutation<SupplierModel, UpdateSupplierViewModel>({
       query: (params) => ({
-        url: `v1/maintenance/supplier/${params.id}`,
+        url: `v1/suppliers/${params.id}`,
         method: "PUT",
         body: params,
       }),
@@ -40,21 +40,21 @@ export const supplierApi = createApi({
     }),
     findAllSuplliers: builder.query<SupplierModel[], void>({
       query: () => ({
-        url: "v1/maintenance/supplier",
+        url: "v1/suppliers",
         method: "GET",
       }),
       providesTags: ["SupplierModel"],
     }),
     findSupplierById: builder.mutation<SupplierModel, string>({
       query: (id) => ({
-        url: `v1/maintenance/supplier/${id}`,
+        url: `v1/suppliers/${id}`,
         method: "GET",
       }),
       invalidatesTags: ["SupplierModel"],
     }),
     deleteSupplier: builder.mutation<SupplierModel, string>({
       query: (id) => ({
-        url: `v1/maintenance/supplier/${id}`,
+        url: `v1/suppliers/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["SupplierModel"],

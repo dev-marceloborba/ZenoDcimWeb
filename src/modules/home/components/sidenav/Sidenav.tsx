@@ -145,9 +145,11 @@ const menuItems: ListItemLinkProps[] = [
     primary: "Manutenção",
     icon: <EngineeringIcon />,
     items: [
-      { primary: "Agendamento", to: "/zeno/maintenance/schedule" },
-      { primary: "Eventos de manutenção", to: "/zeno/maintenance/events" },
-      { primary: "Registrar manutenção", to: "/zeno/maintenance/register" },
+      {
+        primary: "Histórico de ordem de serviço",
+        to: "/zeno/maintenance/events",
+      },
+      { primary: "Abrir ordem de serviço", to: "/zeno/maintenance/register" },
     ],
   },
   {

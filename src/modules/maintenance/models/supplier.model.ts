@@ -1,5 +1,9 @@
-export interface SupplierModel extends CreateSupplierViewModel {
+export interface SupplierModel {
   id: string;
+  responsible: string;
+  company: string;
+  phone: string;
+  email: string;
 }
 
 export interface CreateSupplierViewModel {
