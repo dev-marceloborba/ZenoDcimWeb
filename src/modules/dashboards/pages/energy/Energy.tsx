@@ -33,7 +33,7 @@ const Energy: React.FC = () => {
 
         <Grid item xs={12} md={6}>
           <CardWrapper>
-            <BarChart x={[1, 2, 3]} y={[1, 2, 3]} />
+            <BarChart x={[1, 2, 3]} y={[1, 2, 3]} title="" />
           </CardWrapper>
         </Grid>
       </Grid>

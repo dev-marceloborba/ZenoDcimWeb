@@ -114,6 +114,11 @@ const columns: ColumnHeader[] = [
     customFunction: (row) => getTimeStampFormat(row),
   },
   {
+    name: "recognizedDate",
+    label: "Data de reconhecimento",
+    customFunction: (row) => getTimeStampFormat(row),
+  },
+  {
     name: "status",
     label: "Status",
     customFunction: (row) => {

@@ -91,6 +91,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
               floor: ds.floor,
               inDate: alarm.inDate,
               outDate: alarm.outDate,
+              recognizedDate: alarm.recognizedDate,
               parameter: ds.parameter,
               parameterId: "",
               room: ds.room,

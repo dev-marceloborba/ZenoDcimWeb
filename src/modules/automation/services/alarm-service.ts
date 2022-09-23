@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
+import {
+  AlarmStatisticsModel,
+  AlarmStatisticsViewModel,
+} from "modules/alarms/models/alarm-statistics.model";
 import { RootState } from "modules/core/store";
 import {
   AlarmModel,
@@ -69,6 +73,19 @@ export const alarmApi = createApi({
       }),
       invalidatesTags: ["AlarmModel"],
     }),
+    findAlarmStatistics: builder.mutation<
+      AlarmStatisticsModel,
+      AlarmStatisticsViewModel
+    >({
+      query: (params) => ({
+        url: "v1/alarms/statistics",
+        method: "GET",
+        params: {
+          initialDate: params.initialDate.toUTCString(),
+          finalDate: params.finalDate.toUTCString(),
+        },
+      }),
+    }),
   }),
 });
 
@@ -76,4 +93,5 @@ export const {
   useDeleteAlarmMutation,
   useFindAlarmByIdMutation,
   useFindAllAlarmsMutation,
+  useFindAlarmStatisticsMutation,
 } = alarmApi;

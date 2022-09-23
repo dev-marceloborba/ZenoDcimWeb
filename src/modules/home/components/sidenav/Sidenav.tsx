@@ -30,6 +30,7 @@ import {
 import {
   AlarmHistoryPath,
   AlarmRealtimePath,
+  AlarmStatisticsPath,
 } from "modules/alarms/routes/paths";
 
 const Sidenav: React.FC = () => {
@@ -91,6 +92,10 @@ const menuItems: ListItemLinkProps[] = [
       {
         primary: "Tempo real",
         to: `/${HomePath}/${AlarmsPath}/${AlarmRealtimePath}`,
+      },
+      {
+        primary: "Estatísticas",
+        to: `/${HomePath}/${AlarmsPath}/${AlarmStatisticsPath}`,
       },
     ],
   },
