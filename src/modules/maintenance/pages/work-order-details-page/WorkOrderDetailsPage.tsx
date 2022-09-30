@@ -1,20 +1,16 @@
 import HeroContainer from "modules/shared/components/HeroContainer";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import useRouter from "modules/core/hooks/useRouter";
 import { WorkEventsTableViewModel } from "modules/maintenance/models/work-order.model";
 import { useEffect } from "react";
 import { useFindWorkOrderByIdMutation } from "modules/maintenance/services/maintenance.service";
 import Loading from "modules/shared/components/Loading";
+import OrderInfo from "./order-info/OrderInfo";
+import CardHeader from "@mui/material/CardHeader";
+import OrderManagement from "./order-management/OrderManagement";
 
 export default function WorkOrderDetailsPage() {
   const {
@@ -41,87 +37,68 @@ export default function WorkOrderDetailsPage() {
       <Grid container direction="column">
         <Grid item>
           <Card>
-            <CardHeader title="Localização" />
+            <CardHeader title="Informações básicas" />
             <Divider />
-            <List>
-              <ListItem>
-                <ListItemText
-                  sx={{
-                    flexDirection: "row",
-                  }}
-                  //   sx={{
-                  //     display: "flex",
-                  //     flexDirection: "row",
-                  //     flex: "1 1 auto",
-                  //   }}
-                >
-                  <Typography variant="h6">Titulo</Typography>
-                  <Box flex={"1 1 0%"}>
-                    <Typography variant="body2">Subtitulo</Typography>
-                  </Box>
-                </ListItemText>
-              </ListItem>
-            </List>
+            <CardContent>
+              <OrderInfo name="Código OS" description={workOrder?.id ?? ""} />
+              <Divider />
+              <OrderInfo name="Site" description={workOrder?.site ?? ""} />
+              <Divider />
+              <OrderInfo
+                name="Prédio"
+                description={workOrder?.building ?? ""}
+              />
+              <Divider />
+              <OrderInfo name="Andar" description={workOrder?.floor ?? ""} />
+              <Divider />
+              <OrderInfo name="Sala" description={workOrder?.room ?? ""} />
+              <Divider />
+              <OrderInfo
+                name="Equipamento"
+                description={workOrder?.equipment ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Data inicial"
+                description={workOrder?.initialDate ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Data final"
+                description={workOrder?.finalDate ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Tipo de manutenção"
+                description={workOrder?.maintenanceType ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Tipo de ordem"
+                description={workOrder?.orderType ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Natureza da ordem"
+                description={workOrder?.nature ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Responsável"
+                description={workOrder?.responsible ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Descrição"
+                description={workOrder?.description ?? ""}
+              />
+            </CardContent>
           </Card>
         </Grid>
+        <Grid item>
+          <OrderManagement orderId={workOrder?.id ?? ""} />
+        </Grid>
       </Grid>
-
-      <TextField
-        type="text"
-        value={workOrder?.id}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.site.name}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.building.name}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.floor.name}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.room.name}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.equipment.component}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.initialDate}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        type="text"
-        value={workOrder?.finalDate}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
       <Loading open={isLoading} />
     </HeroContainer>
   );

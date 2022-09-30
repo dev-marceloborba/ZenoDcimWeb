@@ -35,8 +35,8 @@ export interface WorkOrderModel {
   floor: FloorModel;
   room: RoomModel;
   equipment: EquipmentModel;
-  initialDate: Date;
-  finalDate: Date;
+  initialDate: string;
+  finalDate: string;
   description: string;
   responsible: string;
   responsibleType: EMaintenanceResponsibleType;
@@ -52,9 +52,25 @@ export type WorkEventsTableViewModel = {
   floor: string;
   room: string;
   equipment: string;
-  initialDate: Date;
-  finalDate: Date;
+  initialDate: string;
+  finalDate: string;
   status: string;
+};
+
+export type WorkOrderDetailsViewModel = {
+  id: string;
+  site: string;
+  building: string;
+  floor: string;
+  room: string;
+  equipment: string;
+  initialDate: string;
+  finalDate: string;
+  maintenanceType: string;
+  orderType: string;
+  nature: string;
+  responsible: string;
+  description: string;
 };
 
 export enum EMaintenanceResponsibleType {

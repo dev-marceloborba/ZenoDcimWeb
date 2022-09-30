@@ -1,6 +1,7 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import "./styles.css";
 
 type BarChartProps = {
   x: number[] | string[];
@@ -36,7 +37,7 @@ const BarChart: React.FC<BarChartProps> = ({
       offsetY: -20,
       style: {
         fontSize: "10px",
-        colors: ["#304758"],
+        colors: ["#fff"],
       },
     },
 
@@ -61,6 +62,11 @@ const BarChart: React.FC<BarChartProps> = ({
           },
         },
       },
+      labels: {
+        style: {
+          colors: ["#fff"],
+        },
+      },
       tooltip: {
         enabled: true,
       },
@@ -77,6 +83,14 @@ const BarChart: React.FC<BarChartProps> = ({
         // formatter: function (val) {
         //   return val + "W";
         // },
+        style: {
+          colors: ["#fff"],
+        },
+      },
+    },
+    title: {
+      style: {
+        color: "#fff",
       },
     },
     // title: {
