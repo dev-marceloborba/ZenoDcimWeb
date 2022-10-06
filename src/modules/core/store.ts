@@ -18,6 +18,7 @@ import { historyApi } from "modules/automation/services/history-service";
 import { alarmApi } from "modules/automation/services/alarm-service";
 import { supplierApi } from "modules/maintenance/services/supplier.service";
 import { maintenanceApi } from "modules/maintenance/services/maintenance.service";
+import { groupApi } from "modules/user/services/groups.service";
 
 export const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ export const store = configureStore({
     [alarmApi.reducerPath]: alarmApi.reducer,
     [supplierApi.reducerPath]: supplierApi.reducer,
     [maintenanceApi.reducerPath]: maintenanceApi.reducer,
+    [groupApi.reducerPath]: groupApi.reducer,
   },
   preloadedState: {
     auth: reHydrateStore(),
@@ -59,7 +61,8 @@ export const store = configureStore({
       historyApi.middleware,
       alarmApi.middleware,
       supplierApi.middleware,
-      maintenanceApi.middleware
+      maintenanceApi.middleware,
+      groupApi.middleware
     ),
 });
 

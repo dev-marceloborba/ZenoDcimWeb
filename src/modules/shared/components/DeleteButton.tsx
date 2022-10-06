@@ -13,11 +13,13 @@ interface DeleteButtonProps extends ButtonProps {
   onDeleteConfirmation: () => void;
   mode?: "button" | "icon";
   deleteMessage?: string;
+  title?: string;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   onDeleteConfirmation,
   mode = "button",
+  title = "Apagar",
   deleteMessage = "Tem certeza que deseja apagar o registro?",
   ...props
 }) => {
@@ -37,7 +39,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
             variant="outlined"
             color="error"
           >
-            Apagar
+            {title}
           </Button>
         ) : (
           <IconButton onClick={handleOpen}>

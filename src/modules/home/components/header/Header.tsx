@@ -18,7 +18,7 @@ import { useLayout } from "app/hooks/useLayout";
 import Logo from "app/assets/logo-white.svg";
 import { useAuth } from "app/hooks/useAuth";
 import { useFullscreen } from "@straw-hat/react-fullscreen";
-import compositePathRoute from "modules/utils/compositePathRoute";
+import { SignalRContext } from "index";
 
 const Header: React.FC = () => {
   const target = useRef(window.document.body);
@@ -26,6 +26,12 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [showUserSettings, setShowUserSettings] = useState(false);
   const { signout } = useAuth();
+
+  SignalRContext.useSignalREffect(
+    "SendAlarmNotification",
+    (message) => console.log(message),
+    []
+  );
 
   const { toggleDrawer, isMobile } = useLayout();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

@@ -12,7 +12,7 @@ import { useCreateUserMutation } from "modules/user/services/authentication-serv
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { SchemaOf, object, ref, string, number } from "yup";
+import { SchemaOf, object, ref, string } from "yup";
 
 import getErrorMessage from "app/utils/apiErrorHandler";
 
@@ -20,12 +20,14 @@ import Card from "modules/shared/components/Card";
 import Loading from "modules/shared/components/Loading";
 import { UserViewModel } from "modules/user/models/user-model";
 import { useFindAllCompaniesQuery } from "modules/user/services/company-service";
+import { useFindAllGroupsQuery } from "modules/user/services/groups.service";
 
 const CreateUser: React.FC = () => {
   const methods = useForm<UserViewModel>({
     resolver: yupResolver(validationSchema),
   });
   const { data: companyList } = useFindAllCompaniesQuery();
+  const { data: groups } = useFindAllGroupsQuery();
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
   const toast = useToast();
   const navigate = useNavigate();
@@ -88,7 +90,16 @@ const CreateUser: React.FC = () => {
               label="Confirmação de senha"
               type="password"
             />
-            <ControlledTextInput name="role" label="Grupo" items={items} />
+            <ControlledTextInput
+              name="groupId"
+              label="Grupo"
+              items={
+                groups?.map((group) => ({
+                  description: group.name,
+                  value: group.id,
+                })) ?? []
+              }
+            />
             <Button
               sx={{ mt: 2 }}
               type="submit"
@@ -106,19 +117,6 @@ const CreateUser: React.FC = () => {
   );
 };
 
-type RoleItem = {
-  value: number;
-  description: string;
-};
-
-const items: RoleItem[] = [
-  { value: 1, description: "Administrador" },
-  { value: 2, description: "Operador" },
-  { value: 3, description: "Técnico" },
-  { value: 4, description: "Visualizador" },
-  { value: 5, description: "Cliente" },
-];
-
 const validationSchema: SchemaOf<UserViewModel> = object().shape({
   firstName: string().required("Nome é obrigatorio"),
   lastName: string().required("Sobrenome é obrigatorio"),
@@ -129,7 +127,7 @@ const validationSchema: SchemaOf<UserViewModel> = object().shape({
   passwordConfirmation: string()
     .oneOf([ref("password"), null], "Senhas não coincidem")
     .required("Confirmação de senha é obrigatória"),
-  role: number().required("Grupo é obrigatório"),
+  groupId: string().required("Grupo é obrigatório"),
   companyId: string().required("Empresa é obrigatória"),
 });
 

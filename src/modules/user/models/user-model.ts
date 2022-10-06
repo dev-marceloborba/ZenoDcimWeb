@@ -1,3 +1,5 @@
+import { GroupModel } from "./group.model";
+
 export interface User {
   name: string;
   email: string;
@@ -51,7 +53,7 @@ export interface UserModel {
   firstName: string;
   lastName: string;
   email: string;
-  role: EUserRole;
+  group: GroupModel;
   active: boolean;
 }
 
@@ -62,7 +64,7 @@ export type UserModelNormalized = {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  group: string;
   active: string;
 };
 
@@ -77,7 +79,8 @@ export interface UserViewModel {
   password: string;
   passwordConfirmation: string;
   email: string;
-  role: EUserRole;
+  groupId: string;
+  // role: EUserRole;
   companyId: string;
 }
 
@@ -86,6 +89,6 @@ export interface EditUserViewModel {
   firstName: string;
   lastName: string;
   email: string;
-  role: EUserRole;
+  groupId: string;
   active: EUserStatus;
 }

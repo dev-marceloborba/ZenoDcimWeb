@@ -20,8 +20,10 @@ import {
   getUserRoleInstance,
   getUserStatusInstance,
 } from "modules/user/models/user-model";
+import { useFindAllGroupsQuery } from "modules/user/services/groups.service";
 
 const UserDetails: React.FC = () => {
+  const { data: groups } = useFindAllGroupsQuery();
   const [editUser, { isLoading }] = useEditUserMutation();
   const [deleteUser] = useDeleteUserMutation();
   const {
@@ -61,7 +63,7 @@ const UserDetails: React.FC = () => {
       setValue("lastName", user.lastName);
       setValue("email", user.email);
       setValue("active", getUserStatusInstance(user.active));
-      setValue("role", getUserRoleInstance(user.role));
+      setValue("groupId", user.group);
     }
 
     if (user) getUser();
@@ -88,15 +90,14 @@ const UserDetails: React.FC = () => {
               ]}
             />
             <ControlledTextInput
-              name="role"
+              name="group"
               label="Grupo"
-              items={[
-                { value: 1, description: "Administrador" },
-                { value: 2, description: "Operador" },
-                { value: 3, description: "Técnico" },
-                { value: 4, description: "Visualizador" },
-                { value: 5, description: "Cliente" },
-              ]}
+              items={
+                groups?.map((group) => ({
+                  description: group.name,
+                  value: group.id,
+                })) ?? []
+              }
             />
             <Row sx={{ justifyContent: "space-between", mt: 2 }}>
               <SubmitButton label="Salvar" />

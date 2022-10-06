@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import Table from "@mui/material/Table";
@@ -50,6 +51,12 @@ interface DataTableOptions {
   onRowClick?: (row: any) => void;
   onDeleteSelection?: (row: any[]) => void;
   onEditOrInsertNewData?: (data: any, mode: ManualMode) => void;
+  onEditRow?(row: any): void;
+  onDeleteRow?(row: any): void;
+  onDetailsRow?(row: any): void;
+  showEdit?: boolean;
+  showDelete?: boolean;
+  showDetails?: boolean;
 }
 
 export interface ColumnHeader {
@@ -113,6 +120,9 @@ interface EnhancedTableProps {
   rowCount: number;
   columns: ColumnHeader[];
   selectionMode: SelectionMode;
+  showEdit: boolean;
+  showDelete: boolean;
+  showDetails: boolean;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -125,6 +135,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     onRequestSort,
     columns,
     selectionMode,
+    showDelete,
+    showEdit,
+    showDetails,
   } = props;
   const createSortHandler =
     (property: string) => (event: React.MouseEvent<unknown>) => {
@@ -172,6 +185,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
+        {showDetails && <TableCell align="right">Detalhes</TableCell>}
+        {showEdit && <TableCell align="right">Editar</TableCell>}
+        {showDelete && <TableCell align="right">Deletar</TableCell>}
       </TableRow>
     </TableHead>
   );
@@ -325,9 +341,15 @@ const DataTable: React.FC<DataTableProps> = ({
     onDeleteSelection,
     onSelectedItems,
     onEditOrInsertNewData,
+    onEditRow,
+    onDeleteRow,
+    onDetailsRow,
     hideSearch = false,
     hidePagination = false,
     isEditMode = false,
+    showDelete = false,
+    showEdit = false,
+    showDetails = false,
   } = options;
 
   const [order, setOrder] = useState<Order>("asc");
@@ -490,6 +512,24 @@ const DataTable: React.FC<DataTableProps> = ({
     handleEditMode(row);
   };
 
+  const handleEditOnClick = (row: any) => {
+    if (onEditRow) {
+      onEditRow(row);
+    }
+  };
+
+  const handleDeleteOnClick = (row: any) => {
+    if (onDeleteRow) {
+      onDeleteRow(row);
+    }
+  };
+
+  const handleDetailsOnClick = (row: any) => {
+    if (onDetailsRow) {
+      onDetailsRow(row);
+    }
+  };
+
   useEffect(() => {
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
@@ -535,6 +575,9 @@ const DataTable: React.FC<DataTableProps> = ({
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
               columns={columns}
+              showDelete={showDelete}
+              showEdit={showEdit}
+              showDetails={showDetails}
             />
             <TableBody>
               {currentRows.map((row, index) => {
@@ -617,6 +660,34 @@ const DataTable: React.FC<DataTableProps> = ({
                             <EditIcon />
                           </IconButton>
                         )}
+                      </TableCell>
+                    )}
+                    {showDetails && (
+                      <TableCell
+                        onClick={() => handleDetailsOnClick(row)}
+                        align="right"
+                      >
+                        <Button variant="outlined" color="primary">
+                          Detalhes
+                        </Button>
+                      </TableCell>
+                    )}
+                    {showEdit && (
+                      <TableCell
+                        onClick={() => handleEditOnClick(row)}
+                        align="right"
+                      >
+                        <Button variant="outlined" color="secondary">
+                          Editar
+                        </Button>
+                      </TableCell>
+                    )}
+                    {showDelete && (
+                      <TableCell align="right">
+                        <DeleteButton
+                          title="Excluir"
+                          onDeleteConfirmation={() => handleDeleteOnClick(row)}
+                        />
                       </TableCell>
                     )}
                   </TableRow>

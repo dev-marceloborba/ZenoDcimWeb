@@ -18,34 +18,43 @@ import ToastProvider from "modules/shared/components/ToastProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ptBrLocale from "date-fns/locale/pt-BR";
+import { createSignalRContext } from "react-signalr";
+
+export const SignalRContext = createSignalRContext();
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
-        <CssBaseLine />
-        <LocalizationProvider
-          dateAdapter={AdapterDateFns}
-          adapterLocale={ptBrLocale}
-        >
-          <Connector
-            brokerUrl={brokerUrl}
-            options={{
-              ...mqttConfig,
-              protocol: "wss",
-            }}
+    <SignalRContext.Provider
+      url={"https://localhost:5001/notifications"}
+      onOpen={() => console.log("open")}
+      onClosed={() => console.log("close")}
+    >
+      <Provider store={store}>
+        <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
+          <CssBaseLine />
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={ptBrLocale}
           >
-            <ToastProvider>
-              <ReactFlowProvider>
-                <ModalProvider>
-                  <AppRoutes />
-                </ModalProvider>
-              </ReactFlowProvider>
-            </ToastProvider>
-          </Connector>
-        </LocalizationProvider>
-      </ThemeProvider>
-    </Provider>
+            <Connector
+              brokerUrl={brokerUrl}
+              options={{
+                ...mqttConfig,
+                protocol: "wss",
+              }}
+            >
+              <ToastProvider>
+                <ReactFlowProvider>
+                  <ModalProvider>
+                    <AppRoutes />
+                  </ModalProvider>
+                </ReactFlowProvider>
+              </ToastProvider>
+            </Connector>
+          </LocalizationProvider>
+        </ThemeProvider>
+      </Provider>
+    </SignalRContext.Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

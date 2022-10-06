@@ -84,7 +84,7 @@ const columns: ColumnHeader[] = [
   },
   {
     label: "Grupo",
-    name: "role",
+    name: "group",
   },
   {
     label: "Status",

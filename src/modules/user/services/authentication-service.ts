@@ -37,23 +37,6 @@ export const userApi = createApi({
     findAllUsers: builder.query<UserModelNormalized[], void>({
       query: () => ({ url: "v1/users", method: "GET" }),
       transformResponse: (returnedUsers: UsersModel) => {
-        function getUserRoleDescription(role: EUserRole): string {
-          switch (role) {
-            case EUserRole.ADMIN:
-              return "Administrador";
-            case EUserRole.EXTERNAL_CLIENT:
-              return "Cliente";
-            case EUserRole.OPERATOR:
-              return "Operador";
-            case EUserRole.TECHNICIAN:
-              return "Técnico";
-            case EUserRole.VIEW_ONLY:
-              return "Visualizador";
-            default:
-              return "Desconhecido";
-          }
-        }
-
         const users: UserModelNormalized[] = [];
         returnedUsers.forEach((returnedUser) => {
           users.push({
@@ -62,7 +45,7 @@ export const userApi = createApi({
             lastName: returnedUser.lastName,
             email: returnedUser.email,
             active: returnedUser.active ? "Ativo" : "Inativo",
-            role: getUserRoleDescription(returnedUser.role),
+            group: returnedUser.group.name,
           });
         });
         return users;
