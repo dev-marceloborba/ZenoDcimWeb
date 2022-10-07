@@ -6,6 +6,7 @@ import {
   useUpdateAlarmRuleMutation,
 } from "modules/automation/services/alarm-rule-service";
 import useRouter from "modules/core/hooks/useRouter";
+import ControlledCheckbox from "modules/shared/components/controlled-checkbox/ControlledCheckbox";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import Form from "modules/shared/components/Form";
 import HeroContainer from "modules/shared/components/HeroContainer";
@@ -14,7 +15,7 @@ import SubmitButton from "modules/shared/components/SubmitButton";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { number, object, SchemaOf, string } from "yup";
+import { number, object, SchemaOf, string, boolean } from "yup";
 import getConditionalEnumFromDescription from "./helpers/getConditionalEnumFromDescription";
 import getPriorityEnumFromDescription from "./helpers/getPriorityEnumFromDescription";
 
@@ -149,6 +150,10 @@ export default function EquipmentParameterRulesForm() {
               },
             ]}
           />
+          <ControlledCheckbox
+            name="enableNotification"
+            label="Habilitar notificação"
+          />
           <ControlledTextInput name="setpoint" label="Setpoint" />
           <SubmitButton label="Salvar" sx={{ mt: 2 }} />
         </Form>
@@ -158,7 +163,9 @@ export default function EquipmentParameterRulesForm() {
   );
 }
 
-const validationSchema: SchemaOf<AlarmRuleViewModel> = object().shape({
+const validationSchema: SchemaOf<
+  Omit<AlarmRuleViewModel, "enableNotification">
+> = object().shape({
   name: string().required("Nome é obrigatório"),
   priority: number().required("Prioridade é obrigatória"),
   conditional: number().required("Condição é obrigatória"),

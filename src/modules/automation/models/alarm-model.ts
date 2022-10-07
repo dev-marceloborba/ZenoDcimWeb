@@ -8,6 +8,7 @@ export interface AlarmModel {
   outDate: Date;
   recognizedDate: Date;
   pathname: string;
+  notificationEnabled: boolean;
   alarmRule: {
     id: string;
     name: string;

@@ -26,6 +26,7 @@ ReactDOM.render(
   <React.StrictMode>
     <SignalRContext.Provider
       url={"https://localhost:5001/notifications"}
+      withCredentials={false}
       onOpen={() => console.log("open")}
       onClosed={() => console.log("close")}
     >

@@ -4,6 +4,7 @@ export interface AlarmRuleViewModel {
   conditional: EAlarmConditonal;
   setpoint: number;
   equipmentParameterId: string;
+  enableNotification: boolean;
 }
 export interface AlarmRuleModel extends AlarmRuleViewModel {
   id: string;
