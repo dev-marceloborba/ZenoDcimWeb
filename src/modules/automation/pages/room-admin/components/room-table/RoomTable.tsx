@@ -23,7 +23,7 @@ const RoomTable: React.FC = () => {
     for (let i = 0; i < rows.length; i++) {
       await deleteRoom(rows[i].id).unwrap;
     }
-    toast.open("Andar(es) excluído(s) com sucesso", 2000, "success");
+    toast.open({ message: "Andar(es) excluído(s) com sucesso" });
   };
 
   return (

@@ -79,18 +79,13 @@ const EquipmentForm: React.FC = () => {
     try {
       await addEquipment(data).unwrap();
       toast
-        .open(
-          `Equipamento ${data.description} criado com sucesso`,
-          2000,
-          "success"
-        )
+        .open({ message: `Equipamento ${data.description} criado com sucesso` })
         .then(() => back());
     } catch (error) {
-      toast.open(
-        `Erro ao excluir o equipamento ${data.description}: ${error}`,
-        2000,
-        "error"
-      );
+      toast.open({
+        message: `Erro ao excluir o equipamento ${data.description}: ${error}`,
+        severity: "error",
+      });
     }
   };
   return (

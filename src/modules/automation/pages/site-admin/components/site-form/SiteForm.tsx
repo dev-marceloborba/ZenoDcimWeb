@@ -26,7 +26,7 @@ export default function SiteForm() {
 
   const onSubmit: SubmitHandler<SiteViewModel> = async (data) => {
     await createSite(data).unwrap();
-    toast.open("Site criado com sucesso", 2000, "success").then(() => back());
+    toast.open({ message: "Site criado com sucesso" }).then(() => back());
   };
 
   // useEffect(() => {

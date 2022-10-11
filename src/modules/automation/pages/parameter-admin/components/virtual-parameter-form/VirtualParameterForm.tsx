@@ -54,12 +54,12 @@ export default function VirtualParameterForm() {
     if (mode === "edit") {
       await updateVirtualParameter({ ...model, id: data.id });
       toast
-        .open("Parâmetro virtual atualizado com sucesso", 2000, "success")
+        .open({ message: "Parâmetro virtual atualizado com sucesso" })
         .then(() => back());
     } else {
       await createVirtualParameter(model).unwrap();
       toast
-        .open("Parâmetro virtual criado com sucesso", 2000, "success")
+        .open({ message: "Parâmetro virtual criado com sucesso" })
         .then(() => back());
     }
   };

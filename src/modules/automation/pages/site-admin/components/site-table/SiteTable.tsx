@@ -17,9 +17,12 @@ const SiteTable: React.FC = () => {
   const handleDeleteSite = (sites: SiteModel[]) => {
     try {
       sites.forEach(async (site) => await deleteSite(site.id).unwrap());
-      toast.open(`Site(s) excluído(s) com sucesso`, 2000, "success");
+      toast.open({ message: `Site(s) excluído(s) com sucesso` });
     } catch (error) {
-      toast.open(`Erro ao excluir o site ${error}`, 2000, "error");
+      toast.open({
+        message: `Erro ao excluir o site ${error}`,
+        severity: "error",
+      });
     }
   };
 

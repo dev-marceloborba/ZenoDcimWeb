@@ -29,10 +29,10 @@ export default function UserGroupsPage() {
             ...permissions,
             ...formData,
           }).unwrap();
-          toast.open("Grupo criado com sucesso", 2000, "success");
+          toast.open({ message: "Grupo criado com sucesso" });
         } catch (error) {
           console.log(error);
-          toast.open("Erro ao criar grupo", 2000, "error");
+          toast.open({ message: "Erro ao criar grupo", severity: "error" });
         } finally {
           modal.hide();
         }
@@ -53,10 +53,10 @@ export default function UserGroupsPage() {
             ...permissions,
             ...formData,
           }).unwrap();
-          toast.open("Grupo alterado com sucesso", 2000, "success");
+          toast.open({ message: "Grupo alterado com sucesso" });
         } catch (error) {
           console.log(error);
-          toast.open("Erro ao editar grupo", 2000, "error");
+          toast.open({ message: "Erro ao editar grupo", severity: "error" });
         } finally {
           modal.hide();
         }
@@ -86,19 +86,19 @@ export default function UserGroupsPage() {
       groups.forEach(async (group) => {
         await deleteGroup(group.id).unwrap();
       });
-      toast.open("Grupo(s) excluído(s) com sucesso", 2000, "success");
+      toast.open({ message: "Grupo(s) excluído(s) com sucesso" });
     } catch {
-      toast.open("Erro ao excluir grupo(s)", 2000, "error");
+      toast.open({ message: "Erro ao excluir grupo(s)", severity: "error" });
     }
   };
 
   const handleDelete = async (group: GroupModel) => {
     try {
       await deleteGroup(group.id).unwrap();
-      toast.open("Grupo excluído com sucesso", 2000, "success");
+      toast.open({ message: "Grupo excluído com sucesso" });
     } catch (error) {
       console.log(error);
-      toast.open("Erro ao excluir grupo", 2000, "error");
+      toast.open({ message: "Erro ao excluir grupo", severity: "error" });
     }
   };
 

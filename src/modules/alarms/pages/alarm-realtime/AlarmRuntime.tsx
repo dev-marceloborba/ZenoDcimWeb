@@ -64,7 +64,7 @@ export default function AlarmRealtime() {
       <DataTable
         title="Alarmes"
         columns={columns}
-        rows={alarms}
+        rows={alarms ?? []}
         options={{
           onSelectedItems: setSelectedAlarms,
         }}

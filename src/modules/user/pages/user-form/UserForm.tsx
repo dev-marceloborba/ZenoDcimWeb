@@ -37,7 +37,7 @@ const UserForm: React.FC = () => {
     function errorHandler() {
       if (isError) {
         const message = getErrorMessage(error);
-        toast.open(message, 3000, "error");
+        toast.open({ message });
       }
     }
     errorHandler();
@@ -47,10 +47,13 @@ const UserForm: React.FC = () => {
     try {
       await createUser(data).unwrap();
       toast
-        .open("Usuário criado com sucesso", 2000, "success")
+        .open({ message: "Usuário criado com sucesso" })
         .then(() => navigate(-1));
     } catch (err) {
-      toast.open(`Erro ao criar o usuário: ${err}`, 2000, "error");
+      toast.open({
+        message: `Erro ao criar o usuário: ${err}`,
+        severity: "error",
+      });
     }
   };
 

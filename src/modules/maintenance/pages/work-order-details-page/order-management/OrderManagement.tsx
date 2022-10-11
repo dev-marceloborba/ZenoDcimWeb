@@ -22,10 +22,13 @@ const OrderManagement: React.FC<OrderManagementProps> = ({ orderId }) => {
       try {
         await deleteWorkOrder(orderId).unwrap();
         toast
-          .open("Ordem de serviço excluída com sucesso", 2000, "success")
+          .open({ message: "Ordem de serviço excluída com sucesso" })
           .then(() => back());
       } catch {
-        toast.open("Erro ao excluir ordem de serviço", 2000, "error");
+        toast.open({
+          message: "Erro ao excluir ordem de serviço",
+          severity: "error",
+        });
       }
     }
   };

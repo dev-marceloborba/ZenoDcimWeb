@@ -24,7 +24,7 @@ const FloorTable: React.FC = () => {
     for (let i = 0; i < rows.length; i++) {
       await deleteFloor(rows[i].id);
     }
-    toast.open("Andare(s) excluído(s) com sucesso", 2000, "success");
+    toast.open({ message: "Andar(es) excluído(s) com sucesso" });
   };
 
   return (

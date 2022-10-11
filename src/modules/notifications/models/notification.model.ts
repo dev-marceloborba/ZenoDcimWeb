@@ -10,3 +10,8 @@ export interface NotificationViewModel {
   sendToEmail: boolean;
   showOnScreen: boolean;
 }
+
+export type Notification = {
+  id: string;
+  message: string;
+};

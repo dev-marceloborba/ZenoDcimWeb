@@ -1,21 +1,35 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { RouteObject, useRoutes } from "react-router-dom";
 import Events from "modules/maintenance/pages/events/Events";
 import Register from "modules/maintenance/pages/register/MaintenanceRegisterPage";
 import Schedule from "modules/maintenance/pages/schedule/Schedule";
 import WorkOrderDetailsPage from "../pages/work-order-details-page/WorkOrderDetailsPage";
 import SupplierRegistryPage from "../pages/supplier-registry-page/SupplierRegistryPage";
+import { maintenancePaths } from "./paths";
 
-const MaintenanceRoutes: React.FC = () => {
-  return (
-    <Routes>
-      <Route path="schedule" element={<Schedule />} />
-      <Route path="events" element={<Events />} />
-      <Route path="register" element={<Register />} />
-      <Route path="events/details" element={<WorkOrderDetailsPage />} />
-      <Route path="suppliers" element={<SupplierRegistryPage />} />
-    </Routes>
-  );
-};
+export const maintenanceRoutes: RouteObject[] = [
+  {
+    path: maintenancePaths.schedule.fullPath,
+    element: <Schedule />,
+  },
+  {
+    path: maintenancePaths.events.fullPath,
+    element: <Events />,
+  },
+  {
+    path: maintenancePaths.register.fullPath,
+    element: <Register />,
+  },
+  {
+    path: maintenancePaths.eventDetails.fullPath,
+    element: <WorkOrderDetailsPage />,
+  },
+  {
+    path: maintenancePaths.suppliers.fullPath,
+    element: <SupplierRegistryPage />,
+  },
+];
+
+const MaintenanceRoutes: React.FC = () => useRoutes(maintenanceRoutes);
 
 export default MaintenanceRoutes;

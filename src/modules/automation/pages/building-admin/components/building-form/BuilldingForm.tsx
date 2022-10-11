@@ -31,14 +31,13 @@ const BuildingForm: React.FC = () => {
     try {
       const { data: building } = await addBuilding(data).unwrap();
       toast
-        .open(`Prédio ${building.name} criado com sucesso`, 2000, "success")
+        .open({ message: `Prédio ${building.name} criado com sucesso` })
         .then(() => back());
     } catch (error) {
-      toast.open(
-        `Erro ao incluir prédio ${data.name}: ${error}`,
-        2000,
-        "error"
-      );
+      toast.open({
+        message: `Erro ao incluir prédio ${data.name}: ${error}`,
+        severity: "error",
+      });
     }
   };
 

@@ -42,12 +42,12 @@ export default function ParameterForm() {
     if (mode === "new") {
       await createParameter(viewModel).unwrap();
       toast
-        .open("Parâmetro criado com sucesso!", 2000, "success")
+        .open({ message: "Parâmetro criado com sucesso!" })
         .then(() => navigate(-1));
     } else {
       await updateParameter({ ...viewModel, id: data.id }).unwrap();
       toast
-        .open("Parâmetro editado com sucesso!", 2000, "success")
+        .open({ message: "Parâmetro editado com sucesso!" })
         .then(() => navigate(-1));
     }
   };

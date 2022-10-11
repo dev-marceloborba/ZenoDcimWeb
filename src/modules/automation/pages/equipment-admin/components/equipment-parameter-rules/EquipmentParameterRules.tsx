@@ -23,6 +23,7 @@ type EquipmentParameterRulesViewModel = {
   priority: string;
   conditional: string;
   setpoint: number;
+  enableNotification: boolean;
 };
 
 export default function EquipmentParameterRules() {
@@ -42,7 +43,7 @@ export default function EquipmentParameterRules() {
     for (let i = 0; i < selection.length; i++) {
       await deleteAlarmRule(selection[i].alarmRuleId).unwrap();
     }
-    toast.open("Alarme(s) excluído(s) com sucesso", 2000, "success");
+    toast.open({ message: "Alarme(s) excluído(s) com sucesso" });
     fetchAlarmRules();
   };
 
@@ -69,6 +70,7 @@ export default function EquipmentParameterRules() {
             priority: getPriorityDescription(alarmRule.priority),
             conditional: getConditionalDescription(alarmRule.conditional),
             setpoint: alarmRule.setpoint,
+            enableNotification: alarmRule.enableNotification,
           });
         });
       }
@@ -150,5 +152,10 @@ const columns: ColumnHeader[] = [
   {
     name: "setpoint",
     label: "Setpoint",
+  },
+  {
+    name: "enableNotification",
+    label: "Receber notificação",
+    customFunction: (row) => (row ? "Sim" : "Não"),
   },
 ];

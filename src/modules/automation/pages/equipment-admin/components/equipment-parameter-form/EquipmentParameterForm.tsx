@@ -33,16 +33,12 @@ export default function EquipmentParameterForm() {
     if (mode === "new") {
       await createEquipmentParameter(viewModel).unwrap();
       toast
-        .open("Parâmetro de equipamento criado com sucesso", 2000, "success")
+        .open({ message: "Parâmetro de equipamento criado com sucesso" })
         .then(() => navigate(-1));
     } else {
       await updateEquipmentParameter({ ...viewModel, id: data.id }).unwrap();
       toast
-        .open(
-          "Parâmetro de equipamento atualizado com sucesso",
-          2000,
-          "success"
-        )
+        .open({ message: "Parâmetro de equipamento atualizado com sucesso" })
         .then(() => navigate(-1));
     }
   };

@@ -77,11 +77,14 @@ export default function WorkOrderRegisterPage() {
         finalDate: format(new Date(data.finalDate), "yyyy-MM-dd"),
       }).unwrap();
       toast
-        .open("Ordem de serviço criada com sucesso", 2000, "success")
+        .open({ message: "Ordem de serviço criada com sucesso" })
         .then(() => back());
     } catch (error) {
       console.log(error);
-      toast.open("Falha ao criar ordem de serviço", 2000, "error");
+      toast.open({
+        message: "Falha ao criar ordem de serviço",
+        severity: "error",
+      });
     }
   };
 

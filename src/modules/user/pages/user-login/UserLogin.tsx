@@ -50,7 +50,10 @@ const UserLogin: React.FC = () => {
         dispatch(setCredentials(account));
         navigate(`/${HomePath}`);
       } else {
-        toast.open("Erro ao realizar login: Servidor offline", 2000, "error");
+        toast.open({
+          message: "Erro ao realizar login: Servidor offline",
+          severity: "error",
+        });
       }
     } catch (error) {
       console.log(error);

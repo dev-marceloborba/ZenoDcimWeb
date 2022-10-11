@@ -19,16 +19,27 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ptBrLocale from "date-fns/locale/pt-BR";
 import { createSignalRContext } from "react-signalr";
+import { userRoutes } from "modules/user/routes/UserRoutes";
+import { maintenanceRoutes } from "modules/maintenance/routes/MaintenanceRoutes";
+import { alarmRoutes } from "modules/alarms/routes/AlarmsRoutes";
+import { automationRoutes } from "modules/automation/routes/AutomationRoutes";
+import NotificationProvider from "modules/shared/components/notification-provider/NotificationProvider";
+import AutomationRealtimeProvider from "modules/automation/data/providers/AutomationRealtimeProvider";
 
 export const SignalRContext = createSignalRContext();
+
+const appRoutes = [
+  ...userRoutes,
+  ...automationRoutes,
+  ...alarmRoutes,
+  ...maintenanceRoutes,
+];
 
 ReactDOM.render(
   <React.StrictMode>
     <SignalRContext.Provider
       url={"https://localhost:5001/notifications"}
       withCredentials={false}
-      onOpen={() => console.log("open")}
-      onClosed={() => console.log("close")}
     >
       <Provider store={store}>
         <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
@@ -47,7 +58,11 @@ ReactDOM.render(
               <ToastProvider>
                 <ReactFlowProvider>
                   <ModalProvider>
-                    <AppRoutes />
+                    <NotificationProvider>
+                      <AutomationRealtimeProvider>
+                        <AppRoutes />
+                      </AutomationRealtimeProvider>
+                    </NotificationProvider>
                   </ModalProvider>
                 </ReactFlowProvider>
               </ToastProvider>

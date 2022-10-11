@@ -1,19 +1,28 @@
-import React, { createContext, useContext, useState, useMemo } from "react";
+import React, { createContext, useContext, useState } from "react";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
 
-type ToastContextProps = {
-  open(
-    message: string,
-    autoHideDuration: number,
-    severity: AlertColor
-  ): Promise<void>;
-  close(): void;
-  options: {
-    message: string;
-    autoHideDuration?: number;
-  };
+type ToastOpenOptions = {
+  message: string;
+  autoHideDuration?: number;
+  severity?: AlertColor;
+  position?: ToastPosition;
 };
+
+type ToastContextProps = {
+  open(options: ToastOpenOptions): Promise<void>;
+  close(): void;
+};
+
+type ToastPosition =
+  | "top-right"
+  | "top-left"
+  | "bottom-right"
+  | "bottom-left"
+  | "top-center"
+  | "bottom-center";
+
+type ToastVariant = "filled" | "standard" | "outlined";
 
 const ToastContext = createContext<ToastContextProps>({} as ToastContextProps);
 
@@ -24,24 +33,23 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-type ToastProps = Pick<AlertProps, "variant" | "severity"> & {
-  mode?:
-    | "top-right"
-    | "top-left"
-    | "bottom-right"
-    | "bottom-left"
-    | "top-center"
-    | "bottom-center";
+type ToastState = {
+  open: boolean;
+  message: string;
+  autoHideDuration: number;
+  variant: ToastVariant;
+  severity: AlertColor;
+  mode: ToastPosition;
 };
 
-const ToastProvider: React.FC<ToastProps> = ({ children, ...props }) => {
-  const [state, setState] = useState({
+const ToastProvider: React.FC = ({ children }) => {
+  const [state, setState] = useState<ToastState>({
     open: false,
     message: "",
     autoHideDuration: 6000,
-    variant: props.variant,
-    severity: props.severity,
-    mode: "bottom-right" as Pick<ToastProps, "mode">,
+    variant: "filled",
+    severity: "success",
+    mode: "bottom-right",
   });
 
   const handleClose = (
@@ -54,52 +62,24 @@ const ToastProvider: React.FC<ToastProps> = ({ children, ...props }) => {
     setState((prevState) => ({ ...prevState, open: false }));
   };
 
-  const handleOpen = useMemo(
-    () =>
-      (
-        message: string,
-        autoHideDuration: number,
-        severity: typeof props.severity = "error"
-      ) => {
-        setState((prevState) => ({
-          ...prevState,
-          open: true,
-          message,
-          autoHideDuration,
-          variant: "filled",
-          severity,
-        }));
-      },
-    [props]
-  );
-
-  function handleOpen2(
-    message: string,
-    autoHideDuration: number,
-    severity: typeof props.severity = "error"
-  ): Promise<void> {
+  function handleOpen(options: ToastOpenOptions): Promise<void> {
     return new Promise((resolve) => {
       setState((prevState) => ({
         ...prevState,
         open: true,
-        message,
-        autoHideDuration,
+        message: options.message,
+        autoHideDuration: options.autoHideDuration ?? state.autoHideDuration,
         variant: "filled",
-        severity,
+        severity: options.severity ?? state.severity,
+        mode: options.position ?? state.mode,
       }));
       setTimeout(() => {
         resolve();
-      }, autoHideDuration);
+      }, options.autoHideDuration ?? 2000);
     });
   }
 
-  // function delayCallback(delay: number): Promise<any> {
-  //   return new Promise((resolve) => {
-  //     setTimeout(resolve, delay);
-  //   });
-  // }
-
-  function handleToastPosition(mode: Pick<ToastProps, "mode">): SnackbarOrigin {
+  function handleToastPosition(mode: ToastPosition): SnackbarOrigin {
     switch (mode) {
       case "bottom-right":
         return {
@@ -132,12 +112,8 @@ const ToastProvider: React.FC<ToastProps> = ({ children, ...props }) => {
   return (
     <ToastContext.Provider
       value={{
-        open: handleOpen2,
+        open: handleOpen,
         close: handleClose,
-        options: {
-          message: state.message,
-          autoHideDuration: state.autoHideDuration,
-        },
       }}
     >
       <React.Fragment>

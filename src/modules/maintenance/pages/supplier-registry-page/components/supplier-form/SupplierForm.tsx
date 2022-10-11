@@ -41,10 +41,10 @@ const SupplierForm: React.FC<SupplierFormProps> = ({
       try {
         await createSupplier(data).unwrap();
         toast
-          .open("Fornecedor criado com sucesso", 2000, "success")
+          .open({ message: "Fornecedor criado com sucesso" })
           .then(() => props.onConfirm());
       } catch {
-        toast.open("Erro ao criar fornecedor", 2000, "error");
+        toast.open({ message: "Erro ao criar fornecedor", severity: "error" });
       }
     } else if (mode === "edit") {
       try {
@@ -53,10 +53,13 @@ const SupplierForm: React.FC<SupplierFormProps> = ({
           ...data,
         }).unwrap();
         toast
-          .open("Fornecedor atualizado com sucesso", 2000, "success")
+          .open({ message: "Fornecedor atualizado com sucesso" })
           .then(() => props.onConfirm());
       } catch {
-        toast.open("Erro ao atualizar fornecedor", 2000, "error");
+        toast.open({
+          message: "Erro ao atualizar fornecedor",
+          severity: "error",
+        });
       }
     }
   };

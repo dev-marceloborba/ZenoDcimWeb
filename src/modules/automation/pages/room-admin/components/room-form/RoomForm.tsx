@@ -46,10 +46,13 @@ const RoomForm: React.FC = () => {
     try {
       await addRoom(data).unwrap();
       toast
-        .open(`Sala ${data.name} criada com sucesso`, 2000, "success")
+        .open({ message: `Sala ${data.name} criada com sucesso` })
         .then(() => back());
     } catch (error) {
-      toast.open(`Erro ao criar a sala ${data.name}: ${error}`, 2000, "error");
+      toast.open({
+        message: `Erro ao criar a sala ${data.name}: ${error}`,
+        severity: "error",
+      });
     }
   };
   return (

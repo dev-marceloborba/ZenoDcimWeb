@@ -30,11 +30,12 @@ const CompanyForm: React.FC = () => {
   const onSubmit: SubmitHandler<CompanyRequest> = async (data) => {
     try {
       await createCompany(data).unwrap();
-      toast
-        .open("Empresa criada com sucesso", 2000, "success")
-        .then(() => back());
+      toast.open({ message: "Empresa criada com sucesso" }).then(() => back());
     } catch (err) {
-      toast.open(`Erro ao criar empresa: ${err}`, 2000, "error");
+      toast.open({
+        message: `Erro ao criar empresa: ${err}`,
+        severity: "error",
+      });
     }
   };
 

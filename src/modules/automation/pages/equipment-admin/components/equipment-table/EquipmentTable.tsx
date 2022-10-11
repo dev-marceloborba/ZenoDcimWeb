@@ -28,7 +28,7 @@ export default function EquipmentTable(props: EquipmentTableProps) {
     for (let i = 0; i < items.length; i++) {
       await deleteEquipment(items[i].id);
     }
-    toast.open("Equipamentos apagados com sucesso", 2000, "success");
+    toast.open({ message: "Equipamentos apagados com sucesso" });
   };
 
   return (

@@ -41,18 +41,24 @@ const UserDetails: React.FC = () => {
   const onSubmit: SubmitHandler<EditUserRequest> = async (data) => {
     try {
       await editUser(data).unwrap();
-      toast.open("Usuário editado com sucesso", 2000, "success");
+      toast.open({ message: "Usuário editado com sucesso" });
     } catch (error) {
-      toast.open(`Erro ao editar o usuário: ${error}`, 2000, "error");
+      toast.open({
+        message: `Erro ao editar o usuário: ${error}`,
+        severity: "error",
+      });
     }
   };
 
   const onDelete = async () => {
     try {
       // await deleteUser(id!).unwrap();
-      toast.open("Usuário deletado com sucesso", 2000, "success");
+      toast.open({ message: "Usuário deletado com sucesso" });
     } catch (error) {
-      toast.open(`Erro ao deletar o usuário: ${error}`, 2000, "error");
+      toast.open({
+        message: `Erro ao deletar o usuário: ${error}`,
+        severity: "error",
+      });
     }
   };
 

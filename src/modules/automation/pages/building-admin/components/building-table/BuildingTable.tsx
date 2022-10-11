@@ -22,10 +22,10 @@ const BuildingTable: React.FC = () => {
         await deleteBuilding(rows[i].id).unwrap();
       }
       toast
-        .open(`Prédio(s) excluído(s) com sucesso`, 2000, "success")
+        .open({ message: `Prédio(s) excluído(s) com sucesso` })
         .then(() => back());
     } catch (error) {
-      toast.open(`Erro ao excluir`, 2000, "error");
+      toast.open({ message: `Erro ao excluir`, severity: "error" });
     }
   };
 

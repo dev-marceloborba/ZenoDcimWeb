@@ -1,10 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ToolBar from "@mui/material/Toolbar";
 import UserIcon from "@mui/icons-material/AccountCircle";
@@ -12,45 +11,69 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Tooltip from "@mui/material/Tooltip";
 import FullScreenIcon from "@mui/icons-material/Fullscreen";
 import NotificationIcon from "@mui/icons-material/Notifications";
-import Modal from "@mui/material/Modal";
 import { useLayout } from "app/hooks/useLayout";
 // import UserSettings from './UserSettings';
 import Logo from "app/assets/logo-white.svg";
 import { useAuth } from "app/hooks/useAuth";
 import { useFullscreen } from "@straw-hat/react-fullscreen";
 import { SignalRContext } from "index";
+import { useToast } from "modules/shared/components/ToastProvider";
+import { useNotifications } from "modules/shared/components/notification-provider/NotificationProvider";
+import { AlarmModel } from "modules/automation/models/alarm-model";
+import Menu from "modules/shared/components/menu/Menu";
+import NotificationsPanel from "../notifications-panel/NotificationsPanel";
+
+type MenuState = {
+  notifications: null | HTMLElement;
+  user: null | HTMLElement;
+};
 
 const Header: React.FC = () => {
   const target = useRef(window.document.body);
   const { toggleFullscreen } = useFullscreen(target);
   const navigate = useNavigate();
-  const [showUserSettings, setShowUserSettings] = useState(false);
   const { signout } = useAuth();
+  const toast = useToast();
+  const { notifications, addNotification } = useNotifications();
 
   SignalRContext.useSignalREffect(
     "SendAlarmNotification",
-    (message) => console.log(message),
+    (message) => {
+      const alarm = message as AlarmModel;
+      console.log(alarm);
+      toast.open({
+        message: "Novo alarme",
+        position: "top-right",
+        severity: "warning",
+      });
+      addNotification({
+        id: alarm.id,
+        message: alarm.pathname,
+      });
+    },
     []
   );
 
   const { toggleDrawer, isMobile } = useLayout();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const isMenuOpen = Boolean(anchorEl);
+  const [menuState, setMenuState] = React.useState<MenuState>({
+    notifications: null,
+    user: null,
+  });
 
-  const handleMenuClose = () => setAnchorEl(null);
-
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleOpenUserSettings = () => {
-    handleMenuClose();
-    setShowUserSettings(true);
-  };
-
-  const handleCloseUserSettings = () => {
-    setShowUserSettings(false);
-  };
+  const isMenuOpen = (option: keyof MenuState) => Boolean(menuState[option]);
+  const handleMenuOpen = (
+    option: keyof MenuState,
+    event: React.MouseEvent<HTMLElement>
+  ) =>
+    setMenuState((prevState) => ({
+      ...prevState,
+      [option]: event.currentTarget,
+    }));
+  const handleMenuClose = (option: keyof MenuState) =>
+    setMenuState((prevState) => ({
+      ...prevState,
+      [option]: null,
+    }));
 
   const handleLogout = () => {
     signout();
@@ -63,10 +86,11 @@ const Header: React.FC = () => {
 
   const handleOpenUserHelp = () => {
     navigate("/zeno/settings/user-help");
-    handleMenuClose();
+    handleMenuClose("user");
   };
 
-  const menuId = "account-menu";
+  const userMenuId = "account-menu";
+  const notificationsMenuId = "notifications-menu";
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -104,8 +128,14 @@ const Header: React.FC = () => {
           </Tooltip>
 
           <Tooltip title="Notificações">
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={4} color="error">
+            <IconButton
+              size="large"
+              color="inherit"
+              aria-controls={notificationsMenuId}
+              aria-haspopup="true"
+              onClick={(e) => handleMenuOpen("notifications", e)}
+            >
+              <Badge badgeContent={notifications.length} color="error">
                 <NotificationIcon />
               </Badge>
             </IconButton>
@@ -115,40 +145,43 @@ const Header: React.FC = () => {
             <IconButton
               size="large"
               edge="end"
-              aria-controls={menuId}
+              aria-controls={userMenuId}
               aria-haspopup="true"
               color="inherit"
-              onClick={handleProfileMenuOpen}
+              onClick={(e) => handleMenuOpen("user", e)}
             >
               <UserIcon />
             </IconButton>
           </Tooltip>
 
           <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
+            id={notificationsMenuId}
+            anchorEl={menuState.notifications}
+            open={isMenuOpen("notifications")}
+            onClose={() => handleMenuClose("notifications")}
+            PaperProps={{
+              style: {
+                maxHeight: 45 * 4.5,
+                // width: "20ch",
+                width: "600px",
+              },
             }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleOpenUserSettings}>Configurações</MenuItem>
+            <NotificationsPanel />
+          </Menu>
+
+          <Menu
+            anchorEl={menuState.user}
+            id={userMenuId}
+            open={isMenuOpen("user")}
+            onClose={() => handleMenuClose("user")}
+          >
+            <MenuItem>Configurações</MenuItem>
             <MenuItem onClick={handleOpenUserHelp}>Ajuda</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </ToolBar>
       </AppBar>
-
-      {/* <Modal open={showUserSettings} onClose={handleCloseUserSettings}>
-                <UserSettings closeModal={handleCloseUserSettings} />
-            </Modal> */}
     </Box>
   );
 };

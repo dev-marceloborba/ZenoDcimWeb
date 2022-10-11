@@ -27,9 +27,12 @@ const UserAdmin: React.FC = () => {
       for (let i = 0; i < users.length; i++) {
         await deleteUser(users[i].id).unwrap();
       }
-      toast.open(`Usuário's excluído's com sucesso`, 2000, "success");
+      toast.open({ message: `Usuário's excluído's com sucesso` });
     } catch (error) {
-      toast.open(`Erro ao excluido o usuário's: ${error}`, 2000, "error");
+      toast.open({
+        message: `Erro ao excluido o usuário's: ${error}`,
+        severity: "error",
+      });
     }
   };
 

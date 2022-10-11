@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AlarmRuleViewModel } from "modules/automation/models/alarm-rule-model";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
@@ -13,11 +15,10 @@ import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import { useToast } from "modules/shared/components/ToastProvider";
-import { useEffect } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { number, object, SchemaOf, string, boolean } from "yup";
 import getConditionalEnumFromDescription from "./helpers/getConditionalEnumFromDescription";
 import getPriorityEnumFromDescription from "./helpers/getPriorityEnumFromDescription";
+import Typography from "@mui/material/Typography";
 
 type EquipmentParameterRulesProps = {
   name: string;
@@ -26,6 +27,7 @@ type EquipmentParameterRulesProps = {
   setpoint: number;
   alarmRuleId: string;
   equipmentParameterId: string;
+  enableNotification: boolean;
 };
 
 export default function EquipmentParameterRulesForm() {
@@ -56,17 +58,13 @@ export default function EquipmentParameterRulesForm() {
   const onSubmit: SubmitHandler<AlarmRuleViewModel> = async (data) => {
     if (mode === "new") {
       await createAlarmRule(data).unwrap();
-      toast
-        .open("Regra criada com sucesso", 2000, "success")
-        .then(() => back());
+      toast.open({ message: "Regra criada com sucesso" }).then(() => back());
     } else {
       await updateAlarmRule({
         id: selectedParameter.alarmRuleId,
         ...data,
       }).unwrap();
-      toast
-        .open("Regra alterada com sucesso", 2000, "success")
-        .then(() => back());
+      toast.open({ message: "Regra alterada com sucesso" }).then(() => back());
     }
   };
 
@@ -83,6 +81,7 @@ export default function EquipmentParameterRulesForm() {
         getConditionalEnumFromDescription(selectedParameter.conditional)
       );
       setValue("setpoint", selectedParameter.setpoint);
+      setValue("enableNotification", selectedParameter.enableNotification);
     }
   }, [mode, selectedParameter, setValue]);
 
@@ -150,11 +149,12 @@ export default function EquipmentParameterRulesForm() {
               },
             ]}
           />
+          <ControlledTextInput name="setpoint" label="Setpoint" />
+          <Typography>Configurações</Typography>
           <ControlledCheckbox
             name="enableNotification"
-            label="Habilitar notificação"
+            label="Habilitar notificação de alarme"
           />
-          <ControlledTextInput name="setpoint" label="Setpoint" />
           <SubmitButton label="Salvar" sx={{ mt: 2 }} />
         </Form>
       </FormProvider>

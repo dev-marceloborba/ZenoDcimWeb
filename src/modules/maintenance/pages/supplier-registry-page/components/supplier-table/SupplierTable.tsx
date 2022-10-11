@@ -30,10 +30,10 @@ export default function SupplierTable() {
       selection.forEach(async (supplier) => {
         await deleteSupplier(supplier.id).unwrap();
       });
-      toast.open("Fornecedor excluído com sucesso", 2000, "success");
+      toast.open({ message: "Fornecedor excluído com sucesso" });
     } catch (error) {
       console.log(error);
-      toast.open("Erro ao excluir fornecedor", 2000, "error");
+      toast.open({ message: "Erro ao excluir fornecedor", severity: "error" });
     }
   };
 

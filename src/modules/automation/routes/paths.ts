@@ -46,3 +46,12 @@ export const SiteFormPath = SiteManagementPath + "/form";
 export const AutomationRegisterPath = "management";
 
 export const RuleRegisterPath = "rule-register";
+
+export const automationPaths = {
+  energyClimateTelecom: {
+    fullpath: "etc",
+  },
+  energyClimateTelecomFloorPath: {
+    fullPath: "etc/floor",
+  },
+};
