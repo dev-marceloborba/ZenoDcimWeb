@@ -15,7 +15,7 @@ import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import { useToast } from "modules/shared/components/ToastProvider";
-import { number, object, SchemaOf, string, boolean } from "yup";
+import { number, object, SchemaOf, string } from "yup";
 import getConditionalEnumFromDescription from "./helpers/getConditionalEnumFromDescription";
 import getPriorityEnumFromDescription from "./helpers/getPriorityEnumFromDescription";
 import Typography from "@mui/material/Typography";
@@ -28,6 +28,7 @@ type EquipmentParameterRulesProps = {
   alarmRuleId: string;
   equipmentParameterId: string;
   enableNotification: boolean;
+  enableEmail: boolean;
 };
 
 export default function EquipmentParameterRulesForm() {
@@ -35,7 +36,10 @@ export default function EquipmentParameterRulesForm() {
     useCreateAlarmRuleMutation();
   const [updateAlarmRule, { isLoading: isLoadingUpdate }] =
     useUpdateAlarmRuleMutation();
-  const methods = useForm({ resolver: yupResolver(validationSchema) });
+  const methods = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+  });
   const toast = useToast();
   const { back } = useRouter();
   const {
@@ -53,7 +57,12 @@ export default function EquipmentParameterRulesForm() {
     };
   } = useRouter();
 
-  const { handleSubmit, setValue } = methods;
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { isValid, isSubmitSuccessful },
+  } = methods;
 
   const onSubmit: SubmitHandler<AlarmRuleViewModel> = async (data) => {
     if (mode === "new") {
@@ -82,8 +91,21 @@ export default function EquipmentParameterRulesForm() {
       );
       setValue("setpoint", selectedParameter.setpoint);
       setValue("enableNotification", selectedParameter.enableNotification);
+      setValue("enableEmail", selectedParameter.enableEmail);
     }
   }, [mode, selectedParameter, setValue]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        name: "",
+        priority: 0,
+        conditional: 0,
+        setpoint: 0,
+        equipmentParameterId: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <HeroContainer title="Criar/editar regra">
@@ -155,7 +177,11 @@ export default function EquipmentParameterRulesForm() {
             name="enableNotification"
             label="Habilitar notificação de alarme"
           />
-          <SubmitButton label="Salvar" sx={{ mt: 2 }} />
+          <ControlledCheckbox
+            name="enableEmail"
+            label="Habilitar envio por e-mail"
+          />
+          <SubmitButton disabled={!isValid} sx={{ mt: 2 }} />
         </Form>
       </FormProvider>
       <Loading open={isLoadingCreate || isLoadingUpdate} />
@@ -163,9 +189,7 @@ export default function EquipmentParameterRulesForm() {
   );
 }
 
-const validationSchema: SchemaOf<
-  Omit<AlarmRuleViewModel, "enableNotification">
-> = object().shape({
+const validationSchema = object().shape({
   name: string().required("Nome é obrigatório"),
   priority: number().required("Prioridade é obrigatória"),
   conditional: number().required("Condição é obrigatória"),

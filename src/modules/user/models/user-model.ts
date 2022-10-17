@@ -40,11 +40,11 @@ export enum EUserStatus {
 
 export function getUserStatusInstance(value: string) {
   if (value === "Inativo") {
-    return EUserStatus.INACTIVE;
+    return 0;
   } else if (value === "Ativo") {
-    return EUserStatus.ACTIVE;
+    return 1;
   } else {
-    return EUserStatus.INACTIVE;
+    return 0;
   }
 }
 
@@ -90,5 +90,5 @@ export interface EditUserViewModel {
   lastName: string;
   email: string;
   groupId: string;
-  active: EUserStatus;
+  active: boolean;
 }

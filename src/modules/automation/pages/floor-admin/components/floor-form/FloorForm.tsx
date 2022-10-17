@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
@@ -26,9 +26,14 @@ const FloorForm: React.FC = () => {
 
   const methods = useForm<FloorViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
 
-  const { handleSubmit } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+  } = methods;
 
   const onSubmit: SubmitHandler<FloorViewModel> = async (data) => {
     try {
@@ -43,6 +48,15 @@ const FloorForm: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        buildingId: "",
+        name: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Card sx={{ mt: 2, padding: "16px 24px" }}>
@@ -81,7 +95,7 @@ const FloorForm: React.FC = () => {
                 }
               />
               <ControlledTextInput name="name" label="Nome do andar" />
-              <SubmitButton label="Salvar" />
+              <SubmitButton disabled={!isValid} label="Salvar" />
             </FormProvider>
           </Form>
         </Grid>

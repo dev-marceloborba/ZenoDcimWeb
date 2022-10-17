@@ -180,6 +180,7 @@ const EquipmentForm: React.FC = () => {
                     fullWidth
                     name="weight"
                     label="Peso (kg)"
+                    defaultValue={0}
                   />
                   <ControlledTextInput
                     fullWidth
@@ -190,6 +191,7 @@ const EquipmentForm: React.FC = () => {
                     fullWidth
                     name="powerLimit"
                     label="Potência limite (W)"
+                    defaultValue={0}
                   />
                   <SubmitButton label="Salvar" />
                 </FormProvider>

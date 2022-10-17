@@ -26,6 +26,7 @@ import { useEffect } from "react";
 export default function VirtualParameterForm() {
   const methods = useForm<VirtualParameterViewModel>({
     resolver: yupResolver(schemaValidation),
+    mode: "onChange",
   });
   const { showModal } = useModal();
   const toast = useToast();
@@ -48,7 +49,12 @@ export default function VirtualParameterForm() {
     { data: virtualParameter, isLoading: isLoadingFindVirtualParameter },
   ] = useFindVirtualParameterByIdMutation();
 
-  const { handleSubmit, setValue } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+    setValue,
+  } = methods;
 
   const onSubmit: SubmitHandler<VirtualParameterViewModel> = async (model) => {
     if (mode === "edit") {
@@ -96,6 +102,19 @@ export default function VirtualParameterForm() {
     }
   }, [mode, setValue, virtualParameter]);
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        expression: "",
+        highLimit: 0,
+        lowLimit: 0,
+        name: "",
+        scale: 0,
+        unit: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
+
   return (
     <HeroContainer title="Criar/editar parâmetro virtual">
       <FormProvider {...methods}>
@@ -113,7 +132,7 @@ export default function VirtualParameterForm() {
           <ControlledTextInput label="Limite superior" name="highLimit" />
           <ControlledTextInput label="Escala" name="scale" />
           <ControlledTextInput label="Expressão" name="expression" />
-          <SubmitButton label="Salvar" />
+          <SubmitButton disabled={!isValid} label="Salvar" />
           <Button onClick={() => handleBrowseParameters()} sx={{ mt: 2 }}>
             Buscar parâmetros
           </Button>

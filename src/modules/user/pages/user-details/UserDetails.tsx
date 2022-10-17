@@ -16,10 +16,7 @@ import {
   useDeleteUserMutation,
   useEditUserMutation,
 } from "modules/user/services/authentication-service";
-import {
-  getUserRoleInstance,
-  getUserStatusInstance,
-} from "modules/user/models/user-model";
+import { getUserStatusInstance } from "modules/user/models/user-model";
 import { useFindAllGroupsQuery } from "modules/user/services/groups.service";
 
 const UserDetails: React.FC = () => {
@@ -33,16 +30,15 @@ const UserDetails: React.FC = () => {
   const toast = useToast();
   const methods = useForm<EditUserRequest>();
 
-  console.log(state);
-  // console.log(user, mode);
-
   const { handleSubmit, setValue } = methods;
 
   const onSubmit: SubmitHandler<EditUserRequest> = async (data) => {
     try {
-      await editUser(data).unwrap();
+      var mod = { ...data, active: Boolean(data.active) };
+      await editUser(mod).unwrap();
       toast.open({ message: "Usuário editado com sucesso" });
     } catch (error) {
+      console.log(error);
       toast.open({
         message: `Erro ao editar o usuário: ${error}`,
         severity: "error",
@@ -96,7 +92,7 @@ const UserDetails: React.FC = () => {
               ]}
             />
             <ControlledTextInput
-              name="group"
+              name="groupId"
               label="Grupo"
               items={
                 groups?.map((group) => ({

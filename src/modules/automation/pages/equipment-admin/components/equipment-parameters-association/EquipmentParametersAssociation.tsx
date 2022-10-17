@@ -39,6 +39,7 @@ type ParameterCheckedViewModel = ParameterModel & {
 };
 
 export default function EquipmentParametersAssociation() {
+  const [selection, setSelection] = useState<ParameterCheckedViewModel[]>([]);
   const [groupParameters, setGroupParameters] = useState<
     ParameterCheckedViewModel[]
   >([]);
@@ -70,9 +71,20 @@ export default function EquipmentParametersAssociation() {
   };
 
   const handleSelectedParameters = (value: ParameterCheckedViewModel) => {
+    console.log("...");
     const newSelection = [...groupParameters];
     const parameter = newSelection.find((x) => x.id === value.id);
     if (parameter) parameter.checked = !parameter.checked;
+
+    const selectionIdx = selection.findIndex((x) => x.id === value.id);
+    if (selectionIdx === -1) {
+      setSelection((prevState) => [...prevState, { ...value }]);
+    } else {
+      setSelection((prevState) => {
+        const removed = prevState.filter((x) => x.id !== value.id);
+        return removed;
+      });
+    }
     setGroupParameters(newSelection);
   };
 
@@ -91,10 +103,18 @@ export default function EquipmentParametersAssociation() {
         expression: p.expression,
       })),
     }).unwrap();
+    setSelection([]);
+    setGroupParameters((prevState) => {
+      const cleared = prevState.map((v) => ({ ...v, checked: false }));
+      return cleared;
+    });
     getParameters();
   };
 
-  const handleDeleteParametersSelection = async (items: any[]) => {
+  const handleDeleteParametersSelection = async (
+    items: EquipmentParameterModel[]
+  ) => {
+    console.log(items);
     for (let i = 0; i < items.length; i++) {
       await deleteEquipmentParameters(items[i].id).unwrap();
     }
@@ -176,6 +196,7 @@ export default function EquipmentParametersAssociation() {
                 </Typography>
                 {groupParameters.length > 0 && (
                   <Button
+                    disabled={selection.length === 0}
                     variant="contained"
                     onClick={() => handleIncludeSelection()}
                   >

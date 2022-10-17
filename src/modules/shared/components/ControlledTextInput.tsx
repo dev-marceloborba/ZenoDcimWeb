@@ -31,8 +31,8 @@ const ControlledTextInput: React.FC<TextInputProps> = ({ ...props }) => {
           {...field}
           select={!!props.items?.length || forceSelect}
         >
-          {props.items?.map((item) => (
-            <MenuItem key={item.value} value={item.value}>
+          {props.items?.map((item, idx) => (
+            <MenuItem key={idx} value={item.value}>
               {item.description}
             </MenuItem>
           ))}

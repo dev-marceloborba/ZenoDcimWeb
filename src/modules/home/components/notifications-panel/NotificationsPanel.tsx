@@ -23,8 +23,15 @@ const NotificationsPanel: React.FC = () => {
   };
 
   return (
-    <Box>
-      <Box padding={"16px 24px"} bgcolor={"secondary.main"}>
+    <Box position="relative">
+      <Box
+        padding={"16px 24px"}
+        bgcolor={"secondary.main"}
+        // position="fixed"
+        width={"100%"}
+        // left={"0"}
+        // top={"24px"}
+      >
         <Stack
           direction="row"
           alignItems="center"

@@ -1,30 +1,56 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Form from "modules/shared/components/Form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
+import SubmitButton from "modules/shared/components/SubmitButton";
+import { object, SchemaOf, string } from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 type CreateGroupModalProps = DialogProps & {
-  onConfirm: (value: string, data: any) => void;
+  onConfirm: (value: string) => void;
   onCancel: () => void;
   mode?: "edit" | "create";
   previousValue?: string;
-  data: any;
 };
 
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ ...props }) => {
+  const { title, onConfirm, onCancel, mode = "create", previousValue } = props;
+
+  const methods = useForm<GroupFormProps>({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+  });
+
   const {
-    title,
-    onConfirm,
-    onCancel,
-    mode = "create",
-    previousValue,
-    data,
-  } = props;
-  const inputRef = useRef<HTMLInputElement>();
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+    setValue,
+  } = methods;
+
+  const onSubmit: SubmitHandler<GroupFormProps> = (data) => {
+    onConfirm(data.group);
+  };
+
+  useEffect(() => {
+    if (mode === "edit") {
+      setValue("group", previousValue ?? "");
+    }
+  }, [mode, previousValue, setValue]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        group: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Dialog {...props}>
@@ -35,27 +61,32 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ ...props }) => {
             mode === "create" ? "criado" : "editado"
           }`}
         </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Nome do grupo"
-          type="text"
-          fullWidth
-          variant="standard"
-          inputRef={inputRef}
-          {...(mode === "edit" && {
-            defaultValue: previousValue,
-          })}
-        />
+        <FormProvider {...methods}>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <ControlledTextInput
+              name="group"
+              label="Nome do grupo"
+              variant="standard"
+              autoFocus
+              margin="dense"
+            />
+            <DialogActions>
+              <SubmitButton disabled={!isValid} />
+              <Button onClick={() => onCancel()}>Cancelar</Button>
+            </DialogActions>
+          </Form>
+        </FormProvider>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={() => onConfirm(inputRef.current?.value ?? "", data)}>
-          Salvar
-        </Button>
-        <Button onClick={() => onCancel()}>Cancelar</Button>
-      </DialogActions>
     </Dialog>
   );
 };
 
 export default CreateGroupModal;
+
+type GroupFormProps = {
+  group: string;
+};
+
+const validationSchema: SchemaOf<GroupFormProps> = object().shape({
+  group: string().required("Grupo é obrigatório"),
+});

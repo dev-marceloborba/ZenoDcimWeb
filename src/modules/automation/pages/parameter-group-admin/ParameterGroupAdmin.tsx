@@ -101,14 +101,14 @@ export default function ParameterGroupAdmin() {
 
   const handleNewGroupModal = () => {
     const modal = showModal(CreateGroupModal, {
-      onConfirm: async (value, data) => {
-        await createGroup({ name: value }).unwrap();
+      onConfirm: async (value) => {
         modal.hide();
+        await createGroup({ name: value }).unwrap();
       },
       onCancel: () => {
         modal.hide();
       },
-      data: selectedGroup,
+      // data: selectedGroup,
     });
   };
 
@@ -136,9 +136,9 @@ export default function ParameterGroupAdmin() {
     setAvailableParameters(newSelection);
   };
 
-  const handleEditGroup = (value: EquipmentParameterGroupModel) => {
+  const handleEditGroup = (data: EquipmentParameterGroupModel) => {
     const modal = showModal(CreateGroupModal, {
-      onConfirm: async (value, data) => {
+      onConfirm: async (value) => {
         await editEquipmentParameterGroup({ id: data.id, name: value }).unwrap;
         modal.hide();
       },
@@ -146,8 +146,7 @@ export default function ParameterGroupAdmin() {
         modal.hide();
       },
       mode: "edit",
-      previousValue: value.name,
-      data: selectedGroup,
+      previousValue: data.name,
     });
   };
 

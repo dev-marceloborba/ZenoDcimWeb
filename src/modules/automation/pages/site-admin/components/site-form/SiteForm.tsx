@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 export default function SiteForm() {
   const methods = useForm<SiteViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
   const toast = useToast();
   const { back, state } = useRouter();
@@ -22,12 +23,23 @@ export default function SiteForm() {
 
   const { mode, data } = state;
 
-  const { handleSubmit, setValue } = methods;
+  const {
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+  } = methods;
 
   const onSubmit: SubmitHandler<SiteViewModel> = async (data) => {
     await createSite(data).unwrap();
     toast.open({ message: "Site criado com sucesso" }).then(() => back());
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ name: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   // useEffect(() => {
   //   if (mode === "edit") {
@@ -39,8 +51,8 @@ export default function SiteForm() {
     <HeroContainer title="Criar/editar site">
       <FormProvider {...methods}>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <ControlledTextInput name="name" label="Site" />
-          <SubmitButton label="Salvar" sx={{ mt: 2 }} />
+          <ControlledTextInput name="name" label="Site" defaultValue="" />
+          <SubmitButton disabled={!isValid} sx={{ mt: 2 }} />
         </Form>
       </FormProvider>
       <Loading open={isLoading} />

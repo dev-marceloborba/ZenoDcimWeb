@@ -24,6 +24,7 @@ type EquipmentParameterRulesViewModel = {
   conditional: string;
   setpoint: number;
   enableNotification: boolean;
+  enableEmail: boolean;
 };
 
 export default function EquipmentParameterRules() {
@@ -71,6 +72,7 @@ export default function EquipmentParameterRules() {
             conditional: getConditionalDescription(alarmRule.conditional),
             setpoint: alarmRule.setpoint,
             enableNotification: alarmRule.enableNotification,
+            enableEmail: alarmRule.enableEmail,
           });
         });
       }
@@ -156,6 +158,11 @@ const columns: ColumnHeader[] = [
   {
     name: "enableNotification",
     label: "Receber notificação",
+    customFunction: (row) => (row ? "Sim" : "Não"),
+  },
+  {
+    name: "enableEmail",
+    label: "Receber e-mail",
     customFunction: (row) => (row ? "Sim" : "Não"),
   },
 ];

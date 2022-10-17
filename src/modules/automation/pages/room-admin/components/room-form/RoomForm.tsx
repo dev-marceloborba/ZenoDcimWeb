@@ -28,9 +28,15 @@ const RoomForm: React.FC = () => {
 
   const methods = useForm<RoomViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
 
-  const { handleSubmit, watch } = methods;
+  const {
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isValid, isSubmitSuccessful },
+  } = methods;
 
   const buildingWatcher = watch("buildingId");
 
@@ -55,6 +61,17 @@ const RoomForm: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        buildingId: "",
+        floorId: "",
+        name: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
+
   return (
     <Card sx={{ mt: 2, padding: "16px 24px" }}>
       <Grid container>
@@ -99,7 +116,7 @@ const RoomForm: React.FC = () => {
                 }))}
               />
               <ControlledTextInput name="name" label="Nome da sala" />
-              <SubmitButton label="Salvar" />
+              <SubmitButton disabled={!isValid} label="Salvar" />
             </FormProvider>
           </Form>
         </Grid>

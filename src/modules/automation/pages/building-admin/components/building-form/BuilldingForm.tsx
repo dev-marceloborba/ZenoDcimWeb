@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
@@ -21,11 +21,16 @@ const BuildingForm: React.FC = () => {
   const { data: sites, isLoading: isLoadingSites } = useFindAllSitesQuery();
   const methods = useForm<BuildingViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
   const toast = useToast();
   const { back } = useRouter();
 
-  const { handleSubmit } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+  } = methods;
 
   const onSubmit: SubmitHandler<BuildingViewModel> = async (data) => {
     try {
@@ -40,6 +45,15 @@ const BuildingForm: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        name: "",
+        siteId: "",
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Card sx={{ mt: 2, padding: "16px 24px" }}>
@@ -77,7 +91,7 @@ const BuildingForm: React.FC = () => {
                 }
               />
               <ControlledTextInput name="name" label="Nome do prédio" />
-              <SubmitButton label="Salvar" />
+              <SubmitButton disabled={!isValid} label="Salvar" />
             </FormProvider>
           </Form>
         </Grid>

@@ -8,6 +8,7 @@ export interface CreateGroupViewModel {
   actions: ActionPermissions;
   registers: RegisterPermissions;
   views: ViewPermissions;
+  general: GeneralPermissions;
 }
 
 export interface UpdateGroupViewModel extends CreateGroupViewModel {
@@ -33,6 +34,10 @@ export type ViewPermissions = {
   equipments: boolean;
 };
 
+export type GeneralPermissions = {
+  receiveEmail: boolean;
+};
+
 export type UserPermissions = {
   actions: {
     editConnections: boolean;
@@ -49,5 +54,8 @@ export type UserPermissions = {
     alarms: boolean;
     parameters: boolean;
     equipments: boolean;
+  };
+  general: {
+    receiveEmail: boolean;
   };
 };

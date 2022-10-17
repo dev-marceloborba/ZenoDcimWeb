@@ -16,7 +16,7 @@ import {
   useCreateParameterMutation,
   useUpdateParameterMutation,
 } from "modules/automation/services/parameter-service";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { useEffect } from "react";
 import useRouter from "modules/core/hooks/useRouter";
@@ -34,9 +34,15 @@ export default function ParameterForm() {
 
   const methods = useForm({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
 
-  const { handleSubmit, setValue } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+    setValue,
+  } = methods;
 
   const onSubmit = async (viewModel: ParameterViewModel) => {
     if (mode === "new") {
@@ -67,6 +73,18 @@ export default function ParameterForm() {
     }
   }, [data, mode, setValue]);
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        name: "",
+        unit: "",
+        lowLimit: 0,
+        highLimit: 0,
+        scale: 0,
+      });
+    }
+  }, [isSubmitSuccessful, reset]);
+
   return (
     <HeroContainer
       title={mode === "edit" ? "Editar parâmetro" : "Novo parâmetro"}
@@ -85,7 +103,7 @@ export default function ParameterForm() {
           <ControlledTextInput name="lowLimit" label="Limite inferior" />
           <ControlledTextInput name="highLimit" label="Limite superior" />
           <ControlledTextInput name="scale" label="Escala" />
-          <SubmitButton label="Salvar" />
+          <SubmitButton disabled={!isValid} label="Salvar" />
         </FormProvider>
         <Loading open={isLoading} />
       </Form>

@@ -73,6 +73,7 @@ export default function UserGroupsPage() {
           actions: group.actions,
           registers: group.registers,
           views: group.views,
+          general: group.general,
         },
       },
       onCancel: () => {

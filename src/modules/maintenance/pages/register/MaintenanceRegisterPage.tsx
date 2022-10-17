@@ -21,6 +21,7 @@ import { useFindAllSuplliersQuery } from "modules/maintenance/services/supplier.
 export default function WorkOrderRegisterPage() {
   const methods = useForm<CreateWorkOrderViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
   const [createWorkOrder] = useCreateWorkOrderMutation();
   const { sites, buildings, floors, equipments, rooms, isLoading, actions } =
@@ -29,13 +30,37 @@ export default function WorkOrderRegisterPage() {
   const { back, navigate } = useRouter();
   const toast = useToast();
   const [responsibles, setResponsibles] = useState<string[]>([]);
-  const { handleSubmit, watch } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitSuccessful },
+    watch,
+  } = methods;
 
   const responsibleTypeWatcher = watch("responsibleType");
   const siteWacher = watch("siteId");
   const buildingWatcher = watch("buildingId");
   const floorWatcher = watch("floorId");
   const roomWatcher = watch("roomId");
+
+  const onSubmit: SubmitHandler<CreateWorkOrderViewModel> = async (data) => {
+    try {
+      await createWorkOrder({
+        ...data,
+        initialDate: format(new Date(data.initialDate), "yyyy-MM-dd"),
+        finalDate: format(new Date(data.finalDate), "yyyy-MM-dd"),
+      }).unwrap();
+      toast
+        .open({ message: "Ordem de serviço criada com sucesso" })
+        .then(() => back());
+    } catch (error) {
+      console.log(error);
+      toast.open({
+        message: "Falha ao criar ordem de serviço",
+        severity: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     if (responsibleTypeWatcher === 0) {
@@ -69,24 +94,25 @@ export default function WorkOrderRegisterPage() {
     }
   }, [actions, roomWatcher]);
 
-  const onSubmit: SubmitHandler<CreateWorkOrderViewModel> = async (data) => {
-    try {
-      await createWorkOrder({
-        ...data,
-        initialDate: format(new Date(data.initialDate), "yyyy-MM-dd"),
-        finalDate: format(new Date(data.finalDate), "yyyy-MM-dd"),
-      }).unwrap();
-      toast
-        .open({ message: "Ordem de serviço criada com sucesso" })
-        .then(() => back());
-    } catch (error) {
-      console.log(error);
-      toast.open({
-        message: "Falha ao criar ordem de serviço",
-        severity: "error",
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        siteId: "",
+        buildingId: "",
+        description: "",
+        equipmentId: "",
+        finalDate: "",
+        floorId: "",
+        initialDate: "",
+        maintenanceType: 0,
+        nature: 0,
+        orderType: 0,
+        responsible: "",
+        responsibleType: 0,
+        roomId: "",
       });
     }
-  };
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <HeroContainer title="Abrir ordem de serviço">
@@ -222,7 +248,7 @@ export default function WorkOrderRegisterPage() {
                 minRows={1}
                 maxRows={99}
               />
-              <SubmitButton sx={{ mt: 1 }} />
+              <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />
             </Grid>
           </Grid>
         </Form>

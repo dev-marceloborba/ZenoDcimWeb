@@ -13,11 +13,13 @@ import {
   VirtualParameterFormPath,
 } from "modules/automation/routes/paths";
 import { ParameterModel } from "modules/automation/models/automation-model";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 export default function ParametersTable() {
   const { data: parameters, isLoading } = useFindAllParametersQuery();
   const [deleteParameter] = useDeleteParameterMutation();
   const { navigate } = useRouter();
+  const toast = useToast();
 
   const handleSelectedParameter = (parameter: ParameterModel) => {
     navigate(
@@ -41,6 +43,7 @@ export default function ParametersTable() {
     for (let i = 0; i < items.length; i++) {
       await deleteParameter(items[i].id).unwrap();
     }
+    toast.open({ message: "Parâmetro(s) excluídos com sucesso" });
   };
 
   return (

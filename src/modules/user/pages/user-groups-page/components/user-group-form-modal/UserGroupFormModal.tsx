@@ -68,6 +68,9 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
       equipments: false,
       parameters: false,
     },
+    general: {
+      receiveEmail: false,
+    },
   });
   const methods = useForm<UserGroupFormViewModel>({
     resolver: yupResolver(validationSchema),
@@ -91,6 +94,9 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
       registers: {
         ...prevState.registers,
       },
+      general: {
+        ...prevState.general,
+      },
       actions: {
         ...prevState.actions,
         [property]: value,
@@ -102,6 +108,9 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
     setPermissions((prevState) => ({
       views: {
         ...prevState.views,
+      },
+      general: {
+        ...prevState.general,
       },
       registers: {
         ...prevState.registers,
@@ -117,6 +126,27 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
     setPermissions((prevState) => ({
       views: {
         ...prevState.views,
+        [property]: value,
+      },
+      general: {
+        ...prevState.general,
+      },
+      registers: {
+        ...prevState.registers,
+      },
+      actions: {
+        ...prevState.actions,
+      },
+    }));
+  };
+
+  const handleChangeGeneral = (property: any, value: boolean) => {
+    setPermissions((prevState) => ({
+      views: {
+        ...prevState.views,
+      },
+      general: {
+        ...prevState.general,
         [property]: value,
       },
       registers: {
@@ -153,6 +183,7 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
               <Tab label="Ações" />
               <Tab label="Cadastros" />
               <Tab label="Visualizações" />
+              <Tab label="Geral" />
             </Tabs>
             <TabPanel index={0} value={tab}>
               <Card sx={{ minHeight: 250 }}>
@@ -276,6 +307,25 @@ const UserGroupFormModal: React.FC<UserGroupFormModalProps> = ({
                           checked={permissions.views.equipments}
                           onChange={(_, v) =>
                             handleChangeViews("equipments", v)
+                          }
+                        />
+                      }
+                    />
+                  </FormGroup>
+                </CardContent>
+              </Card>
+            </TabPanel>
+            <TabPanel index={3} value={tab}>
+              <Card sx={{ minHeight: 250 }}>
+                <CardContent>
+                  <FormGroup>
+                    <FormControlLabel
+                      label="Receber e-mail"
+                      control={
+                        <Checkbox
+                          checked={permissions.general.receiveEmail}
+                          onChange={(_, v) =>
+                            handleChangeGeneral("receiveEmail", v)
                           }
                         />
                       }

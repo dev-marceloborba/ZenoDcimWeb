@@ -7,23 +7,19 @@ import {
   useDeleteBuildingMutation,
   useFindAllBuildingsQuery,
 } from "modules/datacenter/services/building-service";
-import useRouter from "modules/core/hooks/useRouter";
 import { BuildingModel } from "modules/datacenter/models/datacenter-model";
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [deleteBuilding] = useDeleteBuildingMutation();
   const toast = useToast();
-  const { back } = useRouter();
 
   const handleDeleteSelection = async (rows: BuildingModel[]) => {
     try {
       for (let i = 0; i < rows.length; i++) {
         await deleteBuilding(rows[i].id).unwrap();
       }
-      toast
-        .open({ message: `Prédio(s) excluído(s) com sucesso` })
-        .then(() => back());
+      toast.open({ message: `Prédio(s) excluído(s) com sucesso` });
     } catch (error) {
       toast.open({ message: `Erro ao excluir`, severity: "error" });
     }

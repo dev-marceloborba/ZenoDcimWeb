@@ -5,6 +5,7 @@ export interface AlarmRuleViewModel {
   setpoint: number;
   equipmentParameterId: string;
   enableNotification: boolean;
+  enableEmail: boolean;
 }
 export interface AlarmRuleModel extends AlarmRuleViewModel {
   id: string;

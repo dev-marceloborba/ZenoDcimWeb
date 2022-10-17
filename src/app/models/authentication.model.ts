@@ -62,5 +62,5 @@ export interface EditUserRequest {
   lastName: string;
   email: string;
   groupId: string;
-  active: EUserStatus;
+  active: number;
 }
