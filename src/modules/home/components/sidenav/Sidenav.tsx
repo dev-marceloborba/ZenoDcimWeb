@@ -11,12 +11,14 @@ import ListItemLink, {
 
 // icons
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import StorageIcon from "@mui/icons-material/Storage";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import PeopleIcon from "@mui/icons-material/People";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import LineStyleIcon from "@mui/icons-material/LineStyle";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import SettingsIcon from "@mui/icons-material/Settings";
+
 import { HomePath } from "modules/paths";
 import { AutomationPath, AlarmsPath } from "modules/home/routes/paths";
 import {
@@ -32,6 +34,7 @@ import {
   AlarmRealtimePath,
   AlarmStatisticsPath,
 } from "modules/alarms/routes/paths";
+import { datacenterPaths } from "modules/datacenter/routes/paths";
 
 const Sidenav: React.FC = () => {
   const { drawerOpened } = useLayout();
@@ -78,6 +81,28 @@ const menuItems: ListItemLinkProps[] = [
       { primary: "Incêndio", to: "/zeno/dashboard/fire-system" },
       { primary: "Climatização", to: "/zeno/dashboard/climate" },
       { primary: "Controle de acesso", to: "/zeno/dashboard/access-control" },
+    ],
+  },
+  {
+    primary: "Datacenter",
+    icon: <StorageIcon />,
+    items: [
+      {
+        primary: "Configuração de infraestrutura",
+        to: `/zeno/datacenter/${datacenterPaths.settings.fullPath}`,
+      },
+      // {
+      //   primary: "Sites",
+      //   to: "/zeno/datacenter/sites",
+      // },
+      // {
+      //   primary: "Prédios",
+      //   to: "/zeno/datacenter/buildings",
+      // },
+      // {
+      //   primary: "Salas",
+      //   to: "/zeno/datacenter/rooms",
+      // },
     ],
   },
   {

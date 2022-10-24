@@ -1,11 +1,7 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 
 import HeroContainer from "modules/shared/components/HeroContainer";
-import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
@@ -17,6 +13,7 @@ import {
   RoomManagementPath,
   SiteManagementPath,
 } from "modules/automation/routes/paths";
+import CardSection from "modules/shared/components/card-section/CardSection";
 
 const AutomationSettings: React.FC = () => {
   return (
@@ -78,28 +75,3 @@ const gridItems = [
     path: compositePathRoute([HomePath, AutomationPath, SiteManagementPath]),
   },
 ];
-
-type CardSectionProps = {
-  title: string;
-  description: string;
-  path?: string;
-};
-
-const CardSection: React.FC<CardSectionProps> = ({
-  title,
-  description,
-  path,
-}) => {
-  const { navigate } = useRouter();
-
-  const handleCardDetails = () => {
-    navigate(path ?? "", { state: null });
-  };
-
-  return (
-    <Card sx={{ cursor: "pointer" }} onClick={handleCardDetails}>
-      <CardHeader title={title} subheader={description} />
-      <CardContent></CardContent>
-    </Card>
-  );
-};

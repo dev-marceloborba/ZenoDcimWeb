@@ -16,13 +16,16 @@ import {
   AlarmsPath,
   CamerasPath,
   MaintenancePath,
+  DatacenterPath,
 } from "./paths";
+import DataCenterRoot from "modules/datacenter/DataCenterRoot";
 
 const HomeRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<ZenoHome />}>
         <Route path={`${AutomationPath}/*`} element={<AutomationRoot />} />
+        <Route path={`${DatacenterPath}/*`} element={<DataCenterRoot />} />
         <Route path={`${SettingsPath}/*`} element={<UserRoot />} />
         <Route path={`${CustomersPath}/*`} element={<CustomersRoot />} />
         <Route path={`${DashboardsPath}/*`} element={<DashboardsRoot />} />

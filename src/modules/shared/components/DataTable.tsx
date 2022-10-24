@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
+import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -137,7 +137,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     selectionMode,
     showDelete,
     showEdit,
-    showDetails,
   } = props;
   const createSortHandler =
     (property: string) => (event: React.MouseEvent<unknown>) => {
@@ -185,9 +184,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {showDetails && <TableCell align="right">Detalhes</TableCell>}
-        {showEdit && <TableCell align="right">Editar</TableCell>}
-        {showDelete && <TableCell align="right">Deletar</TableCell>}
+        {(showEdit || showDelete) && <TableCell align="right">Ações</TableCell>}
       </TableRow>
     </TableHead>
   );
@@ -343,7 +340,6 @@ const DataTable: React.FC<DataTableProps> = ({
     onEditOrInsertNewData,
     onEditRow,
     onDeleteRow,
-    onDetailsRow,
     hideSearch = false,
     hidePagination = false,
     isEditMode = false,
@@ -524,12 +520,6 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
-  const handleDetailsOnClick = (row: any) => {
-    if (onDetailsRow) {
-      onDetailsRow(row);
-    }
-  };
-
   useEffect(() => {
     if (onSelectedItems) onSelectedItems(selected);
   }, [selected, onSelectedItems]);
@@ -662,32 +652,23 @@ const DataTable: React.FC<DataTableProps> = ({
                         )}
                       </TableCell>
                     )}
-                    {showDetails && (
-                      <TableCell
-                        onClick={() => handleDetailsOnClick(row)}
-                        align="right"
-                      >
-                        <Button variant="outlined" color="primary">
-                          Detalhes
-                        </Button>
-                      </TableCell>
-                    )}
-                    {showEdit && (
-                      <TableCell
-                        onClick={() => handleEditOnClick(row)}
-                        align="right"
-                      >
-                        <Button variant="outlined" color="secondary">
-                          Editar
-                        </Button>
-                      </TableCell>
-                    )}
-                    {showDelete && (
+                    {(showEdit || showDelete) && (
                       <TableCell align="right">
-                        <DeleteButton
-                          title="Excluir"
-                          onDeleteConfirmation={() => handleDeleteOnClick(row)}
-                        />
+                        <Stack direction="row" justifyContent="flex-end">
+                          {showEdit && (
+                            <IconButton onClick={() => handleEditOnClick(row)}>
+                              <EditIcon />
+                            </IconButton>
+                          )}
+                          {showDelete && (
+                            <DeleteButton
+                              mode="icon"
+                              onDeleteConfirmation={() =>
+                                handleDeleteOnClick(row)
+                              }
+                            />
+                          )}
+                        </Stack>
                       </TableCell>
                     )}
                   </TableRow>

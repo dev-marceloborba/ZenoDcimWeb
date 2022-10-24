@@ -42,15 +42,17 @@ type ToastState = {
   mode: ToastPosition;
 };
 
+const initialState: ToastState = {
+  open: false,
+  message: "",
+  autoHideDuration: 6000,
+  variant: "filled",
+  severity: "success",
+  mode: "bottom-right",
+};
+
 const ToastProvider: React.FC = ({ children }) => {
-  const [state, setState] = useState<ToastState>({
-    open: false,
-    message: "",
-    autoHideDuration: 6000,
-    variant: "filled",
-    severity: "success",
-    mode: "bottom-right",
-  });
+  const [state, setState] = useState<ToastState>(initialState);
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -68,10 +70,11 @@ const ToastProvider: React.FC = ({ children }) => {
         ...prevState,
         open: true,
         message: options.message,
-        autoHideDuration: options.autoHideDuration ?? state.autoHideDuration,
+        autoHideDuration:
+          options.autoHideDuration ?? initialState.autoHideDuration,
         variant: "filled",
-        severity: options.severity ?? state.severity,
-        mode: options.position ?? state.mode,
+        severity: options.severity ?? initialState.severity,
+        mode: options.position ?? initialState.mode,
       }));
       setTimeout(() => {
         resolve();

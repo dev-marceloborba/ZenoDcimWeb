@@ -19,6 +19,8 @@ import { alarmApi } from "modules/automation/services/alarm-service";
 import { supplierApi } from "modules/maintenance/services/supplier.service";
 import { maintenanceApi } from "modules/maintenance/services/maintenance.service";
 import { groupApi } from "modules/user/services/groups.service";
+import { rackApi } from "modules/datacenter/services/rack.service";
+import { rackEquipmentApi } from "modules/datacenter/services/rack-equipment.service";
 
 export const store = configureStore({
   reducer: {
@@ -40,6 +42,8 @@ export const store = configureStore({
     [supplierApi.reducerPath]: supplierApi.reducer,
     [maintenanceApi.reducerPath]: maintenanceApi.reducer,
     [groupApi.reducerPath]: groupApi.reducer,
+    [rackApi.reducerPath]: rackApi.reducer,
+    [rackEquipmentApi.reducerPath]: rackEquipmentApi.reducer,
   },
   preloadedState: {
     auth: reHydrateStore(),
@@ -62,7 +66,9 @@ export const store = configureStore({
       alarmApi.middleware,
       supplierApi.middleware,
       maintenanceApi.middleware,
-      groupApi.middleware
+      groupApi.middleware,
+      rackApi.middleware,
+      rackEquipmentApi.middleware
     ),
 });
 
