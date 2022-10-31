@@ -1,10 +1,9 @@
 import React from "react";
-import PageTitle from "app/components/PageTitle";
-import Form from "app/components/Form";
-import ControlledTextInput from "app/components/ControlledTextInput";
-import SubmitButton from "app/components/SubmitButton";
+import Form from "modules/shared/components/Form";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
+import SubmitButton from "modules/shared/components/SubmitButton";
 import { useFindAllParameterGroupsQuery } from "app/services/datacenter";
-import Loading from "app/components/Loading";
+import Loading from "modules/shared/components/Loading";
 import { number, object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

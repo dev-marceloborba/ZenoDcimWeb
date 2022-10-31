@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import Loading from "modules/shared/components/Loading";
 import {
   useCreateMultipleEquipmentParametersMutation,

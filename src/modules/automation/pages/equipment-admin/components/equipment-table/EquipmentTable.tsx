@@ -1,4 +1,6 @@
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";

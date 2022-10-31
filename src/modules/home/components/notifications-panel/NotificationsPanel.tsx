@@ -23,20 +23,12 @@ const NotificationsPanel: React.FC = () => {
   };
 
   return (
-    <Box position="relative">
-      <Box
-        padding={"16px 24px"}
-        bgcolor={"secondary.main"}
-        // position="fixed"
-        width={"100%"}
-        // left={"0"}
-        // top={"24px"}
-      >
+    <>
+      <Box padding={"16px 24px"} bgcolor={"secondary.main"}>
         <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          //   spacing={3}
         >
           <Typography variant="h6">Notificações</Typography>
           <CloseButton
@@ -45,7 +37,14 @@ const NotificationsPanel: React.FC = () => {
           />
         </Stack>
       </Box>
-      <List sx={{ padding: "8px 16px" }}>
+      <List
+        sx={{
+          padding: "8px 16px",
+          // "& .MuiPaper-root .MuiMenu-paper .MuiPopover-paper": {
+          //   overflow: "none",
+          // },
+        }}
+      >
         {notifications.map((notification, index) => (
           <React.Fragment key={index}>
             <ListItem
@@ -65,7 +64,7 @@ const NotificationsPanel: React.FC = () => {
           <Typography>Não há notificações ativas</Typography>
         )}
       </List>
-    </Box>
+    </>
   );
 };
 

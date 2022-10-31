@@ -193,6 +193,11 @@ const EquipmentForm: React.FC = () => {
                     label="Potência limite (W)"
                     defaultValue={0}
                   />
+                  {/* <ControlledTextInput
+                    name="powerLimit"
+                    label="P"
+                    defaultValue={0}
+                  /> */}
                   <SubmitButton label="Salvar" />
                 </FormProvider>
               </Form>

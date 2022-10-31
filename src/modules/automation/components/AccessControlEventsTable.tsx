@@ -1,6 +1,8 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import { AccessEvent } from "app/data/access-control";
 
 type AccessControlEventsTableProps = {

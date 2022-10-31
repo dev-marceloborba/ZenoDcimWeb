@@ -157,10 +157,10 @@ const menuItems: ListItemLinkProps[] = [
       //   primary: "Controle de acesso",
       //   to: `/${HomePath}/${AutomationPath}/${AccessControlPath}`,
       // },
-      {
-        primary: "Conectividade de equipamentos",
-        to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
-      },
+      // {
+      //   primary: "Conectividade de equipamentos",
+      //   to: `/${HomePath}/${AutomationPath}/${EquipmentConnectivityPath}`,
+      // },
       {
         primary: "Histórico de medições",
         to: `/${HomePath}/${AutomationPath}/${MeasureHistoryPath}`,

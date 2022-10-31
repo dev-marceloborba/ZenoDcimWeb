@@ -1,6 +1,8 @@
 import React from "react";
 import Card from "@mui/material/Card";
-import DataTable, { ColumnHeader } from "app/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 
 const FireSytemEventsTable: React.FC = () => {
   return (

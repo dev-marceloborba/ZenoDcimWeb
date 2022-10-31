@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 
-import BmsIndicator from "app/components/BmsIndicator";
+// import BmsIndicator from "app/components/BmsIndicator";
 import { ESystemStatus, FireSystemCategory } from "app/data/fire-system";
 import { EEquipmentStatus } from "app/types/bms";
 
@@ -29,7 +29,7 @@ const FireSystemCard: React.FC<FireSystemCardProps> = ({ ...props }) => {
         </Typography>
       </Box>
 
-      <Box>
+      {/* <Box>
         {data.map((information, index) => (
           <BmsIndicator
             key={index}
@@ -44,7 +44,7 @@ const FireSystemCard: React.FC<FireSystemCardProps> = ({ ...props }) => {
             }
           />
         ))}
-      </Box>
+      </Box> */}
     </Card>
   );
 };

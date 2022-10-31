@@ -1,5 +1,7 @@
 import React from "react";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import { useToast } from "modules/shared/components/ToastProvider";
 import Loading from "modules/shared/components/Loading";
 import Column from "modules/shared/components/Column";

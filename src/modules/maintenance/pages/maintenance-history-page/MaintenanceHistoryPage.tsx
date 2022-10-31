@@ -1,5 +1,7 @@
 import { useFindAllWorkOrdersQuery } from "modules/maintenance/services/maintenance.service";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 

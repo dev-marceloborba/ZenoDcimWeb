@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { AlarmTableViewModel } from "modules/automation/models/alarm-model";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";

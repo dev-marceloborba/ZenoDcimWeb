@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useCallback } from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import AccessButton from "modules/shared/components/access-button/AccessButtonv2";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";

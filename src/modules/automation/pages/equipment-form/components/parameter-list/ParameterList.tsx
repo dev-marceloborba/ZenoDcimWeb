@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import { useDeleteEquipmentParameterMutation } from "modules/automation/services/equipment-parameter-service";

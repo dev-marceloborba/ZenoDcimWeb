@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { BmsEquipment, EEquipmentStatus } from "app/types/bms";
-import BmsIndicator from "app/components/BmsIndicator";
+// import BmsIndicator from "app/components/BmsIndicator";
 import { FilterData } from "../data/types/automationFilter";
 
 type EquipmentCardProps = BmsEquipment &
@@ -55,9 +55,9 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ ...props }) => {
           {/* {group.informations.map((information, index) => (
               <BmsIndicator key={index} {...information} status={status} />
             ))} */}
-          {informations?.map((information, index) => (
+          {/* {informations?.map((information, index) => (
             <BmsIndicator key={index} {...information} status={status} />
-          ))}
+          ))} */}
         </Box>
         {/* ))} */}
       </Box>

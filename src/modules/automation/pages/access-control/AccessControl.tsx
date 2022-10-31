@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PageTitle from "app/components/PageTitle";
 import FloorDropdown from "modules/automation/components/FloorDropdown";
 import AutoCompleteDropdown from "modules/shared/components/AutocompleteDropdown";
 import AccessControlEventsTable from "modules/automation/components/AccessControlEventsTable";
@@ -55,8 +54,7 @@ const AccessControl: React.FC = () => {
   // }, [floor, doorControlEvents]);
 
   return (
-    <HeroContainer>
-      <PageTitle>Controle de acesso</PageTitle>
+    <HeroContainer title="Controle de acesso">
       <Row sx={{ alignItems: "center", mt: 2 }}>
         <BuildingDropdown sx={{ maxWidth: "280px" }} />
         <FloorDropdown sx={{ maxWidth: "280px", ml: 2 }} />

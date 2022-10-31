@@ -1,25 +1,26 @@
 import React from "react";
-import HeroContainer from "app/components/HeroContainer";
-import PageTitle from "app/components/PageTitle";
-import Row from "app/components/Row";
+import HeroContainer from "modules/shared/components/HeroContainer";
+import Row from "modules/shared/components/Row";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import Column from "app/components/Column";
+import Column from "modules/shared/components/Column";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
-import LabelTabs from "app/components/LabelTabs";
-import { TabContextProvider, useTabContext } from "app/components/TabContext";
-import TabPanel from "app/components/TabPanel";
-import InDevelopMessage from "app/components/InDevelopMessage";
+import LabelTabs from "modules/shared/components/LabelTabs";
+import {
+  TabContextProvider,
+  useTabContext,
+} from "modules/shared/components/TabContext";
+import TabPanel from "modules/shared/components/TabPanel";
+import InDevelopMessage from "modules/shared/components/InDevelopMessage";
 import UserAdmin from "modules/user/pages/user-admin/UserAdmin";
 
 const UserSettings: React.FC = () => {
   return (
-    <HeroContainer>
-      <PageTitle>Configurações</PageTitle>
+    <HeroContainer title="Configurações">
       <TabContextProvider>
         <LabelTabs items={["Usuário", "Sistema"]} />
         <Card

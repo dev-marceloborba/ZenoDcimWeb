@@ -45,6 +45,14 @@ export const rackEquipmentApi = createApi({
       }),
       invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
     }),
+    placeRackEquipment: builder.mutation<any, any>({
+      query: (params) => ({
+        url: `v1/rack-equipments/place-equipment/${params.id}`,
+        method: "PUT",
+        body: params,
+      }),
+      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+    }),
     findAllRackEquipments: builder.query<RackEquipmentsTableViewModel[], void>({
       query: (params) => ({
         url: "v1/rack-equipments",
@@ -94,7 +102,7 @@ export const rackEquipmentApi = createApi({
         }));
       },
     }),
-    findEquipmentsWithoutRack: builder.query<
+    findEquipmentsWithoutRack: builder.mutation<
       RackEquipmentsTableViewModel[],
       void
     >({
@@ -133,5 +141,6 @@ export const {
   useFindRackEquipmentByIdMutation,
   useUpdateRackEquipmentMutation,
   useFindRackEquipmentsByRackIdMutation,
-  useFindEquipmentsWithoutRackQuery,
+  useFindEquipmentsWithoutRackMutation,
+  usePlaceRackEquipmentMutation,
 } = rackEquipmentApi;

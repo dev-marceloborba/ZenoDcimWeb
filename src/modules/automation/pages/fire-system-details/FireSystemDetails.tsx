@@ -5,7 +5,9 @@ import BuildingDropdown from "modules/automation/components/BuildingDropdown";
 import FloorDropdown from "modules/automation/components/FloorDropdown";
 import Typography from "@mui/material/Typography";
 import BmsIndicator from "modules/shared/components/BmsIndicator";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import { fireSystem } from "app/data/fire-system";
 import HeroContainer from "modules/shared/components/HeroContainer";

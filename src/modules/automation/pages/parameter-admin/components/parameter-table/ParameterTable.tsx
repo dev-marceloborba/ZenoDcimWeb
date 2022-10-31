@@ -1,4 +1,6 @@
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import Loading from "modules/shared/components/Loading";
 import {
   useDeleteParameterMutation,

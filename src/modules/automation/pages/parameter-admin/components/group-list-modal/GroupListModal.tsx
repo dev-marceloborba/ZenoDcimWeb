@@ -12,7 +12,9 @@ import { useState } from "react";
 import { ParameterModel } from "modules/automation/models/automation-model";
 import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
 import Loading from "modules/shared/components/Loading";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 
 type GroupListModalProps = {
   onConfirm: (data: any) => void;

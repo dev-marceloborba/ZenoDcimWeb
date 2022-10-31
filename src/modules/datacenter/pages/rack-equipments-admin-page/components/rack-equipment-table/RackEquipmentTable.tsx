@@ -4,7 +4,9 @@ import {
   useFindAllRackEquipmentsQuery,
   useUpdateRackEquipmentMutation,
 } from "modules/datacenter/services/rack-equipment.service";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import Loading from "modules/shared/components/Loading";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { useModal } from "mui-modal-provider";

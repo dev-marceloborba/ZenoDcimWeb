@@ -2,7 +2,7 @@ import React from "react";
 import { useToast } from "modules/shared/components/ToastProvider";
 import Loading from "modules/shared/components/Loading";
 import Column from "modules/shared/components/Column";
-import DataTable from "modules/shared/components/DataTable";
+import DataTable from "modules/shared/components/datatable/DataTable";
 import {
   useDeleteBuildingMutation,
   useFindAllBuildingsQuery,

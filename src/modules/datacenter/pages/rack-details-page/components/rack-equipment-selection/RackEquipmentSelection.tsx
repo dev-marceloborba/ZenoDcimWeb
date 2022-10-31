@@ -1,7 +1,10 @@
-import { useFindEquipmentsWithoutRackQuery } from "modules/datacenter/services/rack-equipment.service";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import { useFindEquipmentsWithoutRackMutation } from "modules/datacenter/services/rack-equipment.service";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import Loading from "modules/shared/components/Loading";
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
+import { useEffect } from "react";
 
 type RackEquipmentSelectionProps = {
   onConfirm(data: any): void;
@@ -11,7 +14,15 @@ const RackEquipmentSelection: React.FC<RackEquipmentSelectionProps> = ({
   onConfirm,
   ...props
 }) => {
-  const { data: equipments, isLoading } = useFindEquipmentsWithoutRackQuery();
+  const [findEquipments, { data: equipments, isLoading }] =
+    useFindEquipmentsWithoutRackMutation();
+
+  useEffect(() => {
+    async function fetchEquipments() {
+      await findEquipments().unwrap();
+    }
+    fetchEquipments();
+  }, [findEquipments]);
 
   const handleEquipmentSelection = (equipment: any) => onConfirm(equipment);
 

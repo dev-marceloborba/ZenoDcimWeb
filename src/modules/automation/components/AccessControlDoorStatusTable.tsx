@@ -1,7 +1,9 @@
 import React from "react";
 import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
-import DataTable, { ColumnHeader } from "app/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import { DoorControlEvent, EDoorStatus } from "app/data/access-control";
 
 type AccessControlDoorEventsTableProps = {

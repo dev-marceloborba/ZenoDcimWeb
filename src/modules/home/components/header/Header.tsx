@@ -161,9 +161,17 @@ const Header: React.FC = () => {
             onClose={() => handleMenuClose("notifications")}
             PaperProps={{
               style: {
-                maxHeight: 45 * 4.5,
+                // maxHeight: 45 * 4.5,
                 // width: "20ch",
+                maxHeight: "240px",
+                overflow: "none",
                 width: "600px",
+              },
+            }}
+            sx={{
+              overflow: "none",
+              "& .MuiPaper-root": {
+                overflow: "none",
               },
             }}
           >

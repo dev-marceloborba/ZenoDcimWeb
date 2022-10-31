@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 // import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 
-import Form from "app/components/Form";
+import Form from "modules/shared/components/Form";
 import ControlledTextInput from "./ControlledTextInput";
 
 type FormDialogProps<T> = {

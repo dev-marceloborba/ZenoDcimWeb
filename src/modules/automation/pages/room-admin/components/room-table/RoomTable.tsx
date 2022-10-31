@@ -1,5 +1,5 @@
 import React from "react";
-import DataTable from "modules/shared/components/DataTable";
+import DataTable from "modules/shared/components/datatable/DataTable";
 import Row from "modules/shared/components/Row";
 import Loading from "modules/shared/components/Loading";
 import ButtonLink from "modules/shared/components/ButtonLink";

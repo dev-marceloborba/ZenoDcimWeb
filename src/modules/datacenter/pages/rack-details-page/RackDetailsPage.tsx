@@ -2,22 +2,19 @@ import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+// import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
 import { useModal } from "mui-modal-provider";
-import RackEquipmentForm from "./components/rack-equipment-form/RackEquipmentForm";
+import RackEquipmentPlacementForm from "./components/rack-equipment-placement-form/RackEquipmentPlacementForm";
 import {
-  useCreateRackEquipmentMutation,
-  useDeleteRackEquipmentMutation,
   useFindRackEquipmentByIdMutation,
-  useFindRackEquipmentsByRackIdMutation,
-  useUpdateRackEquipmentMutation,
+  usePlaceRackEquipmentMutation,
 } from "modules/datacenter/services/rack-equipment.service";
 import { useEffect } from "react";
 import Loading from "modules/shared/components/Loading";
 import { useFindRackStatistcsMutation } from "modules/datacenter/services/rack.service";
 import RackStatisticsCard from "./components/rack-statistics-card/RackStatisticsCard";
 import RackVisualization from "./components/rack-visualization/RackVisualization";
-import { RackEquipmentsTableViewModel } from "modules/datacenter/models/rack-equipment.model";
+// import { RackEquipmentsTableViewModel } from "modules/datacenter/models/rack-equipment.model";
 import { useToast } from "modules/shared/components/ToastProvider";
 import RackEquipmentInfoCard from "./components/rack-equipment-info-card/RackEquipmentInfoCard";
 
@@ -25,72 +22,35 @@ export default function RackDetailsPage() {
   const {
     state: { data: rack },
   } = useRouter();
-  const [createEquipment] = useCreateRackEquipmentMutation();
+  const [placeEquipment, { isLoading: loadingCreate }] =
+    usePlaceRackEquipmentMutation();
   // const [findEquipments, { data: equipments }] =
   //   useFindRackEquipmentsByRackIdMutation();
   const [
     findRackStatistics,
     { isLoading: loadingFetch, data: rackStatistics },
   ] = useFindRackStatistcsMutation();
-  const [updateEquipment, { isLoading: loadingUpdate }] =
-    useUpdateRackEquipmentMutation();
-  const [deleteEquipment, { isLoading: loadingDelete }] =
-    useDeleteRackEquipmentMutation();
+
   const [findRackEquipment, { data: rackEquipment }] =
     useFindRackEquipmentByIdMutation();
   const { showModal } = useModal();
   const toast = useToast();
 
   const handleInsertEquipment = () => {
-    const modal = showModal(RackEquipmentForm, {
+    const modal = showModal(RackEquipmentPlacementForm, {
       title: "Inserir equipamento no rack",
       onCancel: () => {
         modal.hide();
       },
       onConfirm: async (data) => {
         modal.hide();
-        await createEquipment({
+        await placeEquipment({
           ...data,
-          rackLocalization: rack.localization,
+          rackId: rack.id,
         }).unwrap();
+        toast.open({ message: "Equipamento posicionado no rack" });
       },
     });
-  };
-
-  const handleEditRackEquipment = (
-    rackEquipment: RackEquipmentsTableViewModel
-  ) => {
-    const modal = showModal(RackEquipmentForm, {
-      title: "Editar equipamento no rack",
-      onCancel: () => {
-        modal.hide();
-      },
-      onConfirm: async (data) => {
-        modal.hide();
-        await updateEquipment({
-          ...data,
-          id: rackEquipment.id,
-        }).unwrap();
-        toast.open({ message: "Equipamento de rack alterado com sucesso" });
-      },
-      mode: "edit",
-      data: rackEquipment,
-    });
-  };
-
-  const handleDeleteRackEquipment = async (
-    rackEquipment: RackEquipmentsTableViewModel
-  ) => {
-    try {
-      await deleteEquipment(rackEquipment.id).unwrap();
-      toast.open({ message: "Equipamento de rack excluído com sucesso" });
-    } catch (error) {
-      console.log(error);
-      toast.open({
-        message: "Erro ao excluir equipamento de rack",
-        severity: "error",
-      });
-    }
   };
 
   // useEffect(() => {
@@ -173,6 +133,7 @@ export default function RackDetailsPage() {
         </Grid>
         <Grid item md={6}>
           <RackEquipmentInfoCard
+            title="Detalhes do equipamento"
             equipment={rackEquipment?.baseEquipment.name ?? ""}
             model={rackEquipment?.baseEquipment.model ?? ""}
             manufactor={rackEquipment?.baseEquipment.manufactor ?? ""}
@@ -182,35 +143,34 @@ export default function RackDetailsPage() {
               (rackEquipment?.finalPosition ?? 0) -
               (rackEquipment?.initialPosition ?? 0)
             }
-            showActions
+            showActions={false}
           />
         </Grid>
       </Grid>
-
-      <Loading open={loadingFetch || loadingUpdate || loadingDelete} />
+      <Loading open={loadingFetch} />
     </HeroContainer>
   );
 }
 
-const columns: ColumnHeader[] = [
-  {
-    name: "name",
-    label: "Equipamento",
-  },
-  {
-    name: "model",
-    label: "Modelo",
-  },
-  {
-    name: "manufactor",
-    label: "Fabricante",
-  },
-  {
-    name: "initialPosition",
-    label: "Posição inicial",
-  },
-  {
-    name: "finalPosition",
-    label: "Posição final",
-  },
-];
+// const columns: ColumnHeader[] = [
+//   {
+//     name: "name",
+//     label: "Equipamento",
+//   },
+//   {
+//     name: "model",
+//     label: "Modelo",
+//   },
+//   {
+//     name: "manufactor",
+//     label: "Fabricante",
+//   },
+//   {
+//     name: "initialPosition",
+//     label: "Posição inicial",
+//   },
+//   {
+//     name: "finalPosition",
+//     label: "Posição final",
+//   },
+// ];

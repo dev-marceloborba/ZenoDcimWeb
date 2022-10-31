@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import DataTable from "./DataTable";
+import DataTable from "./datatable/DataTable";
 
 import { readFile, exportFile } from "app/utils/excel.handler";
 import ImportButton from "./ImportButton";

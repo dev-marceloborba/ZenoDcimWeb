@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import ControlledTextInput from "app/components/ControlledTextInput";
+import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import useRouter from "modules/core/hooks/useRouter";
 import { SiteViewModel } from "modules/datacenter/models/datacenter-model";
 import { useCreateSiteMutation } from "modules/datacenter/services/site-service";

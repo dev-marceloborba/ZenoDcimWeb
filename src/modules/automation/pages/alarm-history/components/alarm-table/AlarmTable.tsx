@@ -8,7 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import Button from "@mui/material/Button";
 import { useFindAllAlarmsMutation } from "modules/automation/services/alarm-service";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import Loading from "modules/shared/components/Loading";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { AlarmTableViewModel } from "modules/automation/models/alarm-model";

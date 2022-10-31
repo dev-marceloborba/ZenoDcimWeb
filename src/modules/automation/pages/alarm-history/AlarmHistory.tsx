@@ -6,7 +6,9 @@ import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import { useFindAllAlarmsMutation } from "modules/automation/services/alarm-service";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import Loading from "modules/shared/components/Loading";
 

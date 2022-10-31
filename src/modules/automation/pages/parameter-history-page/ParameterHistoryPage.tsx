@@ -3,7 +3,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import useRouter from "modules/core/hooks/useRouter";
-import DataTable, { ColumnHeader } from "modules/shared/components/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatable/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";

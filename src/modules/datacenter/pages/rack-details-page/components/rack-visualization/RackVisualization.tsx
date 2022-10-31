@@ -1,7 +1,8 @@
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 import Box, { BoxProps } from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import Paper, { PaperProps } from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
@@ -9,7 +10,7 @@ type RackVisualiationProps = {
   name: string;
   slots: RackSlotItem[];
   onSelectEquipment(slot: RackSlotItem): void;
-} & BoxProps;
+} & PaperProps;
 
 const RackVisualization: React.FC<RackVisualiationProps> = ({
   name,
@@ -18,12 +19,13 @@ const RackVisualization: React.FC<RackVisualiationProps> = ({
   ...props
 }) => {
   return (
-    <Box {...props}>
+    <Paper {...props} sx={{ pt: 1 }}>
       <Typography variant="h6" textAlign="center">
         {name}
       </Typography>
+      <Divider sx={{ mt: 1 }} />
       <RackSlot items={slots} onSelectEquipment={onSelectEquipment} />
-    </Box>
+    </Paper>
   );
 };
 
@@ -41,7 +43,7 @@ type RackSlotItem = {
 
 const RackSlot: React.FC<RackSlotProps> = ({ items, onSelectEquipment }) => {
   return (
-    <>
+    <div style={{ overflow: "auto", maxHeight: "430px" }}>
       {items.map((item, idx) => (
         <Paper key={idx} sx={{ padding: "8px 4px" }}>
           <Stack
@@ -55,9 +57,10 @@ const RackSlot: React.FC<RackSlotProps> = ({ items, onSelectEquipment }) => {
             </Button>
             <Avatar sx={{ mr: 1 }}>{item.position}</Avatar>
           </Stack>
+          {idx !== items.length - 1 && <Divider sx={{ mt: 1 }} />}
         </Paper>
       ))}
-    </>
+    </div>
   );
 };
 
