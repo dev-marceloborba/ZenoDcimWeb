@@ -22,6 +22,7 @@ export interface DataTableOptions {
   showEdit?: boolean;
   showDelete?: boolean;
   showDetails?: boolean;
+  onCopyItem?(selectedItem: any): void;
 }
 
 export interface EnhancedTableProps {
@@ -44,4 +45,8 @@ export interface EnhancedTableToolbarProps {
   hideSearch: boolean;
   onDelete: () => void;
   toggleTitleAndSearch: () => void;
+  filter: string;
+  openSearch: boolean;
+  setFilter: (fillter: string) => void;
+  handleCopyItems(): void;
 }

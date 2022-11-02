@@ -89,6 +89,11 @@ const Header: React.FC = () => {
     handleMenuClose("user");
   };
 
+  const handleOpenUserPreferencies = () => {
+    navigate("/zeno/settings/user-preferencies");
+    handleMenuClose("user");
+  };
+
   const userMenuId = "account-menu";
   const notificationsMenuId = "notifications-menu";
 
@@ -161,8 +166,6 @@ const Header: React.FC = () => {
             onClose={() => handleMenuClose("notifications")}
             PaperProps={{
               style: {
-                // maxHeight: 45 * 4.5,
-                // width: "20ch",
                 maxHeight: "240px",
                 overflow: "none",
                 width: "600px",
@@ -184,7 +187,9 @@ const Header: React.FC = () => {
             open={isMenuOpen("user")}
             onClose={() => handleMenuClose("user")}
           >
-            <MenuItem>Configurações</MenuItem>
+            <MenuItem onClick={handleOpenUserPreferencies}>
+              Preferências
+            </MenuItem>
             <MenuItem onClick={handleOpenUserHelp}>Ajuda</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>

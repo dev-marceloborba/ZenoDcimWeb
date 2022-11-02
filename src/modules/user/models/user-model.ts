@@ -1,4 +1,5 @@
 import { GroupModel } from "./group.model";
+import { UserPreferenciesModel } from "./user-preferencies.model";
 
 export interface User {
   name: string;
@@ -55,6 +56,7 @@ export interface UserModel {
   email: string;
   group: GroupModel;
   active: boolean;
+  userPreferencies?: UserPreferenciesModel;
 }
 
 export type UsersModel = UserModel[];

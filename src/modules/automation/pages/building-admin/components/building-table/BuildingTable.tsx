@@ -1,17 +1,26 @@
-import React from "react";
 import { useToast } from "modules/shared/components/ToastProvider";
 import Loading from "modules/shared/components/Loading";
 import Column from "modules/shared/components/Column";
-import DataTable from "modules/shared/components/datatable/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatableV2/DataTable";
 import {
+  useCreateBuildingMutation,
   useDeleteBuildingMutation,
   useFindAllBuildingsQuery,
+  useFindBuildingByIdMutation,
 } from "modules/datacenter/services/building-service";
-import { BuildingModel } from "modules/datacenter/models/datacenter-model";
+import {
+  BuildingModel,
+  BuildingViewModel,
+} from "modules/datacenter/models/datacenter-model";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
   const [deleteBuilding] = useDeleteBuildingMutation();
+  const [findBuilding] = useFindBuildingByIdMutation();
+  const [createBuilding] = useCreateBuildingMutation();
   const toast = useToast();
 
   const handleDeleteSelection = async (rows: BuildingModel[]) => {
@@ -22,6 +31,22 @@ const BuildingTable: React.FC = () => {
       toast.open({ message: `Prédio(s) excluído(s) com sucesso` });
     } catch (error) {
       toast.open({ message: `Erro ao excluir`, severity: "error" });
+    }
+  };
+
+  const handleDuplicateItem = async (building: BuildingModel) => {
+    const item = await findBuilding(building.id).unwrap();
+    const duplicate: BuildingViewModel = {
+      ...item,
+      name: building.name + " - cópia",
+    };
+
+    try {
+      await createBuilding(duplicate).unwrap();
+      toast.open({ message: "Site duplicado" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao duplicar prédio", severity: "error" });
     }
   };
 
@@ -40,6 +65,8 @@ const BuildingTable: React.FC = () => {
         options={{
           onRowClick: (row) => console.log(row),
           onDeleteSelection: handleDeleteSelection,
+          onCopyItem: handleDuplicateItem,
+          rowsInPage: getPreferedRowLines("buildingTable"),
         }}
       />
       <Loading open={isLoading} />
@@ -49,7 +76,7 @@ const BuildingTable: React.FC = () => {
 
 export default BuildingTable;
 
-const columns = [
+const columns: ColumnHeader[] = [
   {
     name: "name",
     label: "Nome",

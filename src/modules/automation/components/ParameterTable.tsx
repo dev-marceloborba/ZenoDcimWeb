@@ -2,8 +2,8 @@ import React from "react";
 import DataTable, {
   ColumnHeader,
 } from "modules/shared/components/datatable/DataTable";
-import { useFindAllParametersQuery } from "app/services/datacenter";
 import Loading from "modules/shared/components/Loading";
+import { useFindAllParametersQuery } from "../services/parameter-service";
 
 const ParameterTable: React.FC = () => {
   const { data: parameters, isLoading } = useFindAllParametersQuery();

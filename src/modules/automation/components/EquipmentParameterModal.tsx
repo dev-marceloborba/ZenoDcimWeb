@@ -9,8 +9,8 @@ import SubmitButton from "modules/shared/components/SubmitButton";
 import Typography from "@mui/material/Typography";
 import { modalStyle } from "app/styles/modal-style";
 import { EquipmentParameterRequest } from "app/models/data-center.model";
-import { useFindEquipmentByIdMutation } from "app/services/datacenter";
 import Modal, { ModalProps } from "@mui/material/Modal";
+import { useFindEquipmentByIdMutation } from "../services/equipment-service";
 
 type EquipmentParameterModalProps = {
   equipmentId: string;

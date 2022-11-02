@@ -56,12 +56,14 @@ export const alarmRuleApi = createApi({
         url: `v1/data-center/alarm-rules/${id}`,
         method: "GET",
       }),
+      invalidatesTags: ["AlarmRuleModel"],
     }),
     findAlarmRulesByEquipmentId: builder.mutation<AlarmRulesModel, string>({
       query: (id) => ({
         url: `v1/data-center/alarm-rules-equipment/${id}`,
         method: "GET",
       }),
+      invalidatesTags: ["AlarmRuleModel"],
     }),
     deleteAlarmRule: builder.mutation<void, string>({
       query: (id) => ({

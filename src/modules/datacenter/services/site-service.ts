@@ -29,6 +29,13 @@ export const siteApi = createApi({
       }),
       invalidatesTags: ["SiteModel"],
     }),
+    findSiteById: builder.mutation<SiteModel, string>({
+      query: (id) => ({
+        url: `v1/data-center/sites/${id}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["SiteModel"],
+    }),
     findAllSites: builder.query<SiteModel[], void>({
       query: () => ({ url: "v1/data-center/sites" }),
       providesTags: ["SiteModel"],
@@ -46,5 +53,6 @@ export const siteApi = createApi({
 export const {
   useCreateSiteMutation,
   useDeleteSiteMutation,
+  useFindSiteByIdMutation,
   useFindAllSitesQuery,
 } = siteApi;

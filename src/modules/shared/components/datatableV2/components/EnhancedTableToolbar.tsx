@@ -1,8 +1,8 @@
+import { memo } from "react";
 import { alpha } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import SearchIcon from "@mui/icons-material/Search";
 import ConditionalRender from "../../ConditionalRender";
 import Visible from "../../Visible";
 import Row from "../../Row";
@@ -10,16 +10,22 @@ import SearchInput from "../components/SearchInput";
 import { EnhancedTableToolbarProps } from "../types/datatable.types";
 import DeleteButton from "../../DeleteButton";
 import IconButton from "@mui/material/IconButton";
-import useDatatableSelectors from "../selectors";
-import { useAppDispatch } from "app/hooks";
-import { changeFilter } from "../datatable-slice";
+// icons
+import SearchIcon from "@mui/icons-material/Search";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, title, hideSearch, onDelete, toggleTitleAndSearch } =
-    props;
-
-  const { filter, openSearch } = useDatatableSelectors();
-  const dispatch = useAppDispatch();
+  const {
+    numSelected,
+    title,
+    hideSearch,
+    onDelete,
+    toggleTitleAndSearch,
+    filter,
+    setFilter,
+    openSearch,
+    handleCopyItems,
+  } = props;
 
   return (
     <Toolbar
@@ -57,16 +63,18 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
               {title}
             </Typography>
           }
-          trueCondition={
-            <SearchInput
-              value={filter}
-              setValue={(value) => dispatch(changeFilter(value))}
-            />
-          }
+          trueCondition={<SearchInput value={filter} setValue={setFilter} />}
         />
       )}
       {numSelected > 0 ? (
-        <DeleteButton mode="icon" onDeleteConfirmation={onDelete} />
+        <>
+          <Tooltip title="Duplicar">
+            <IconButton disabled={numSelected > 1} onClick={handleCopyItems}>
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <DeleteButton mode="icon" onDeleteConfirmation={onDelete} />
+        </>
       ) : (
         <Row>
           <Visible show={!hideSearch}>
@@ -82,4 +90,4 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   );
 };
 
-export default EnhancedTableToolbar;
+export default memo(EnhancedTableToolbar);

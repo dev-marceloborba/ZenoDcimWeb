@@ -30,4 +30,7 @@ export const userPaths = {
   companyForm: {
     fullPath: "company-form",
   },
+  userPreferencies: {
+    fullPath: "user-preferencies",
+  },
 };

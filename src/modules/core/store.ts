@@ -21,7 +21,7 @@ import { maintenanceApi } from "modules/maintenance/services/maintenance.service
 import { groupApi } from "modules/user/services/groups.service";
 import { rackApi } from "modules/datacenter/services/rack.service";
 import { rackEquipmentApi } from "modules/datacenter/services/rack-equipment.service";
-import datatableSlice from "modules/shared/components/datatableV2/datatable-slice";
+import { userPreferenciesApi } from "modules/user/services/user-preferencies.service";
 
 export const store = configureStore({
   reducer: {
@@ -45,7 +45,7 @@ export const store = configureStore({
     [groupApi.reducerPath]: groupApi.reducer,
     [rackApi.reducerPath]: rackApi.reducer,
     [rackEquipmentApi.reducerPath]: rackEquipmentApi.reducer,
-    datatable: datatableSlice,
+    [userPreferenciesApi.reducerPath]: userPreferenciesApi.reducer,
   },
   preloadedState: {
     auth: reHydrateStore(),
@@ -70,7 +70,8 @@ export const store = configureStore({
       maintenanceApi.middleware,
       groupApi.middleware,
       rackApi.middleware,
-      rackEquipmentApi.middleware
+      rackEquipmentApi.middleware,
+      userPreferenciesApi.middleware
     ),
 });
 

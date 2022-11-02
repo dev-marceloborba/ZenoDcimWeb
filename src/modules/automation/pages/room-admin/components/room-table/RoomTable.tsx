@@ -1,22 +1,32 @@
 import React from "react";
-import DataTable from "modules/shared/components/datatable/DataTable";
+import DataTable, {
+  ColumnHeader,
+} from "modules/shared/components/datatableV2/DataTable";
 import Row from "modules/shared/components/Row";
 import Loading from "modules/shared/components/Loading";
 import ButtonLink from "modules/shared/components/ButtonLink";
-import { RoomModel } from "modules/datacenter/models/datacenter-model";
 import {
+  RoomModel,
+  RoomViewModel,
+} from "modules/datacenter/models/datacenter-model";
+import {
+  useCreateRoomMutation,
   useDeleteRoomMutation,
   useFindAllRoomsQuery,
+  useFindRoomByIdMutation,
 } from "modules/datacenter/services/room-service";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { RoomFormPath } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const RoomTable: React.FC = () => {
   const { data: rooms, isLoading } = useFindAllRoomsQuery();
-  const [deleteRoom] = useDeleteRoomMutation();
+  const [createRoom, { isLoading: isLoadingCreate }] = useCreateRoomMutation();
+  const [findRoom, { isLoading: isLoadingFetch }] = useFindRoomByIdMutation();
+  const [deleteRoom, { isLoading: isLoadingDelete }] = useDeleteRoomMutation();
   const toast = useToast();
 
   const handleDeleteSelection = async (rows: RoomModel[]) => {
@@ -24,6 +34,21 @@ const RoomTable: React.FC = () => {
       await deleteRoom(rows[i].id).unwrap;
     }
     toast.open({ message: "Andar(es) excluído(s) com sucesso" });
+  };
+
+  const handleDuplicateItem = async (room: RoomModel) => {
+    const item = await findRoom(room.id).unwrap();
+    const duplicate: RoomViewModel = {
+      ...item,
+      name: room.name + " - cópia",
+    };
+    try {
+      await createRoom(duplicate).unwrap();
+      toast.open({ message: "Sala duplicada" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao criar sala", severity: "error" });
+    }
   };
 
   return (
@@ -62,16 +87,20 @@ const RoomTable: React.FC = () => {
         options={{
           onRowClick: (row) => console.log(row),
           onDeleteSelection: handleDeleteSelection,
+          onCopyItem: handleDuplicateItem,
+          rowsInPage: getPreferedRowLines("roomTable"),
         }}
       />
-      <Loading open={isLoading} />
+      <Loading
+        open={isLoading || isLoadingCreate || isLoadingDelete || isLoadingFetch}
+      />
     </>
   );
 };
 
 export default RoomTable;
 
-const columns = [
+const columns: ColumnHeader[] = [
   {
     name: "name",
     label: "Sala",

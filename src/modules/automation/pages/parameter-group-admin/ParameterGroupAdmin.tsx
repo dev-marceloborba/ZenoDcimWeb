@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
@@ -38,6 +38,7 @@ import Button from "@mui/material/Button";
 import DataTable, {
   ColumnHeader,
 } from "modules/shared/components/datatableV2/DataTable";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function ParameterGroupAdmin() {
   const [groupParameters, setGroupParameters] = useState<ParameterModel[]>([]);
@@ -47,7 +48,7 @@ export default function ParameterGroupAdmin() {
     useFindParameterByGroupMutation();
   const { data: groups, isLoading: isLoadingAllParameterGroups } =
     useFindAllParameterGroupsQuery();
-  const { data: _availableParameters, isLoading: isLoadingAllParameters } =
+  const { data: availableParameters, isLoading: isLoadingAllParameters } =
     useFindAllParametersQuery();
   const [createGroup, { isLoading: isLoadingCreateGroup }] =
     useCreateEquipmentParameterGroupMutation();
@@ -64,34 +65,15 @@ export default function ParameterGroupAdmin() {
   const { showModal } = useModal();
 
   const [selectedParameters, setSelectedParameters] = useState<any>([]);
-  const [availableParameters, setAvailableParameters] = useState<
-    ParameterModel[]
-  >([]);
 
-  useEffect(() => {
-    console.log("setup 1");
-    setAvailableParameters(_availableParameters?.map((x) => ({ ...x })) ?? []);
-  }, [_availableParameters]);
-
-  const updateParametersChecked = (parameters: ParameterModel[]) => {
-    // const ap = [...availableParameters];
-    // ap.forEach((v) => {
-    //   const p = parameters.find((r) => r.id === v.id);
-    //   if (p) {
-    //     v.checked = true;
-    //   } else {
-    //     v.checked = false;
-    //   }
-    // });
-    // setAvailableParameters(ap);
-  };
-
-  const handleChangeGroup = async (group: EquipmentParameterGroupModel) => {
-    const result = await findParametersByGroup(group.name).unwrap();
-    setGroupParameters(result);
-    setSelectedGroup(group);
-    updateParametersChecked(result);
-  };
+  const handleChangeGroup = useCallback(
+    async (group: EquipmentParameterGroupModel) => {
+      const result = await findParametersByGroup(group.name).unwrap();
+      setGroupParameters(result);
+      setSelectedGroup(group);
+    },
+    [findParametersByGroup]
+  );
 
   const handleNewGroupModal = () => {
     const modal = showModal(CreateGroupModal, {
@@ -109,15 +91,20 @@ export default function ParameterGroupAdmin() {
     await deleteGroup(groupId).unwrap();
   };
 
-  const handleIncludeSelection = async () => {
-    console.log(selectedParameters);
-    // await createParametersIntoGroup({
-    //   groupId: selectedGroup.id,
-    //   parameters: selectedParameters,
-    // }).unwrap();
-    // const result = await findParametersByGroup(selectedGroup.name).unwrap();
-    // setGroupParameters(result);
-  };
+  const handleIncludeSelection = useCallback(async () => {
+    await createParametersIntoGroup({
+      groupId: selectedGroup.id,
+      parameters: selectedParameters,
+    }).unwrap();
+    const result = await findParametersByGroup(selectedGroup.name).unwrap();
+    setGroupParameters(result);
+  }, [
+    createParametersIntoGroup,
+    findParametersByGroup,
+    selectedGroup.id,
+    selectedGroup.name,
+    selectedParameters,
+  ]);
 
   const handleEditGroup = (data: EquipmentParameterGroupModel) => {
     const modal = showModal(CreateGroupModal, {
@@ -148,7 +135,6 @@ export default function ParameterGroupAdmin() {
       }).unwrap();
       const result = await findParametersByGroup(selectedGroup.name).unwrap();
       setGroupParameters(result);
-      updateParametersChecked(result);
     },
     [
       createParametersIntoGroup,
@@ -244,39 +230,54 @@ export default function ParameterGroupAdmin() {
         </Grid>
       </Grid>
 
-      <Card sx={{ width: "50%" }}>
-        <CardContent>
-          <DataTable
-            title="Parâmetros disponíveis"
-            columns={columns}
-            rows={availableParameters.map((ap) => ({
-              id: ap.id,
-              name: ap.name,
-              unit: ap.unit,
-            }))}
-            options={{
-              onSelectedItems: handleSelectItems,
-              previousItems,
-            }}
-          />
-        </CardContent>
-      </Card>
+      <Grid container>
+        <Grid item md={6}>
+          <Card>
+            <CardContent>
+              <DataTable
+                title="Parâmetros disponíveis"
+                columns={columns}
+                rows={
+                  availableParameters?.map((ap) => ({
+                    id: ap.id,
+                    name: ap.name,
+                    unit: ap.unit,
+                  })) ?? []
+                }
+                options={{
+                  onSelectedItems: handleSelectItems,
+                  previousItems,
+                  rowsInPage: getPreferedRowLines("availableParameterTable"),
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
 
-      <Card sx={{ width: "50%" }}>
-        <CardContent>
-          <DataTable
-            title="Parâmetros do grupo"
-            columns={columns}
-            rows={[]}
-            options={
-              {
-                // showDelete: true,
-                // onDeleteRow: handleDeleteParameter,
-              }
-            }
-          />
-        </CardContent>
-      </Card>
+        <Grid
+          item
+          md={6}
+          columnSpacing={1}
+          rowSpacing={1}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Card>
+            <CardContent>
+              <DataTable
+                title="Parâmetros do grupo"
+                columns={columns}
+                rows={previousItems}
+                options={{
+                  showDelete: true,
+                  onDeleteRow: handleDeleteParameter,
+                  rowsInPage: getPreferedRowLines("groupParameterTable"),
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       <Loading
         open={

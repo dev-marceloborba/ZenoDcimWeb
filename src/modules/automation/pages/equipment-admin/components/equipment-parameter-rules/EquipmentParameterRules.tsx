@@ -2,13 +2,17 @@ import { useEffect, useMemo, useCallback } from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import AccessButton from "modules/shared/components/access-button/AccessButtonv2";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { EquipmentRulesFormPath } from "modules/automation/routes/paths";
-import { useDeleteAlarmRuleMutation } from "modules/automation/services/alarm-rule-service";
+import {
+  useCreateAlarmRuleMutation,
+  useDeleteAlarmRuleMutation,
+  useFindAlarmRuleByIdMutation,
+} from "modules/automation/services/alarm-rule-service";
 import Loading from "modules/shared/components/Loading";
 import useRouter from "modules/core/hooks/useRouter";
 import { EquipmentModel } from "modules/automation/models/automation-model";
@@ -16,8 +20,11 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import getPriorityDescription from "./helpers/getPriorityDescription";
 import getConditionalDescription from "./helpers/getConditionalDescription";
 import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
+import { AlarmRuleViewModel } from "modules/automation/models/alarm-rule-model";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 type EquipmentParameterRulesViewModel = {
+  id: string;
   equipmentParameterId: string;
   equipmentParameterName: string;
   alarmRuleId: string;
@@ -37,6 +44,9 @@ export default function EquipmentParameterRules() {
 
   const [findEquipmentRules, { data: alarmRules, isLoading }] =
     useFindEquipmentByIdMutation();
+
+  const [createAlarmRule] = useCreateAlarmRuleMutation();
+  const [findAlarmRule] = useFindAlarmRuleByIdMutation();
   const [deleteAlarmRule] = useDeleteAlarmRuleMutation();
   const toast = useToast();
 
@@ -66,6 +76,7 @@ export default function EquipmentParameterRules() {
       if (equipmentParameter.alarmRules) {
         equipmentParameter.alarmRules.forEach((alarmRule) => {
           equipmentParameters.push({
+            id: alarmRule.id,
             equipmentParameterId: equipmentParameter.id,
             equipmentParameterName: equipmentParameter.name,
             alarmRuleId: alarmRule.id,
@@ -95,6 +106,22 @@ export default function EquipmentParameterRules() {
         },
       }
     );
+  };
+
+  const handleDuplicateItem = async (equipmentParameterRule: any) => {
+    const item = await findAlarmRule(equipmentParameterRule.id).unwrap();
+    const duplicate: AlarmRuleViewModel = {
+      ...item,
+      name: equipmentParameterRule.name + " - cópia",
+    };
+
+    try {
+      await createAlarmRule(duplicate).unwrap();
+      toast.open({ message: "Regra duplicada" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao duplicar regra", severity: "error" });
+    }
   };
 
   return (
@@ -129,6 +156,8 @@ export default function EquipmentParameterRules() {
           onDeleteSelection: handleDeleteSelection,
           onRowClick: handleRowClick,
           isEditMode: false,
+          onCopyItem: handleDuplicateItem,
+          rowsInPage: getPreferedRowLines("ruleTable"),
         }}
       />
       <Loading open={isLoading} />

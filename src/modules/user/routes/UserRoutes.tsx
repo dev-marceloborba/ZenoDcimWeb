@@ -7,6 +7,7 @@ import UserHelp from "../pages/user-help/UserHelp";
 import CreateUser from "../pages/create-user/CreateUser";
 import CompanyForm from "../pages/company-form/CompanyForm";
 import UserGroupsPage from "../pages/user-groups-page/UserGroupsPage";
+import UserPreferencies from "../components/user-preferencies/UserPreferencies";
 
 export const userRoutes: RouteObject[] = [
   {
@@ -36,6 +37,10 @@ export const userRoutes: RouteObject[] = [
   {
     path: userPaths.groups.fullPath,
     element: <UserGroupsPage />,
+  },
+  {
+    path: userPaths.userPreferencies.fullPath,
+    element: <UserPreferencies />,
   },
 ];
 

@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-
 import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import Loading from "modules/shared/components/Loading";
 import {
   useCreateMultipleEquipmentParametersMutation,
@@ -18,8 +17,6 @@ import {
   EquipmentParameterModel,
   ParameterModel,
 } from "modules/automation/models/automation-model";
-
-import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -27,7 +24,6 @@ import CardContent from "@mui/material/CardContent";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import Row from "modules/shared/components/Row";
@@ -35,16 +31,12 @@ import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { EquipmentParameterFormPath } from "modules/automation/routes/paths";
-
-type ParameterCheckedViewModel = ParameterModel & {
-  checked: boolean;
-};
+import { useToast } from "modules/shared/components/ToastProvider";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function EquipmentParametersAssociation() {
-  const [selection, setSelection] = useState<ParameterCheckedViewModel[]>([]);
-  const [groupParameters, setGroupParameters] = useState<
-    ParameterCheckedViewModel[]
-  >([]);
+  const [selection, setSelection] = useState<ParameterModel[]>([]);
+  const [groupParameters, setGroupParameters] = useState<ParameterModel[]>([]);
   const [selectedGroup, setSelectedGroup] =
     useState<EquipmentParameterGroupModel | null>(null);
   const {
@@ -65,33 +57,30 @@ export default function EquipmentParametersAssociation() {
   const [createMultipleEquipmentParameters] =
     useCreateMultipleEquipmentParametersMutation();
   const [deleteEquipmentParameters] = useDeleteEquipmentParameterMutation();
+  const toast = useToast();
 
-  const handleChangeGroup = async (group: EquipmentParameterGroupModel) => {
-    const result = await findParametersByGroup(group.name).unwrap();
-    setGroupParameters(result.map((p) => ({ ...p, checked: false })));
-    setSelectedGroup(group);
-  };
+  const getParameters = useCallback(async () => {
+    await findEquipmentParametersByEquipmentId(equipment.id).unwrap();
+  }, [equipment.id, findEquipmentParametersByEquipmentId]);
 
-  const handleSelectedParameters = (value: ParameterCheckedViewModel) => {
-    console.log("...");
-    const newSelection = [...groupParameters];
-    const parameter = newSelection.find((x) => x.id === value.id);
-    if (parameter) parameter.checked = !parameter.checked;
+  const handleChangeGroup = useCallback(
+    async (group: EquipmentParameterGroupModel) => {
+      const result = await findParametersByGroup(group.name).unwrap();
+      setGroupParameters(result);
+      setSelectedGroup(group);
+    },
+    [findParametersByGroup]
+  );
 
-    const selectionIdx = selection.findIndex((x) => x.id === value.id);
-    if (selectionIdx === -1) {
-      setSelection((prevState) => [...prevState, { ...value }]);
-    } else {
-      setSelection((prevState) => {
-        const removed = prevState.filter((x) => x.id !== value.id);
-        return removed;
-      });
-    }
-    setGroupParameters(newSelection);
-  };
+  const handleSelectedParameters = useCallback(
+    (parameters: ParameterModel[]) => {
+      setSelection(parameters);
+    },
+    []
+  );
 
-  const handleIncludeSelection = async () => {
-    const selected = groupParameters.filter((x) => x.checked === true);
+  const handleIncludeSelection = useCallback(async () => {
+    const selected = [...selection];
     await createMultipleEquipmentParameters({
       parameters: selected.map((p) => ({
         equipmentId: equipment.id,
@@ -106,21 +95,24 @@ export default function EquipmentParametersAssociation() {
       })),
     }).unwrap();
     setSelection([]);
-    setGroupParameters((prevState) => {
-      const cleared = prevState.map((v) => ({ ...v, checked: false }));
-      return cleared;
-    });
     getParameters();
-  };
+    toast.open({ message: "Parâmetros incluidos com sucesso" });
+  }, [
+    createMultipleEquipmentParameters,
+    equipment.id,
+    getParameters,
+    selection,
+    toast,
+  ]);
 
   const handleDeleteParametersSelection = async (
     items: EquipmentParameterModel[]
   ) => {
-    console.log(items);
     for (let i = 0; i < items.length; i++) {
       await deleteEquipmentParameters(items[i].id).unwrap();
     }
     getParameters();
+    toast.open({ message: "Parâmetros excluídos com sucesso" });
   };
 
   const handleSelectedRow = (parameter: EquipmentParameterModel) => {
@@ -139,10 +131,6 @@ export default function EquipmentParametersAssociation() {
     );
   };
 
-  const getParameters = useCallback(async () => {
-    await findEquipmentParametersByEquipmentId(equipment.id).unwrap();
-  }, [equipment.id, findEquipmentParametersByEquipmentId]);
-
   useEffect(() => {
     getParameters();
   }, [equipment.id, findEquipmentParametersByEquipmentId, getParameters]);
@@ -156,6 +144,7 @@ export default function EquipmentParametersAssociation() {
         options={{
           onDeleteSelection: handleDeleteParametersSelection,
           onRowClick: handleSelectedRow,
+          rowsInPage: getPreferedRowLines("equipmentParameterTable"),
         }}
       />
       <Grid container columnSpacing={2}>
@@ -206,21 +195,27 @@ export default function EquipmentParametersAssociation() {
                   </Button>
                 )}
               </Row>
-              {groupParameters?.map((gp, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    role="listitem"
-                    button
-                    onClick={() => handleSelectedParameters(gp)}
-                  >
-                    <ListItemIcon>
-                      <Checkbox checked={gp.checked} tabIndex={-1} />
-                    </ListItemIcon>
-                    <ListItemText primary={gp.name} />
-                  </ListItem>
-                );
-              })}
+              <DataTable
+                title=""
+                columns={[
+                  {
+                    name: "name",
+                    label: "Parâmetro",
+                  },
+                  {
+                    name: "unit",
+                    label: "Unidade",
+                  },
+                ]}
+                rows={groupParameters.map((gp) => ({
+                  id: gp.id,
+                  name: gp.name,
+                  unit: gp.unit,
+                }))}
+                options={{
+                  onSelectedItems: handleSelectedParameters,
+                }}
+              />
             </CardContent>
           </Card>
         </Grid>

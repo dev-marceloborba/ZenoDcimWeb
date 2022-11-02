@@ -43,12 +43,6 @@ const EquipmentAdmin: React.FC = () => {
         <EtcFilters />
       </Row>
 
-      {/* <Row sx={{ mt: 2, maxWidth: "480px" }}>
-        <BuildingDropdown />
-        <FloorDropdown sx={{ ml: 2 }} />
-        <RoomDropdown sx={{ ml: 2 }} />
-      </Row> */}
-
       <Divider sx={{ mt: 2 }} />
 
       <Row sx={{ mt: 2 }}>
@@ -76,11 +70,6 @@ const EquipmentAdmin: React.FC = () => {
           <AccessButton
             startIcon={<ParameterIcon />}
             label="Associar parâmetros"
-            // to={compositePathRoute([
-            //   HomePath,
-            //   AutomationPath,
-            //   EquipmentParametersAssociationPath,
-            // ])}
             mode="regularButton"
             onClick={() => {
               if (selectedEquipment) {

@@ -13,22 +13,10 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import NoDataText from "../NoDataText";
 import DeleteButton from "../DeleteButton";
-import { DataTableOptions } from "./types/datatable.types";
+import { DataTableOptions, Order } from "./types/datatable.types";
 import getFilteredRows from "./utils/getFilteredRows";
 import EnhancedTableHead from "./components/EnhancedTableHead";
 import EnhancedTableToolbar from "./components/EnhancedTableToolbar";
-import useDatatableSelectors from "./selectors";
-import { useAppDispatch } from "app/hooks";
-import {
-  changeOrder,
-  changeOrderBy,
-  setPages,
-  setRows,
-  setRowsPerPage,
-  toggleSearch,
-  setSelectedItems,
-} from "./datatable-slice";
-
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
@@ -57,12 +45,14 @@ const DataTableV2: React.FC<DataTableProps> = ({
   const {
     previousItems = [],
     rowsPerPageOptions = [5, 10, 25],
+    rowsInPage = 5,
     selectionMode = "show",
     onRowClick,
     onDeleteSelection,
     onSelectedItems,
     onEditRow,
     onDeleteRow,
+    onCopyItem,
     hideSearch = false,
     hidePagination = false,
     showDelete = false,
@@ -70,36 +60,34 @@ const DataTableV2: React.FC<DataTableProps> = ({
     showDetails = false,
   } = options;
 
-  const dispatch = useAppDispatch();
-  const {
-    filter,
-    order,
-    orderBy,
-    page,
-    currentRows,
-    rowsPerPage,
-    selectedItems,
-    isSelected,
-  } = useDatatableSelectors();
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState(columns[0].name);
+  const [selectedItems, setSelectedItems] = useState<any[]>([...previousItems]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsInPage);
+  const [filter, setFilter] = useState("");
+  const [openSearch, setOpenSearch] = useState(false);
+  const [currentRows, setCurrentRows] = useState<any[]>([]);
 
   const handleRequestSort = useCallback(
     (event: React.MouseEvent<unknown>, property: string) => {
       const isAsc = orderBy === property && order === "asc";
-      dispatch(changeOrder(isAsc ? "desc" : "asc"));
-      dispatch(changeOrderBy(property));
+      setOrder(isAsc ? "desc" : "asc");
+      setOrderBy(property);
     },
-    [dispatch, order, orderBy]
+    [order, orderBy]
   );
 
   const handleSelectAllClick = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      let items: any[] = [];
       if (event.target.checked) {
-        dispatch(setSelectedItems(rows));
-        return;
+        items = [...rows];
       }
-      dispatch(setSelectedItems([]));
+      setSelectedItems(items);
+      if (onSelectedItems) onSelectedItems(items);
     },
-    [dispatch, rows]
+    [onSelectedItems, rows]
   );
 
   const handleClick = useCallback(
@@ -112,26 +100,27 @@ const DataTableV2: React.FC<DataTableProps> = ({
         newSelected = selectedItems.filter((x) => x.id !== row.id);
       }
 
-      dispatch(setSelectedItems(newSelected));
+      setSelectedItems(newSelected);
       if (onSelectedItems) onSelectedItems(newSelected);
     },
-    [dispatch, onSelectedItems, selectedItems]
+    [onSelectedItems, selectedItems]
   );
 
-  const handleChangePage = useCallback(
-    (event: unknown, newPage: number) => {
-      dispatch(setPages(newPage));
-    },
-    [dispatch]
-  );
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+    setPage(newPage);
+  }, []);
 
   const handleChangeRowsPerPage = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch(setRowsPerPage(parseInt(event.target.value, 10)));
-      dispatch(setPages(0));
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
     },
-    [dispatch]
+    []
   );
+
+  const isSelected = (row: any) => {
+    return selectedItems.find((x) => x.id === row.id) !== undefined;
+  };
 
   const emptyRows = useMemo(() => {
     return page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -150,8 +139,8 @@ const DataTableV2: React.FC<DataTableProps> = ({
   };
 
   const handleToggleSearchAndTitle = useCallback(() => {
-    dispatch(toggleSearch());
-  }, [dispatch]);
+    setOpenSearch(!openSearch);
+  }, [openSearch]);
 
   const handleEditOnClick = (row: any) => {
     if (onEditRow) {
@@ -165,32 +154,26 @@ const DataTableV2: React.FC<DataTableProps> = ({
     }
   };
 
+  const handleCopyItems = () => {
+    if (onCopyItem) onCopyItem(selectedItems[0]);
+  };
+
   // reset selection state on new rows
   useEffect(() => {
-    if (rows.length > 0) dispatch(setSelectedItems([]));
-  }, [dispatch, rows.length]);
+    if (rows.length > 0) setSelectedItems([]);
+  }, [rows.length]);
 
   useEffect(() => {
-    dispatch(
-      setRows(
-        getFilteredRows(
-          rows,
-          columns,
-          filter,
-          page,
-          rowsPerPage,
-          order,
-          orderBy
-        )
-      )
+    setCurrentRows(
+      getFilteredRows(rows, columns, filter, page, rowsPerPage, order, orderBy)
     );
-  }, [columns, dispatch, filter, order, orderBy, page, rows, rowsPerPage]);
+  }, [columns, filter, order, orderBy, page, rows, rowsPerPage]);
 
   useEffect(() => {
-    if (previousItems) {
-      dispatch(setSelectedItems(previousItems));
+    if (previousItems.length > 0) {
+      setSelectedItems(previousItems);
     }
-  }, [dispatch, previousItems]);
+  }, [previousItems.length]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -201,6 +184,10 @@ const DataTableV2: React.FC<DataTableProps> = ({
           hideSearch={hideSearch}
           onDelete={handleDeleteSelection}
           toggleTitleAndSearch={handleToggleSearchAndTitle}
+          filter={filter}
+          setFilter={setFilter}
+          openSearch={openSearch}
+          handleCopyItems={handleCopyItems}
         />
         <TableContainer>
           <Table aria-labelledby="tableTitle" size={"medium"}>
@@ -316,5 +303,5 @@ const DataTableV2: React.FC<DataTableProps> = ({
   );
 };
 
-// export default DataTableV2;
-export default memo(DataTableV2);
+export default DataTableV2;
+// export default memo(DataTableV2);

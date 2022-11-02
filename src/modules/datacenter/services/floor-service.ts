@@ -30,6 +30,13 @@ export const floorApi = createApi({
         invalidatesTags: ["FloorModel"],
       }
     ),
+    findFloorById: builder.mutation<FloorModel, string>({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/${id}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["FloorModel"],
+    }),
     findAllFloors: builder.query<FloorModel[], void>({
       query: () => ({ url: "v1/data-center/building/floor" }),
       providesTags: ["FloorModel"],
@@ -48,4 +55,5 @@ export const {
   useCreateFloorMutation,
   useDeleteFloorMutation,
   useFindAllFloorsQuery,
+  useFindFloorByIdMutation,
 } = floorApi;

@@ -1,10 +1,12 @@
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import Loading from "modules/shared/components/Loading";
 import {
+  useCreateParameterMutation,
   useDeleteParameterMutation,
   useFindAllParametersQuery,
+  useFindParameterByIdMutation,
 } from "modules/automation/services/parameter-service";
 import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
@@ -14,12 +16,21 @@ import {
   ParameterFormPath,
   VirtualParameterFormPath,
 } from "modules/automation/routes/paths";
-import { ParameterModel } from "modules/automation/models/automation-model";
+import {
+  ParameterModel,
+  ParameterViewModel,
+} from "modules/automation/models/automation-model";
 import { useToast } from "modules/shared/components/ToastProvider";
+import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function ParametersTable() {
   const { data: parameters, isLoading } = useFindAllParametersQuery();
-  const [deleteParameter] = useDeleteParameterMutation();
+  const [createParameter, { isLoading: isLoadingCreate }] =
+    useCreateParameterMutation();
+  const [findParameter, { isLoading: isLoadingFetch }] =
+    useFindParameterByIdMutation();
+  const [deleteParameter, { isLoading: isLoadingDelete }] =
+    useDeleteParameterMutation();
   const { navigate } = useRouter();
   const toast = useToast();
 
@@ -48,6 +59,22 @@ export default function ParametersTable() {
     toast.open({ message: "Parâmetro(s) excluídos com sucesso" });
   };
 
+  const handleDuplicateItem = async (parameter: ParameterModel) => {
+    const item = await findParameter(parameter.id).unwrap();
+    const duplicate: ParameterViewModel = {
+      ...item,
+      name: item.name + " - cópia",
+    };
+
+    try {
+      await createParameter(duplicate).unwrap();
+      toast.open({ message: "Parâmetro duplicado" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao duplicar parâmetro", severity: "error" });
+    }
+  };
+
   return (
     <>
       <DataTable
@@ -65,9 +92,13 @@ export default function ParametersTable() {
         options={{
           onRowClick: handleSelectedParameter,
           onDeleteSelection: handleDeleteParameters,
+          onCopyItem: handleDuplicateItem,
+          rowsInPage: getPreferedRowLines("parameterTable"),
         }}
       />
-      <Loading open={isLoading} />
+      <Loading
+        open={isLoading || isLoadingCreate || isLoadingDelete || isLoadingFetch}
+      />
     </>
   );
 }

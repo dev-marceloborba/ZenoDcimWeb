@@ -6,15 +6,15 @@ import PageTitle from "modules/shared/components/PageTitle";
 import EtcFilters from "modules/automation/components/EtcFilters";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
-import { EquipmentResponse } from "app/models/data-center.model";
-import { useFindRoomByIdMutation } from "app/services/datacenter";
 import Loading from "modules/shared/components/Loading";
 import { EEquipmentStatus, EParameterStatus } from "app/types/bms";
 import useAutomationFilters from "modules/automation/data/hooks/useAutomationFilters";
+import { useFindRoomByIdMutation } from "modules/datacenter/services/room-service";
+import { EquipmentModel } from "modules/automation/models/automation-model";
 
 const EtcDetails: React.FC = () => {
   const { groups } = useAutomationFilters();
-  const [equipments, setEquipments] = useState<EquipmentResponse[]>([]);
+  const [equipments, setEquipments] = useState<EquipmentModel[]>([]);
   const [findRoom, { isLoading }] = useFindRoomByIdMutation();
 
   // room id

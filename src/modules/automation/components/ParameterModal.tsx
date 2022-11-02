@@ -2,7 +2,6 @@ import React from "react";
 import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
-import { useFindAllParameterGroupsQuery } from "app/services/datacenter";
 import Loading from "modules/shared/components/Loading";
 import { number, object, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
@@ -10,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Modal, { ModalProps } from "@mui/material/Modal";
 import { modalStyle } from "app/styles/modal-style";
 import { ParameterRequest } from "app/models/data-center.model";
+import { useFindAllParameterGroupsQuery } from "../services/parameter-group-service";
 
 type ParameterModalProps = {
   onConfirm: (data: ParameterRequest) => void;

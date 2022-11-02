@@ -51,6 +51,13 @@ export const parameterApi = createApi({
       }),
       providesTags: ["ParameterModel"],
     }),
+    findParameterById: builder.mutation<ParameterModel, string>({
+      query: (id) => ({
+        url: `v1/data-center/parameters/${id}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["ParameterModel"],
+    }),
     deleteParameter: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/parameters/${id}`,
@@ -83,6 +90,7 @@ export const {
   useUpdateParameterMutation,
   useDeleteParameterMutation,
   useFindAllParametersQuery,
+  useFindParameterByIdMutation,
   useCreateParametersIntoGroupMutation,
   useFindParameterByGroupMutation,
 } = parameterApi;
