@@ -8,7 +8,7 @@ import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import { useFindAllAlarmsMutation } from "modules/automation/services/alarm-service";
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import Loading from "modules/shared/components/Loading";
 
@@ -56,7 +56,14 @@ export default function AlarmHistory() {
           onAccept={handleChangeFinalDate}
         />
       </Row>
-      <DataTable title="Alarmes" rows={alarms ?? []} columns={columns} />
+      <DataTable
+        title="Alarmes"
+        rows={alarms ?? []}
+        columns={columns}
+        options={{
+          userPreferenceTable: "alarmHistoryTable",
+        }}
+      />
       <Loading open={isLoading} />
     </HeroContainer>
   );

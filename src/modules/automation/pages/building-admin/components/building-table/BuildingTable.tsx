@@ -14,7 +14,6 @@ import {
   BuildingModel,
   BuildingViewModel,
 } from "modules/datacenter/models/datacenter-model";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const BuildingTable: React.FC = () => {
   const { data: buildings, isLoading } = useFindAllBuildingsQuery();
@@ -66,7 +65,7 @@ const BuildingTable: React.FC = () => {
           onRowClick: (row) => console.log(row),
           onDeleteSelection: handleDeleteSelection,
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("buildingTable"),
+          userPreferenceTable: "buildingTable",
         }}
       />
       <Loading open={isLoading} />

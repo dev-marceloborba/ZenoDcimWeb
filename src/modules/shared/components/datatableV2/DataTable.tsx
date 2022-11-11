@@ -17,6 +17,10 @@ import { DataTableOptions, Order } from "./types/datatable.types";
 import getFilteredRows from "./utils/getFilteredRows";
 import EnhancedTableHead from "./components/EnhancedTableHead";
 import EnhancedTableToolbar from "./components/EnhancedTableToolbar";
+import { useAppDispatch } from "app/hooks";
+import { setPreferences } from "modules/user/stores/slices/AuthenticationSlice";
+import { useAuth } from "app/hooks/useAuth";
+import { useUpdateUserPreferenciesMutation } from "modules/user/services/user-preferencies.service";
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
@@ -58,6 +62,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
     showDelete = false,
     showEdit = false,
     showDetails = false,
+    userPreferenceTable,
   } = options;
 
   const [order, setOrder] = useState<Order>("asc");
@@ -68,6 +73,9 @@ const DataTableV2: React.FC<DataTableProps> = ({
   const [filter, setFilter] = useState("");
   const [openSearch, setOpenSearch] = useState(false);
   const [currentRows, setCurrentRows] = useState<any[]>([]);
+  const dispatch = useAppDispatch();
+  const { userState } = useAuth();
+  const [updatePreferences] = useUpdateUserPreferenciesMutation();
 
   const handleRequestSort = useCallback(
     (event: React.MouseEvent<unknown>, property: string) => {
@@ -111,11 +119,25 @@ const DataTableV2: React.FC<DataTableProps> = ({
   }, []);
 
   const handleChangeRowsPerPage = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseInt(event.target.value, 10);
+      setRowsPerPage(value);
       setPage(0);
+      if (userState.userPreferencies && userPreferenceTable !== undefined) {
+        const { userPreferencies } = userState;
+        const newPreferences: typeof userPreferencies = {
+          ...userPreferencies,
+          [userPreferenceTable]: value,
+        };
+        dispatch(setPreferences(newPreferences));
+        const options = {
+          ...newPreferences,
+          id: userState.user?.id ?? "",
+        };
+        await updatePreferences(options).unwrap();
+      }
     },
-    []
+    [dispatch, updatePreferences, userPreferenceTable, userState]
   );
 
   const isSelected = (row: any) => {
@@ -174,6 +196,23 @@ const DataTableV2: React.FC<DataTableProps> = ({
       setSelectedItems(previousItems);
     }
   }, [previousItems.length]);
+
+  useEffect(() => {
+    if (userState.userPreferencies && userPreferenceTable !== undefined) {
+      const { userPreferencies } = userState;
+      const value = userPreferencies[userPreferenceTable] as number;
+      if (value === undefined) {
+        console.warn(
+          `Atenção! Propriedade ${userPreferenceTable} de tabela não encontrada no localStorage`
+        );
+        setRowsPerPage(5);
+      } else {
+        setRowsPerPage(value);
+      }
+    }
+  }, [userPreferenceTable, userState]);
+
+  console.log(currentRows);
 
   return (
     <Box sx={{ width: "100%" }}>

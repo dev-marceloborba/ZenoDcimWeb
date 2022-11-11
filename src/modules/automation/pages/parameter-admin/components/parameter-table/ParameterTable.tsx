@@ -12,16 +12,12 @@ import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import {
-  ParameterFormPath,
-  VirtualParameterFormPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import {
   ParameterModel,
   ParameterViewModel,
 } from "modules/automation/models/automation-model";
 import { useToast } from "modules/shared/components/ToastProvider";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function ParametersTable() {
   const { data: parameters, isLoading } = useFindAllParametersQuery();
@@ -40,8 +36,8 @@ export default function ParametersTable() {
         HomePath,
         AutomationPath,
         parameter.discriminator === "Parâmetro físico"
-          ? ParameterFormPath
-          : VirtualParameterFormPath,
+          ? automationPaths.parameterForm.shortPath
+          : automationPaths.virtualParameterForm.shortPath,
       ]),
       {
         state: {
@@ -93,7 +89,7 @@ export default function ParametersTable() {
           onRowClick: handleSelectedParameter,
           onDeleteSelection: handleDeleteParameters,
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("parameterTable"),
+          userPreferenceTable: "parameterTable",
         }}
       />
       <Loading

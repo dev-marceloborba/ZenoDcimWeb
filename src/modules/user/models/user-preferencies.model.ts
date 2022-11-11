@@ -11,4 +11,5 @@ export interface UserPreferenciesModel {
   equipmentTable: number;
   ruleTable: number;
   equipmentParameterTable: number;
+  alarmHistoryTable: number;
 }

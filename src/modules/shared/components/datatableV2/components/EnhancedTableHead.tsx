@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Box from "@mui/material/Box";
 import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
@@ -7,19 +8,18 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
 import { EnhancedTableProps } from "../types/datatable.types";
 
-export default function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-    columns,
-    selectionMode,
-    showDelete,
-    showEdit,
-  } = props;
+const EnhancedTableHead: React.FC<EnhancedTableProps> = ({
+  onSelectAllClick,
+  order,
+  orderBy,
+  numSelected,
+  rowCount,
+  onRequestSort,
+  columns,
+  selectionMode,
+  showDelete,
+  showEdit,
+}) => {
   const createSortHandler =
     (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -70,4 +70,6 @@ export default function EnhancedTableHead(props: EnhancedTableProps) {
       </TableRow>
     </TableHead>
   );
-}
+};
+
+export default EnhancedTableHead;

@@ -18,12 +18,7 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import {
-  CagePath,
-  EnergyClimTelecomPath,
-  EquipmentParameterDetailsPath,
-  RackPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import { useFindAllRoomsQuery } from "modules/datacenter/services/room-service";
 import Loading from "modules/shared/components/Loading";
@@ -204,7 +199,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      EquipmentParameterDetailsPath,
+      automationPaths.equipmentParameterDetails.shortPath,
     ]);
     navigate(destinationPath, {
       state: {

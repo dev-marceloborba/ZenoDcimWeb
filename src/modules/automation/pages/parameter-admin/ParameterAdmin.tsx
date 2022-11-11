@@ -1,9 +1,5 @@
 import { Divider } from "@mui/material";
-import {
-  ParameterFormPath,
-  ParameterGroupManagementPath,
-  VirtualParameterFormPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import { AutomationPath } from "modules/home/routes/paths";
 import { HomePath } from "modules/paths";
@@ -25,7 +21,11 @@ export default function ParameterAdmin() {
           label="Novo parâmetro físico"
           onClick={() =>
             navigate(
-              compositePathRoute([HomePath, AutomationPath, ParameterFormPath]),
+              compositePathRoute([
+                HomePath,
+                AutomationPath,
+                automationPaths.parameterForm.fullPath,
+              ]),
               {
                 state: {
                   data: null,
@@ -43,7 +43,7 @@ export default function ParameterAdmin() {
               compositePathRoute([
                 HomePath,
                 AutomationPath,
-                VirtualParameterFormPath,
+                automationPaths.virtualParameterForm.fullPath,
               ]),
               {
                 state: {
@@ -60,7 +60,7 @@ export default function ParameterAdmin() {
           to={compositePathRoute([
             HomePath,
             AutomationPath,
-            ParameterGroupManagementPath,
+            automationPaths.parameterGroupManagement.fullPath,
           ])}
         />
       </Row>

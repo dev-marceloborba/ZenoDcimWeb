@@ -1,3 +1,4 @@
+import { UserPreferenciesModel } from "modules/user/models/user-preferencies.model";
 import { ColumnHeader } from "../DataTable";
 
 export type Order = "asc" | "desc";
@@ -23,6 +24,7 @@ export interface DataTableOptions {
   showDelete?: boolean;
   showDetails?: boolean;
   onCopyItem?(selectedItem: any): void;
+  userPreferenceTable?: keyof UserPreferenciesModel;
 }
 
 export interface EnhancedTableProps {

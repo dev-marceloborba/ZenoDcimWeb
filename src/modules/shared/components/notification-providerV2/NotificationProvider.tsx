@@ -7,9 +7,9 @@ import {
 } from "react";
 import { Notification } from "modules/notifications/models/notification.model";
 
-type NotificationContextProps = {
-  notifications: Notification[];
-  addNotification(notification: Notification): void;
+type NotificationContextProps<T = any> = {
+  notifications: T[];
+  addNotification(notification: T): void;
   removeNotification(id: string): void;
   removeAllNotifications(): void;
 };
@@ -20,6 +20,18 @@ export const NotificationContext = createContext(
   {} as NotificationContextProps
 );
 
+// export function NotificationContext<T>() {
+//   return createContext<T>()
+// }
+
+// export function createNotificationContext<T>() {
+//   return createContext<NotificationContextProps<T> | null>(null);
+// }
+
+// function NotificationContext<T>() {
+//   return createNotificationContext<T>();
+// }
+
 function loadInitalData(): NotificationStateProps {
   const persistedData = localStorage.getItem("notifications");
   if (persistedData) {
@@ -29,7 +41,9 @@ function loadInitalData(): NotificationStateProps {
   }
 }
 
-const NotificationProvider: React.FC = ({ children }) => {
+function NotificationProvider<T>({
+  children,
+}: React.PropsWithChildren<NotificationContextProps<T>>) {
   const [state, setState] = useState<NotificationStateProps>(loadInitalData);
 
   const handleAddNotification = useCallback((notification: Notification) => {
@@ -65,7 +79,7 @@ const NotificationProvider: React.FC = ({ children }) => {
       {children}
     </NotificationContext.Provider>
   );
-};
+}
 
 export default NotificationProvider;
 

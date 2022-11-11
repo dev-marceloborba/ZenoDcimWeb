@@ -21,14 +21,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 import { HomePath } from "modules/paths";
 import { AutomationPath, AlarmsPath } from "modules/home/routes/paths";
-import {
-  AccessControlPath,
-  AutomationSettingsPath,
-  EnergyClimTelecomPath,
-  EquipmentConnectivityPath,
-  FireSystemPath,
-  MeasureHistoryPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import {
   AlarmHistoryPath,
   AlarmRealtimePath,
@@ -147,7 +140,7 @@ const menuItems: ListItemLinkProps[] = [
     items: [
       {
         primary: "Energia, Clima e Telecom",
-        to: `/${HomePath}/${AutomationPath}/${EnergyClimTelecomPath}`,
+        to: `/${HomePath}/${AutomationPath}/${automationPaths.energyClimateTelecom.fullpath}`,
       },
       // {
       //   primary: "Incêndio",
@@ -163,11 +156,11 @@ const menuItems: ListItemLinkProps[] = [
       // },
       {
         primary: "Histórico de medições",
-        to: `/${HomePath}/${AutomationPath}/${MeasureHistoryPath}`,
+        to: `/${HomePath}/${AutomationPath}/${automationPaths.measureHistory.fullPath}`,
       },
       {
         primary: "Configurações de automação",
-        to: `/${HomePath}/${AutomationPath}/${AutomationSettingsPath}`,
+        to: `/${HomePath}/${AutomationPath}/${automationPaths.automationSettings.fullPath}`,
       },
     ],
   },

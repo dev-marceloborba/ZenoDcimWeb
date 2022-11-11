@@ -25,14 +25,16 @@ import { alarmRoutes } from "modules/alarms/routes/AlarmsRoutes";
 import { automationRoutes } from "modules/automation/routes/AutomationRoutes";
 import NotificationProvider from "modules/shared/components/notification-provider/NotificationProvider";
 import AutomationRealtimeProvider from "modules/automation/data/providers/AutomationRealtimeProvider";
+import { datacenterRoutes } from "modules/datacenter/routes/DatacenterRoutes";
 
 export const SignalRContext = createSignalRContext();
 
 const appRoutes = [
-  ...userRoutes,
-  ...automationRoutes,
   ...alarmRoutes,
+  ...automationRoutes,
+  ...datacenterRoutes,
   ...maintenanceRoutes,
+  ...userRoutes,
 ];
 
 const container = document.getElementById("root");

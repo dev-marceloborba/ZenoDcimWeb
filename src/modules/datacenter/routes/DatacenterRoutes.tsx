@@ -5,7 +5,7 @@ import RackDetailsPage from "../pages/rack-details-page/RackDetailsPage";
 import RackEquipmentsAdminPage from "../pages/rack-equipments-admin-page/RackEquipmentsAdminPage";
 import { datacenterPaths } from "./paths";
 
-const datacenterRoutes: RouteObject[] = [
+export const datacenterRoutes: RouteObject[] = [
   {
     path: datacenterPaths.settings.fullPath,
     element: <DataCenterSettingsPage />,

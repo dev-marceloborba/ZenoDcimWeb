@@ -2,11 +2,13 @@ import { GroupModel } from "./group.model";
 import { UserPreferenciesModel } from "./user-preferencies.model";
 
 export interface User {
+  id: string;
   name: string;
   email: string;
 }
 
 export interface AuthModel {
+  id: string;
   user: User;
   token: string;
 }

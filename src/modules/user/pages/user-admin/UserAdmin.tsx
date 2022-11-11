@@ -1,13 +1,13 @@
 import React from "react";
 import Loading from "modules/shared/components/Loading";
-import {
-  useDeleteUserMutation,
-  useFindAllUsersQuery,
-} from "app/services/authentication";
+// import {
+//   useDeleteUserMutation,
+//   useFindAllUsersQuery,
+// } from "app/services/authentication";
 import ButtonLink from "modules/shared/components/ButtonLink";
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { UserModelNormalized } from "modules/user/models/user-model";
 import HeroContainer from "modules/shared/components/HeroContainer";
@@ -17,6 +17,10 @@ import { SettingsPath } from "modules/home/routes/paths";
 import { UserDetailsPath } from "modules/user/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import Row from "modules/shared/components/Row";
+import {
+  useDeleteUserMutation,
+  useFindAllUsersQuery,
+} from "modules/user/services/authentication-service";
 
 const UserAdmin: React.FC = () => {
   const { isLoading, data: users } = useFindAllUsersQuery();
@@ -71,6 +75,7 @@ const UserAdmin: React.FC = () => {
             });
           },
           onDeleteSelection: handleDelete,
+          userPreferenceTable: "userTable",
         }}
       />
       <Loading open={isLoading} />

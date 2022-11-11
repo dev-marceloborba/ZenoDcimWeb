@@ -30,9 +30,8 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { EquipmentParameterFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function EquipmentParametersAssociation() {
   const [selection, setSelection] = useState<ParameterModel[]>([]);
@@ -120,7 +119,7 @@ export default function EquipmentParametersAssociation() {
       compositePathRoute([
         HomePath,
         AutomationPath,
-        EquipmentParameterFormPath,
+        automationPaths.equipmentParameterForm.shortPath,
       ]),
       {
         state: {
@@ -144,7 +143,7 @@ export default function EquipmentParametersAssociation() {
         options={{
           onDeleteSelection: handleDeleteParametersSelection,
           onRowClick: handleSelectedRow,
-          rowsInPage: getPreferedRowLines("equipmentParameterTable"),
+          userPreferenceTable: "equipmentParameterTable",
         }}
       />
       <Grid container columnSpacing={2}>

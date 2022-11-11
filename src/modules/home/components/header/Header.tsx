@@ -49,6 +49,7 @@ const Header: React.FC = () => {
       addNotification({
         id: alarm.id,
         message: alarm.pathname,
+        createdDate: alarm.createdDate,
       });
     },
     []

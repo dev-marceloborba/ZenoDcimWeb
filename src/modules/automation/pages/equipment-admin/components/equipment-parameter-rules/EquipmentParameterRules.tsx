@@ -7,7 +7,7 @@ import AccessButton from "modules/shared/components/access-button/AccessButtonv2
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { EquipmentRulesFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import {
   useCreateAlarmRuleMutation,
   useDeleteAlarmRuleMutation,
@@ -21,7 +21,6 @@ import getPriorityDescription from "./helpers/getPriorityDescription";
 import getConditionalDescription from "./helpers/getConditionalDescription";
 import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
 import { AlarmRuleViewModel } from "modules/automation/models/alarm-rule-model";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 type EquipmentParameterRulesViewModel = {
   id: string;
@@ -95,7 +94,11 @@ export default function EquipmentParameterRules() {
 
   const handleRowClick = (row: EquipmentParameterRulesViewModel) => {
     navigate(
-      compositePathRoute([HomePath, AutomationPath, EquipmentRulesFormPath]),
+      compositePathRoute([
+        HomePath,
+        AutomationPath,
+        automationPaths.equipmentRulesForm.fullPath,
+      ]),
       {
         state: {
           data: {
@@ -134,7 +137,7 @@ export default function EquipmentParameterRules() {
             compositePathRoute([
               HomePath,
               AutomationPath,
-              EquipmentRulesFormPath,
+              automationPaths.equipmentRulesForm.fullPath,
             ]),
             {
               state: {
@@ -157,7 +160,7 @@ export default function EquipmentParameterRules() {
           onRowClick: handleRowClick,
           isEditMode: false,
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("ruleTable"),
+          userPreferenceTable: "ruleTable",
         }}
       />
       <Loading open={isLoading} />

@@ -36,12 +36,16 @@ const UserLogin: React.FC = () => {
 
   const methods = useForm<LoginViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
   const { setCredentials, signed } = useAuth();
 
   const dispatch = useAppDispatch();
 
-  const { handleSubmit } = methods;
+  const {
+    handleSubmit,
+    formState: { isValid },
+  } = methods;
 
   const onSubmit: SubmitHandler<LoginViewModel> = async (data) => {
     try {
@@ -81,7 +85,12 @@ const UserLogin: React.FC = () => {
                 sx={{ mt: 2 }}
               />
               <FormButtonsContainer>
-                <LoginButton type="submit" variant="contained" size="large">
+                <LoginButton
+                  disabled={!isValid}
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                >
                   Login
                 </LoginButton>
                 <Button type="button" variant="text">

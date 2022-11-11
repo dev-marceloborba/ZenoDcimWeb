@@ -14,19 +14,17 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const {
-    numSelected,
-    title,
-    hideSearch,
-    onDelete,
-    toggleTitleAndSearch,
-    filter,
-    setFilter,
-    openSearch,
-    handleCopyItems,
-  } = props;
-
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
+  numSelected,
+  title,
+  hideSearch,
+  onDelete,
+  toggleTitleAndSearch,
+  filter,
+  setFilter,
+  openSearch,
+  handleCopyItems,
+}) => {
   return (
     <Toolbar
       sx={{
@@ -78,7 +76,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       ) : (
         <Row>
           <Visible show={!hideSearch}>
-            <Tooltip title="Filter list">
+            <Tooltip title="Buscar">
               <IconButton onClick={toggleTitleAndSearch}>
                 <SearchIcon />
               </IconButton>

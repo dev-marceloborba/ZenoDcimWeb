@@ -19,7 +19,7 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { CagePath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import Loading from "modules/shared/components/Loading";
 import { RoomModel } from "modules/datacenter/models/datacenter-model";
@@ -147,7 +147,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      CagePath,
+      automationPaths.cage.shortPath,
     ]);
     navigate(destinationPath, {
       state: {

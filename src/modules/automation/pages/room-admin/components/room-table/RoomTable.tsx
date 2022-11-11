@@ -18,9 +18,8 @@ import {
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { RoomFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const RoomTable: React.FC = () => {
   const { data: rooms, isLoading } = useFindAllRoomsQuery();
@@ -68,7 +67,11 @@ const RoomTable: React.FC = () => {
       >
         <ButtonLink
           variant="contained"
-          to={compositePathRoute([HomePath, AutomationPath, RoomFormPath])}
+          to={compositePathRoute([
+            HomePath,
+            AutomationPath,
+            automationPaths.roomForm.fullPath,
+          ])}
           sx={{ marginLeft: "auto" }}
         >
           Criar sala
@@ -88,7 +91,7 @@ const RoomTable: React.FC = () => {
           onRowClick: (row) => console.log(row),
           onDeleteSelection: handleDeleteSelection,
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("roomTable"),
+          userPreferenceTable: "roomTable",
         }}
       />
       <Loading

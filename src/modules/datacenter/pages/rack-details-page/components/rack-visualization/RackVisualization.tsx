@@ -44,22 +44,26 @@ type RackSlotItem = {
 const RackSlot: React.FC<RackSlotProps> = ({ items, onSelectEquipment }) => {
   return (
     <div style={{ overflow: "auto", maxHeight: "430px" }}>
-      {items.map((item, idx) => (
-        <Paper key={idx} sx={{ padding: "8px 4px" }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Avatar sx={{ ml: 1 }}>{item.position}</Avatar>
-            <Button onClick={() => onSelectEquipment(item)}>
-              <Typography>{item.label}</Typography>
-            </Button>
-            <Avatar sx={{ mr: 1 }}>{item.position}</Avatar>
-          </Stack>
-          {idx !== items.length - 1 && <Divider sx={{ mt: 1 }} />}
-        </Paper>
-      ))}
+      {items.map((item, idx) => {
+        return (
+          <Paper key={idx} sx={{ padding: "8px 4px" }}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              height={`${(item.finalPosition - item.position + 1) * 24}px`}
+              minHeight={"24px"}
+            >
+              <Avatar sx={{ ml: 1 }}>{item.position}</Avatar>
+              <Button onClick={() => onSelectEquipment(item)}>
+                <Typography>{item.label}</Typography>
+              </Button>
+              <Avatar sx={{ mr: 1 }}>{item.position}</Avatar>
+            </Stack>
+            {idx !== items.length - 1 && <Divider sx={{ mt: 1 }} />}
+          </Paper>
+        );
+      })}
     </div>
   );
 };

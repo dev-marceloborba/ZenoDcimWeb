@@ -8,7 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { EnergyClimTelecomFloorPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import { FloorModel } from "modules/datacenter/models/datacenter-model";
 import { useFindAllBuildingsQuery } from "modules/datacenter/services/building-service";
@@ -95,7 +95,7 @@ const FloorTable: React.FC<FloorTableProps> = ({ floors }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      EnergyClimTelecomFloorPath,
+      automationPaths.energyClimateTelecomFloor.shortPath,
     ]);
     navigate(destinationPath, {
       state: {

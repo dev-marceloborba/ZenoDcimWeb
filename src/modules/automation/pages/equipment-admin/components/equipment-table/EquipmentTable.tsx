@@ -5,7 +5,7 @@ import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { EquipmentFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import Loading from "modules/shared/components/Loading";
 import {
   useCreateEquipmentMutation,
@@ -19,7 +19,6 @@ import {
 } from "modules/automation/models/automation-model";
 import { useToast } from "modules/shared/components/ToastProvider";
 import getDateFormat from "modules/utils/helpers/getDateFormat";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 type EquipmentTableProps = {
   handleSelectedEquipment: (equipment: any) => void;
@@ -69,7 +68,11 @@ export default function EquipmentTable(props: EquipmentTableProps) {
         options={{
           onRowClick(row) {
             navigate(
-              compositePathRoute([HomePath, AutomationPath, EquipmentFormPath]),
+              compositePathRoute([
+                HomePath,
+                AutomationPath,
+                automationPaths.equipmentForm.fullPath,
+              ]),
               {
                 state: {
                   form: "edit",
@@ -85,7 +88,7 @@ export default function EquipmentTable(props: EquipmentTableProps) {
           },
           onDeleteSelection: (items) => handleDeleteSelection(items),
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("equipmentTable"),
+          userPreferenceTable: "equipmentTable",
         }}
       />
       <Loading open={isLoading} />

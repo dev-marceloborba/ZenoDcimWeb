@@ -88,7 +88,7 @@ const RackEquipmentInfoCard: React.FC<RackEquipmentInfoCardProps> = ({
         <Divider />
         <BasicInfo name="Posição no rack" description={props.rackPosition} />
         <Divider />
-        <BasicInfo name="Tamanho" description={props.size} />
+        <BasicInfo name="Tamanho" description={props.size + 1} />
       </CardContent>
       {showActions && (
         <CardActions>

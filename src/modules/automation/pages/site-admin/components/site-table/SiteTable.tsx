@@ -15,7 +15,6 @@ import {
   SiteModel,
   SiteViewModel,
 } from "modules/datacenter/models/datacenter-model";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const SiteTable: React.FC = () => {
   const { data: sites, isLoading: isLoadingFetching } = useFindAllSitesQuery();
@@ -62,7 +61,7 @@ const SiteTable: React.FC = () => {
           onCopyItem: handleDuplicateItem,
           showDelete: true,
           onDeleteRow: handleDeleteSite,
-          rowsInPage: getPreferedRowLines("siteTable"),
+          userPreferenceTable: "siteTable",
         }}
       />
       <Loading

@@ -38,7 +38,6 @@ import Button from "@mui/material/Button";
 import DataTable, {
   ColumnHeader,
 } from "modules/shared/components/datatableV2/DataTable";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 export default function ParameterGroupAdmin() {
   const [groupParameters, setGroupParameters] = useState<ParameterModel[]>([]);
@@ -247,7 +246,7 @@ export default function ParameterGroupAdmin() {
                 options={{
                   onSelectedItems: handleSelectItems,
                   previousItems,
-                  rowsInPage: getPreferedRowLines("availableParameterTable"),
+                  userPreferenceTable: "availableParameterTable",
                 }}
               />
             </CardContent>
@@ -271,7 +270,7 @@ export default function ParameterGroupAdmin() {
                 options={{
                   showDelete: true,
                   onDeleteRow: handleDeleteParameter,
-                  rowsInPage: getPreferedRowLines("groupParameterTable"),
+                  userPreferenceTable: "groupParameterTable",
                 }}
               />
             </CardContent>

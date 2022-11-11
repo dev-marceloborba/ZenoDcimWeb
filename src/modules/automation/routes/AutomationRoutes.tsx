@@ -1,49 +1,13 @@
 import React from "react";
-import { Routes, Route, RouteObject } from "react-router-dom";
-// import Etc from "modules/automation/pages/energy-clim-telecom/Etc";
+import { RouteObject, useRoutes } from "react-router-dom";
 import FireSystem from "modules/automation/pages/fire-system/FireSystem";
 import AccessControl from "modules/automation/pages/access-control/AccessControl";
 import EquipmentConectivity from "modules/automation/pages/equipment-connectivity/EquipmentConectivity";
 import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAdmin";
-import {
-  AccessControlPath,
-  AutomationSettingsPath,
-  BuildingFormPath,
-  BuildingManagementPath,
-  CagePath,
-  EnergyClimTelecomPath,
-  EnergyClimTelecomFloorPath,
-  EquipmentConnectivityPath,
-  EquipmentFormPath,
-  EquipmentManagementPath,
-  EquipmentParameterFormPath,
-  EquipmentParametersAssociationPath,
-  FireSystemPath,
-  FloorFormPath,
-  FloorManagementPath,
-  ParameterFormPath,
-  ParameterGroupManagementPath,
-  ParameterManagementPath,
-  RackPath,
-  RoomFormPath,
-  RoomManagementPath,
-  SiteFormPath,
-  SiteManagementPath,
-  VirtualParameterFormPath,
-  EquipmentRulesPath,
-  EquipmentRulesFormPath,
-  MeasureHistoryPath,
-  ParameterDetailsPath,
-  AlarmHistoryPath,
-  AlarmRealtimePath,
-  EquipmentParameterDetailsPath,
-  automationPaths,
-} from "./paths";
+import { automationPaths } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
-// import RuleRegister from "../pages/rule-register/RuleRegister";
-// import EnergyEquipmentRegister from "../pages/energy-equipment-register/EnergyEquipmentRegister";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
 import EquipmentForm from "../pages/equipment-admin/components/equipment-form/EquipmentForm";
 import RoomAdmin from "../pages/room-admin/RoomAdmin";
@@ -75,76 +39,131 @@ export const automationRoutes: RouteObject[] = [
     element: <EtcBuilding />,
   },
   {
-    path: automationPaths.energyClimateTelecomFloorPath.fullPath,
+    path: automationPaths.energyClimateTelecomFloor.fullPath,
     element: <EtcFloor />,
+  },
+  {
+    path: automationPaths.cage.fullPath,
+    element: <Cage />,
+  },
+  {
+    path: automationPaths.rack.fullPath,
+    element: <Rack />,
+  },
+  {
+    path: automationPaths.alarmHistory.fullPath,
+    element: <AlarmHistory />,
+  },
+  {
+    path: automationPaths.alarmRealtime.fullPath,
+    element: <AlarmRuntime />,
+  },
+  {
+    path: automationPaths.measureHistory.fullPath,
+    element: <MeasureHistory />,
+  },
+  {
+    path: automationPaths.parameterDetails.fullPath,
+    element: <ParameterHistoryPage />,
+  },
+  {
+    path: automationPaths.fireSystem.fullPath,
+    element: <FireSystem />,
+  },
+  {
+    path: automationPaths.accessControl.fullPath,
+    element: <AccessControl />,
+  },
+  {
+    path: automationPaths.equipmentConnectivity.fullPath,
+    element: <EquipmentConectivity />,
+  },
+  {
+    path: automationPaths.automationSettings.fullPath,
+    element: <AutomationSettings />,
+  },
+  {
+    path: automationPaths.equipmentParameterDetails.fullPath,
+    element: <EquipmentParametersPage />,
+  },
+  {
+    path: automationPaths.equipmentManagement.fullPath,
+    element: <EquipmentAdmin />,
+  },
+  {
+    path: automationPaths.equipmentForm.fullPath,
+    element: <EquipmentForm />,
+  },
+  {
+    path: automationPaths.equipmentParametersAssociation.fullPath,
+    element: <EquipmentParametersAssociation />,
+  },
+  {
+    path: automationPaths.equipmentParameterForm.fullPath,
+    element: <EquipmentParameterForm />,
+  },
+  {
+    path: automationPaths.parameterManagement.fullPath,
+    element: <ParameterAdmin />,
+  },
+  {
+    path: automationPaths.parameterForm.fullPath,
+    element: <ParameterForm />,
+  },
+  {
+    path: automationPaths.parameterForm.fullPath,
+    element: <EquipmentParameterRulesForm />,
+  },
+  {
+    path: automationPaths.virtualParameterForm.fullPath,
+    element: <VirtualParameterForm />,
+  },
+  {
+    path: automationPaths.parameterGroupManagement.fullPath,
+    element: <ParameterGroupAdmin />,
+  },
+  {
+    path: automationPaths.equipmentRules.fullPath,
+    element: <EquipmentParameterRules />,
+  },
+  {
+    path: automationPaths.equipmentRulesForm.fullPath,
+    element: <EquipmentParameterRulesForm />,
+  },
+  {
+    path: automationPaths.siteManagement.fullPath,
+    element: <SiteAdmin />,
+  },
+  {
+    path: automationPaths.siteForm.fullPath,
+    element: <SiteForm />,
+  },
+  {
+    path: automationPaths.buildingManagement.fullPath,
+    element: <BuildingAdmin />,
+  },
+  {
+    path: automationPaths.buildingForm.fullPath,
+    element: <BuildingForm />,
+  },
+  {
+    path: automationPaths.floorManagement.fullPath,
+    element: <FloorAdmin />,
+  },
+  {
+    path: automationPaths.floorForm.fullPath,
+    element: <FloorForm />,
+  },
+  {
+    path: automationPaths.roomManagement.fullPath,
+    element: <RoomAdmin />,
+  },
+  {
+    path: automationPaths.roomForm.fullPath,
+    element: <RoomForm />,
   },
 ];
 
-const AutomationRoutes: React.FC = () => {
-  return (
-    <Routes>
-      <Route path={EnergyClimTelecomPath} element={<EtcBuilding />} />
-      <Route path={EnergyClimTelecomFloorPath} element={<EtcFloor />} />
-      <Route path={CagePath} element={<Cage />} />
-      <Route path={RackPath} element={<Rack />} />
-      <Route
-        path={EquipmentParameterDetailsPath}
-        element={<EquipmentParametersPage />}
-      />
-      <Route path={ParameterDetailsPath} element={<ParameterHistoryPage />} />
-      <Route path={AlarmHistoryPath} element={<AlarmHistory />} />
-      <Route path={AlarmRealtimePath} element={<AlarmRuntime />} />
-      <Route path={MeasureHistoryPath} element={<MeasureHistory />} />
-
-      <Route path={FireSystemPath} element={<FireSystem />} />
-      <Route path={AccessControlPath} element={<AccessControl />} />
-      <Route
-        path={EquipmentConnectivityPath}
-        element={<EquipmentConectivity />}
-      />
-
-      <Route path={AutomationSettingsPath} element={<AutomationSettings />} />
-      {/* equipment */}
-      <Route path={EquipmentManagementPath} element={<EquipmentAdmin />} />
-      <Route path={EquipmentFormPath} element={<EquipmentForm />} />
-      <Route
-        path={EquipmentParametersAssociationPath}
-        element={<EquipmentParametersAssociation />}
-      />
-      <Route
-        path={EquipmentParameterFormPath}
-        element={<EquipmentParameterForm />}
-      />
-      <Route path={EquipmentRulesPath} element={<EquipmentParameterRules />} />
-      <Route
-        path={EquipmentRulesFormPath}
-        element={<EquipmentParameterRulesForm />}
-      />
-      {/* parameters */}
-      <Route path={ParameterManagementPath} element={<ParameterAdmin />} />
-      <Route path={ParameterFormPath} element={<ParameterForm />} />
-      <Route
-        path={VirtualParameterFormPath}
-        element={<VirtualParameterForm />}
-      />
-      <Route
-        path={ParameterGroupManagementPath}
-        element={<ParameterGroupAdmin />}
-      />
-      {/* rooms */}
-      <Route path={RoomManagementPath} element={<RoomAdmin />} />
-      <Route path={RoomFormPath} element={<RoomForm />} />
-      {/* floors */}
-      <Route path={FloorManagementPath} element={<FloorAdmin />} />
-      <Route path={FloorFormPath} element={<FloorForm />} />
-      {/* buildings */}
-      <Route path={BuildingManagementPath} element={<BuildingAdmin />} />
-      <Route path={BuildingFormPath} element={<BuildingForm />} />
-      {/* sites */}
-      <Route path={SiteManagementPath} element={<SiteAdmin />} />
-      <Route path={SiteFormPath} element={<SiteForm />} />
-    </Routes>
-  );
-};
+const AutomationRoutes = () => useRoutes(automationRoutes);
 
 export default AutomationRoutes;

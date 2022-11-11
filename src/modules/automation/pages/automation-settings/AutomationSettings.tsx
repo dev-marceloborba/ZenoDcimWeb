@@ -5,14 +5,7 @@ import HeroContainer from "modules/shared/components/HeroContainer";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import {
-  BuildingManagementPath,
-  EquipmentManagementPath,
-  FloorManagementPath,
-  ParameterManagementPath,
-  RoomManagementPath,
-  SiteManagementPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import CardSection from "modules/shared/components/card-section/CardSection";
 
 const AutomationSettings: React.FC = () => {
@@ -38,7 +31,7 @@ const gridItems = [
     path: compositePathRoute([
       HomePath,
       AutomationPath,
-      EquipmentManagementPath,
+      automationPaths.equipmentManagement.fullPath,
     ]),
   },
   {
@@ -47,18 +40,26 @@ const gridItems = [
     path: compositePathRoute([
       HomePath,
       AutomationPath,
-      ParameterManagementPath,
+      automationPaths.parameterManagement.fullPath,
     ]),
   },
   {
     title: "Salas",
     description: "Configure e gerencie as salas do DCIM",
-    path: compositePathRoute([HomePath, AutomationPath, RoomManagementPath]),
+    path: compositePathRoute([
+      HomePath,
+      AutomationPath,
+      automationPaths.roomManagement.fullPath,
+    ]),
   },
   {
     title: "Andares",
     description: "Configure e gerencie os andares do DCIM",
-    path: compositePathRoute([HomePath, AutomationPath, FloorManagementPath]),
+    path: compositePathRoute([
+      HomePath,
+      AutomationPath,
+      automationPaths.floorManagement.fullPath,
+    ]),
   },
   {
     title: "Prédios",
@@ -66,12 +67,16 @@ const gridItems = [
     path: compositePathRoute([
       HomePath,
       AutomationPath,
-      BuildingManagementPath,
+      automationPaths.buildingManagement.fullPath,
     ]),
   },
   {
     title: "Sites",
     description: "Configure e gerencie os sites(locais) do DCIM",
-    path: compositePathRoute([HomePath, AutomationPath, SiteManagementPath]),
+    path: compositePathRoute([
+      HomePath,
+      AutomationPath,
+      automationPaths.siteManagement.fullPath,
+    ]),
   },
 ];

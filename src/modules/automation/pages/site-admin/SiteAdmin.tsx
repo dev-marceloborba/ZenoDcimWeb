@@ -1,4 +1,4 @@
-import { SiteFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import { AutomationPath } from "modules/home/routes/paths";
 import { HomePath } from "modules/paths";
 import ButtonLink from "modules/shared/components/ButtonLink";
@@ -10,7 +10,11 @@ export default function SiteAdmin() {
   return (
     <HeroContainer title="Gestão de sites">
       <ButtonLink
-        to={compositePathRoute([HomePath, AutomationPath, SiteFormPath])}
+        to={compositePathRoute([
+          HomePath,
+          AutomationPath,
+          automationPaths.siteForm.fullPath,
+        ])}
       >
         Criar site
       </ButtonLink>

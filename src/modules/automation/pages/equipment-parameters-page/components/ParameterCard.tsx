@@ -15,7 +15,7 @@ import useRouter from "modules/core/hooks/useRouter";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { ParameterDetailsPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 
 type ParameterData = {
   parameter: string;
@@ -47,7 +47,11 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
 
   const handleOpenParameterDetails = (parameter: ParameterData) => {
     navigate(
-      compositePathRoute([HomePath, AutomationPath, ParameterDetailsPath]),
+      compositePathRoute([
+        HomePath,
+        AutomationPath,
+        automationPaths.parameterDetails.shortPath,
+      ]),
       {
         state: {
           data: parameter,

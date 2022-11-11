@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import DataTable, {
   ColumnHeader,
 } from "modules/shared/components/datatableV2/DataTable";
@@ -19,9 +19,8 @@ import {
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import { FloorFormPath } from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
-import getPreferedRowLines from "modules/utils/helpers/getPrefferedRowLines";
 
 const FloorTable: React.FC = () => {
   const { data: floors, isLoading } = useFindAllFloorsQuery();
@@ -30,12 +29,15 @@ const FloorTable: React.FC = () => {
   const [deleteFloor] = useDeleteFloorMutation();
   const toast = useToast();
 
-  const handleDeleteSelection = async (rows: FloorModel[]) => {
-    for (let i = 0; i < rows.length; i++) {
-      await deleteFloor(rows[i].id);
-    }
-    toast.open({ message: "Andar(es) excluído(s) com sucesso" });
-  };
+  const handleDeleteSelection = useCallback(
+    async (rows: FloorModel[]) => {
+      for (let i = 0; i < rows.length; i++) {
+        await deleteFloor(rows[i].id);
+      }
+      toast.open({ message: "Andar(es) excluído(s) com sucesso" });
+    },
+    [deleteFloor, toast]
+  );
 
   const handleDuplicateItem = async (floor: FloorModel) => {
     const item = await findFloor(floor.id).unwrap();
@@ -68,7 +70,11 @@ const FloorTable: React.FC = () => {
       >
         <ButtonLink
           variant="contained"
-          to={compositePathRoute([HomePath, AutomationPath, FloorFormPath])}
+          to={compositePathRoute([
+            HomePath,
+            AutomationPath,
+            automationPaths.floorForm.fullPath,
+          ])}
         >
           Criar andar
         </ButtonLink>
@@ -84,10 +90,9 @@ const FloorTable: React.FC = () => {
         }
         columns={columns}
         options={{
-          onRowClick: (row) => console.log(row),
           onDeleteSelection: handleDeleteSelection,
           onCopyItem: handleDuplicateItem,
-          rowsInPage: getPreferedRowLines("floorTable"),
+          userPreferenceTable: "floorTable",
         }}
       />
       <Loading open={isLoading} />

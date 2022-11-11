@@ -16,11 +16,7 @@ import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
-import {
-  EquipmentFormPath,
-  EquipmentParametersAssociationPath,
-  EquipmentRulesPath,
-} from "modules/automation/routes/paths";
+import { automationPaths } from "modules/automation/routes/paths";
 import EquipmentTable from "./components/equipment-table/EquipmentTable";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import AccessButton from "modules/shared/components/access-button/AccessButtonv2";
@@ -53,7 +49,7 @@ const EquipmentAdmin: React.FC = () => {
             to={compositePathRoute([
               HomePath,
               AutomationPath,
-              EquipmentFormPath,
+              automationPaths.equipmentForm.fullPath,
             ])}
           />
         </Tooltip>
@@ -77,7 +73,7 @@ const EquipmentAdmin: React.FC = () => {
                   compositePathRoute([
                     HomePath,
                     AutomationPath,
-                    EquipmentParametersAssociationPath,
+                    automationPaths.equipmentParametersAssociation.fullPath,
                   ]),
                   {
                     state: {
@@ -100,7 +96,7 @@ const EquipmentAdmin: React.FC = () => {
                   compositePathRoute([
                     HomePath,
                     AutomationPath,
-                    EquipmentRulesPath,
+                    automationPaths.equipmentRules.fullPath,
                   ]),
                   {
                     state: {
