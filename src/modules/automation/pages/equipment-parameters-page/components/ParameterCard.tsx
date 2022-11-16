@@ -50,7 +50,7 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
       compositePathRoute([
         HomePath,
         AutomationPath,
-        automationPaths.parameterDetails.shortPath,
+        automationPaths.parameterDetails.fullPath,
       ]),
       {
         state: {

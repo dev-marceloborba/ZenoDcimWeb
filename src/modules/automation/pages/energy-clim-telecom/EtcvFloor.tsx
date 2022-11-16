@@ -147,7 +147,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      automationPaths.cage.shortPath,
+      automationPaths.cage.fullPath,
     ]);
     navigate(destinationPath, {
       state: {

@@ -80,6 +80,22 @@ const RackTable: React.FC = () => {
 
 const columns: ColumnHeader[] = [
   {
+    name: "site",
+    label: "Site",
+  },
+  {
+    name: "building",
+    label: "Prédio",
+  },
+  {
+    name: "floor",
+    label: "Andar",
+  },
+  {
+    name: "room",
+    label: "Sala",
+  },
+  {
     name: "localization",
     label: "Localização",
   },

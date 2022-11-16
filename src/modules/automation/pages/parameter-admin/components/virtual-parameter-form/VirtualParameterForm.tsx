@@ -130,7 +130,7 @@ export default function VirtualParameterForm() {
           <ControlledTextInput label="Unidade" name="unit" />
           <ControlledTextInput label="Limite inferior" name="lowLimit" />
           <ControlledTextInput label="Limite superior" name="highLimit" />
-          <ControlledTextInput label="Escala" name="scale" />
+          <ControlledTextInput label="Escala" name="scale" defaultValue={1} />
           <ControlledTextInput label="Expressão" name="expression" />
           <SubmitButton disabled={!isValid} label="Salvar" />
           <Button onClick={() => handleBrowseParameters()} sx={{ mt: 2 }}>

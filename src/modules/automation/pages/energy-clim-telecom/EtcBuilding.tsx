@@ -95,7 +95,7 @@ const FloorTable: React.FC<FloorTableProps> = ({ floors }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      automationPaths.energyClimateTelecomFloor.shortPath,
+      automationPaths.energyClimateTelecomFloor.fullPath,
     ]);
     navigate(destinationPath, {
       state: {

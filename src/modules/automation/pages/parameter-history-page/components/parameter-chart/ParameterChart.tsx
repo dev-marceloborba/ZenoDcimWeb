@@ -13,6 +13,7 @@ const ParameterChart: React.FC<ParameterChartProps> = ({
   measures,
   description,
 }) => {
+  const formatter = (value: number) => value.toFixed(2);
   return (
     <Card>
       <CardContent>
@@ -20,6 +21,7 @@ const ParameterChart: React.FC<ParameterChartProps> = ({
           x={measures.map((measure) => getTimeStampFormat(measure.timestamp))}
           y={measures.map((measure) => measure.value)}
           description={description}
+          formatter={formatter}
         />
       </CardContent>
     </Card>

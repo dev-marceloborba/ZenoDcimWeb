@@ -199,7 +199,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      automationPaths.equipmentParameterDetails.shortPath,
+      automationPaths.equipmentParameterDetails.fullPath,
     ]);
     navigate(destinationPath, {
       state: {

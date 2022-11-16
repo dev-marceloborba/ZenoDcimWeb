@@ -102,7 +102,7 @@ export default function ParameterForm() {
           <ControlledTextInput name="unit" label="Unidade" />
           <ControlledTextInput name="lowLimit" label="Limite inferior" />
           <ControlledTextInput name="highLimit" label="Limite superior" />
-          <ControlledTextInput name="scale" label="Escala" />
+          <ControlledTextInput name="scale" label="Escala" defaultValue={1} />
           <SubmitButton disabled={!isValid} label="Salvar" />
         </FormProvider>
         <Loading open={isLoading} />

@@ -8,9 +8,16 @@ export type LineCharProps = {
   y: number[];
   style?: React.HTMLAttributes<HTMLDivElement>;
   description?: string;
+  formatter?(value: any): string | string[];
 };
 
-const LineChart: React.FC<LineCharProps> = ({ x, y, style, description }) => {
+const LineChart: React.FC<LineCharProps> = ({
+  x,
+  y,
+  style,
+  description,
+  formatter,
+}) => {
   const theme = useTheme();
   return (
     <div style={style}>
@@ -33,6 +40,7 @@ const LineChart: React.FC<LineCharProps> = ({ x, y, style, description }) => {
               style: {
                 colors: theme.palette.text.secondary,
               },
+              formatter,
             },
           },
           dataLabels: {

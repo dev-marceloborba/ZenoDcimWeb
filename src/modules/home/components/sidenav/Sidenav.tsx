@@ -66,16 +66,16 @@ const Sidenav: React.FC = () => {
 };
 
 const menuItems: ListItemLinkProps[] = [
-  {
-    primary: "Dashboard",
-    icon: <DashboardIcon />,
-    items: [
-      { primary: "Energia", to: "/zeno/dashboard/energy" },
-      { primary: "Incêndio", to: "/zeno/dashboard/fire-system" },
-      { primary: "Climatização", to: "/zeno/dashboard/climate" },
-      { primary: "Controle de acesso", to: "/zeno/dashboard/access-control" },
-    ],
-  },
+  // {
+  //   primary: "Dashboard",
+  //   icon: <DashboardIcon />,
+  //   items: [
+  //     { primary: "Energia", to: "/zeno/dashboard/energy" },
+  //     { primary: "Incêndio", to: "/zeno/dashboard/fire-system" },
+  //     { primary: "Climatização", to: "/zeno/dashboard/climate" },
+  //     { primary: "Controle de acesso", to: "/zeno/dashboard/access-control" },
+  //   ],
+  // },
   {
     primary: "Datacenter",
     icon: <StorageIcon />,
@@ -117,23 +117,23 @@ const menuItems: ListItemLinkProps[] = [
       },
     ],
   },
-  {
-    primary: "Clientes",
-    icon: <PeopleIcon />,
-    items: [
-      { primary: "Contratos", to: "/zeno/clients/contracts" },
-      { primary: "Agenda", to: "/zeno/clients/schedule" },
-      { primary: "Ordem de serviço", to: "/zeno/clients/service-order" },
-      { primary: "Eventos e multas", to: "/zeno/clients/events-and-injuries" },
-      { primary: "Capacidade", to: "/zeno/clients/capacity" },
-      { primary: "Entrada de equipamento", to: "/zeno/clients/new-equipment" },
-    ],
-  },
-  {
-    to: "/zeno/cameras",
-    primary: "Câmeras",
-    icon: <VideocamIcon />,
-  },
+  // {
+  //   primary: "Clientes",
+  //   icon: <PeopleIcon />,
+  //   items: [
+  //     { primary: "Contratos", to: "/zeno/clients/contracts" },
+  //     { primary: "Agenda", to: "/zeno/clients/schedule" },
+  //     { primary: "Ordem de serviço", to: "/zeno/clients/service-order" },
+  //     { primary: "Eventos e multas", to: "/zeno/clients/events-and-injuries" },
+  //     { primary: "Capacidade", to: "/zeno/clients/capacity" },
+  //     { primary: "Entrada de equipamento", to: "/zeno/clients/new-equipment" },
+  //   ],
+  // },
+  // {
+  //   to: "/zeno/cameras",
+  //   primary: "Câmeras",
+  //   icon: <VideocamIcon />,
+  // },
   {
     primary: "Automação",
     icon: <LineStyleIcon />,

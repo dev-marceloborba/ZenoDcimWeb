@@ -4,7 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import MenuItem from "@mui/material/MenuItem";
 import isNumber from "modules/utils/helpers/isNumber";
 
-type ComboboxItem = {
+export type ComboboxItem = {
   value: string | number;
   description: string;
 };
@@ -20,7 +20,7 @@ const ControlledTextInput: React.FC<TextInputProps> = ({ ...props }) => {
 
   const getDefaultValue = () => {
     if (isNumber(defaultValue)) {
-      return 0;
+      return defaultValue;
     } else {
       return "";
     }
