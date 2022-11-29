@@ -14,4 +14,5 @@ export const datacenterPaths = {
     fullPath: "infastructure-settings/rack-equipments",
     shortPath: "rack-equipments",
   },
+  ocupation: "occupation",
 };

@@ -22,6 +22,11 @@ export interface CreateWorkOrderViewModel {
   maintenanceType: EMaintenanceType;
   nature: EWorkOrderNature;
   orderType: EWorkOrderType;
+  priority: EOrderPriority;
+  estimatedRepairTime: number;
+  realRepairTime: number;
+  cost: number;
+  title: string;
 }
 
 export type UpdateWorkOrderViewModel = WorkOrderModel;
@@ -43,18 +48,22 @@ export interface WorkOrderModel {
   maintenanceType: EMaintenanceType;
   nature: EWorkOrderNature;
   orderType: EWorkOrderType;
+  priority: EOrderPriority;
+  estimatedRepairTime: number;
+  realRepairTime: number;
+  cost: number;
+  title: string;
 }
 
 export type WorkEventsTableViewModel = {
   id: string;
-  site: string;
-  building: string;
-  floor: string;
-  room: string;
+  title: string;
   equipment: string;
+  maintenanceType: string;
   initialDate: string;
   finalDate: string;
-  status: string;
+  operationNature: string;
+  responsible: string;
 };
 
 export type WorkOrderDetailsViewModel = {
@@ -71,6 +80,11 @@ export type WorkOrderDetailsViewModel = {
   nature: string;
   responsible: string;
   description: string;
+  title: string;
+  priority: string;
+  estimatedRepairTime: number;
+  realRepairTime: number;
+  cost: number;
 };
 
 export enum EMaintenanceResponsibleType {
@@ -101,4 +115,10 @@ export enum EMaintenanceType {
 export enum EWorkOrderType {
   ELECTRICAL = 0,
   NETWORK = 1,
+}
+
+export enum EOrderPriority {
+  LOW = 0,
+  MEDIUM = 1,
+  HIGH = 2,
 }

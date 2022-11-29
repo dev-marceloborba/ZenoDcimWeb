@@ -5,21 +5,18 @@ import Box from "@mui/material/Box";
 import withAuthentication from "app/hocs/withAuthentication";
 import Header from "modules/home/components/header/Header";
 import Sidenav from "modules/home/components/sidenav/Sidenav";
-import { LayoutProvider } from "app/hooks/useLayout";
+import { useLayout } from "app/hooks/useLayout";
 
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
 import Footer from "modules/shared/components/Footer";
 import { useFindUserByIdMutation } from "modules/user/services/authentication-service";
 import Loading from "modules/shared/components/Loading";
 import { useAppDispatch } from "app/hooks";
-import { useAuth } from "app/hooks/useAuth";
 import { setPreferences } from "modules/user/stores/slices/AuthenticationSlice";
+import { useAuth } from "app/hooks/useAuth";
 
 const ZenoHome: React.FC = () => {
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("md"));
   const [findUser, { isLoading }] = useFindUserByIdMutation();
+  const { drawerOpened } = useLayout();
   const { currentUser } = useAuth();
   const dispatch = useAppDispatch();
 
@@ -34,7 +31,7 @@ const ZenoHome: React.FC = () => {
   }, [currentUser?.id, dispatch, findUser]);
 
   return (
-    <LayoutProvider>
+    <>
       <Box
         component="main"
         sx={{
@@ -49,7 +46,7 @@ const ZenoHome: React.FC = () => {
           component="div"
           sx={{
             mt: "4rem",
-            ml: matches ? "220px" : "0px",
+            ml: drawerOpened ? "220px" : "0px",
           }}
         >
           <Outlet />
@@ -57,7 +54,7 @@ const ZenoHome: React.FC = () => {
       </Box>
       {/* <Footer /> */}
       <Loading open={isLoading} />
-    </LayoutProvider>
+    </>
   );
 };
 

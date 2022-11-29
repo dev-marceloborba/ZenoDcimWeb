@@ -30,6 +30,11 @@ type ParameterData = {
 type ParameterCardProps = {
   title: string;
   parameters: ParameterData[];
+  navigationIds: {
+    floorId: string;
+    roomId: string;
+    equipmentId: string;
+  };
 };
 
 function getAlarmStatus(alarms: number): AlarmStatus {
@@ -46,11 +51,15 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
   const { navigate } = useRouter();
 
   const handleOpenParameterDetails = (parameter: ParameterData) => {
+    console.log(parameter);
     navigate(
       compositePathRoute([
         HomePath,
         AutomationPath,
-        automationPaths.parameterDetails.fullPath,
+        automationPaths.parameterDetails.fullPath
+          .replace(":floorId", props.navigationIds.floorId)
+          .replace(":roomId", props.navigationIds.roomId)
+          .replace(":equipmentId", props.navigationIds.equipmentId),
       ]),
       {
         state: {
@@ -71,7 +80,7 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
             <TableHead>
               <TableRow>
                 <TableCell>Parâmetro</TableCell>
-                <TableCell>Descrição</TableCell>
+                {/* <TableCell>Descrição</TableCell> */}
                 <TableCell>Valor</TableCell>
                 <TableCell>Alarmes</TableCell>
                 <TableCell>Status</TableCell>
@@ -85,8 +94,12 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
                   onClick={() => handleOpenParameterDetails(parameter)}
                 >
                   <TableCell>{parameter.parameter}</TableCell>
-                  <TableCell>{parameter.description}</TableCell>
-                  <TableCell>{`${parameter.value} ${parameter.unit}`}</TableCell>
+                  {/* <TableCell>{parameter.description}</TableCell> */}
+                  <TableCell
+                    sx={{
+                      whiteSpace: "nowrap",
+                    }}
+                  >{`${parameter.value} ${parameter.unit}`}</TableCell>
                   <TableCell>
                     <AlarmIndicator
                       description=""

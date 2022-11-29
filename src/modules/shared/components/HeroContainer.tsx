@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Container, { ContainerProps } from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import Breadcrumbs from "./Breadcrumbs";
+import Breadcrumbs from "./breadcrumbs/Breadcrumbs";
 import { styled } from "@mui/material/styles";
 
 type HeroContainerProps = {

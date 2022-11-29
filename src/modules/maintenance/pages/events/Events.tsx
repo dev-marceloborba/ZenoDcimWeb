@@ -2,7 +2,7 @@ import React from "react";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import { useFindAllWorkOrdersQuery } from "modules/maintenance/services/maintenance.service";
 import Loading from "modules/shared/components/Loading";
 import { WorkEventsTableViewModel } from "modules/maintenance/models/work-order.model";
@@ -28,6 +28,7 @@ const Events: React.FC = () => {
         columns={columns}
         options={{
           onRowClick: (row) => handleOpenWorkOrderDetails(row),
+          selectionMode: "hide",
         }}
       />
       <Loading open={isLoading} />
@@ -37,37 +38,33 @@ const Events: React.FC = () => {
 
 const columns: ColumnHeader[] = [
   {
-    name: "site",
-    label: "Site",
-  },
-  {
-    name: "building",
-    label: "Prédio",
-  },
-  {
-    name: "floor",
-    label: "Andar",
-  },
-  {
-    name: "room",
-    label: "Sala",
+    name: "title",
+    label: "Título",
   },
   {
     name: "equipment",
     label: "Equipamento",
   },
   {
+    name: "maintenanceType",
+    label: "Tipo de manutenção",
+  },
+  {
+    name: "operationNature",
+    label: "Natureza da operação",
+  },
+  {
+    name: "responsible",
+    label: "Responsável",
+  },
+  {
     name: "initialDate",
-    label: "Data inicial",
+    label: "Data de criação",
   },
   {
     name: "finalDate",
-    label: "Data final",
+    label: "Data de finalização",
   },
-  // {
-  //   name: "status",
-  //   label: "Status",
-  // },
 ];
 
 export default Events;

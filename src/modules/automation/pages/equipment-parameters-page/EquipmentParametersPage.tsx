@@ -9,7 +9,7 @@ import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRe
 
 export default function EquipmentParametersPage() {
   const {
-    state: { data: equipment },
+    params: { floorId, roomId, equipmentId },
   } = useRouter();
   const [findEquipmentParameters, { data: parameters, isLoading }] =
     useFindEquipmentParametersByEquipmentIdMutation();
@@ -17,12 +17,12 @@ export default function EquipmentParametersPage() {
 
   useEffect(() => {
     async function fetchParameters() {
-      if (equipment.id) {
-        await findEquipmentParameters(equipment.id).unwrap();
+      if (equipmentId) {
+        await findEquipmentParameters(equipmentId).unwrap();
       }
     }
     fetchParameters();
-  }, [equipment.id, findEquipmentParameters]);
+  }, [equipmentId, findEquipmentParameters]);
 
   return (
     <HeroContainer title="Detalhes equipamento">
@@ -30,6 +30,11 @@ export default function EquipmentParametersPage() {
         <Grid item md={4}>
           <ParameterCard
             title="Energia"
+            navigationIds={{
+              roomId: roomId ?? "",
+              floorId: floorId ?? "",
+              equipmentId: equipmentId ?? "",
+            }}
             parameters={
               parameters?.map((parameter) => {
                 return {

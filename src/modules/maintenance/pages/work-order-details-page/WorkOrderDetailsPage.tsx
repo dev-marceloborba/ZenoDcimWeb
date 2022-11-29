@@ -42,6 +42,7 @@ export default function WorkOrderDetailsPage() {
             <CardContent>
               <OrderInfo name="Código OS" description={workOrder?.id ?? ""} />
               <Divider />
+              <OrderInfo name="Título" description={workOrder?.title ?? ""} />
               <OrderInfo name="Site" description={workOrder?.site ?? ""} />
               <Divider />
               <OrderInfo
@@ -86,6 +87,29 @@ export default function WorkOrderDetailsPage() {
               <OrderInfo
                 name="Responsável"
                 description={workOrder?.responsible ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Prioridade"
+                description={workOrder?.priority ?? ""}
+              />
+              <Divider />
+              <OrderInfo
+                name="Tempo estimado de reparo"
+                description={workOrder?.estimatedRepairTime?.toString() ?? ""}
+                suffix="h"
+              />
+              <Divider />
+              <OrderInfo
+                name="Tempo real de reparo"
+                description={workOrder?.realRepairTime?.toString() ?? ""}
+                suffix="h"
+              />
+              <Divider />
+              <OrderInfo
+                name="Custo"
+                description={workOrder?.cost?.toString() ?? ""}
+                prefix="R$"
               />
               <Divider />
               <OrderInfo

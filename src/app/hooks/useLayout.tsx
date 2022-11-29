@@ -1,10 +1,14 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 type LayoutContextData = {
-  showModal(): void;
-  closeModal(): void;
   toggleDrawer(): void;
   showMenuButton: boolean;
   drawerOpened: boolean;
@@ -14,64 +18,40 @@ type LayoutContextData = {
 type DrawerStateType = {
   showMenuButton: boolean;
   drawerOpened: boolean;
-  modalOpened: boolean;
   isMobile: boolean;
 };
 
-const LayoutContext = createContext<LayoutContextData>({} as LayoutContextData);
+const LayoutContext = createContext<LayoutContextData>({
+  isMobile: false,
+  drawerOpened: true,
+} as LayoutContextData);
 
 export const LayoutProvider: React.FC = ({ children }) => {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("sm"));
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [drawerState, setDrawerState] = useState<DrawerStateType>(
-    {} as DrawerStateType
-  );
+  const [drawerState, setDrawerState] = useState<DrawerStateType>({
+    drawerOpened: true,
+    isMobile: false,
+  } as DrawerStateType);
 
   useEffect(() => {
-    if (!matches) {
-      setDrawerState((prevState) => ({
-        ...prevState,
-        isMobile: true,
-        drawerOpened: false,
-      }));
-    } else {
-      setDrawerState((prevState) => ({
-        ...prevState,
-        isMobile: false,
-        drawerOpened: true,
-      }));
-    }
+    setDrawerState((prevState) => ({
+      ...prevState,
+      isMobile: matches,
+      drawerOpened: matches ? false : true,
+    }));
   }, [matches]);
 
-  const toggleDrawer = () => {
-    const { isMobile, drawerOpened } = drawerState;
-    if (isMobile) {
-      setDrawerState((prevState) => ({
-        ...prevState,
-        drawerOpened: !drawerOpened,
-      }));
-    }
-  };
-
-  const showModal = () => {
+  const toggleDrawer = useCallback(() => {
     setDrawerState((prevState) => ({
       ...prevState,
-      modalOpened: true,
+      drawerOpened: !prevState.drawerOpened,
     }));
-  };
-
-  const closeModal = () => {
-    setDrawerState((prevState) => ({
-      ...prevState,
-      modalOpened: false,
-    }));
-  };
+  }, []);
 
   return (
-    <LayoutContext.Provider
-      value={{ toggleDrawer, showModal, closeModal, ...drawerState }}
-    >
+    <LayoutContext.Provider value={{ toggleDrawer, ...drawerState }}>
       {children}
     </LayoutContext.Provider>
   );

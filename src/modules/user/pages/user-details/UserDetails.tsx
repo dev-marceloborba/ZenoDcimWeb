@@ -18,6 +18,7 @@ import {
 } from "modules/user/services/authentication-service";
 import { getUserStatusInstance } from "modules/user/models/user-model";
 import { useFindAllGroupsQuery } from "modules/user/services/groups.service";
+import { getGroupIdFromName } from "modules/user/models/group.model";
 
 const UserDetails: React.FC = () => {
   const { data: groups } = useFindAllGroupsQuery();
@@ -26,7 +27,6 @@ const UserDetails: React.FC = () => {
   const {
     state: { user, mode },
   } = useRouter();
-  const { state } = useRouter();
   const toast = useToast();
   const methods = useForm<EditUserRequest>();
 
@@ -48,7 +48,7 @@ const UserDetails: React.FC = () => {
 
   const onDelete = async () => {
     try {
-      // await deleteUser(id!).unwrap();
+      await deleteUser(user.id).unwrap();
       toast.open({ message: "Usuário deletado com sucesso" });
     } catch (error) {
       toast.open({
@@ -60,16 +60,18 @@ const UserDetails: React.FC = () => {
 
   useEffect(() => {
     async function getUser() {
-      setValue("id", user.id);
-      setValue("firstName", user.firstName);
-      setValue("lastName", user.lastName);
-      setValue("email", user.email);
-      setValue("active", getUserStatusInstance(user.active));
-      setValue("groupId", user.group);
+      if (user) {
+        setValue("id", user.id);
+        setValue("firstName", user.firstName);
+        setValue("lastName", user.lastName);
+        setValue("email", user.email);
+        setValue("active", getUserStatusInstance(user.active));
+        setValue("groupId", getGroupIdFromName(user.group, groups ?? []));
+      }
     }
 
-    if (user) getUser();
-  }, [setValue, user]);
+    getUser();
+  }, [groups, setValue, user]);
 
   return (
     <HeroContainer maxWidth="md">

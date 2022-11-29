@@ -212,8 +212,6 @@ const DataTableV2: React.FC<DataTableProps> = ({
     }
   }, [userPreferenceTable, userState]);
 
-  console.log(currentRows);
-
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -277,6 +275,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
                       return (
                         <TableCell
                           key={index}
+                          padding="checkbox"
                           align={index === 0 ? "left" : "right"}
                           {...(!editMode && {
                             onClick: () => handleRowClick(row),

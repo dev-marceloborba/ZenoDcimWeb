@@ -59,3 +59,8 @@ export type UserPermissions = {
     receiveEmail: boolean;
   };
 };
+
+export function getGroupIdFromName(name: string, groups: GroupModel[]) {
+  if (groups.length === 0) return "";
+  return groups.find((g) => g.name === name)?.id ?? "";
+}

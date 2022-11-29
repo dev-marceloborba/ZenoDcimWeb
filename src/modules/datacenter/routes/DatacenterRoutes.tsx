@@ -9,18 +9,22 @@ export const datacenterRoutes: RouteObject[] = [
   {
     path: datacenterPaths.settings.fullPath,
     element: <DataCenterSettingsPage />,
+    title: "Configurações de infraestrutura",
   },
   {
     path: datacenterPaths.racks.fullPath,
     element: <RackAdminPage />,
+    title: "Rack",
   },
   {
     path: datacenterPaths.rackDetails.fullPath,
     element: <RackDetailsPage />,
+    title: "Detalhes do rack",
   },
   {
     path: datacenterPaths.rackEquipments.fullPath,
     element: <RackEquipmentsAdminPage />,
+    title: "Equipamentos do rack",
   },
 ];
 

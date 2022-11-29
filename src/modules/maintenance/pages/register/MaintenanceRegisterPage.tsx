@@ -12,11 +12,12 @@ import { CreateWorkOrderViewModel } from "modules/maintenance/models/work-order.
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import ControlledDateInput from "modules/shared/components/ControlledDateInput";
-import useDataCenterLocales from "./hooks/data-center-locales.hook";
 import { useCreateWorkOrderMutation } from "modules/maintenance/services/maintenance.service";
 import Loading from "modules/shared/components/Loading";
 import { format } from "date-fns";
 import { useFindAllSuplliersQuery } from "modules/maintenance/services/supplier.service";
+import Card from "modules/shared/components/Card";
+import useDataCenter from "modules/datacenter/hooks/useDataCenter";
 
 export default function WorkOrderRegisterPage() {
   const methods = useForm<CreateWorkOrderViewModel>({
@@ -24,8 +25,7 @@ export default function WorkOrderRegisterPage() {
     mode: "onChange",
   });
   const [createWorkOrder] = useCreateWorkOrderMutation();
-  const { sites, buildings, floors, equipments, rooms, isLoading, actions } =
-    useDataCenterLocales();
+  const { isLoading, infra, selections } = useDataCenter();
   const { data: suppliers } = useFindAllSuplliersQuery();
   const { back, navigate } = useRouter();
   const toast = useToast();
@@ -34,16 +34,10 @@ export default function WorkOrderRegisterPage() {
     handleSubmit,
     reset,
     formState: { isValid, isSubmitSuccessful },
-    watch,
   } = methods;
 
-  const responsibleTypeWatcher = watch("responsibleType");
-  const siteWacher = watch("siteId");
-  const buildingWatcher = watch("buildingId");
-  const floorWatcher = watch("floorId");
-  const roomWatcher = watch("roomId");
-
   const onSubmit: SubmitHandler<CreateWorkOrderViewModel> = async (data) => {
+    console.log(data);
     try {
       await createWorkOrder({
         ...data,
@@ -62,37 +56,13 @@ export default function WorkOrderRegisterPage() {
     }
   };
 
-  useEffect(() => {
-    if (responsibleTypeWatcher === 0) {
+  const changeSupplier = (type: number) => {
+    if (type === 0) {
       setResponsibles(suppliers?.map((sup) => sup.responsible) ?? []);
-    } else if (responsibleTypeWatcher === 1) {
+    } else if (type === 1) {
       setResponsibles(["Matheus"]);
     }
-  }, [responsibleTypeWatcher, suppliers]);
-
-  useEffect(() => {
-    if (siteWacher) {
-      actions.getBuildings(siteWacher);
-    }
-  }, [actions, siteWacher]);
-
-  useEffect(() => {
-    if (buildingWatcher) {
-      actions.getFloors(buildingWatcher);
-    }
-  }, [actions, buildingWatcher]);
-
-  useEffect(() => {
-    if (floorWatcher) {
-      actions.getRooms(floorWatcher);
-    }
-  }, [actions, floorWatcher]);
-
-  useEffect(() => {
-    if (roomWatcher) {
-      actions.getEquipments(roomWatcher);
-    }
-  }, [actions, roomWatcher]);
+  };
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -126,132 +96,156 @@ export default function WorkOrderRegisterPage() {
         Fornecedores
       </Button>
       <FormProvider {...methods}>
-        <Form
-          onSubmit={handleSubmit(onSubmit)}
-          sx={{
-            "& .MuiFormControl-root": {
-              mt: 1.2,
-            },
-          }}
-        >
-          <Grid container columnSpacing={1}>
-            <Grid item md={6}>
-              <ControlledTextInput
-                label="Tipo de responsável"
-                name="responsibleType"
-                items={[
-                  { description: "Fornecedor", value: 0 },
-                  { description: "Interno", value: 1 },
-                ]}
-              />
-              <ControlledTextInput
-                label="Responsável"
-                name="responsible"
-                items={responsibles.map((resp) => ({
-                  description: resp,
-                  value: resp,
-                }))}
-              />
-              <ControlledTextInput
-                label="Site"
-                name="siteId"
-                items={sites?.map((s) => ({
-                  description: s.name,
-                  value: s.id,
-                }))}
-              />
-              <ControlledTextInput
-                label="Prédio"
-                name="buildingId"
-                items={buildings?.map((b) => ({
-                  description: b.name,
-                  value: b.id,
-                }))}
-              />
-              <ControlledTextInput
-                label="Andar"
-                name="floorId"
-                items={floors.map((f) => ({
-                  description: f.name,
-                  value: f.id,
-                }))}
-              />
-              <ControlledTextInput
-                label="Sala"
-                name="roomId"
-                items={rooms.map((r) => ({
-                  description: r.name,
-                  value: r.id,
-                }))}
-              />
-              <ControlledTextInput
-                label="Equipamento"
-                name="equipmentId"
-                items={equipments.map((e) => ({
-                  description: e.component,
-                  value: e.id,
-                }))}
-              />
-            </Grid>
+        <Card>
+          <Form
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{
+              "& .MuiFormControl-root": {
+                mt: 1.2,
+              },
+            }}
+          >
+            <Grid container columnSpacing={1}>
+              <Grid item md={4}>
+                <ControlledTextInput label="Título" name="title" />
+                <ControlledTextInput
+                  label="Site"
+                  name="siteId"
+                  items={infra.sites ?? []}
+                  onChange={(e) => selections.siteSelection(e.target.value)}
+                />
+                <ControlledTextInput
+                  label="Prédio"
+                  name="buildingId"
+                  items={infra.buildings ?? []}
+                  onChange={(e) => selections.buildingSelection(e.target.value)}
+                />
+                <ControlledTextInput
+                  label="Andar"
+                  name="floorId"
+                  items={infra.floors ?? []}
+                  onChange={(e) => selections.floorSelection(e.target.value)}
+                />
+                <ControlledTextInput
+                  label="Sala"
+                  name="roomId"
+                  items={infra.rooms ?? []}
+                  onChange={(e) => selections.roomSelection(e.target.value)}
+                />
+                <ControlledTextInput
+                  label="Equipamento"
+                  name="equipmentId"
+                  items={infra.equipments ?? []}
+                />
+              </Grid>
 
-            <Grid item md={6}>
-              <ControlledTextInput
-                label="Natureza da OS"
-                name="nature"
-                items={[
-                  {
-                    description: "Acompanhamento",
-                    value: 0,
-                  },
-                  {
-                    description: "Atendimento",
-                    value: 1,
-                  },
-                  {
-                    description: "Emergencial",
-                    value: 2,
-                  },
-                  {
-                    description: "Planejada",
-                    value: 3,
-                  },
-                ]}
-              />
-              <ControlledTextInput
-                name="orderType"
-                label="Tipo de ordem"
-                items={[
-                  {
-                    description: "Elétrica",
-                    value: 0,
-                  },
-                  {
-                    description: "Rede",
-                    value: 1,
-                  },
-                ]}
-              />
-              <ControlledTextInput
-                label="Tipo de manutenção"
-                name="maintenanceType"
-                items={[
-                  { description: "Preventiva", value: 0 },
-                  { description: "Corretiva", value: 1 },
-                ]}
-              />
-              <ControlledDateInput label="Data inicial" name="initialDate" />
-              <ControlledDateInput label="Data final" name="finalDate" />
-              <ControlledTextInput
-                label="Descrição"
-                name="description"
-                multiline
-                minRows={1}
-                maxRows={99}
-              />
-              <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />
+              <Grid item md={4}>
+                <ControlledTextInput
+                  label="Tipo de responsável"
+                  name="responsibleType"
+                  items={[
+                    { description: "Fornecedor", value: 0 },
+                    { description: "Interno", value: 1 },
+                  ]}
+                  onChange={(e) => changeSupplier(Number(e.target.value))}
+                />
+                <ControlledTextInput
+                  label="Responsável"
+                  name="responsible"
+                  items={responsibles.map((resp) => ({
+                    description: resp,
+                    value: resp,
+                  }))}
+                />
+
+                <ControlledTextInput
+                  name="orderType"
+                  label="Tipo de ordem"
+                  items={[
+                    {
+                      description: "Elétrica",
+                      value: 0,
+                    },
+                    {
+                      description: "Rede",
+                      value: 1,
+                    },
+                  ]}
+                />
+                <ControlledTextInput
+                  label="Tipo de manutenção"
+                  name="maintenanceType"
+                  items={[
+                    { description: "Preventiva", value: 0 },
+                    { description: "Corretiva", value: 1 },
+                  ]}
+                />
+                <ControlledTextInput
+                  label="Natureza da OS"
+                  name="nature"
+                  items={[
+                    {
+                      description: "Acompanhamento",
+                      value: 0,
+                    },
+                    {
+                      description: "Atendimento",
+                      value: 1,
+                    },
+                    {
+                      description: "Emergencial",
+                      value: 2,
+                    },
+                    {
+                      description: "Planejada",
+                      value: 3,
+                    },
+                  ]}
+                />
+                <ControlledTextInput
+                  label="Prioridade"
+                  name="priority"
+                  items={[
+                    {
+                      description: "Baixa",
+                      value: 0,
+                    },
+                    {
+                      description: "Média",
+                      value: 1,
+                    },
+                    {
+                      description: "Alta",
+                      value: 2,
+                    },
+                  ]}
+                />
+              </Grid>
+
+              <Grid item md={4}>
+                <ControlledDateInput label="Data inicial" name="initialDate" />
+                <ControlledDateInput label="Data final" name="finalDate" />
+                <ControlledTextInput
+                  label="Tempo de reparo previsto (h)"
+                  name="estimatedRepairTime"
+                />
+                <ControlledTextInput
+                  label="Tempo de reparo real (h)"
+                  name="realRepairTime"
+                />
+                <ControlledTextInput label="Custo (R$)" name="cost" />
+                <ControlledTextInput
+                  label="Descrição"
+                  name="description"
+                  multiline
+                  minRows={1}
+                  maxRows={99}
+                />
+                <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />
+              </Grid>
             </Grid>
-          </Grid>
-        </Form>
+          </Form>
+        </Card>
       </FormProvider>
       <Loading open={isLoading} />
     </HeroContainer>
@@ -272,4 +266,11 @@ const validationSchema = object().shape({
   initialDate: string().required("Data inicial é obrigatória"),
   finalDate: string().required("Data final é obrigatória"),
   description: string().required("Descrição é obrigatória"),
+  priority: number().required("Prioridade é obrigatória"),
+  estimatedRepairTime: number().required(
+    "Tempo estimado de reparo é obrigatório"
+  ),
+  realRepairTime: number().required("Tempo real de reparo é obrigatório"),
+  cost: number().required("Custo é obrigatório"),
+  title: string().required("Título é obrigatório"),
 });

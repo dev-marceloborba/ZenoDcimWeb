@@ -19,23 +19,11 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import ptBrLocale from "date-fns/locale/pt-BR";
 import { createSignalRContext } from "react-signalr";
-import { userRoutes } from "modules/user/routes/UserRoutes";
-import { maintenanceRoutes } from "modules/maintenance/routes/MaintenanceRoutes";
-import { alarmRoutes } from "modules/alarms/routes/AlarmsRoutes";
-import { automationRoutes } from "modules/automation/routes/AutomationRoutes";
 import NotificationProvider from "modules/shared/components/notification-provider/NotificationProvider";
 import AutomationRealtimeProvider from "modules/automation/data/providers/AutomationRealtimeProvider";
-import { datacenterRoutes } from "modules/datacenter/routes/DatacenterRoutes";
+import { LayoutProvider } from "app/hooks/useLayout";
 
 export const SignalRContext = createSignalRContext();
-
-const appRoutes = [
-  ...alarmRoutes,
-  ...automationRoutes,
-  ...datacenterRoutes,
-  ...maintenanceRoutes,
-  ...userRoutes,
-];
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
@@ -53,25 +41,27 @@ root.render(
             dateAdapter={AdapterDateFns}
             adapterLocale={ptBrLocale}
           >
-            <Connector
-              brokerUrl={brokerUrl}
-              options={{
-                ...mqttConfig,
-                protocol: "wss",
-              }}
-            >
-              <ToastProvider>
-                <ReactFlowProvider>
-                  <ModalProvider>
-                    <NotificationProvider>
-                      <AutomationRealtimeProvider>
-                        <AppRoutes />
-                      </AutomationRealtimeProvider>
-                    </NotificationProvider>
-                  </ModalProvider>
-                </ReactFlowProvider>
-              </ToastProvider>
-            </Connector>
+            <LayoutProvider>
+              <Connector
+                brokerUrl={brokerUrl}
+                options={{
+                  ...mqttConfig,
+                  protocol: "wss",
+                }}
+              >
+                <ToastProvider>
+                  <ReactFlowProvider>
+                    <ModalProvider>
+                      <NotificationProvider>
+                        <AutomationRealtimeProvider>
+                          <AppRoutes />
+                        </AutomationRealtimeProvider>
+                      </NotificationProvider>
+                    </ModalProvider>
+                  </ReactFlowProvider>
+                </ToastProvider>
+              </Connector>
+            </LayoutProvider>
           </LocalizationProvider>
         </ThemeProvider>
       </Provider>

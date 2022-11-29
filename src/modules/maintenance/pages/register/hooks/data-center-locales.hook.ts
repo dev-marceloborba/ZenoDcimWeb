@@ -1,3 +1,4 @@
+//TODO: deletar
 import { useState } from "react";
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import {

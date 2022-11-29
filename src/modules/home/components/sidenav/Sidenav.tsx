@@ -1,5 +1,3 @@
-import React from "react";
-
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -173,6 +171,7 @@ const menuItems: ListItemLinkProps[] = [
         to: "/zeno/maintenance/events",
       },
       { primary: "Abrir ordem de serviço", to: "/zeno/maintenance/register" },
+      { primary: "Fornecedores", to: "/zeno/maintenance/suppliers" },
     ],
   },
   {

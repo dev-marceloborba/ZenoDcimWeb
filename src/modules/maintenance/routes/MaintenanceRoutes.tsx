@@ -11,22 +11,27 @@ export const maintenanceRoutes: RouteObject[] = [
   {
     path: maintenancePaths.schedule.fullPath,
     element: <Schedule />,
+    title: "Agendar manutenção",
   },
   {
     path: maintenancePaths.events.fullPath,
     element: <Events />,
+    title: "Eventos de manutenção",
   },
   {
     path: maintenancePaths.register.fullPath,
     element: <Register />,
+    title: "Formulário de manutenção",
   },
   {
     path: maintenancePaths.eventDetails.fullPath,
     element: <WorkOrderDetailsPage />,
+    title: "Detalhes da ordem",
   },
   {
     path: maintenancePaths.suppliers.fullPath,
     element: <SupplierRegistryPage />,
+    title: "Registro de fornecedor",
   },
 ];
 

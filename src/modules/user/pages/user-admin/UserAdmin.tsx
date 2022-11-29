@@ -1,9 +1,5 @@
 import React from "react";
 import Loading from "modules/shared/components/Loading";
-// import {
-//   useDeleteUserMutation,
-//   useFindAllUsersQuery,
-// } from "app/services/authentication";
 import ButtonLink from "modules/shared/components/ButtonLink";
 import DataTable, {
   ColumnHeader,
@@ -49,10 +45,13 @@ const UserAdmin: React.FC = () => {
           Criar usuário
         </ButtonLink>
         <ButtonLink
-          sx={{ ml: 2 }}
-          to="/zeno/settings/company-form"
-          variant="outlined"
+          to="/zeno/settings/user-groups"
+          variant="contained"
+          sx={{ mx: 2 }}
         >
+          Grupos de usuário
+        </ButtonLink>
+        <ButtonLink to="/zeno/settings/company-form" variant="outlined">
           Criar empresa
         </ButtonLink>
       </Row>
@@ -61,7 +60,7 @@ const UserAdmin: React.FC = () => {
         rows={users ?? []}
         title="Usuários"
         options={{
-          onRowClick: (row) => {
+          onRowClick: (user) => {
             const path = compositePathRoute([
               HomePath,
               SettingsPath,
@@ -69,8 +68,9 @@ const UserAdmin: React.FC = () => {
             ]);
             navigate(path, {
               state: {
-                user: row,
+                user: user,
                 mode: "edit",
+                description: user.firstName,
               },
             });
           },

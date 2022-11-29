@@ -9,14 +9,17 @@ export const alarmRoutes: RouteObject[] = [
   {
     path: alarmPaths.history.fullPath,
     element: <AlarmHistory />,
+    title: "Histórico de alarmes",
   },
   {
     path: alarmPaths.realtime.fullPath,
     element: <AlarmRealtime />,
+    title: "Alarmes em tempo real",
   },
   {
     path: alarmPaths.statistics.fullPath,
     element: <AlarmStatisticPage />,
+    title: "Estatística de alarmes",
   },
 ];
 

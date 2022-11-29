@@ -12,10 +12,6 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import PageTitle from "modules/shared/components/PageTitle";
-import BuildingDropdown from "modules/automation/components/BuildingDropdown";
-import FloorDropdown from "modules/automation/components/FloorDropdown";
-import RoomDropdown from "modules/automation/components/RoomDropdown";
-import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
@@ -27,38 +23,28 @@ import { useFindRoomsByFloorIdMutation } from "modules/datacenter/services/room-
 
 const EtcFloor: React.FC = () => {
   const {
-    state: { data: floor },
+    params: { floorId },
   } = useRouter();
   const [findRooms, { data: rooms, isLoading }] =
     useFindRoomsByFloorIdMutation();
 
   useEffect(() => {
     async function fetchRooms() {
-      if (floor) await findRooms(floor.id).unwrap();
+      if (floorId) {
+        await findRooms(floorId).unwrap();
+      }
     }
     fetchRooms();
-  }, [findRooms, floor]);
+  }, [findRooms, floorId]);
 
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
-      {/* <Row
-        sx={{
-          maxWidth: "60%",
-          " & .MuiFormControl-root:nth-child(2)": {
-            mx: 2,
-          },
-          mt: 2,
-        }}
-      >
-        <BuildingDropdown />
-        <FloorDropdown />
-        <RoomDropdown />
-      </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
           <RoomCard
-            title={floor.name}
+            //@ts-ignore
+            title={rooms?.length > 0 ? rooms[0].floor?.name : ""}
             rooms={
               rooms?.map<RoomTableData>((room) => ({
                 alarms: 0,
@@ -147,12 +133,15 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      automationPaths.cage.fullPath,
+      automationPaths.cage.fullPath
+        .replace(":floorId", room.floorId)
+        .replace(":roomId", room.id),
     ]);
     navigate(destinationPath, {
       state: {
         data: room,
         from: path,
+        description: room.name,
       },
     });
   };

@@ -55,7 +55,7 @@ const Header: React.FC = () => {
     []
   );
 
-  const { toggleDrawer, isMobile } = useLayout();
+  const { toggleDrawer } = useLayout();
   const [menuState, setMenuState] = React.useState<MenuState>({
     notifications: null,
     user: null,
@@ -106,14 +106,15 @@ const Header: React.FC = () => {
           top: 0,
           left: 0,
           zIndex: 1000,
+          " & .MuiToolbar-regular": {
+            paddingLeft: 1,
+          },
         }}
       >
         <ToolBar>
-          {isMobile && (
-            <IconButton size="large" color="inherit" onClick={toggleDrawer}>
-              <MenuIcon />
-            </IconButton>
-          )}
+          <IconButton size="large" color="inherit" onClick={toggleDrawer}>
+            <MenuIcon />
+          </IconButton>
 
           <Tooltip title="Ir para tela inicial">
             <Link to="/zeno">
@@ -168,14 +169,8 @@ const Header: React.FC = () => {
             PaperProps={{
               style: {
                 maxHeight: "240px",
-                overflow: "none",
-                width: "600px",
-              },
-            }}
-            sx={{
-              overflow: "none",
-              "& .MuiPaper-root": {
-                overflow: "none",
+                width: "480px",
+                overflow: "hidden",
               },
             }}
           >

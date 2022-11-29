@@ -34,10 +34,13 @@ export default function ParameterHistoryPage() {
       data: any;
     };
   } = useRouter();
+  const { params } = useRouter();
   const [findMeasuresByParameter, { data: measures, isLoading }] =
     useFindMeasuresByParameterMutation();
   const [findStatistics, { data: statistics }] =
     useFindMeasureStatisticsMutation();
+
+  console.log(params);
 
   const handleChangeInitialDate = (date: Date | null) => {
     setFilter({ ...filter, initialDate: date });

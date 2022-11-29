@@ -3,19 +3,19 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import { Notification } from "modules/notifications/models/notification.model";
 import CloseButton from "modules/shared/components/close-button/CloseButton";
 import { useNotifications } from "modules/shared/components/notification-provider/NotificationProvider";
+import AlarmNotification from "modules/alarms/components/alarm-notification/AlarmNotification";
+import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
 
 const NotificationsPanel: React.FC = () => {
   const { notifications, removeNotification, removeAllNotifications } =
     useNotifications();
 
-  const handleCloseNotification = (notification: Notification) => {
-    removeNotification(notification.id);
+  const handleCloseNotification = (notificationId: string) => {
+    const notification = notifications.find((x) => x.id === notificationId);
+    if (notification) removeNotification(notification.id);
   };
 
   const handleCloseAllNotifications = () => {
@@ -24,7 +24,7 @@ const NotificationsPanel: React.FC = () => {
 
   return (
     <>
-      <Box padding={"16px 24px"} bgcolor={"secondary.main"}>
+      <Box padding={"8px 12px"} bgcolor={"secondary.main"}>
         <Stack
           direction="row"
           alignItems="center"
@@ -40,26 +40,26 @@ const NotificationsPanel: React.FC = () => {
       <List
         sx={{
           padding: "8px 16px",
-          // "& .MuiPaper-root .MuiMenu-paper .MuiPopover-paper": {
-          //   overflow: "none",
-          // },
+          height: "240px",
+          overflowY: "auto",
+          // margin: "auto",
         }}
       >
-        {notifications.map((notification, index) => (
-          <React.Fragment key={index}>
-            <ListItem
-              secondaryAction={
-                <CloseButton
-                  tooltip="Limpar notificação"
-                  onClick={() => handleCloseNotification(notification)}
-                />
-              }
-            >
-              <ListItemText primary={notification.message} />
-            </ListItem>
-            {notifications.length - 1 !== index && <Divider />}
-          </React.Fragment>
-        ))}
+        {notifications.map((notification, index) => {
+          const data = splitPathnameIntoFields(notification.message);
+          return (
+            <React.Fragment key={index}>
+              <AlarmNotification
+                currentDate="18-11-2022 14:10"
+                id={notification.id}
+                {...data}
+                sx={{ mb: 1 }}
+                handleCloseNotification={handleCloseNotification}
+              />
+              {notifications.length - 1 !== index && <Divider />}
+            </React.Fragment>
+          );
+        })}
         {notifications.length === 0 && (
           <Typography>Não há notificações ativas</Typography>
         )}

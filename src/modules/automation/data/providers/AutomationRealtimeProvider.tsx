@@ -1,4 +1,5 @@
 import {
+  AlarmModel,
   AlarmTableViewModel,
   EAlarmStatus,
 } from "modules/automation/models/alarm-model";
@@ -10,6 +11,7 @@ import AutomationRealtimeContext from "../contexts/automationRealtimeContext";
 import { RealtimeStatus } from "../types/automationRealtime";
 
 const data = new Map();
+const alarmData = new Map();
 
 // const getValues = () => Array.from(data, ([_, value]) => value);
 
@@ -43,6 +45,8 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
 
   const getRealtimeValue = (key: string) => state.data.get(key)?.value ?? 0;
 
+  const getRealtimeAlarm = (key: string) => alarmData.get(key) as AlarmModel;
+
   const getRealtimeStatus = (status: string | Error): RealtimeStatus => {
     switch (status) {
       case "Offline":
@@ -61,6 +65,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
       retain: false,
     });
   };
+
   useEffect(() => {
     if (realtimeTags) {
       if (realtimeTags?.message) {
@@ -80,6 +85,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
       if (realtimeAlarms?.message) {
         const payload = realtimeAlarms.message.toString();
         const obj = JSON.parse(payload);
+        console.log(obj);
         setAlarms(
           obj.map((alarm: any, index: number) => {
             const ds = splitPathnameIntoFields(alarm.pathname);
@@ -115,6 +121,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
           .length,
         publish,
         status: getRealtimeStatus(connectionStatus),
+        getRealtimeAlarm,
       }}
     >
       {children}

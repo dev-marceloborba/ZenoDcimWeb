@@ -12,7 +12,7 @@ import {
   RackModel,
 } from "modules/datacenter/models/rack.model";
 import Loading from "modules/shared/components/Loading";
-import useDataCenter from "./useDataCenter";
+import useDataCenter from "../../../../hooks/useDataCenter";
 
 type RackFormProps = {
   onCancel(): void;

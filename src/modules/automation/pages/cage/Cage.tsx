@@ -11,10 +11,6 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import PageTitle from "modules/shared/components/PageTitle";
-import BuildingDropdown from "modules/automation/components/BuildingDropdown";
-import FloorDropdown from "modules/automation/components/FloorDropdown";
-import RoomDropdown from "modules/automation/components/RoomDropdown";
-import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
 import { HomePath } from "modules/paths";
 import { AutomationPath } from "modules/home/routes/paths";
@@ -41,7 +37,7 @@ type EquipmentState = {
 
 const Cage: React.FC = () => {
   const {
-    state: { data: room },
+    params: { roomId },
   } = useRouter();
   const [findEquipments, { isLoading }] = useFindEquipmentsByRoomIdMutation();
   const [equipmentData, setEquipmentData] = useState<EquipmentState>({
@@ -52,8 +48,8 @@ const Cage: React.FC = () => {
 
   useEffect(() => {
     async function fetchEquipments() {
-      if (room) {
-        const equipments = await findEquipments(room.id).unwrap();
+      if (roomId) {
+        const equipments = await findEquipments(roomId).unwrap();
         const energy = equipments.filter(
           (x) => x.group === EEquipmentGroup.ENERGY
         );
@@ -73,27 +69,17 @@ const Cage: React.FC = () => {
     }
 
     fetchEquipments();
-  }, [room, findEquipments]);
+  }, [roomId, findEquipments]);
 
   return (
     <HeroContainer>
       <PageTitle>Energia, clima e telecom</PageTitle>
-      {/* <Row
-        sx={{
-          maxWidth: "60%",
-          " & .MuiFormControl-root:nth-child(2)": {
-            mx: 2,
-          },
-        }}
-      >
-        <BuildingDropdown />
-        <FloorDropdown />
-        <RoomDropdown />
-      </Row> */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
         <Grid item md={4}>
           <EquipmentCard
-            title={`${room.name} - Energia`}
+            title={`${
+              equipmentData.energyEquipments[0]?.component ?? ""
+            } - Energia`}
             equipments={
               equipmentData.energyEquipments.map<EquipmentTableData>(
                 (equip) => ({
@@ -108,7 +94,9 @@ const Cage: React.FC = () => {
 
         <Grid item md={4}>
           <EquipmentCard
-            title={`${room.name} - Clima`}
+            title={`${
+              equipmentData.energyEquipments[0]?.component ?? ""
+            } - Clima`}
             equipments={
               equipmentData.climateEquipments.map<EquipmentTableData>(
                 (equip) => ({
@@ -123,7 +111,9 @@ const Cage: React.FC = () => {
 
         <Grid item md={4}>
           <EquipmentCard
-            title={`${room.name} - Telecom`}
+            title={`${
+              equipmentData.energyEquipments[0]?.component ?? ""
+            } - Telecom`}
             equipments={
               equipmentData.telecomEquipments.map<EquipmentTableData>(
                 (equip) => ({
@@ -199,7 +189,10 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ equipments }) => {
     const destinationPath = compositePathRoute([
       HomePath,
       AutomationPath,
-      automationPaths.equipmentParameterDetails.fullPath,
+      automationPaths.equipmentParameterDetails.fullPath
+        .replace(":floorId", equipment.floorId)
+        .replace(":roomId", equipment.roomId)
+        .replace(":equipmentId", equipment.id),
     ]);
     navigate(destinationPath, {
       state: {

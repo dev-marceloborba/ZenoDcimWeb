@@ -7,11 +7,11 @@ import {
   WorkOrderModel,
   UpdateWorkOrderViewModel,
   WorkEventsTableViewModel,
-  EMaintenanceStatus,
   WorkOrderDetailsViewModel,
   EWorkOrderNature,
   EMaintenanceType,
   EWorkOrderType,
+  EOrderPriority,
 } from "../models/work-order.model";
 
 export const maintenanceApi = createApi({
@@ -55,38 +55,44 @@ export const maintenanceApi = createApi({
       }),
       providesTags: ["WorkOrderModel"],
       transformResponse: (response: WorkOrderModel[]) => {
-        const output: WorkEventsTableViewModel[] = [];
-
-        function getStatusDescription(status: EMaintenanceStatus) {
-          switch (status) {
-            case EMaintenanceStatus.CANCELLED:
-              return "Cancelada";
-            case EMaintenanceStatus.CLOSED:
-              return "Fechada";
-            case EMaintenanceStatus.CREATED:
-              return "Criada";
-            case EMaintenanceStatus.IN_PROGRESS:
-              return "Em andamento";
-            case EMaintenanceStatus.POSTPONED:
-              return "Adiada";
+        function getMaintenanceTypeDescription(
+          maintenanceType: EMaintenanceType
+        ) {
+          switch (maintenanceType) {
+            case EMaintenanceType.CORRECTIVE:
+              return "Corretiva";
+            case EMaintenanceType.PREVENTIVE:
+              return "Preventiva";
           }
         }
 
-        response.forEach((workOrder) => {
-          output.push({
-            id: workOrder.id,
-            site: workOrder.site.name,
-            building: workOrder.building.name,
-            floor: workOrder.floor.name,
-            room: workOrder.room.name,
-            equipment: workOrder.equipment.component,
-            status: getStatusDescription(workOrder.status),
-            initialDate: getTimeStampFormat(workOrder.initialDate),
-            finalDate: getTimeStampFormat(workOrder.finalDate),
-          });
-        });
+        function getOperationNatureDescription(
+          operationNature: EWorkOrderNature
+        ) {
+          switch (operationNature) {
+            case EWorkOrderNature.ATTENDANCE:
+              return "Acompanhamento";
+            case EWorkOrderNature.CUSTOMER_SERVICE:
+              return "Atendimento";
+            case EWorkOrderNature.EMERGENCY:
+              return "Emergência";
+            case EWorkOrderNature.PLANNED:
+              return "Planejada";
+          }
+        }
 
-        return output;
+        return response.map<WorkEventsTableViewModel>((workOrder) => ({
+          id: workOrder.id,
+          title: workOrder?.title ?? "",
+          maintenanceType: getMaintenanceTypeDescription(
+            workOrder.maintenanceType
+          ),
+          operationNature: getOperationNatureDescription(workOrder.nature),
+          equipment: workOrder.equipment.component,
+          responsible: workOrder.responsible,
+          initialDate: getTimeStampFormat(workOrder.initialDate),
+          finalDate: getTimeStampFormat(workOrder.finalDate),
+        }));
       },
     }),
     findWorkOrderById: builder.mutation<WorkOrderDetailsViewModel, string>({
@@ -96,7 +102,6 @@ export const maintenanceApi = createApi({
       }),
       transformResponse: (response: WorkOrderModel) => {
         let output: WorkOrderDetailsViewModel = {} as WorkOrderDetailsViewModel;
-
         function getOrderNature(nature: EWorkOrderNature) {
           switch (nature) {
             case EWorkOrderNature.ATTENDANCE:
@@ -128,6 +133,19 @@ export const maintenanceApi = createApi({
           }
         }
 
+        function getWorkOrderPriorityDescription(
+          workOrderPriority: EOrderPriority
+        ) {
+          switch (workOrderPriority) {
+            case EOrderPriority.LOW:
+              return "Baixa";
+            case EOrderPriority.MEDIUM:
+              return "Média";
+            case EOrderPriority.HIGH:
+              return "Alta";
+          }
+        }
+
         output.id = response.id;
         output.site = response.site.name;
         output.building = response.building.name;
@@ -141,6 +159,11 @@ export const maintenanceApi = createApi({
         output.nature = getOrderNature(response.nature);
         output.maintenanceType = getMaintenanceType(response.maintenanceType);
         output.orderType = getOrderType(response.orderType);
+        output.cost = response.cost;
+        output.estimatedRepairTime = response.estimatedRepairTime;
+        output.realRepairTime = response.realRepairTime;
+        output.title = response.title;
+        output.priority = getWorkOrderPriorityDescription(response.priority);
 
         return output;
       },

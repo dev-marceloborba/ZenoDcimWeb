@@ -36,8 +36,8 @@ export default function ParametersTable() {
         HomePath,
         AutomationPath,
         parameter.discriminator === "Parâmetro físico"
-          ? automationPaths.parameterForm.shortPath
-          : automationPaths.virtualParameterForm.shortPath,
+          ? automationPaths.parameterForm.fullPath
+          : automationPaths.virtualParameterForm.fullPath,
       ]),
       {
         state: {
