@@ -1,10 +1,10 @@
 import MuiBreadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Link, { LinkProps } from "@mui/material/Link";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import useBreadcrumbs, { BreadcrumbData } from "use-react-router-breadcrumbs";
 import { appRoutes } from "modules/AppRoutes";
-
+import { memo } from "react";
 interface LinkRouterProps extends LinkProps {
   to: string;
   replace?: boolean;
@@ -24,7 +24,14 @@ const DynamicBreadcrumb = ({ location, match }: BreadcrumbData) => {
   }
 };
 
+let currentRoutes: any[] = [];
+let lastRoute = "";
+
 const Breadcrumbs: React.FC = () => {
+  console.log(lastRoute);
+
+  //@ts-ignore
+  const { pathname, state } = useLocation();
   const allRoutes = appRoutes.map((route) => ({
     path: route.path,
     // breadcrumb: route?.parameter ? DynamicBreadcrumb : route.title,
@@ -32,6 +39,26 @@ const Breadcrumbs: React.FC = () => {
   }));
   //@ts-ignore
   const breadcrumbs = useBreadcrumbs(allRoutes, { disableDefaults: true });
+
+  if (pathname.length > lastRoute.length) {
+    console.log("colocar");
+    currentRoutes.push({
+      pathname,
+      title: state?.description ?? "",
+    });
+  } else {
+    console.log("retirar");
+    currentRoutes.pop();
+  }
+
+  lastRoute = pathname;
+
+  console.log(lastRoute);
+
+  console.log(currentRoutes);
+
+  // console.log(state);
+  // console.log(pathname);
 
   // Não exibe breadcrumb na tela Pai
   if (breadcrumbs.length === 1) return null;
@@ -62,4 +89,4 @@ const Breadcrumbs: React.FC = () => {
   );
 };
 
-export default Breadcrumbs;
+export default memo(Breadcrumbs);

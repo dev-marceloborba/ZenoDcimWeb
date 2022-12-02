@@ -5,7 +5,10 @@ import {
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
 import useAutomationRealtime from "../data/hooks/useAutomationRealtime";
-import { EquipmentModel } from "../models/automation-model";
+import {
+  EquipmentModel,
+  EquipmentParameterModel,
+} from "../models/automation-model";
 
 export default function usePue() {
   const { getRealtimeValue } = useAutomationRealtime();
@@ -15,12 +18,22 @@ export default function usePue() {
     totalPowerAvailable: number
   ) => totalPowerMeasured / totalPowerAvailable;
 
+  const calculateTotalPower = (
+    amount: number,
+    equipmentParameter: EquipmentParameterModel
+  ) => {
+    let total = amount;
+
+    if (equipmentParameter.unit.toLowerCase().includes("w")) {
+      total += getRealtimeValue(equipmentParameter.pathname!) as number;
+    }
+    return total;
+  };
+
   const calculateTotalPowerByEquipment = (equipment: EquipmentModel) => {
     let total = 0;
     equipment.equipmentParameters?.forEach((equipmentParameter) => {
-      if (equipmentParameter.unit.toLowerCase().includes("w")) {
-        total += getRealtimeValue(equipmentParameter.pathname!) as number;
-      }
+      total = calculateTotalPower(total, equipmentParameter);
     });
     return total;
   };
@@ -29,7 +42,7 @@ export default function usePue() {
     let total = 0;
     room.equipments?.forEach((equipment) => {
       equipment.equipmentParameters?.forEach((equipmentParameter) => {
-        total += getRealtimeValue(equipmentParameter.pathname!) as number;
+        total = calculateTotalPower(total, equipmentParameter);
       });
     });
     return total;
@@ -40,7 +53,7 @@ export default function usePue() {
     floor.rooms?.forEach((room) => {
       room.equipments?.forEach((equipment) => {
         equipment.equipmentParameters?.forEach((equipmentParameter) => {
-          total += getRealtimeValue(equipmentParameter.pathname!) as number;
+          total = calculateTotalPower(total, equipmentParameter);
         });
       });
     });
@@ -53,7 +66,7 @@ export default function usePue() {
       floor.rooms?.forEach((room) =>
         room.equipments?.forEach((equipment) =>
           equipment.equipmentParameters?.forEach((equipmentParameter) => {
-            total += getRealtimeValue(equipmentParameter.pathname!) as number;
+            total = calculateTotalPower(total, equipmentParameter);
           })
         )
       )
@@ -68,7 +81,7 @@ export default function usePue() {
         floor.rooms?.forEach((room) =>
           room.equipments?.forEach((equipment) =>
             equipment.equipmentParameters?.forEach((equipmentParameter) => {
-              total += getRealtimeValue(equipmentParameter.pathname!) as number;
+              total = calculateTotalPower(total, equipmentParameter);
             })
           )
         )

@@ -38,6 +38,7 @@ export interface AlarmTableViewModel {
   building: string;
   floor: string;
   room: string;
+  site?: string;
   equipment: string;
   parameter: string;
   value: number;
@@ -60,3 +61,17 @@ export interface AlarmViewModel {
   initialDate?: Date | null;
   finalDate?: Date | null;
 }
+
+export type AlarmZone =
+  | "parameter"
+  | "equipment"
+  | "room"
+  | "floor"
+  | "building"
+  | "site";
+
+export const getActiveAlarms = (
+  alarms: AlarmTableViewModel[],
+  zone: AlarmZone,
+  filter: string
+) => alarms.filter((alarm) => alarm[zone] === filter).length;

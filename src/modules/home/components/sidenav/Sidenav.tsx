@@ -82,6 +82,10 @@ const menuItems: ListItemLinkProps[] = [
         primary: "Configuração de infraestrutura",
         to: `/zeno/datacenter/${datacenterPaths.settings.fullPath}`,
       },
+      {
+        primary: "Ocupação",
+        to: "/zeno/datacenter/occupation",
+      },
       // {
       //   primary: "Sites",
       //   to: "/zeno/datacenter/sites",
