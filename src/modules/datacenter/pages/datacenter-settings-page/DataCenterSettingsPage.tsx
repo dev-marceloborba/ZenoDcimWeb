@@ -18,6 +18,26 @@ const cardItems: CardSectionProps[] = [
       "Registre e configure as informações dos equipamentos que são instalados dentro dos racks, servidores, patch panels, DI's e switches",
     path: datacenterPaths.rackEquipments.shortPath,
   },
+  {
+    title: "Salas",
+    description: "Configure e gerencie as salas do DCIM",
+    path: datacenterPaths.roomManagement.shortPath,
+  },
+  {
+    title: "Andares",
+    description: "Configure e gerencie os andares do DCIM",
+    path: datacenterPaths.floorManagement.shortPath,
+  },
+  {
+    title: "Prédios",
+    description: "Configure e gerencie os prédios do DCIM",
+    path: datacenterPaths.buildingManagement.shortPath,
+  },
+  {
+    title: "Sites",
+    description: "Configure e gerencie os sites(locais) do DCIM",
+    path: datacenterPaths.siteManagement.shortPath,
+  },
 ];
 
 export default function DataCenterSettingsPage() {

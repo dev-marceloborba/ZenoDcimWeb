@@ -15,11 +15,8 @@ import {
   useFindAllRoomsQuery,
   useFindRoomByIdMutation,
 } from "modules/datacenter/services/room-service";
-import compositePathRoute from "modules/utils/compositePathRoute";
-import { HomePath } from "modules/paths";
-import { AutomationPath } from "modules/home/routes/paths";
-import { automationPaths } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
+import { datacenterPaths } from "modules/datacenter/routes/paths";
 
 const RoomTable: React.FC = () => {
   const { data: rooms, isLoading } = useFindAllRoomsQuery();
@@ -67,11 +64,7 @@ const RoomTable: React.FC = () => {
       >
         <ButtonLink
           variant="contained"
-          to={compositePathRoute([
-            HomePath,
-            AutomationPath,
-            automationPaths.roomForm.fullPath,
-          ])}
+          to={datacenterPaths.roomForm.shortPath}
           sx={{ marginLeft: "auto" }}
         >
           Criar sala

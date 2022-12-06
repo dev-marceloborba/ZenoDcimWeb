@@ -1,6 +1,5 @@
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import Form from "modules/shared/components/Form";
-import Button from "@mui/material/Button";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Grid from "@mui/material/Grid";
 import SubmitButton from "modules/shared/components/SubmitButton";
@@ -27,7 +26,7 @@ export default function WorkOrderRegisterPage() {
   const [createWorkOrder] = useCreateWorkOrderMutation();
   const { isLoading, infra, selections } = useDataCenter();
   const { data: suppliers } = useFindAllSuplliersQuery();
-  const { back, navigate } = useRouter();
+  const { back } = useRouter();
   const toast = useToast();
   const [responsibles, setResponsibles] = useState<string[]>([]);
   const {
@@ -86,15 +85,6 @@ export default function WorkOrderRegisterPage() {
 
   return (
     <HeroContainer title="Abrir ordem de serviço">
-      <Button
-        onClick={() =>
-          navigate("/zeno/maintenance/suppliers", {
-            state: null,
-          })
-        }
-      >
-        Fornecedores
-      </Button>
       <FormProvider {...methods}>
         <Card>
           <Form

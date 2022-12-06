@@ -16,11 +16,8 @@ import {
   FloorModel,
   FloorViewModel,
 } from "modules/datacenter/models/datacenter-model";
-import compositePathRoute from "modules/utils/compositePathRoute";
-import { HomePath } from "modules/paths";
-import { AutomationPath } from "modules/home/routes/paths";
-import { automationPaths } from "modules/automation/routes/paths";
 import { useToast } from "modules/shared/components/ToastProvider";
+import { datacenterPaths } from "modules/datacenter/routes/paths";
 
 const FloorTable: React.FC = () => {
   const { data: floors, isLoading } = useFindAllFloorsQuery();
@@ -70,11 +67,7 @@ const FloorTable: React.FC = () => {
       >
         <ButtonLink
           variant="contained"
-          to={compositePathRoute([
-            HomePath,
-            AutomationPath,
-            automationPaths.floorForm.fullPath,
-          ])}
+          to={datacenterPaths.floorForm.shortPath}
         >
           Criar andar
         </ButtonLink>

@@ -43,40 +43,4 @@ const gridItems = [
       automationPaths.parameterManagement.fullPath,
     ]),
   },
-  {
-    title: "Salas",
-    description: "Configure e gerencie as salas do DCIM",
-    path: compositePathRoute([
-      HomePath,
-      AutomationPath,
-      automationPaths.roomManagement.fullPath,
-    ]),
-  },
-  {
-    title: "Andares",
-    description: "Configure e gerencie os andares do DCIM",
-    path: compositePathRoute([
-      HomePath,
-      AutomationPath,
-      automationPaths.floorManagement.fullPath,
-    ]),
-  },
-  {
-    title: "Prédios",
-    description: "Configure e gerencie os prédios do DCIM",
-    path: compositePathRoute([
-      HomePath,
-      AutomationPath,
-      automationPaths.buildingManagement.fullPath,
-    ]),
-  },
-  {
-    title: "Sites",
-    description: "Configure e gerencie os sites(locais) do DCIM",
-    path: compositePathRoute([
-      HomePath,
-      AutomationPath,
-      automationPaths.siteManagement.fullPath,
-    ]),
-  },
 ];

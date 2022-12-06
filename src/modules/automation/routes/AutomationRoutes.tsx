@@ -9,14 +9,6 @@ import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
 import EquipmentForm from "../pages/equipment-admin/components/equipment-form/EquipmentForm";
-import RoomAdmin from "../pages/room-admin/RoomAdmin";
-import RoomForm from "../pages/room-admin/components/room-form/RoomForm";
-import FloorAdmin from "../pages/floor-admin/FloorAdmin";
-import FloorForm from "../pages/floor-admin/components/floor-form/FloorForm";
-import BuildingAdmin from "../pages/building-admin/BuildingAdmin";
-import BuildingForm from "../pages/building-admin/components/building-form/BuilldingForm";
-import SiteAdmin from "../pages/site-admin/SiteAdmin";
-import SiteForm from "../pages/site-admin/components/site-form/SiteForm";
 import ParameterAdmin from "../pages/parameter-admin/ParameterAdmin";
 import ParameterForm from "../pages/parameter-admin/components/parameter-form/ParameterForm";
 import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAdmin";
@@ -31,6 +23,9 @@ import AlarmHistory from "../pages/alarm-history/AlarmHistory";
 import AlarmRuntime from "../pages/alarm-history/components/alarm-runtime/AlarmRuntime";
 import EquipmentParametersPage from "../pages/equipment-parameters-page/EquipmentParametersPage";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
+import FloorResolver from "./resolvers/FloorResolver";
+import RoomResolver from "./resolvers/RoomResolver";
+import EquipmentResolver from "./resolvers/EquipmentResolver";
 
 export const automationRoutes: RouteObject[] = [
   {
@@ -42,13 +37,13 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.energyClimateTelecomFloor.fullPath,
     element: <EtcFloor />,
     title: "Andares",
-    parameter: "floorId",
+    resolver: FloorResolver,
   },
   {
     path: automationPaths.cage.fullPath,
     element: <Cage />,
     title: "Equipamento",
-    parameter: "id",
+    resolver: RoomResolver,
   },
   {
     path: automationPaths.rack.fullPath,
@@ -99,6 +94,7 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.equipmentParameterDetails.fullPath,
     element: <EquipmentParametersPage />,
     title: "Parâmetros de equipamento",
+    resolver: EquipmentResolver,
   },
   {
     path: automationPaths.equipmentManagement.fullPath,
@@ -154,46 +150,6 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.equipmentRulesForm.fullPath,
     element: <EquipmentParameterRulesForm />,
     title: "Formulário de regra de parâmetros",
-  },
-  {
-    path: automationPaths.siteManagement.fullPath,
-    element: <SiteAdmin />,
-    title: "Site",
-  },
-  {
-    path: automationPaths.siteForm.fullPath,
-    element: <SiteForm />,
-    title: "Formulário de site",
-  },
-  {
-    path: automationPaths.buildingManagement.fullPath,
-    element: <BuildingAdmin />,
-    title: "Prédios",
-  },
-  {
-    path: automationPaths.buildingForm.fullPath,
-    element: <BuildingForm />,
-    title: "Formulário de prédio",
-  },
-  {
-    path: automationPaths.floorManagement.fullPath,
-    element: <FloorAdmin />,
-    title: "Andares",
-  },
-  {
-    path: automationPaths.floorForm.fullPath,
-    element: <FloorForm />,
-    title: "Formulário de andar",
-  },
-  {
-    path: automationPaths.roomManagement.fullPath,
-    element: <RoomAdmin />,
-    title: "Salas",
-  },
-  {
-    path: automationPaths.roomForm.fullPath,
-    element: <RoomForm />,
-    title: "Formulário de sala",
   },
 ];
 

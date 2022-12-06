@@ -7,7 +7,6 @@ import AccessButton from "modules/shared/components/access-button/AccessButtonv2
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
 import compositePathRoute from "modules/utils/compositePathRoute";
-import ParameterImport from "./components/parameter-import/ParameterImport";
 import ParameterTable from "./components/parameter-table/ParameterTable";
 
 export default function ParameterAdmin() {
@@ -65,7 +64,6 @@ export default function ParameterAdmin() {
         />
       </Row>
       <ParameterTable />
-      <ParameterImport />
     </HeroContainer>
   );
 }

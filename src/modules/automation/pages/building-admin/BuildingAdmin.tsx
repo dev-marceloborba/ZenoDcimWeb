@@ -1,23 +1,14 @@
-import { automationPaths } from "modules/automation/routes/paths";
-import { AutomationPath } from "modules/home/routes/paths";
-import { HomePath } from "modules/paths";
+import { datacenterPaths } from "modules/datacenter/routes/paths";
 import ButtonLink from "modules/shared/components/ButtonLink";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Row from "modules/shared/components/Row";
-import compositePathRoute from "modules/utils/compositePathRoute";
 import BuildingTable from "./components/building-table/BuildingTable";
 
 export default function BuildingAdmin() {
   return (
     <HeroContainer title="Gestão de prédios">
       <Row>
-        <ButtonLink
-          to={compositePathRoute([
-            HomePath,
-            AutomationPath,
-            automationPaths.buildingForm.fullPath,
-          ])}
-        >
+        <ButtonLink to={datacenterPaths.buildingForm.shortPath}>
           Criar novo prédio
         </ButtonLink>
       </Row>
