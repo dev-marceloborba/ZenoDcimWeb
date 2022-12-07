@@ -18,6 +18,7 @@ import { AutomationPath } from "modules/home/routes/paths";
 import { automationPaths } from "modules/automation/routes/paths";
 
 type ParameterData = {
+  id: string;
   parameter: string;
   description: string;
   value: number;
@@ -59,7 +60,8 @@ const ParameterCard: React.FC<ParameterCardProps> = ({ ...props }) => {
         automationPaths.parameterDetails.fullPath
           .replace(":floorId", props.navigationIds.floorId)
           .replace(":roomId", props.navigationIds.roomId)
-          .replace(":equipmentId", props.navigationIds.equipmentId),
+          .replace(":equipmentId", props.navigationIds.equipmentId)
+          .replace(":equipmentParameterId", parameter.id),
       ]),
       {
         state: {

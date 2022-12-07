@@ -26,6 +26,7 @@ import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHisto
 import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
 import EquipmentResolver from "./resolvers/EquipmentResolver";
+import EquipmentParameterResolver from "./resolvers/EquipmentParameterResolver";
 
 export const automationRoutes: RouteObject[] = [
   {
@@ -69,6 +70,7 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.parameterDetails.fullPath,
     element: <ParameterHistoryPage />,
     title: "Histórico de parâmetros",
+    resolver: EquipmentParameterResolver,
   },
   {
     path: automationPaths.fireSystem.fullPath,

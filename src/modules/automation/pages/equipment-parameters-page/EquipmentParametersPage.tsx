@@ -38,6 +38,7 @@ export default function EquipmentParametersPage() {
             parameters={
               parameters?.map((parameter) => {
                 return {
+                  id: parameter.id,
                   alarms: 0,
                   description: parameter.name,
                   parameter: parameter.name,

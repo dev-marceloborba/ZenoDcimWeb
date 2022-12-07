@@ -9,7 +9,7 @@ const EquipmentResolver = ({ match }: BreadcrumbData) => {
   if (equipments) {
     return (
       <span>
-        {equipments.find((e) => e.id === match.params.equipmentId)?.description}
+        {equipments.find((e) => e.id === match.params.equipmentId)?.component}
       </span>
     );
   }
