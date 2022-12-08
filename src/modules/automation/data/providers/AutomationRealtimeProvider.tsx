@@ -32,16 +32,21 @@ function convertMessageToArrayOfTags(obj: any) {
   }
   return output;
 }
+let keepAliveValue = 0;
+let lastKeepAliveValue = 0;
 
 const AutomationRealtimeProvider: React.FC = ({ children }) => {
   const [state, setState] = useState({
     data: new Map(),
   });
   const [alarms, setAlarms] = useState<AlarmTableViewModel[]>([]);
+  const { message: keepAlive } = useSubscription("/keep-alive");
   const { message: realtimeTags } = useSubscription("/tags");
   const { message: realtimeAlarms, connectionStatus } =
     useSubscription("/current-alarms");
   const { client } = useMqttState();
+  const [serviceStatus, setServiceStatus] =
+    useState<RealtimeStatus>("connected");
 
   const getRealtimeValue = (key: string) => state.data.get(key)?.value ?? 0;
 
@@ -112,6 +117,29 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
     }
   }, [realtimeAlarms]);
 
+  // keep alive
+  useEffect(() => {
+    if (keepAlive) {
+      if (keepAlive.message) {
+        keepAliveValue = Number(keepAlive.message);
+      }
+    }
+  }, [keepAlive]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (lastKeepAliveValue === keepAliveValue) {
+        console.log("offline!");
+        setServiceStatus("offline");
+      } else {
+        console.log("online");
+        setServiceStatus("connected");
+      }
+      lastKeepAliveValue = keepAliveValue;
+    }, 1000 * 60 * 1);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <AutomationRealtimeContext.Provider
       value={{
@@ -120,7 +148,8 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
         activeAlarms: alarms.filter((x) => x.status === EAlarmStatus.ACTIVE)
           .length,
         publish,
-        status: getRealtimeStatus(connectionStatus),
+        // status: getRealtimeStatus(connectionStatus),
+        status: serviceStatus,
         getRealtimeAlarm,
       }}
     >

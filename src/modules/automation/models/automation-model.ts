@@ -85,8 +85,10 @@ export interface EquipmentParameterViewModel {
   equipmentId?: string;
   name: string;
   unit: string;
+  lowLowLimit: number;
   lowLimit: number;
   highLimit: number;
+  highHighLimit: number;
   scale: number;
   dataSource: string;
   address: string;
@@ -97,8 +99,10 @@ export interface UpdateEquipmentParameterViewModel {
   id: string;
   name: string;
   unit: string;
+  lowLowLimit: number;
   lowLimit: number;
   highLimit: number;
+  highHighLimit: number;
   scale: number;
   dataSource: string;
   address: string;
@@ -141,7 +145,9 @@ export interface ParameterViewModel {
   name: string;
   unit: string;
   lowLimit: number;
+  lowLowLimit: number;
   highLimit: number;
+  highHighLimit: number;
   scale: number;
   expression?: string;
 }
@@ -150,8 +156,10 @@ export interface UpdateParameterViewModel {
   id: string;
   name: string;
   unit: string;
+  lowLowLimit: number;
   lowLimit: number;
   highLimit: number;
+  highHighLimit: number;
   scale: number;
   expression?: string;
 }

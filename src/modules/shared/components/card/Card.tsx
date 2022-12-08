@@ -4,7 +4,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 
 type CardProps = {
-  showActions: boolean;
+  showActions?: boolean;
 } & MuiCardProps;
 
 const Card: React.FC<CardProps> = ({

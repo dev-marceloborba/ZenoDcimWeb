@@ -106,8 +106,10 @@ export default function VirtualParameterForm() {
     if (isSubmitSuccessful) {
       reset({
         expression: "",
-        highLimit: 0,
+        lowLowLimit: 0,
         lowLimit: 0,
+        highLimit: 0,
+        highHighLimit: 0,
         name: "",
         scale: 0,
         unit: "",
@@ -128,8 +130,10 @@ export default function VirtualParameterForm() {
         >
           <ControlledTextInput label="Parâmetro" name="name" />
           <ControlledTextInput label="Unidade" name="unit" />
-          <ControlledTextInput label="Limite inferior" name="lowLimit" />
-          <ControlledTextInput label="Limite superior" name="highLimit" />
+          <ControlledTextInput label="Limite muito baixo" name="lowLowLimit" />
+          <ControlledTextInput label="Limite baixo" name="lowLimit" />
+          <ControlledTextInput label="Limite alto" name="highLimit" />
+          <ControlledTextInput label="Limite muito alto" name="highHighLimit" />
           <ControlledTextInput label="Escala" name="scale" defaultValue={1} />
           <ControlledTextInput label="Expressão" name="expression" />
           <SubmitButton disabled={!isValid} label="Salvar" />
@@ -145,11 +149,13 @@ export default function VirtualParameterForm() {
   );
 }
 
-const schemaValidation: SchemaOf<VirtualParameterViewModel> = object().shape({
+const schemaValidation = object().shape({
   name: string().required("Nome é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   scale: number().required("Escala é obrigatória"),
-  lowLimit: number().required("Limite mínimo é obrigatório"),
-  highLimit: number().required("Limite máximo é obrigatório"),
+  lowLowLimit: number().notRequired(),
+  lowLimit: number().notRequired(),
+  highLimit: number().notRequired(),
+  highHighLimit: number().notRequired(),
   expression: string().required("Expressão é obrigatória"),
 });

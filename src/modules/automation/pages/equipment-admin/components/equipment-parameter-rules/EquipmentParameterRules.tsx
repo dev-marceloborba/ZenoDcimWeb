@@ -132,6 +132,7 @@ export default function EquipmentParameterRules() {
       <AccessButton
         label="Nova regra"
         mode="regularButton"
+        variant="outlined"
         onClick={() => {
           navigate(
             compositePathRoute([

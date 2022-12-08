@@ -88,8 +88,10 @@ export default function EquipmentParametersAssociation() {
         address: "",
         dataSource: "",
         scale: p.scale,
-        highLimit: p.highLimit,
+        lowLowLimit: p.lowLowLimit,
         lowLimit: p.lowLimit,
+        highLimit: p.highLimit,
+        highHighLimit: p.highHighLimit,
         expression: p.expression,
       })),
     }).unwrap();

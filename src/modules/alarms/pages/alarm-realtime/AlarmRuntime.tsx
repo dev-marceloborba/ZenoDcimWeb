@@ -21,6 +21,8 @@ export default function AlarmRealtime() {
   const { showModal } = useModal();
   const { alarms, publish, status, activeAlarms } = useAutomationRealtime();
 
+  console.log(status);
+
   const handleOnAckSelection = () => {
     selectedAlarms.forEach((alarm) => {
       const data = {
@@ -32,15 +34,17 @@ export default function AlarmRealtime() {
   };
 
   const handleModalConfirmation = () => {
-    const modal = showModal(AlarmAckModal, {
-      onConfirm: () => {
-        handleOnAckSelection();
-        modal.hide();
-      },
-      onCancel: () => {
-        modal.hide();
-      },
-    });
+    if (status === "connected") {
+      const modal = showModal(AlarmAckModal, {
+        onConfirm: () => {
+          handleOnAckSelection();
+          modal.hide();
+        },
+        onCancel: () => {
+          modal.hide();
+        },
+      });
+    }
   };
 
   return (

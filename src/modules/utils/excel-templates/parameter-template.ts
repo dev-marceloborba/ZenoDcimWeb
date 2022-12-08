@@ -38,14 +38,17 @@ export const rowToParameterPlain = (data: any[]) => {
   return parametersPlain;
 };
 
+//TODO: coloquei 0 nas novas propriedades para o TS não reclamar.
 export const parameterPlainToParameterViewModel = (
   data: ParameterPlain[],
   groupId: string
 ) => {
   return data.map<ParameterViewModel>((d) => ({
     name: d.parameter,
-    highLimit: d.max,
+    lowLowLimit: 0,
     lowLimit: d.min,
+    highLimit: d.max,
+    highHighLimit: 0,
     scale: 1,
     unit: d.unit,
     groupId,
