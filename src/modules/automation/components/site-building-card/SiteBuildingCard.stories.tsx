@@ -1,7 +1,11 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import PercentIcon from "@mui/icons-material/Percent";
+import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
+import PowerIcon from "@mui/icons-material/Power";
+import FunctionsIcon from "@mui/icons-material/Functions";
+// import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 
-import SiteBuildingCard from "./SiteBuildindCard";
+import SiteBuildingCard from "./SiteBuildingCard";
 
 export default {
   title: "Card para site ou prédio",
@@ -20,14 +24,14 @@ Card.args = {
       description: "Potência atual",
       value: 1.05,
       unit: "MW",
-      status: "normal",
-      icon: <PercentIcon />,
+      status: "lowLow",
+      icon: <PowerIcon />,
     },
     {
       description: "PUE",
       value: 0.94,
-      status: "normal",
-      icon: <PercentIcon />,
+      status: "low",
+      icon: <FunctionsIcon />,
     },
     {
       description: "Download/upload",
@@ -39,14 +43,14 @@ Card.args = {
     {
       description: "Alarmes de energia",
       value: 0,
-      status: "normal",
+      status: "high",
       icon: <PercentIcon />,
     },
     {
       description: "Alarmes de clima",
       value: 0,
-      status: "normal",
-      icon: <PercentIcon />,
+      status: "highHigh",
+      icon: <DeviceThermostatIcon />,
     },
     {
       description: "Alarmes de telecom",

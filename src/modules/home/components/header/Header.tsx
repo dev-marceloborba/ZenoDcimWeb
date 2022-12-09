@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,7 +9,6 @@ import UserIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Tooltip from "@mui/material/Tooltip";
 import FullScreenIcon from "@mui/icons-material/Fullscreen";
-import NotificationIcon from "@mui/icons-material/Notifications";
 import { useLayout } from "app/hooks/useLayout";
 // import UserSettings from './UserSettings';
 import Logo from "app/assets/logo-white.svg";
@@ -22,6 +20,7 @@ import { useNotifications } from "modules/shared/components/notification-provide
 import { AlarmModel } from "modules/automation/models/alarm-model";
 import Menu from "modules/shared/components/menu/Menu";
 import NotificationsPanel from "../notifications-panel/NotificationsPanel";
+import NotificationBadge from "modules/shared/components/notification-badge/NotificationBadge";
 
 type MenuState = {
   notifications: null | HTMLElement;
@@ -142,9 +141,7 @@ const Header: React.FC = () => {
               aria-haspopup="true"
               onClick={(e) => handleMenuOpen("notifications", e)}
             >
-              <Badge badgeContent={notifications.length} color="error">
-                <NotificationIcon />
-              </Badge>
+              <NotificationBadge notifications={notifications.length} />
             </IconButton>
           </Tooltip>
 

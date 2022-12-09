@@ -2,10 +2,6 @@ import { CardProps } from "@mui/material/Card";
 import Card from "modules/shared/components/card/Card";
 import SettingsButton from "modules/shared/components/settings-button/SettingsButton";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-// import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
@@ -47,26 +43,39 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
   return (
     <Card {...props}>
       <Stack direction="row" justifyContent="space-between">
-        <Typography>{title}</Typography>
+        <Typography variant="h4">{title}</Typography>
         <SettingsButton onClick={handleSettingsClick} />
       </Stack>
-      <List>
+      <List sx={{ mt: 1 }}>
         {items.map((item, idx) => (
-          <ListItem key={idx}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText
-              primary={item.description}
-              sx={{
-                color: getColorByStatus(item.status),
-              }}
-            />
-            <ListItemText
-              primary={item.value}
-              sx={{
-                color: getColorByStatus(item.status),
-              }}
-            />
-          </ListItem>
+          <li
+            key={idx}
+            style={{
+              fontWeight: "bold",
+            }}
+          >
+            <div style={{ display: "flex", marginBottom: "0.8rem" }}>
+              <div style={{ color: getColorByStatus(item.status) }}>
+                {item.icon}
+              </div>
+              <div
+                style={{
+                  color: getColorByStatus(item.status),
+                  marginLeft: "0.4rem",
+                }}
+              >
+                {`${item.description}: `}
+              </div>
+              <div
+                style={{
+                  color: getColorByStatus(item.status),
+                  marginLeft: "0.4rem",
+                }}
+              >
+                {`${item.value} ${item?.unit ?? ""}`}
+              </div>
+            </div>
+          </li>
         ))}
       </List>
     </Card>
