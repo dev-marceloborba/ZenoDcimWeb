@@ -23,7 +23,7 @@ type Parameter = {
   label: string;
 };
 
-type Card3ParametersSettingsProps = {
+type Card6ParametersSettingsProps = {
   id: string;
   equipmentName: string;
   equipments: Equipment[];
@@ -42,9 +42,12 @@ type Parameters = {
   parameter1: ParameterState;
   parameter2: ParameterState;
   parameter3: ParameterState;
+  parameter4: ParameterState;
+  parameter5: ParameterState;
+  parameter6: ParameterState;
 };
 
-const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
+const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   id,
   equipmentName,
   equipments,
@@ -69,6 +72,24 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
     parameter3: {
       id: "",
       description: "Parâmetro 3 não configurado",
+      value: 0,
+      enabled: true,
+    },
+    parameter4: {
+      id: "",
+      description: "Parâmetro 4 não configurado",
+      value: 0,
+      enabled: true,
+    },
+    parameter5: {
+      id: "",
+      description: "Parâmetro 5 não configurado",
+      value: 0,
+      enabled: true,
+    },
+    parameter6: {
+      id: "",
+      description: "Parâmetro 6 não configurado",
       value: 0,
       enabled: true,
     },
@@ -129,7 +150,7 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item md={6}>
+        <Grid item md={4}>
           <InformationSection
             equipments={equipments}
             parameters={parameters}
@@ -172,7 +193,50 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
             handleParameterSelection={onParameterSelection}
           />
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={4}>
+          <InformationSection
+            equipments={equipments}
+            parameters={parameters}
+            title="Informação 4"
+            parameter={{
+              name: "parameter4",
+              description: state.parameter4.description,
+              enabled: state.parameter4.enabled,
+            }}
+            handleAllowInformation={handleAllowInformation}
+            handleChangeInformation={handleChangeInformation}
+            handleParameterSelection={onParameterSelection}
+          />
+
+          <InformationSection
+            equipments={equipments}
+            parameters={parameters}
+            title="Informação 5"
+            parameter={{
+              name: "parameter5",
+              description: state.parameter5.description,
+              enabled: state.parameter5.enabled,
+            }}
+            handleAllowInformation={handleAllowInformation}
+            handleChangeInformation={handleChangeInformation}
+            handleParameterSelection={onParameterSelection}
+          />
+
+          <InformationSection
+            equipments={equipments}
+            parameters={parameters}
+            title="Informação 6"
+            parameter={{
+              name: "parameter6",
+              description: state.parameter6.description,
+              enabled: state.parameter6.enabled,
+            }}
+            handleAllowInformation={handleAllowInformation}
+            handleChangeInformation={handleChangeInformation}
+            handleParameterSelection={onParameterSelection}
+          />
+        </Grid>
+        <Grid item md={4}>
           {/* <Card>
             <CardContent> */}
           <div
@@ -188,6 +252,9 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
                 <ParameterPreview parameter={state.parameter1} />
                 <ParameterPreview parameter={state.parameter2} />
                 <ParameterPreview parameter={state.parameter3} />
+                <ParameterPreview parameter={state.parameter4} />
+                <ParameterPreview parameter={state.parameter5} />
+                <ParameterPreview parameter={state.parameter6} />
               </List>
             </Stack>
           </div>
@@ -212,7 +279,7 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
   );
 };
 
-export default Card3ParametersSettings;
+export default Card6ParametersSettings;
 
 type InformationSectionProps = {
   title: string;
@@ -230,8 +297,8 @@ type InformationSectionProps = {
   handleChangeInformation(event: React.ChangeEvent<HTMLInputElement>): void;
   handleParameterSelection(
     parameter: keyof Parameters,
-    description: string,
-    id: string
+    id: string,
+    description: string
   ): void;
 };
 
@@ -259,6 +326,7 @@ const InformationSection: React.FC<InformationSectionProps> = ({
           name={parameter.name}
           checked={parameter.enabled}
           onChange={handleAllowInformation}
+          // sx={{ ml: 1 }}
         />
       </Stack>
       <Stack

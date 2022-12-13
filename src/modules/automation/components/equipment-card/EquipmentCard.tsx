@@ -1,12 +1,15 @@
 import Card, { CardProps } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import SettingsButton from "modules/shared/components/settings-button/SettingsButton";
 import NotificationBadge from "modules/shared/components/notification-badge/NotificationBadge";
+import Circle from "modules/shared/components/circle/Circle";
 
 type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh" | "no-rule";
+type System = "energy" | "climate" | "telecom";
 
 type Parameter = {
   description: string;
@@ -15,8 +18,10 @@ type Parameter = {
   unit?: string;
 };
 
-type RoomCardProps = {
+type EquipmentCardProps = {
   title: string;
+  system: System;
+  status: Status;
   parameter1: Parameter;
   parameter2: Parameter;
   parameter3: Parameter;
@@ -27,8 +32,10 @@ type RoomCardProps = {
   onSettingsClick(): void;
 } & CardProps;
 
-const RoomCard: React.FC<RoomCardProps> = ({
+const EquipmentCard: React.FC<EquipmentCardProps> = ({
   title,
+  system,
+  status,
   parameter1,
   parameter2,
   parameter3,
@@ -36,12 +43,41 @@ const RoomCard: React.FC<RoomCardProps> = ({
   onSettingsClick,
   ...props
 }) => {
+  const getChipColor = (system: System) => {
+    switch (system) {
+      case "energy":
+        return "#FF9900";
+      case "climate":
+        return "#0062BD";
+      case "telecom":
+        return "#FF00D6";
+    }
+  };
+
+  const getChipDescription = (system: System) => {
+    switch (system) {
+      case "energy":
+        return "energia";
+      case "climate":
+        return "clima";
+      case "telecom":
+        return "telecom";
+    }
+  };
+
   return (
     <Card {...props}>
       <CardContent>
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="h4">{title}</Typography>
           <SettingsButton onClick={onSettingsClick} />
+        </Stack>
+        <Stack direction="row" marginTop={1} alignItems="center">
+          <Chip
+            label={getChipDescription(system)}
+            sx={{ backgroundColor: getChipColor(system), minWidth: "72px" }}
+          />
+          <OnlineOfflineStatus status={status} />
         </Stack>
         <List sx={{ mt: 1 }}>
           <ParameterInfo {...parameter1} />
@@ -61,7 +97,36 @@ const RoomCard: React.FC<RoomCardProps> = ({
   );
 };
 
-export default RoomCard;
+export default EquipmentCard;
+
+type Status = "online" | "offline";
+
+type OnlineOfflineStatusProps = {
+  status: Status;
+};
+
+const OnlineOfflineStatus: React.FC<OnlineOfflineStatusProps> = ({
+  status,
+  ...props
+}) => {
+  const getColorByStatus = (status: Status) =>
+    status === "online" ? "#00FF38" : "#FF0000";
+
+  const getDescriptionByStatus = (status: Status) =>
+    status === "online" ? "Online" : "Offline";
+
+  return (
+    <Stack direction="row" alignItems="center" marginLeft={2}>
+      <Circle radius={20} sx={{ backgroundColor: getColorByStatus(status) }} />
+      <Typography
+        variant="subtitle2"
+        sx={{ color: getColorByStatus(status), ml: 0.4 }}
+      >
+        {getDescriptionByStatus(status)}
+      </Typography>
+    </Stack>
+  );
+};
 
 type ParameterInfoProps = {
   status: ItemStatus;
@@ -75,6 +140,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
   description,
   value,
   unit,
+  ...props
 }) => {
   const getColorByStatus = (status: ItemStatus) => {
     switch (status) {
