@@ -29,6 +29,38 @@ type Card6ParametersSettingsProps = {
   equipments: Equipment[];
   parameters: Parameter[];
   onSave(state: Parameters, id: string): void;
+  data: {
+    parameter1: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter2: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter3: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter4: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter5: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter6: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+  };
 } & ModalProps;
 
 type ParameterState = {
@@ -52,48 +84,52 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   equipmentName,
   equipments,
   parameters,
+  data,
   onSave,
   onClose,
   ...props
 }) => {
   const [state, setState] = useState<Parameters>({
     parameter1: {
-      id: "",
-      description: "Parâmetro 1 não configurado",
+      id: data.parameter1.parameter?.id ?? "",
+      description:
+        data.parameter1.parameter?.description ?? "Parâmetro 1 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter1.parameter?.enabled ?? false,
     },
     parameter2: {
-      id: "",
+      id: data.parameter2.parameter?.id ?? "",
       description: "Parâmetro 2 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter2.parameter?.enabled ?? false,
     },
     parameter3: {
-      id: "",
+      id: data.parameter3.parameter?.id ?? "",
       description: "Parâmetro 3 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter3.parameter?.enabled ?? false,
     },
     parameter4: {
-      id: "",
+      id: data.parameter4.parameter?.id ?? "",
       description: "Parâmetro 4 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter4.parameter?.enabled ?? false,
     },
     parameter5: {
-      id: "",
+      id: data.parameter5.parameter?.id ?? "",
       description: "Parâmetro 5 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter5.parameter?.enabled ?? false,
     },
     parameter6: {
-      id: "",
+      id: data.parameter6.parameter?.id ?? "",
       description: "Parâmetro 6 não configurado",
       value: 0,
-      enabled: true,
+      enabled: data.parameter6.parameter?.enabled ?? false,
     },
   });
+
+  // const [state, setState] = useState<Parameters>({ ...data });
 
   const handleAllowInformation = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -163,6 +199,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter1.equipmentId ?? ""}
+            previousParameterId={data.parameter1.parameterId ?? ""}
           />
 
           <InformationSection
@@ -177,6 +215,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter2.equipmentId ?? ""}
+            previousParameterId={data.parameter2.parameterId ?? ""}
           />
 
           <InformationSection
@@ -191,6 +231,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter3.equipmentId ?? ""}
+            previousParameterId={data.parameter3.parameterId ?? ""}
           />
         </Grid>
         <Grid item md={4}>
@@ -206,6 +248,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter4.equipmentId ?? ""}
+            previousParameterId={data.parameter4.parameterId ?? ""}
           />
 
           <InformationSection
@@ -220,6 +264,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter5.equipmentId ?? ""}
+            previousParameterId={data.parameter5.parameterId ?? ""}
           />
 
           <InformationSection
@@ -234,6 +280,8 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter6.equipmentId ?? ""}
+            previousParameterId={data.parameter6.parameterId ?? ""}
           />
         </Grid>
         <Grid item md={4}>
@@ -300,6 +348,8 @@ type InformationSectionProps = {
     id: string,
     description: string
   ): void;
+  previousEquipmentId?: string;
+  previousParameterId?: string;
 };
 
 const InformationSection: React.FC<InformationSectionProps> = ({
@@ -307,11 +357,23 @@ const InformationSection: React.FC<InformationSectionProps> = ({
   equipments,
   parameters,
   parameter,
+  previousEquipmentId,
+  previousParameterId,
   handleAllowInformation,
   handleChangeInformation,
   handleParameterSelection,
   ...props
 }) => {
+  const [equipmentValue, setEquipmentValue] = useState<Equipment | null>(
+    equipments.find((e) => e.id === previousEquipmentId) ??
+      ({ id: "123", label: "Equipamento não selecionado" } as Equipment)
+  );
+  const [equipmentInputValue, setEquipmentInputValue] = useState<string>("");
+  const [parameterValue, setParameterValue] = useState<Parameter | null>(
+    parameters.find((p) => p.id === previousParameterId) ??
+      ({ id: "321", label: "Parâmetro não selecionado" } as Parameter)
+  );
+
   return (
     <>
       <Stack
@@ -338,25 +400,34 @@ const InformationSection: React.FC<InformationSectionProps> = ({
         }}
       >
         <Autocomplete
+          value={equipmentValue}
+          inputValue={equipmentInputValue}
+          getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
           options={equipments}
+          onChange={(_, value, __) => setEquipmentValue(value)}
+          onInputChange={(_, value) => setEquipmentInputValue(value)}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField name="equipment" {...params} label="Equipamento" />
           )}
         />
         <Autocomplete
+          value={parameterValue}
+          getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
           options={parameters}
           renderInput={(params) => (
             <TextField {...params} name="parameter" label="Parâmetro" />
           )}
-          onChange={(_, value, __) =>
+          onChange={(_, value, __) => {
+            setParameterValue(value);
             handleParameterSelection(
               parameter.name as keyof Parameters,
               value?.id ?? "",
               value?.label ?? ""
-            )
-          }
+            );
+          }}
         />
         <TextField
           disabled={!parameter.enabled}

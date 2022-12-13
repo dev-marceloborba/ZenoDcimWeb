@@ -59,8 +59,9 @@ Card.args = {
   alarms: {
     energy: 2,
     climate: 3,
-    telecom: 1,
+    telecom: 0,
   },
+  hideSettings: false,
   sx: {
     maxWidth: "400px",
   },

@@ -31,6 +31,8 @@ type SiteBuildingCardProps = {
     climate: number;
     telecom: number;
   };
+  hideSettings?: boolean;
+  onTitleClick(): void;
   onSettingsClick(): void;
 } & CardProps;
 
@@ -43,14 +45,22 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
   parameter5,
   parameter6,
   alarms,
+  hideSettings = true,
+  onTitleClick,
   onSettingsClick,
   ...props
 }) => {
   return (
     <Card {...props}>
       <Stack direction="row" justifyContent="space-between">
-        <Typography variant="h4">{title}</Typography>
-        <SettingsButton onClick={onSettingsClick} />
+        <Typography
+          variant="h4"
+          onClick={onTitleClick}
+          sx={{ cursor: "pointer" }}
+        >
+          {title}
+        </Typography>
+        {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
       </Stack>
       <List sx={{ mt: 1 }}>
         <ParameterInfo {...parameter1} />
@@ -168,7 +178,7 @@ const AlarmBadge: React.FC<AlarmBadgeProps> = ({ alarms, group, ...props }) => {
     }
   };
   return (
-    <Badge badgeContent={alarms} color="error">
+    <Badge badgeContent={alarms} color="error" showZero>
       {getAlarmIcon(group)}
     </Badge>
   );

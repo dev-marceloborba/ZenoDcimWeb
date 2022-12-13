@@ -35,6 +35,7 @@ Card.args = {
     value: 20,
     status: "highHigh",
   },
+  hideSettings: false,
   sx: {
     maxWidth: "300px",
   },

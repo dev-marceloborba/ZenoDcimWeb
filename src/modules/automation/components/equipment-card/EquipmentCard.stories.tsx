@@ -40,6 +40,7 @@ Energy.args = {
     value: 20,
     status: "highHigh",
   },
+  hideSettings: true,
   sx: {
     maxWidth: "300px",
   },
@@ -71,6 +72,7 @@ Climate.args = {
     value: 20,
     status: "highHigh",
   },
+  hideSettings: true,
   sx: {
     maxWidth: "340px",
   },
@@ -102,6 +104,7 @@ Telecom.args = {
     value: 20,
     status: "highHigh",
   },
+  hideSettings: true,
   sx: {
     maxWidth: "300px",
   },

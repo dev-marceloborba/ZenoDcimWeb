@@ -29,7 +29,9 @@ type EquipmentCardProps = {
     value: number;
     status: ItemStatus;
   };
+  hideSettings?: boolean;
   onSettingsClick(): void;
+  onTitleClick(): void;
 } & CardProps;
 
 const EquipmentCard: React.FC<EquipmentCardProps> = ({
@@ -40,7 +42,9 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({
   parameter2,
   parameter3,
   activeAlarms,
+  hideSettings = true,
   onSettingsClick,
+  onTitleClick,
   ...props
 }) => {
   const getChipColor = (system: System) => {
@@ -69,8 +73,14 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({
     <Card {...props}>
       <CardContent>
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant="h4">{title}</Typography>
-          <SettingsButton onClick={onSettingsClick} />
+          <Typography
+            variant="h4"
+            onClick={onTitleClick}
+            sx={{ cursor: "pointer" }}
+          >
+            {title}
+          </Typography>
+          {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
         </Stack>
         <Stack direction="row" marginTop={1} alignItems="center">
           <Chip

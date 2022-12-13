@@ -14,7 +14,7 @@ import ParameterForm from "../pages/parameter-admin/components/parameter-form/Pa
 import ParameterGroupAdmin from "../pages/parameter-group-admin/ParameterGroupAdmin";
 import EquipmentParametersAssociation from "../pages/equipment-admin/components/equipment-parameters-association/EquipmentParametersAssociation";
 import EquipmentParameterForm from "../pages/equipment-admin/components/equipment-parameter-form/EquipmentParameterForm";
-import EtcBuilding from "../pages/energy-clim-telecom/EtcBuilding";
+import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
 import VirtualParameterForm from "../pages/parameter-admin/components/virtual-parameter-form/VirtualParameterForm";
 import EquipmentParameterRules from "../pages/equipment-admin/components/equipment-parameter-rules/EquipmentParameterRules";
 import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equipment-parameter-rules-form/EquipmentParameterRulesForm";

@@ -24,7 +24,9 @@ type RoomCardProps = {
     value: number;
     status: ItemStatus;
   };
+  hideSettings?: boolean;
   onSettingsClick(): void;
+  onTitleClick(): void;
 } & CardProps;
 
 const RoomCard: React.FC<RoomCardProps> = ({
@@ -33,15 +35,23 @@ const RoomCard: React.FC<RoomCardProps> = ({
   parameter2,
   parameter3,
   activeAlarms,
+  hideSettings = true,
   onSettingsClick,
+  onTitleClick,
   ...props
 }) => {
   return (
     <Card {...props}>
       <CardContent>
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant="h4">{title}</Typography>
-          <SettingsButton onClick={onSettingsClick} />
+          <Typography
+            variant="h4"
+            onClick={onTitleClick}
+            sx={{ cursor: "pointer" }}
+          >
+            {title}
+          </Typography>
+          {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
         </Stack>
         <List sx={{ mt: 1 }}>
           <ParameterInfo {...parameter1} />
