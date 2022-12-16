@@ -8,7 +8,6 @@ import {
   BuildingsModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
-import { BuildingCardModel } from "modules/automation/models/building-card-model";
 
 export const buildingApi = createApi({
   reducerPath: "buildingApi",
@@ -75,12 +74,6 @@ export const buildingApi = createApi({
       }),
       invalidatesTags: ["BuildingModel", "BuildingMerged"],
     }),
-    loadCards: builder.query<BuildingCardModel[], void>({
-      query: () => ({
-        url: "v1/data-center/building/load-cards",
-        method: "GET",
-      }),
-    }),
   }),
 });
 
@@ -90,5 +83,4 @@ export const {
   useFindAllBuildingsDeepQuery,
   useFindAllBuildingsQuery,
   useFindBuildingByIdMutation,
-  useLoadCardsQuery,
 } = buildingApi;

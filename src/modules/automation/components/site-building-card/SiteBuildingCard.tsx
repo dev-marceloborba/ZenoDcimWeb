@@ -11,7 +11,7 @@ import LanIcon from "@mui/icons-material/Lan";
 
 type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh";
 type Parameter = {
-  icon: React.ReactNode;
+  enabled: boolean;
   description: string;
   unit?: string;
   value: number;
@@ -20,6 +20,8 @@ type Parameter = {
 
 type SiteBuildingCardProps = {
   title: string;
+  siteId?: string;
+  buildingId?: string;
   parameter1: Parameter;
   parameter2: Parameter;
   parameter3: Parameter;
@@ -33,11 +35,13 @@ type SiteBuildingCardProps = {
   };
   hideSettings?: boolean;
   onTitleClick(): void;
-  onSettingsClick(): void;
+  onSettingsClick(siteId: string, buildingId: string): void;
 } & CardProps;
 
 const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
   title,
+  buildingId,
+  siteId,
   parameter1,
   parameter2,
   parameter3,
@@ -50,6 +54,9 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
   onSettingsClick,
   ...props
 }) => {
+  const handleSettingsClick = () => {
+    onSettingsClick(siteId ?? "", buildingId ?? "");
+  };
   return (
     <Card {...props}>
       <Stack direction="row" justifyContent="space-between">
@@ -60,7 +67,7 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
         >
           {title}
         </Typography>
-        {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
+        {hideSettings ? null : <SettingsButton onClick={handleSettingsClick} />}
       </Stack>
       <List sx={{ mt: 1 }}>
         <ParameterInfo {...parameter1} />
@@ -102,7 +109,7 @@ export default SiteBuildingCard;
 
 type ParameterInfoProps = {
   status: ItemStatus;
-  icon: React.ReactNode;
+  enabled: boolean;
   description: string;
   value: number;
   unit?: string;
@@ -110,7 +117,7 @@ type ParameterInfoProps = {
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
   status,
-  icon,
+  enabled,
   description,
   value,
   unit,
@@ -130,6 +137,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
         return "red";
     }
   };
+  if (!enabled) return null;
   return (
     <li
       style={{
@@ -137,7 +145,6 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
       }}
     >
       <div style={{ display: "flex", marginBottom: "0.8rem" }}>
-        <div style={{ color: getColorByStatus(status) }}>{icon}</div>
         <div
           style={{
             color: getColorByStatus(status),
@@ -178,7 +185,7 @@ const AlarmBadge: React.FC<AlarmBadgeProps> = ({ alarms, group, ...props }) => {
     }
   };
   return (
-    <Badge badgeContent={alarms} color="error" showZero>
+    <Badge badgeContent={alarms} color="error">
       {getAlarmIcon(group)}
     </Badge>
   );

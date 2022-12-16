@@ -16,6 +16,7 @@ import React, { useState } from "react";
 type Equipment = {
   id: string;
   label: string;
+  parameters: Parameter[];
 };
 
 type Parameter = {
@@ -25,10 +26,9 @@ type Parameter = {
 
 type Card6ParametersSettingsProps = {
   id: string;
-  equipmentName: string;
+  name: string;
   equipments: Equipment[];
-  parameters: Parameter[];
-  onSave(state: Parameters, id: string): void;
+  onSave(state: NullableParameters, id: string): void;
   data: {
     parameter1: {
       parameter: ParameterState | null;
@@ -64,10 +64,19 @@ type Card6ParametersSettingsProps = {
 } & ModalProps;
 
 type ParameterState = {
-  id: string;
   description: string;
   value: number;
   enabled: boolean;
+  equipmentParameterId: string;
+};
+
+type NullableParameters = {
+  parameter1: ParameterState | null;
+  parameter2: ParameterState | null;
+  parameter3: ParameterState | null;
+  parameter4: ParameterState | null;
+  parameter5: ParameterState | null;
+  parameter6: ParameterState | null;
 };
 
 type Parameters = {
@@ -79,57 +88,36 @@ type Parameters = {
   parameter6: ParameterState;
 };
 
+const loadInitialState = (
+  parameter: ParameterState | null,
+  parameterNumber: number
+): ParameterState => {
+  return {
+    description:
+      parameter?.description ?? `Parâmetro ${parameterNumber} não configurado`,
+    value: 0,
+    enabled: parameter?.enabled ?? false,
+    equipmentParameterId: parameter?.equipmentParameterId ?? "",
+  };
+};
+
 const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   id,
-  equipmentName,
+  name,
   equipments,
-  parameters,
   data,
   onSave,
   onClose,
   ...props
 }) => {
   const [state, setState] = useState<Parameters>({
-    parameter1: {
-      id: data.parameter1.parameter?.id ?? "",
-      description:
-        data.parameter1.parameter?.description ?? "Parâmetro 1 não configurado",
-      value: 0,
-      enabled: data.parameter1.parameter?.enabled ?? false,
-    },
-    parameter2: {
-      id: data.parameter2.parameter?.id ?? "",
-      description: "Parâmetro 2 não configurado",
-      value: 0,
-      enabled: data.parameter2.parameter?.enabled ?? false,
-    },
-    parameter3: {
-      id: data.parameter3.parameter?.id ?? "",
-      description: "Parâmetro 3 não configurado",
-      value: 0,
-      enabled: data.parameter3.parameter?.enabled ?? false,
-    },
-    parameter4: {
-      id: data.parameter4.parameter?.id ?? "",
-      description: "Parâmetro 4 não configurado",
-      value: 0,
-      enabled: data.parameter4.parameter?.enabled ?? false,
-    },
-    parameter5: {
-      id: data.parameter5.parameter?.id ?? "",
-      description: "Parâmetro 5 não configurado",
-      value: 0,
-      enabled: data.parameter5.parameter?.enabled ?? false,
-    },
-    parameter6: {
-      id: data.parameter6.parameter?.id ?? "",
-      description: "Parâmetro 6 não configurado",
-      value: 0,
-      enabled: data.parameter6.parameter?.enabled ?? false,
-    },
+    parameter1: loadInitialState(data.parameter1.parameter, 1),
+    parameter2: loadInitialState(data.parameter2.parameter, 2),
+    parameter3: loadInitialState(data.parameter3.parameter, 3),
+    parameter4: loadInitialState(data.parameter4.parameter, 4),
+    parameter5: loadInitialState(data.parameter5.parameter, 5),
+    parameter6: loadInitialState(data.parameter6.parameter, 6),
   });
-
-  // const [state, setState] = useState<Parameters>({ ...data });
 
   const handleAllowInformation = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -166,12 +154,33 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
       [parameter]: {
         ...oldState[parameter],
         description,
-        id,
+        equipmentParameterId: id,
       },
     }));
   };
 
-  const handleOnSave = () => onSave(state, id);
+  const handleOnSave = () => {
+    const parametersToSave: NullableParameters = {} as NullableParameters;
+    parametersToSave.parameter1 = state.parameter1.equipmentParameterId
+      ? state.parameter1
+      : null;
+    parametersToSave.parameter2 = state.parameter2.equipmentParameterId
+      ? state.parameter2
+      : null;
+    parametersToSave.parameter3 = state.parameter3.equipmentParameterId
+      ? state.parameter3
+      : null;
+    parametersToSave.parameter4 = state.parameter4.equipmentParameterId
+      ? state.parameter4
+      : null;
+    parametersToSave.parameter5 = state.parameter5.equipmentParameterId
+      ? state.parameter5
+      : null;
+    parametersToSave.parameter6 = state.parameter6.equipmentParameterId
+      ? state.parameter6
+      : null;
+    onSave(parametersToSave, id);
+  };
 
   return (
     <Modal {...props}>
@@ -189,7 +198,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
         <Grid item md={4}>
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 1"
             parameter={{
               name: "parameter1",
@@ -205,7 +213,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 2"
             parameter={{
               name: "parameter2",
@@ -221,7 +228,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 3"
             parameter={{
               name: "parameter3",
@@ -238,7 +244,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
         <Grid item md={4}>
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 4"
             parameter={{
               name: "parameter4",
@@ -254,7 +259,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 5"
             parameter={{
               name: "parameter5",
@@ -270,7 +274,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 6"
             parameter={{
               name: "parameter6",
@@ -294,7 +297,7 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
               borderRadius: "8px",
             }}
           >
-            <Typography variant="h4">{equipmentName}</Typography>
+            <Typography variant="h4">{name}</Typography>
             <Stack direction="column">
               <List>
                 <ParameterPreview parameter={state.parameter1} />
@@ -332,7 +335,6 @@ export default Card6ParametersSettings;
 type InformationSectionProps = {
   title: string;
   equipments: Equipment[];
-  parameters: Parameter[];
   parameter: {
     name: string;
     enabled: boolean;
@@ -355,7 +357,6 @@ type InformationSectionProps = {
 const InformationSection: React.FC<InformationSectionProps> = ({
   title,
   equipments,
-  parameters,
   parameter,
   previousEquipmentId,
   previousParameterId,
@@ -364,15 +365,26 @@ const InformationSection: React.FC<InformationSectionProps> = ({
   handleParameterSelection,
   ...props
 }) => {
+  const [parameterOptions, setParameterOptions] = useState<Parameter[]>([]);
   const [equipmentValue, setEquipmentValue] = useState<Equipment | null>(
     equipments.find((e) => e.id === previousEquipmentId) ??
       ({ id: "123", label: "Equipamento não selecionado" } as Equipment)
   );
   const [equipmentInputValue, setEquipmentInputValue] = useState<string>("");
+
   const [parameterValue, setParameterValue] = useState<Parameter | null>(
-    parameters.find((p) => p.id === previousParameterId) ??
+    equipmentValue?.parameters?.find((p) => p.id === previousParameterId) ??
       ({ id: "321", label: "Parâmetro não selecionado" } as Parameter)
   );
+
+  const handleEquipmentSelection = (equipment: Equipment | null) => {
+    setEquipmentValue(equipment);
+    setParameterValue({
+      id: "321",
+      label: "Parâmetro não selecionado",
+    });
+    setParameterOptions(equipment?.parameters ?? []);
+  };
 
   return (
     <>
@@ -405,8 +417,12 @@ const InformationSection: React.FC<InformationSectionProps> = ({
           getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
           options={equipments}
-          onChange={(_, value, __) => setEquipmentValue(value)}
-          onInputChange={(_, value) => setEquipmentInputValue(value)}
+          onChange={(_, value, __) => {
+            handleEquipmentSelection(value);
+          }}
+          onInputChange={(_, value) => {
+            setEquipmentInputValue(value);
+          }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField name="equipment" {...params} label="Equipamento" />
@@ -416,7 +432,7 @@ const InformationSection: React.FC<InformationSectionProps> = ({
           value={parameterValue}
           getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
-          options={parameters}
+          options={parameterOptions}
           renderInput={(params) => (
             <TextField {...params} name="parameter" label="Parâmetro" />
           )}

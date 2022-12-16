@@ -22,6 +22,7 @@ import { groupApi } from "modules/user/services/groups.service";
 import { rackApi } from "modules/datacenter/services/rack.service";
 import { rackEquipmentApi } from "modules/datacenter/services/rack-equipment.service";
 import { userPreferenciesApi } from "modules/user/services/user-preferencies.service";
+import { siteBuildingCardApi } from "modules/automation/services/site-building-card-service";
 
 export const store = configureStore({
   reducer: {
@@ -46,6 +47,7 @@ export const store = configureStore({
     [rackApi.reducerPath]: rackApi.reducer,
     [rackEquipmentApi.reducerPath]: rackEquipmentApi.reducer,
     [userPreferenciesApi.reducerPath]: userPreferenciesApi.reducer,
+    [siteBuildingCardApi.reducerPath]: siteBuildingCardApi.reducer,
   },
   preloadedState: {
     auth: reHydrateStore(),
@@ -71,7 +73,8 @@ export const store = configureStore({
       groupApi.middleware,
       rackApi.middleware,
       rackEquipmentApi.middleware,
-      userPreferenciesApi.middleware
+      userPreferenciesApi.middleware,
+      siteBuildingCardApi.middleware
     ),
 });
 

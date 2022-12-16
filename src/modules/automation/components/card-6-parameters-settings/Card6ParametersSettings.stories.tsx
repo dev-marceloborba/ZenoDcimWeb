@@ -21,25 +21,35 @@ Configuration.args = {
   },
   id: "123",
   open: true,
-  equipmentName: "Facilities",
+  name: "Facilities",
   equipments: [
     {
       id: "1",
       label: "Equipamento 1",
+      parameters: [
+        {
+          id: "1",
+          label: "Corrente",
+        },
+        {
+          id: "2",
+          label: "Potência",
+        },
+      ],
     },
     {
       id: "2",
       label: "Equipamento 2",
-    },
-  ],
-  parameters: [
-    {
-      id: "1",
-      label: "Corrente",
-    },
-    {
-      id: "2",
-      label: "Temperatura",
+      parameters: [
+        {
+          id: "3",
+          label: "Temperatura",
+        },
+        {
+          id: "4",
+          label: "Umidade",
+        },
+      ],
     },
   ],
   data: {
@@ -86,25 +96,35 @@ PreFilledData.args = {
   },
   id: "123",
   open: true,
-  equipmentName: "Facilities",
+  name: "Facilities",
   equipments: [
     {
       id: "1",
       label: "Equipamento 1",
+      parameters: [
+        {
+          id: "1",
+          label: "Corrente",
+        },
+        {
+          id: "2",
+          label: "Potência",
+        },
+      ],
     },
     {
       id: "2",
       label: "Equipamento 2",
-    },
-  ],
-  parameters: [
-    {
-      id: "1",
-      label: "Corrente",
-    },
-    {
-      id: "2",
-      label: "Temperatura",
+      parameters: [
+        {
+          id: "3",
+          label: "Temperatura",
+        },
+        {
+          id: "4",
+          label: "Umidade",
+        },
+      ],
     },
   ],
   data: {
@@ -112,8 +132,8 @@ PreFilledData.args = {
       parameter: {
         description: "Corrente",
         enabled: true,
-        id: "1",
         value: 0,
+        equipmentParameterId: "1",
       },
       equipmentId: "1",
       parameterId: "1",
@@ -124,9 +144,14 @@ PreFilledData.args = {
       parameterId: null,
     },
     parameter3: {
-      parameter: null,
-      equipmentId: null,
-      parameterId: null,
+      parameter: {
+        description: "Temperatura",
+        enabled: true,
+        value: 0,
+        equipmentParameterId: "2",
+      },
+      equipmentId: "2",
+      parameterId: "2",
     },
     parameter4: {
       parameter: null,

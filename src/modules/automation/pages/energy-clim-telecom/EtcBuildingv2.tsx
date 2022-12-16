@@ -1,38 +1,61 @@
 import Grid from "@mui/material/Grid";
 import SiteBuildingCard from "modules/automation/components/site-building-card/SiteBuildingCard";
-import { useLoadCardsQuery } from "modules/datacenter/services/building-service";
+// import { useLoadCardsQuery } from "modules/datacenter/services/building-service";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
-import PowerIcon from "@mui/icons-material/Power";
 import { useModal } from "mui-modal-provider";
 import Card6ParametersSettings from "modules/automation/components/card-6-parameters-settings/Card6ParametersSettings";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
-import { useFindAllParametersQuery } from "modules/automation/services/parameter-service";
+import {
+  useUpdateSiteBuildingCardMutation,
+  useLoadCardsQuery,
+} from "modules/automation/services/site-building-card-service";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 export default function EtcBuilding() {
-  const { data: buildings, isLoading } = useLoadCardsQuery();
+  const { data: sites, isLoading: isLoadingFetch } = useLoadCardsQuery();
   const { data: equipments } = useFindAllEquipmentsQuery();
-  const { data: parameters } = useFindAllParametersQuery();
+  const [updateCard, { isLoading: isLoadingUpdate }] =
+    useUpdateSiteBuildingCardMutation();
   const { showModal } = useModal();
+  const toast = useToast();
 
-  console.log(buildings);
-  const onShowSettingsModal = (buildingId: string, buildingName: string) => {
+  const onShowSettingsModal = (
+    id: string,
+    siteName: string,
+    parameter1: any,
+    parameter2: any,
+    parameter3: any,
+    parameter4: any,
+    parameter5: any,
+    parameter6: any
+  ) => {
     const modal = showModal(Card6ParametersSettings, {
-      id: buildingId,
-      equipmentName: buildingName,
-      parameters:
-        parameters?.map((parameter) => ({
-          id: parameter.id,
-          label: parameter.name,
-        })) ?? [],
+      id,
+      name: siteName,
       equipments:
         equipments?.map((equipment) => ({
           id: equipment.id,
           label: equipment.component,
+          parameters:
+            equipment.equipmentParameters?.map((parameter) => ({
+              id: parameter.id,
+              label: parameter.name,
+            })) ?? [],
         })) ?? [],
-      onSave: (state, id) => {
-        console.log(state, id);
+      onSave: async (state, id) => {
         modal.hide();
+        console.log(state);
+        try {
+          await updateCard({
+            id,
+            ...state,
+          }).unwrap();
+          toast.open({ message: "Card atualizado com suceso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao atualizar card", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -44,34 +67,34 @@ export default function EtcBuilding() {
       },
       data: {
         parameter1: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter1,
+          equipmentId: parameter1?.equipmentParameter.equipmentId,
+          parameterId: parameter1?.equipmentParameter.id,
         },
         parameter2: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter2,
+          equipmentId: parameter2?.equipmentParameter.equipmentId,
+          parameterId: parameter2?.equipmentParameter.id,
         },
         parameter3: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter3,
+          equipmentId: parameter3?.equipmentParameter.equipmentId,
+          parameterId: parameter3?.equipmentParameter.id,
         },
         parameter4: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter4,
+          equipmentId: parameter4?.equipmentParameter.equipmentId,
+          parameterId: parameter4?.equipmentParameter.id,
         },
         parameter5: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter5,
+          equipmentId: parameter5?.equipmentParameter.equipmentId,
+          parameterId: parameter5?.equipmentParameter.id,
         },
         parameter6: {
-          parameter: null,
-          equipmentId: null,
-          parameterId: null,
+          parameter: parameter6,
+          equipmentId: parameter6?.equipmentParameter.equipmentId,
+          parameterId: parameter6?.equipmentParameter.id,
         },
       },
     });
@@ -81,49 +104,49 @@ export default function EtcBuilding() {
     <HeroContainer title="Energia, clima e telecom">
       <Grid
         container
-        // justifyContent="center"
         alignItems="center"
         columnSpacing={6}
         rowSpacing={2}
         sx={{ mt: 2 }}
       >
-        {buildings?.map((building) => (
-          <Grid key={building.buildingId} item md={6}>
+        {sites?.map((site) => (
+          <Grid key={site.siteId} item md={6}>
             <SiteBuildingCard
-              title={building.name}
+              title={site.name}
+              siteId={site.siteId}
               parameter1={{
-                description: building.parameter1?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter1?.description ?? "",
+                enabled: site.parameter1?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter2={{
-                description: building.parameter2?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter2?.description ?? "",
+                enabled: site.parameter2?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter3={{
-                description: building.parameter3?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter3?.description ?? "",
+                enabled: site.parameter3?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter4={{
-                description: building.parameter4?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter4?.description ?? "",
+                enabled: site.parameter4?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter5={{
-                description: building.parameter5?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter5?.description ?? "",
+                enabled: site.parameter5?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter6={{
-                description: building.parameter6?.description ?? "",
-                icon: <PowerIcon />,
+                description: site.parameter6?.description ?? "",
+                enabled: site.parameter6?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
@@ -134,14 +157,23 @@ export default function EtcBuilding() {
               }}
               hideSettings={false}
               onSettingsClick={() =>
-                onShowSettingsModal(building.buildingId, building.name)
+                onShowSettingsModal(
+                  site.id,
+                  site.name,
+                  site.parameter1,
+                  site.parameter2,
+                  site.parameter3,
+                  site.parameter4,
+                  site.parameter5,
+                  site.parameter6
+                )
               }
               onTitleClick={() => console.log("navigate to details")}
             />
           </Grid>
         ))}
       </Grid>
-      <Loading open={isLoading} />
+      <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>
   );
 }

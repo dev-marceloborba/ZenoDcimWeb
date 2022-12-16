@@ -4,7 +4,7 @@ import AccessControl from "modules/automation/pages/access-control/AccessControl
 import EquipmentConectivity from "modules/automation/pages/equipment-connectivity/EquipmentConectivity";
 import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAdmin";
 import { automationPaths } from "./paths";
-import EtcFloor from "../pages/energy-clim-telecom/EtcvFloor";
+import EtcFloor from "../pages/energy-clim-telecom/EtcFloorv2";
 import Cage from "../pages/cage/Cage";
 import Rack from "../pages/rack/Rack";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
