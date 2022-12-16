@@ -160,7 +160,7 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   };
 
   const handleOnSave = () => {
-    const parametersToSave: NullableParameters = {} as NullableParameters;
+    const parametersToSave = {} as NullableParameters;
     parametersToSave.parameter1 = state.parameter1.equipmentParameterId
       ? state.parameter1
       : null;
