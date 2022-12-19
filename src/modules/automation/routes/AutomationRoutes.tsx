@@ -27,6 +27,9 @@ import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
 import EquipmentResolver from "./resolvers/EquipmentResolver";
 import EquipmentParameterResolver from "./resolvers/EquipmentParameterResolver";
+import SiteResolver from "./resolvers/SiteResolver";
+import EtcRoom from "../pages/energy-clim-telecom/EtcRoom";
+import BuildingResolver from "./resolvers/BuildingResolver";
 
 export const automationRoutes: RouteObject[] = [
   {
@@ -38,7 +41,13 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.energyClimateTelecomFloor.fullPath,
     element: <EtcFloor />,
     title: "Andares",
-    resolver: FloorResolver,
+    resolver: SiteResolver,
+  },
+  {
+    path: automationPaths.roomCards.fullPath,
+    element: <EtcRoom />,
+    title: "Salas",
+    resolver: BuildingResolver,
   },
   {
     path: automationPaths.cage.fullPath,

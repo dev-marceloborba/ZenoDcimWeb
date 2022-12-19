@@ -1,6 +1,5 @@
 import Grid from "@mui/material/Grid";
 import SiteBuildingCard from "modules/automation/components/site-building-card/SiteBuildingCard";
-// import { useLoadCardsQuery } from "modules/datacenter/services/building-service";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import { useModal } from "mui-modal-provider";
@@ -11,6 +10,7 @@ import {
   useLoadCardsQuery,
 } from "modules/automation/services/site-building-card-service";
 import { useToast } from "modules/shared/components/ToastProvider";
+import useRouter from "modules/core/hooks/useRouter";
 
 export default function EtcBuilding() {
   const { data: sites, isLoading: isLoadingFetch } = useLoadCardsQuery();
@@ -19,6 +19,7 @@ export default function EtcBuilding() {
     useUpdateSiteBuildingCardMutation();
   const { showModal } = useModal();
   const toast = useToast();
+  const { navigate } = useRouter();
 
   const onShowSettingsModal = (
     id: string,
@@ -168,7 +169,9 @@ export default function EtcBuilding() {
                   site.parameter6
                 )
               }
-              onTitleClick={() => console.log("navigate to details")}
+              onTitleClick={() =>
+                navigate(`/zeno/automation/etc/${site.siteId}`, {})
+              }
             />
           </Grid>
         ))}

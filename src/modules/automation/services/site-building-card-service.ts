@@ -28,6 +28,13 @@ export const siteBuildingCardApi = createApi({
       }),
       providesTags: ["BuildingCardModel", "UpdateBuildingCardViewModel"],
     }),
+    loadBuildingCards: builder.query<BuildingCardModel[], string>({
+      query: (id) => ({
+        url: `v1/data-center/building/load-cards/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["BuildingCardModel", "UpdateBuildingCardViewModel"],
+    }),
     updateSiteBuildingCard: builder.mutation<any, UpdateBuildingCardViewModel>({
       query: (params) => ({
         url: `v1/site-building-card-settings/${params.id}`,
@@ -39,5 +46,8 @@ export const siteBuildingCardApi = createApi({
   }),
 });
 
-export const { useLoadCardsQuery, useUpdateSiteBuildingCardMutation } =
-  siteBuildingCardApi;
+export const {
+  useLoadCardsQuery,
+  useLoadBuildingCardsQuery,
+  useUpdateSiteBuildingCardMutation,
+} = siteBuildingCardApi;

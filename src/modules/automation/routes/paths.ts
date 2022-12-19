@@ -2,9 +2,16 @@ export const automationPaths = {
   energyClimateTelecom: {
     fullpath: "etc",
   },
+  // energyClimateTelecomFloor: {
+  //   fullPath: "etc/floor/:floorId",
+  //   shortPath: "floor",
+  // },
   energyClimateTelecomFloor: {
-    fullPath: "etc/floor/:floorId",
+    fullPath: "etc/:siteId",
     shortPath: "floor",
+  },
+  roomCards: {
+    fullPath: "etc/:siteId/:buildingId",
   },
   cage: {
     fullPath: "etc/floor/:floorId/cage/:roomId",

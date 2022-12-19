@@ -39,6 +39,7 @@ export interface RoomViewModel {
 
 export interface RoomModel extends RoomViewModel {
   id: string;
+  building?: BuildingModel;
   equipments?: EquipmentModel[];
 }
 

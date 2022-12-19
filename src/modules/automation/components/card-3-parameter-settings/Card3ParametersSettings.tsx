@@ -16,6 +16,7 @@ import React, { useState } from "react";
 type Equipment = {
   id: string;
   label: string;
+  parameters: Parameter[];
 };
 
 type Parameter = {
@@ -25,17 +26,33 @@ type Parameter = {
 
 type Card3ParametersSettingsProps = {
   id: string;
-  equipmentName: string;
+  name: string;
   equipments: Equipment[];
-  parameters: Parameter[];
-  onSave(state: Parameters, id: string): void;
+  onSave(state: NullableParameters, id: string): void;
+  data: {
+    parameter1: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter2: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+    parameter3: {
+      parameter: ParameterState | null;
+      equipmentId: string | null;
+      parameterId: string | null;
+    };
+  };
 } & ModalProps;
 
 type ParameterState = {
-  id: string;
   description: string;
   value: number;
   enabled: boolean;
+  equipmentParameterId: string;
 };
 
 type Parameters = {
@@ -44,34 +61,38 @@ type Parameters = {
   parameter3: ParameterState;
 };
 
+type NullableParameters = {
+  parameter1: ParameterState | null;
+  parameter2: ParameterState | null;
+  parameter3: ParameterState | null;
+};
+
+const loadInitialState = (
+  parameter: ParameterState | null,
+  parameterNumber: number
+): ParameterState => {
+  return {
+    description:
+      parameter?.description ?? `Parâmetro ${parameterNumber} não configurado`,
+    value: 0,
+    enabled: parameter?.enabled ?? false,
+    equipmentParameterId: parameter?.equipmentParameterId ?? "",
+  };
+};
+
 const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
   id,
-  equipmentName,
+  name,
   equipments,
-  parameters,
+  data,
   onSave,
   onClose,
   ...props
 }) => {
   const [state, setState] = useState<Parameters>({
-    parameter1: {
-      id: "",
-      description: "Parâmetro 1 não configurado",
-      value: 0,
-      enabled: true,
-    },
-    parameter2: {
-      id: "",
-      description: "Parâmetro 2 não configurado",
-      value: 0,
-      enabled: true,
-    },
-    parameter3: {
-      id: "",
-      description: "Parâmetro 3 não configurado",
-      value: 0,
-      enabled: true,
-    },
+    parameter1: loadInitialState(data.parameter1.parameter, 1),
+    parameter2: loadInitialState(data.parameter2.parameter, 2),
+    parameter3: loadInitialState(data.parameter3.parameter, 3),
   });
 
   const handleAllowInformation = (
@@ -109,12 +130,24 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
       [parameter]: {
         ...oldState[parameter],
         description,
-        id,
+        equipmentParameterId: id,
       },
     }));
   };
 
-  const handleOnSave = () => onSave(state, id);
+  const handleOnSave = () => {
+    const parametersToSave = {} as NullableParameters;
+    parametersToSave.parameter1 = state.parameter1.equipmentParameterId
+      ? state.parameter1
+      : null;
+    parametersToSave.parameter2 = state.parameter2.equipmentParameterId
+      ? state.parameter2
+      : null;
+    parametersToSave.parameter3 = state.parameter3.equipmentParameterId
+      ? state.parameter3
+      : null;
+    onSave(parametersToSave, id);
+  };
 
   return (
     <Modal {...props}>
@@ -132,7 +165,6 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
         <Grid item md={6}>
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 1"
             parameter={{
               name: "parameter1",
@@ -142,11 +174,12 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter1.equipmentId ?? ""}
+            previousParameterId={data.parameter1.parameterId ?? ""}
           />
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 2"
             parameter={{
               name: "parameter2",
@@ -156,11 +189,12 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter2.equipmentId ?? ""}
+            previousParameterId={data.parameter2.parameterId ?? ""}
           />
 
           <InformationSection
             equipments={equipments}
-            parameters={parameters}
             title="Informação 3"
             parameter={{
               name: "parameter3",
@@ -170,6 +204,8 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
+            previousEquipmentId={data.parameter3.equipmentId ?? ""}
+            previousParameterId={data.parameter3.parameterId ?? ""}
           />
         </Grid>
         <Grid item md={6}>
@@ -182,7 +218,7 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
               borderRadius: "8px",
             }}
           >
-            <Typography variant="h4">{equipmentName}</Typography>
+            <Typography variant="h4">{name}</Typography>
             <Stack direction="column">
               <List>
                 <ParameterPreview parameter={state.parameter1} />
@@ -217,7 +253,6 @@ export default Card3ParametersSettings;
 type InformationSectionProps = {
   title: string;
   equipments: Equipment[];
-  parameters: Parameter[];
   parameter: {
     name: string;
     enabled: boolean;
@@ -230,21 +265,45 @@ type InformationSectionProps = {
   handleChangeInformation(event: React.ChangeEvent<HTMLInputElement>): void;
   handleParameterSelection(
     parameter: keyof Parameters,
-    description: string,
-    id: string
+    id: string,
+    description: string
   ): void;
+  previousEquipmentId?: string;
+  previousParameterId?: string;
 };
 
 const InformationSection: React.FC<InformationSectionProps> = ({
   title,
   equipments,
-  parameters,
   parameter,
+  previousEquipmentId,
+  previousParameterId,
   handleAllowInformation,
   handleChangeInformation,
   handleParameterSelection,
   ...props
 }) => {
+  const [parameterOptions, setParameterOptions] = useState<Parameter[]>([]);
+  const [equipmentValue, setEquipmentValue] = useState<Equipment | null>(
+    equipments.find((e) => e.id === previousEquipmentId) ??
+      ({ id: "123", label: "Equipamento não selecionado" } as Equipment)
+  );
+  const [equipmentInputValue, setEquipmentInputValue] = useState<string>("");
+
+  const [parameterValue, setParameterValue] = useState<Parameter | null>(
+    equipmentValue?.parameters?.find((p) => p.id === previousParameterId) ??
+      ({ id: "321", label: "Parâmetro não selecionado" } as Parameter)
+  );
+
+  const handleEquipmentSelection = (equipment: Equipment | null) => {
+    setEquipmentValue(equipment);
+    setParameterValue({
+      id: "321",
+      label: "Parâmetro não selecionado",
+    });
+    setParameterOptions(equipment?.parameters ?? []);
+  };
+
   return (
     <>
       <Stack
@@ -259,6 +318,7 @@ const InformationSection: React.FC<InformationSectionProps> = ({
           name={parameter.name}
           checked={parameter.enabled}
           onChange={handleAllowInformation}
+          // sx={{ ml: 1 }}
         />
       </Stack>
       <Stack
@@ -270,25 +330,38 @@ const InformationSection: React.FC<InformationSectionProps> = ({
         }}
       >
         <Autocomplete
+          value={equipmentValue}
+          inputValue={equipmentInputValue}
+          getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
           options={equipments}
+          onChange={(_, value, __) => {
+            handleEquipmentSelection(value);
+          }}
+          onInputChange={(_, value) => {
+            setEquipmentInputValue(value);
+          }}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
             <TextField name="equipment" {...params} label="Equipamento" />
           )}
         />
         <Autocomplete
+          value={parameterValue}
+          getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
-          options={parameters}
+          options={parameterOptions}
           renderInput={(params) => (
             <TextField {...params} name="parameter" label="Parâmetro" />
           )}
-          onChange={(_, value, __) =>
+          onChange={(_, value, __) => {
+            setParameterValue(value);
             handleParameterSelection(
               parameter.name as keyof Parameters,
               value?.id ?? "",
               value?.label ?? ""
-            )
-          }
+            );
+          }}
         />
         <TextField
           disabled={!parameter.enabled}
