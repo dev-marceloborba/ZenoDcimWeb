@@ -21,6 +21,7 @@ import { useAppDispatch } from "app/hooks";
 import { setPreferences } from "modules/user/stores/slices/AuthenticationSlice";
 import { useAuth } from "app/hooks/useAuth";
 import { useUpdateUserPreferenciesMutation } from "modules/user/services/user-preferencies.service";
+import EditButton from "../edit-button/EditButton";
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
@@ -293,9 +294,10 @@ const DataTableV2: React.FC<DataTableProps> = ({
                       <TableCell align="right">
                         <Stack direction="row" justifyContent="flex-end">
                           {showEdit && (
-                            <IconButton onClick={() => handleEditOnClick(row)}>
-                              <EditIcon />
-                            </IconButton>
+                            <EditButton
+                              mode="icon"
+                              onClick={() => handleEditOnClick(row)}
+                            />
                           )}
                           {showDelete && (
                             <DeleteButton
@@ -322,7 +324,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
               )}
             </TableBody>
           </Table>
-          {currentRows.length === 0 && <NoDataText />}
+          {/* {currentRows.length === 0 ? <NoDataText /> : null} */}
         </TableContainer>
         {!hidePagination && (
           <TablePagination

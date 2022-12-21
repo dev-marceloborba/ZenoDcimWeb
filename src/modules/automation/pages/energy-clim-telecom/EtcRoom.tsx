@@ -15,7 +15,7 @@ import { useModal } from "mui-modal-provider";
 
 const EtcRoom: React.FC = () => {
   const { data: equipments } = useFindAllEquipmentsQuery();
-  const { navigate, params } = useRouter();
+  const { navigate, path, params } = useRouter();
   const { data: rooms, isLoading: isLoadingFetch } = useLoadRoomCardsQuery(
     params.buildingId!
   );
@@ -53,7 +53,6 @@ const EtcRoom: React.FC = () => {
           console.log(error);
           toast.open({ message: "Erro ao atualizar card", severity: "error" });
         }
-        console.log(id);
       },
       onClose: () => {
         modal.hide();
@@ -122,7 +121,9 @@ const EtcRoom: React.FC = () => {
                   room.parameter3
                 );
               }}
-              onTitleClick={() => {}}
+              onTitleClick={() => {
+                navigate(`${path}/${room.roomId}`, {});
+              }}
             />
           </Grid>
         ))}

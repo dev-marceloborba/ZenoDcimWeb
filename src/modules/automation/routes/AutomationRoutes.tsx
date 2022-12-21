@@ -30,6 +30,8 @@ import EquipmentParameterResolver from "./resolvers/EquipmentParameterResolver";
 import SiteResolver from "./resolvers/SiteResolver";
 import EtcRoom from "../pages/energy-clim-telecom/EtcRoom";
 import BuildingResolver from "./resolvers/BuildingResolver";
+import EtcEquipment from "../pages/energy-clim-telecom/EtcEquipment";
+import EquipmentDetailsPage from "../pages/equipment-details-page/EquipmentDetailsPage";
 
 export const automationRoutes: RouteObject[] = [
   {
@@ -48,6 +50,17 @@ export const automationRoutes: RouteObject[] = [
     element: <EtcRoom />,
     title: "Salas",
     resolver: BuildingResolver,
+  },
+  {
+    path: automationPaths.equipmentCards.fullPath,
+    element: <EtcEquipment />,
+    title: "Equipamentos",
+    resolver: RoomResolver,
+  },
+  {
+    path: automationPaths.equipmentDeails.fullPath,
+    element: <EquipmentDetailsPage />,
+    title: "Detalhes equipamento",
   },
   {
     path: automationPaths.cage.fullPath,

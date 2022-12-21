@@ -21,7 +21,7 @@ const HeroContainer: React.FC<HeroContainerProps> = ({
         <Box sx={{ marginBottom: "2rem" }}>
           <Breadcrumbs />
           {/* <Separator /> */}
-          <Title variant="h4">{title}</Title>
+          <Title variant="h5">{title}</Title>
           {/* <Separator /> */}
           {children}
         </Box>

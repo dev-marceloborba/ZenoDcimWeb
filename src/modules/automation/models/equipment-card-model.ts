@@ -1,13 +1,13 @@
-export interface RoomCardModel {
+export interface EquipmentCardModel {
   id: string;
-  buildingId?: string;
+  equipmentId: string;
   roomId?: string;
   name: string;
   parameter1: ParameterInfo | null;
   parameter2: ParameterInfo | null;
   parameter3: ParameterInfo | null;
 }
-export interface RoomCardViewModel {}
+export interface EquipmentCardViewModel {}
 
 type ParameterInfo = {
   description: string;
@@ -15,7 +15,7 @@ type ParameterInfo = {
   equipmentParameterId: string;
 };
 
-export interface UpdateRoomCardViewModel {
+export interface UpdateEquipmentCardViewModel {
   id: string;
   parameter1: ParameterInfo | null;
   parameter2: ParameterInfo | null;
