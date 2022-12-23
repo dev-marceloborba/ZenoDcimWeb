@@ -1,10 +1,17 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import Box, { BoxProps } from "@mui/material/Box";
 
-const Center: React.FC = ({ children }) => {
+const Center: React.FC<BoxProps> = ({ children, ...props }) => {
+  const { sx, ...rest } = props;
   return (
     <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        ...sx,
+      }}
+      {...rest}
     >
       {children}
     </Box>

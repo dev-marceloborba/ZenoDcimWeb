@@ -59,6 +59,7 @@ export interface EquipmentViewModel {
   buildingId: string;
   floorId: string;
   roomId: string;
+  siteId?: string;
   component: string;
   componentCode: string;
   description: string;
@@ -80,6 +81,7 @@ export interface EquipmentModel extends EquipmentViewModel {
   building?: BuildingModel;
   floor?: FloorModel;
   room?: RoomModel;
+  site?: SiteModel;
 }
 
 export interface EquipmentParameterViewModel {

@@ -21,7 +21,7 @@ import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equ
 import MeasureHistory from "../pages/measure-history/MeasureHistory";
 import AlarmHistory from "../pages/alarm-history/AlarmHistory";
 import AlarmRuntime from "../pages/alarm-history/components/alarm-runtime/AlarmRuntime";
-import EquipmentParametersPage from "../pages/equipment-parameters-page/EquipmentParametersPage";
+import EquipmentParametersPage from "../pages/equipment-parameters-page/EquipmentParametersPagev2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
 import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
@@ -61,6 +61,12 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.equipmentDeails.fullPath,
     element: <EquipmentDetailsPage />,
     title: "Detalhes equipamento",
+    resolver: EquipmentResolver,
+  },
+  {
+    path: automationPaths.equipmentParameters.fullPath,
+    element: <EquipmentParametersPage />,
+    title: "Parâmetros",
   },
   {
     path: automationPaths.cage.fullPath,

@@ -29,11 +29,43 @@ import useRouter from "modules/core/hooks/useRouter";
 import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import Loading from "modules/shared/components/Loading";
+import { useFindAlarmRulesByEquipmentIdQuery } from "modules/automation/services/alarm-rule-service";
+import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
+import { useModal } from "mui-modal-provider";
+import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
 
 const EquipmentDetailsPage: React.FC = () => {
-  const { params } = useRouter();
+  const { params, navigate } = useRouter();
   const [findEquipment, { data: equipment, isLoading }] =
     useFindEquipmentByIdMutation();
+  const { showModal } = useModal();
+
+  const handleShowEquipmentModal = () => {
+    const modal = showModal(EquipmentFormModal, {
+      title: "Editar equipamento",
+      onConfirm: () => {
+        modal.hide();
+      },
+      onClose: () => {
+        modal.hide();
+      },
+      mode: "edit",
+      data: {
+        site: equipment?.site?.id ?? "",
+        building: equipment?.building?.id ?? "",
+        floor: equipment?.floor?.id ?? "",
+        room: equipment?.room?.id ?? "",
+        name: equipment?.component ?? "",
+        group: equipment?.group ?? 0,
+        manufactor: "",
+        powerLimit: equipment?.powerLimit ?? 0,
+        serialNumber: equipment?.componentCode ?? "",
+        description: equipment?.description ?? "",
+        size: equipment?.size ?? "",
+        weight: equipment?.weight ?? 0,
+      },
+    });
+  };
 
   useEffect(() => {
     async function fetchEquipment() {
@@ -44,14 +76,17 @@ const EquipmentDetailsPage: React.FC = () => {
     fetchEquipment();
   }, [findEquipment, params.equipmentId]);
 
-  console.log(equipment);
   return (
-    <HeroContainer title="Ar condicionado 01">
+    <HeroContainer title={equipment?.component}>
       <TabContextProvider>
-        <LabelTabs items={["Detalhes", "Parâmetros", "Regras"]} />
+        <LabelTabs items={["Detalhes", "Parâmetros", "Regras"]}>
+          <Button variant="contained" onClick={handleShowEquipmentModal}>
+            Editar equipamento
+          </Button>
+        </LabelTabs>
         <DetailsTab equipment={equipment} />
-        <ParametersTab />
-        <RulesTab />
+        <ParametersTab equipmentId={equipment?.id ?? ""} />
+        <RulesTab equipmentId={equipment?.id ?? ""} />
       </TabContextProvider>
       <Loading open={isLoading} />
     </HeroContainer>
@@ -85,7 +120,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
               Site
             </Typography>
             <Typography variant="subtitle1" color="#9CA7B1">
-              Site 1
+              {equipment?.site?.name}
             </Typography>
           </Grid>
           <Grid item md={3}>
@@ -163,6 +198,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
               Marca
             </Typography>
             <Typography variant="subtitle1" color="#9CA7B1">
+              {/* TODO: inserir fabricante aqui */}
               Trane
             </Typography>
           </Grid>
@@ -218,26 +254,28 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
   );
 };
 
-const ParametersTab = () => {
+type ParametersTabProps = {
+  equipmentId: string;
+};
+
+const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
   const { tabIndex } = useTabContext();
+  const [findParameters, { data: parameters, isLoading }] =
+    useFindEquipmentParametersByEquipmentIdMutation();
+
+  useEffect(() => {
+    async function fetchParameters() {
+      await findParameters(equipmentId).unwrap();
+    }
+    fetchParameters();
+  }, [equipmentId, findParameters]);
 
   return (
     <TabPanel index={1} value={tabIndex}>
       <DataTableV2
         title="Parâmetros"
-        columns={columns}
-        rows={[
-          {
-            parameter: "Utilizacao do ar condicionado",
-            unit: "%",
-            lowLowLimit: 10,
-            lowLimit: 20,
-            highLimit: 30,
-            highHighLimit: 40,
-            scale: 1,
-            type: "Parâmetro físico",
-          },
-        ]}
+        columns={parameterColumns}
+        rows={parameters ?? []}
         options={{
           showEdit: true,
           showDelete: true,
@@ -292,40 +330,48 @@ const ParametersTab = () => {
           </TableContainer>
         </Paper>
       </Box>
+      <Loading open={isLoading} />
     </TabPanel>
   );
 };
 
-const RulesTab = () => {
+type RulesTabProps = {
+  equipmentId: string;
+};
+
+const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
   const { tabIndex } = useTabContext();
+  const { data: rules, isLoading } =
+    useFindAlarmRulesByEquipmentIdQuery(equipmentId);
 
   return (
     <TabPanel index={2} value={tabIndex}>
       <DataTableV2
         title="Regras"
         columns={ruleColumns}
-        rows={[
-          {
-            rule: "Sobretensão fase L1",
-            parameter: "Tensão elétrica - L1",
-            conditional: ">=",
-            setpoint: 240,
-            priority: "Alta",
-          },
-        ]}
+        rows={
+          rules?.map((rule) => ({
+            rule: rule.name,
+            parameter: rule.equipmentParameter?.name ?? "",
+            conditional: rule.conditional,
+            setpoint: rule.setpoint,
+            priority: rule.priority,
+          })) ?? []
+        }
         options={{
-          showEdit: true,
-          showDelete: true,
+          showEdit: false,
+          showDelete: false,
           selectionMode: "hide",
         }}
       />
+      <Loading open={isLoading} />
     </TabPanel>
   );
 };
 
-const columns: ColumnHeader[] = [
+const parameterColumns: ColumnHeader[] = [
   {
-    name: "parameter",
+    name: "name",
     label: "Parâmetro",
   },
   {
@@ -352,10 +398,10 @@ const columns: ColumnHeader[] = [
     name: "scale",
     label: "Escala",
   },
-  {
-    name: "type",
-    label: "Tipo",
-  },
+  // {
+  //   name: "type",
+  //   label: "Tipo",
+  // },
 ];
 
 const ruleColumns: ColumnHeader[] = [

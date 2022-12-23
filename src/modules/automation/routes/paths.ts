@@ -19,6 +19,9 @@ export const automationPaths = {
   equipmentDeails: {
     fullPath: "etc/:siteId/:buildingId/:roomId/:equipmentId",
   },
+  equipmentParameters: {
+    fullPath: "etc/:siteId/:buildingId/:roomId/:equipmentId/parameters",
+  },
   cage: {
     fullPath: "etc/floor/:floorId/cage/:roomId",
     shortPath: "cage",

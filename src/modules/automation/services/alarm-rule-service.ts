@@ -5,7 +5,10 @@ import { RootState } from "modules/core/store";
 import {
   AlarmRuleModel,
   AlarmRulesModel,
+  AlarmRuleTableViewModel,
   AlarmRuleViewModel,
+  EAlarmConditonal,
+  EAlarmPriority,
   UpdateAlarmRuleViewModel,
 } from "../models/alarm-rule-model";
 
@@ -58,12 +61,52 @@ export const alarmRuleApi = createApi({
       }),
       invalidatesTags: ["AlarmRuleModel"],
     }),
-    findAlarmRulesByEquipmentId: builder.mutation<AlarmRulesModel, string>({
+    findAlarmRulesByEquipmentId: builder.query<
+      AlarmRuleTableViewModel[],
+      string
+    >({
       query: (id) => ({
-        url: `v1/data-center/alarm-rules-equipment/${id}`,
+        url: `v1/data-center/alarm-rules/by-equipment/${id}`,
         method: "GET",
       }),
-      invalidatesTags: ["AlarmRuleModel"],
+      transformResponse: (response: AlarmRulesModel) => {
+        function getRuleConditional(conditional: EAlarmConditonal) {
+          switch (conditional) {
+            case EAlarmConditonal.EQUAL:
+              return "=";
+            case EAlarmConditonal.GREATER:
+              return ">";
+            case EAlarmConditonal.GREATER_EQUAL:
+              return ">=";
+            case EAlarmConditonal.LOWER:
+              return "<";
+            case EAlarmConditonal.LOWER_EQUAL:
+              return "<=";
+          }
+        }
+
+        function getRulePriority(priority: EAlarmPriority) {
+          switch (priority) {
+            case EAlarmPriority.MEDIUM:
+              return "Média";
+            case EAlarmPriority.HIGH:
+              return "Alta";
+            case EAlarmPriority.LOW:
+              return "Baixa";
+          }
+        }
+
+        return response.map((x) => ({
+          name: x.name,
+          setpoint: x.setpoint,
+          enableEmail: x.enableEmail,
+          equipmentParameter: x.equipmentParameter,
+          enableNotification: x.enableNotification,
+          conditional: getRuleConditional(x.conditional),
+          priority: getRulePriority(x.priority),
+        }));
+      },
+      providesTags: ["AlarmRuleModel"],
     }),
     deleteAlarmRule: builder.mutation<void, string>({
       query: (id) => ({
@@ -80,6 +123,6 @@ export const {
   useDeleteAlarmRuleMutation,
   useFindAlarmRuleByIdMutation,
   useFindAllAlarmRulesQuery,
-  useFindAlarmRulesByEquipmentIdMutation,
+  useFindAlarmRulesByEquipmentIdQuery,
   useUpdateAlarmRuleMutation,
 } = alarmRuleApi;

@@ -211,6 +211,7 @@ const EquipmentForm: React.FC = () => {
 };
 
 const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
+  siteId: string().notRequired(),
   buildingId: string().required("Prédio é obrigatório"),
   floorId: string().required("Andar é obrigatório"),
   roomId: string().required("Sala é obrigatória"),

@@ -1,3 +1,5 @@
+import { EquipmentParameterModel } from "./automation-model";
+
 export interface AlarmRuleViewModel {
   name: string;
   priority: EAlarmPriority;
@@ -7,8 +9,19 @@ export interface AlarmRuleViewModel {
   enableNotification: boolean;
   enableEmail: boolean;
 }
+
+export interface AlarmRuleTableViewModel {
+  name: string;
+  priority: string;
+  conditional: string;
+  setpoint: number;
+  enableNotification: boolean;
+  enableEmail: boolean;
+  equipmentParameter?: EquipmentParameterModel;
+}
 export interface AlarmRuleModel extends AlarmRuleViewModel {
   id: string;
+  equipmentParameter?: EquipmentParameterModel;
 }
 export type AlarmRulesModel = AlarmRuleModel[];
 export type UpdateAlarmRuleViewModel = AlarmRuleModel;
