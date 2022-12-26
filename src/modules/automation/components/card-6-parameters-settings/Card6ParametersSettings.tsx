@@ -1,12 +1,8 @@
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
-import CloseButton from "modules/shared/components/close-button/CloseButton";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
@@ -107,7 +103,7 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   equipments,
   data,
   onSave,
-  onClose,
+  // onClose,
   ...props
 }) => {
   const [state, setState] = useState<Parameters>({
@@ -185,10 +181,10 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
   return (
     <Modal {...props}>
       {/* <Paper sx={{ padding: 1, width: "100%" }}> */}
-      <Stack direction="row" justifyContent="space-between">
+      {/* <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4">Configuração do Card</Typography>
         <CloseButton onClick={(e) => onClose!(e, "escapeKeyDown")} />
-      </Stack>
+      </Stack> */}
       <Grid
         container
         columnSpacing={2}
@@ -317,13 +313,13 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
         <Button variant="contained" onClick={handleOnSave}>
           Salvar
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={(e) => onClose!(e, "escapeKeyDown")}
           sx={{ marginLeft: 1 }}
         >
           Cancelar
-        </Button>
+        </Button> */}
       </Stack>
       {/* </Paper> */}
     </Modal>

@@ -1,26 +1,88 @@
+import { useEffect } from "react";
+import Button from "@mui/material/Button";
 import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
 import useRouter from "modules/core/hooks/useRouter";
 import DataTableV2 from "modules/shared/components/datatableV2/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import LabelTabs from "modules/shared/components/LabelTabs";
 import Loading from "modules/shared/components/Loading";
-import {
-  TabContextProvider,
-  useTabContext,
-} from "modules/shared/components/TabContext";
-import TabPanel from "modules/shared/components/TabPanel";
-import { useEffect } from "react";
+import Tabs from "modules/shared/components/tabs/Tabs";
+import { useModal } from "mui-modal-provider";
+import PhysicalParameterModal from "modules/automation/modals/physical-parameter-modal/PhysicalParameterModal";
+import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
+import GroupParameterFormModal from "modules/automation/modals/group-parameter-form-modal/GroupParameterFormModal";
 
 const EquipmentParametersPage: React.FC = () => {
   const { params } = useRouter();
+  const { showModal } = useModal();
+
+  const handleOpenPhysicalParameterModal = () => {
+    const modal = showModal(PhysicalParameterModal, {
+      title: "Novo parâmetro físico",
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleOpenVirtualParameterModal = () => {
+    const modal = showModal(VirtualParameterFormModal, {
+      title: "Novo parâmetro virtual",
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleOpenGroupParameterModal = () => {
+    const modal = showModal(GroupParameterFormModal, {
+      title: "Novo grupo de parâmetros",
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
   return (
     <HeroContainer title="Parâmetros">
-      <TabContextProvider>
-        <LabelTabs items={["P. físico", "P. virtual", "Grupo de parâmetros"]} />
-        <PhysicalParameterTab equipmentId={params.equipmentId!} />
-        <VirtualParameterTab equipmentId={params.equipmentId!} />
-        <GroupParameterTab equipmentId={params.equipmentId!} />
-      </TabContextProvider>
+      <Tabs
+        mode="horizontal"
+        tabLabels={["P. físico", "P. virtual", "Grupo de parâmetros"]}
+        tabItems={[
+          {
+            element: <PhysicalParameterTab equipmentId={params.equipmentId!} />,
+            content: (
+              <Button
+                variant="contained"
+                onClick={handleOpenPhysicalParameterModal}
+              >
+                Novo parâmetro fīsico
+              </Button>
+            ),
+          },
+          {
+            element: <VirtualParameterTab equipmentId={params.equipmentId!} />,
+            content: (
+              <Button
+                variant="contained"
+                onClick={handleOpenVirtualParameterModal}
+              >
+                Novo parâmetro virtual
+              </Button>
+            ),
+          },
+          {
+            element: <GroupParameterTab equipmentId={params.equipmentId!} />,
+            content: (
+              <Button
+                variant="contained"
+                onClick={handleOpenGroupParameterModal}
+              >
+                Novo grupo de parâmetros
+              </Button>
+            ),
+          },
+        ]}
+      />
     </HeroContainer>
   );
 };
@@ -30,7 +92,6 @@ type TabProps = {
 };
 
 const PhysicalParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
-  const { tabIndex } = useTabContext();
   const [findParameters, { data: parameters, isLoading }] =
     useFindEquipmentParametersByEquipmentIdMutation();
 
@@ -44,7 +105,7 @@ const PhysicalParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
   }, [equipmentId, findParameters]);
 
   return (
-    <TabPanel index={0} value={tabIndex}>
+    <>
       <DataTableV2
         title=""
         columns={[
@@ -84,15 +145,13 @@ const PhysicalParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
         rows={parameters ?? []}
       />
       <Loading open={isLoading} />
-    </TabPanel>
+    </>
   );
 };
 
 const VirtualParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
-  const { tabIndex } = useTabContext();
-
   return (
-    <TabPanel index={1} value={tabIndex}>
+    <>
       {/* <DataTableV2
         title="Parâmetro"
         columns={[
@@ -131,15 +190,13 @@ const VirtualParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
         ]}
         rows={[]}
       /> */}
-    </TabPanel>
+    </>
   );
 };
 
 const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
-  const { tabIndex } = useTabContext();
-
   return (
-    <TabPanel index={2} value={tabIndex}>
+    <>
       {/* <DataTableV2
         title=""
         columns={[
@@ -182,7 +239,7 @@ const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
         ]}
         rows={[]}
       /> */}
-    </TabPanel>
+    </>
   );
 };
 

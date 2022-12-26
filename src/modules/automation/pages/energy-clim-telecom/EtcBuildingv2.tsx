@@ -34,6 +34,7 @@ export default function EtcBuilding() {
     const modal = showModal(Card6ParametersSettings, {
       id,
       name: siteName,
+      title: "Configuração do Card",
       equipments:
         equipments?.map((equipment) => ({
           id: equipment.id,

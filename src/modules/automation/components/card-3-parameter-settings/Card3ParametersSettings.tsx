@@ -86,7 +86,7 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
   equipments,
   data,
   onSave,
-  onClose,
+  // onClose,
   ...props
 }) => {
   const [state, setState] = useState<Parameters>({
@@ -152,10 +152,6 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
   return (
     <Modal {...props}>
       {/* <Paper sx={{ padding: 1, width: "100%" }}> */}
-      <Stack direction="row" justifyContent="space-between">
-        <Typography variant="h4">Configuração do Card</Typography>
-        <CloseButton onClick={(e) => onClose!(e, "escapeKeyDown")} />
-      </Stack>
       <Grid
         container
         columnSpacing={2}
@@ -235,13 +231,13 @@ const Card3ParametersSettings: React.FC<Card3ParametersSettingsProps> = ({
         <Button variant="contained" onClick={handleOnSave}>
           Salvar
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={(e) => onClose!(e, "escapeKeyDown")}
           sx={{ marginLeft: 1 }}
         >
           Cancelar
-        </Button>
+        </Button> */}
       </Stack>
       {/* </Paper> */}
     </Modal>

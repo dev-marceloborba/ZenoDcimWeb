@@ -1,8 +1,7 @@
-import Card, { CardProps } from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import Card from "modules/shared/components/card/Card";
+import { CardProps } from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import SettingsButton from "modules/shared/components/settings-button/SettingsButton";
 import NotificationBadge from "modules/shared/components/notification-badge/NotificationBadge";
 
@@ -41,32 +40,26 @@ const RoomCard: React.FC<RoomCardProps> = ({
   ...props
 }) => {
   return (
-    <Card {...props}>
-      <CardContent>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography
-            variant="h4"
-            onClick={onTitleClick}
-            sx={{ cursor: "pointer" }}
-          >
-            {title}
-          </Typography>
-          {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
+    <Card {...props} title={title} handleHeaderClick={() => onTitleClick()}>
+      {hideSettings ? null : (
+        <SettingsButton
+          onClick={onSettingsClick}
+          sx={{ position: "absolute", top: 16, right: 12 }}
+        />
+      )}
+      <List sx={{ mt: 0 }}>
+        <ParameterInfo {...parameter1} />
+        <ParameterInfo {...parameter2} />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          marginRight={1}
+        >
+          <ParameterInfo {...parameter3} />
+          <NotificationBadge notifications={activeAlarms.value} />
         </Stack>
-        <List sx={{ mt: 1 }}>
-          <ParameterInfo {...parameter1} />
-          <ParameterInfo {...parameter2} />
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            marginRight={1}
-          >
-            <ParameterInfo {...parameter3} />
-            <NotificationBadge notifications={activeAlarms.value} />
-          </Stack>
-        </List>
-      </CardContent>
+      </List>
     </Card>
   );
 };

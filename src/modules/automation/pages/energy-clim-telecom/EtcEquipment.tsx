@@ -39,6 +39,7 @@ const EtcEquipment: React.FC = () => {
     const modal = showModal(Card3ParametersSettings, {
       id,
       name,
+      title: "Configuração do Card",
       equipments:
         equipments?.map((equipment) => ({
           id: equipment.id,

@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 import Card3ParametersSettings from "modules/automation/components/card-3-parameter-settings/Card3ParametersSettings";
-import EquipmentCard from "modules/automation/components/equipment-card/EquipmentCard";
+import RoomCard from "modules/automation/components/room-card/RoomCard";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 
 import {
@@ -34,6 +34,7 @@ const EtcRoom: React.FC = () => {
     const modal = showModal(Card3ParametersSettings, {
       id,
       name,
+      title: "Configuração do Card",
       equipments:
         equipments?.map((equipment) => ({
           id: equipment.id,
@@ -88,10 +89,8 @@ const EtcRoom: React.FC = () => {
       <Grid container columnSpacing={1}>
         {rooms?.map((room) => (
           <Grid key={room.id} item md={4}>
-            <EquipmentCard
+            <RoomCard
               title={room.name}
-              system="energy"
-              status="online"
               parameter1={{
                 description: room.parameter1?.description ?? "",
                 value: 0,

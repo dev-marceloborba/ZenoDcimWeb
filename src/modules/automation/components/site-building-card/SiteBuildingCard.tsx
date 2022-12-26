@@ -4,7 +4,6 @@ import SettingsButton from "modules/shared/components/settings-button/SettingsBu
 import Badge from "@mui/material/Badge";
 import List from "@mui/material/List";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import PowerIcon from "@mui/icons-material/Power";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LanIcon from "@mui/icons-material/Lan";
@@ -58,45 +57,30 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
     onSettingsClick(siteId ?? "", buildingId ?? "");
   };
   return (
-    <Card {...props}>
-      <Stack direction="row" justifyContent="space-between">
-        <Typography
-          variant="h4"
-          onClick={onTitleClick}
-          sx={{ cursor: "pointer" }}
-        >
-          {title}
-        </Typography>
-        {hideSettings ? null : <SettingsButton onClick={handleSettingsClick} />}
-      </Stack>
-      <List sx={{ mt: 1 }}>
+    <Card {...props} title={title} handleHeaderClick={() => onTitleClick()}>
+      {hideSettings ? null : (
+        <SettingsButton
+          onClick={handleSettingsClick}
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 12,
+          }}
+        />
+      )}
+      <List sx={{ mt: 0 }}>
         <ParameterInfo {...parameter1} />
         <ParameterInfo {...parameter2} />
         <ParameterInfo {...parameter3} />
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          marginRight={1}
-        >
+        <Stack direction="row" alignItems="center" marginRight={1}>
           <ParameterInfo {...parameter4} />
           <AlarmBadge alarms={alarms.energy} group="energy" />
         </Stack>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          marginRight={1}
-        >
+        <Stack direction="row" alignItems="center" marginRight={1}>
           <ParameterInfo {...parameter5} />
           <AlarmBadge alarms={alarms.climate} group="climate" />
         </Stack>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          marginRight={1}
-        >
+        <Stack direction="row" alignItems="center" marginRight={1}>
           <ParameterInfo {...parameter6} />
           <AlarmBadge alarms={alarms.telecom} group="telecom" />
         </Stack>
@@ -185,7 +169,7 @@ const AlarmBadge: React.FC<AlarmBadgeProps> = ({ alarms, group, ...props }) => {
     }
   };
   return (
-    <Badge badgeContent={alarms} color="error">
+    <Badge badgeContent={alarms} color="error" sx={{ marginLeft: "auto" }}>
       {getAlarmIcon(group)}
     </Badge>
   );

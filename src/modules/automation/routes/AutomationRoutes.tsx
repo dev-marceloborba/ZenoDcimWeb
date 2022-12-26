@@ -79,16 +79,19 @@ export const automationRoutes: RouteObject[] = [
     element: <Rack />,
     title: "Rack",
   },
+  // Deletar, pois isto ficou na parte de alarmes
   {
     path: automationPaths.alarmHistory.fullPath,
     element: <AlarmHistory />,
     title: "Histórico de alarmes",
   },
+  // Deletar, pois isto ficou na parte de alarmes
   {
     path: automationPaths.alarmRealtime.fullPath,
     element: <AlarmRuntime />,
     title: "Alarmes em tempo real",
   },
+  // Deletar, pois isto ficou na parte de alarmes
   {
     path: automationPaths.measureHistory.fullPath,
     element: <MeasureHistory />,
@@ -120,6 +123,7 @@ export const automationRoutes: RouteObject[] = [
     element: <AutomationSettings />,
     title: "Configurações de automação",
   },
+  // Deletar, está duplicado.
   {
     path: automationPaths.equipmentParameterDetails.fullPath,
     element: <EquipmentParametersPage />,
@@ -131,6 +135,7 @@ export const automationRoutes: RouteObject[] = [
     element: <EquipmentAdmin />,
     title: "Equipamentos",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.equipmentForm.fullPath,
     element: <EquipmentForm />,
@@ -141,6 +146,7 @@ export const automationRoutes: RouteObject[] = [
     element: <EquipmentParametersAssociation />,
     title: "Associação de parâmetros",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.equipmentParameterForm.fullPath,
     element: <EquipmentParameterForm />,
@@ -151,16 +157,19 @@ export const automationRoutes: RouteObject[] = [
     element: <ParameterAdmin />,
     title: "Parâmetros",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.parameterForm.fullPath,
     element: <ParameterForm />,
     title: "Formulário de parâmetros",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.parameterForm.fullPath,
     element: <EquipmentParameterRulesForm />,
     title: "Formulário de regra de parâmetros",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.virtualParameterForm.fullPath,
     element: <VirtualParameterForm />,
@@ -176,6 +185,7 @@ export const automationRoutes: RouteObject[] = [
     element: <EquipmentParameterRules />,
     title: "Regras de parâmetros",
   },
+  //TODO: Deletar, formulários serão modais.
   {
     path: automationPaths.equipmentRulesForm.fullPath,
     element: <EquipmentParameterRulesForm />,

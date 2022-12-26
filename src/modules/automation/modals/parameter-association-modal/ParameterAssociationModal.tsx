@@ -45,17 +45,17 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
   sites,
   ...props
 }) => {
-  //   const handleParameterClick = (
-  //     site: any,
-  //     building: any,
-  //     floor: any,
-  //     room: any,
-  //     equipment: any,
-  //     parameter: any
-  //   ) => {
-  //     const elements = [site, building, floor, room, equipment, parameter];
-  //     console.log(elements.join("."));
-  //   };
+  const handleParameterClick = (
+    site: any,
+    building: any,
+    floor: any,
+    room: any,
+    equipment: any,
+    parameter: any
+  ) => {
+    const elements = [site, building, floor, room, equipment, parameter];
+    console.log(elements.join("."));
+  };
 
   return (
     <Modal {...props}>
@@ -105,16 +105,16 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
                                       key={parameter.id}
                                       nodeId={parameter.id}
                                       label={parameter.name}
-                                      // onClick={() =>
-                                      //   handleParameterClick(
-                                      //     site,
-                                      //     building,
-                                      //     floor,
-                                      //     room,
-                                      //     equipment,
-                                      //     parameter
-                                      //   )
-                                      // }
+                                      onClick={() =>
+                                        handleParameterClick(
+                                          site.name,
+                                          building.name,
+                                          floor.name,
+                                          room.name,
+                                          equipment.name,
+                                          parameter.name
+                                        )
+                                      }
                                     />
                                   ))}
                                 </TreeItem>

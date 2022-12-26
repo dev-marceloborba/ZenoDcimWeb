@@ -1,12 +1,6 @@
 import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import LabelTabs from "modules/shared/components/LabelTabs";
-import TabPanel from "modules/shared/components/TabPanel";
-import {
-  TabContextProvider,
-  useTabContext,
-} from "modules/shared/components/TabContext";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -33,9 +27,11 @@ import { useFindAlarmRulesByEquipmentIdQuery } from "modules/automation/services
 import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
 import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
+import Tabs from "modules/shared/components/tabs/Tabs";
+import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
 
 const EquipmentDetailsPage: React.FC = () => {
-  const { params, navigate } = useRouter();
+  const { params, navigate, path } = useRouter();
   const [findEquipment, { data: equipment, isLoading }] =
     useFindEquipmentByIdMutation();
   const { showModal } = useModal();
@@ -67,6 +63,21 @@ const EquipmentDetailsPage: React.FC = () => {
     });
   };
 
+  const handleOpenParameterAssociation = (equipmentId: string) => {};
+
+  const handleShowRuleModal = () => {
+    const modal = showModal(RuleFormModal, {
+      title: "Nova regra",
+      parameters: [],
+      onConfirm: (data) => {
+        modal.hide();
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
   useEffect(() => {
     async function fetchEquipment() {
       if (params.equipmentId) {
@@ -78,16 +89,39 @@ const EquipmentDetailsPage: React.FC = () => {
 
   return (
     <HeroContainer title={equipment?.component}>
-      <TabContextProvider>
-        <LabelTabs items={["Detalhes", "Parâmetros", "Regras"]}>
-          <Button variant="contained" onClick={handleShowEquipmentModal}>
-            Editar equipamento
-          </Button>
-        </LabelTabs>
-        <DetailsTab equipment={equipment} />
-        <ParametersTab equipmentId={equipment?.id ?? ""} />
-        <RulesTab equipmentId={equipment?.id ?? ""} />
-      </TabContextProvider>
+      <Tabs
+        mode="horizontal"
+        tabLabels={["Detalhes", "Parâmetros", "Regras"]}
+        tabItems={[
+          {
+            element: <DetailsTab equipment={equipment} />,
+            content: (
+              <Button variant="contained" onClick={handleShowEquipmentModal}>
+                Editar equipamento
+              </Button>
+            ),
+          },
+          {
+            element: <ParametersTab equipmentId={equipment?.id ?? ""} />,
+            content: (
+              <Button
+                variant="contained"
+                onClick={() => handleOpenParameterAssociation(equipment!.id)}
+              >
+                Associar parâmetros
+              </Button>
+            ),
+          },
+          {
+            element: <RulesTab equipmentId={equipment?.id ?? ""} />,
+            content: (
+              <Button variant="contained" onClick={handleShowRuleModal}>
+                Nova regra
+              </Button>
+            ),
+          },
+        ]}
+      />
       <Loading open={isLoading} />
     </HeroContainer>
   );
@@ -100,10 +134,8 @@ type DetailsTabProps = {
 };
 
 const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
-  const { tabIndex } = useTabContext();
-
   return (
-    <TabPanel index={0} value={tabIndex}>
+    <>
       <CardSection>
         <Typography
           variant="subtitle1"
@@ -250,7 +282,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
           </Grid>
         </Grid>
       </CardSection>
-    </TabPanel>
+    </>
   );
 };
 
@@ -259,7 +291,7 @@ type ParametersTabProps = {
 };
 
 const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
-  const { tabIndex } = useTabContext();
+  const { navigate, path } = useRouter();
   const [findParameters, { data: parameters, isLoading }] =
     useFindEquipmentParametersByEquipmentIdMutation();
 
@@ -271,7 +303,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
   }, [equipmentId, findParameters]);
 
   return (
-    <TabPanel index={1} value={tabIndex}>
+    <>
       <DataTableV2
         title="Parâmetros"
         columns={parameterColumns}
@@ -280,6 +312,9 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
           showEdit: true,
           showDelete: true,
           selectionMode: "hide",
+          onRowClick: (row) => {
+            navigate(`${path}/parameters`, {});
+          },
         }}
       />
       <Box sx={{ width: "100%" }}>
@@ -331,7 +366,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
         </Paper>
       </Box>
       <Loading open={isLoading} />
-    </TabPanel>
+    </>
   );
 };
 
@@ -340,12 +375,11 @@ type RulesTabProps = {
 };
 
 const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
-  const { tabIndex } = useTabContext();
   const { data: rules, isLoading } =
     useFindAlarmRulesByEquipmentIdQuery(equipmentId);
 
   return (
-    <TabPanel index={2} value={tabIndex}>
+    <>
       <DataTableV2
         title="Regras"
         columns={ruleColumns}
@@ -365,7 +399,7 @@ const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
         }}
       />
       <Loading open={isLoading} />
-    </TabPanel>
+    </>
   );
 };
 

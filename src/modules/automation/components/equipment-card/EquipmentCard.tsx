@@ -1,5 +1,5 @@
-import Card, { CardProps } from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import Card from "modules/shared/components/card/Card";
+import { CardProps } from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
@@ -70,39 +70,37 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({
   };
 
   return (
-    <Card {...props}>
-      <CardContent>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography
-            variant="h4"
-            onClick={onTitleClick}
-            sx={{ cursor: "pointer" }}
-          >
-            {title}
-          </Typography>
-          {hideSettings ? null : <SettingsButton onClick={onSettingsClick} />}
+    <Card {...props} title={title} handleHeaderClick={() => onTitleClick()}>
+      {hideSettings ? null : (
+        <SettingsButton
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 12,
+          }}
+          onClick={onSettingsClick}
+        />
+      )}
+      <Stack direction="row" marginTop={1} alignItems="center">
+        <Chip
+          label={getChipDescription(system)}
+          sx={{ backgroundColor: getChipColor(system), minWidth: "72px" }}
+        />
+        <OnlineOfflineStatus status={status} />
+      </Stack>
+      <List sx={{ mt: 1 }}>
+        <ParameterInfo {...parameter1} />
+        <ParameterInfo {...parameter2} />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          marginRight={1}
+        >
+          <ParameterInfo {...parameter3} />
+          <NotificationBadge notifications={activeAlarms.value} />
         </Stack>
-        <Stack direction="row" marginTop={1} alignItems="center">
-          <Chip
-            label={getChipDescription(system)}
-            sx={{ backgroundColor: getChipColor(system), minWidth: "72px" }}
-          />
-          <OnlineOfflineStatus status={status} />
-        </Stack>
-        <List sx={{ mt: 1 }}>
-          <ParameterInfo {...parameter1} />
-          <ParameterInfo {...parameter2} />
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-            marginRight={1}
-          >
-            <ParameterInfo {...parameter3} />
-            <NotificationBadge notifications={activeAlarms.value} />
-          </Stack>
-        </List>
-      </CardContent>
+      </List>
     </Card>
   );
 };
