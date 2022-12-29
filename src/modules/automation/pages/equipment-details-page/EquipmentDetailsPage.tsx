@@ -3,67 +3,102 @@ import Grid from "@mui/material/Grid";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import DataTableV2, {
   ColumnHeader,
 } from "modules/shared/components/datatableV2/DataTable";
 import Paper, { PaperProps } from "@mui/material/Paper";
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import EditButton from "modules/shared/components/edit-button/EditButton";
-import DeleteButton from "modules/shared/components/DeleteButton";
 import useRouter from "modules/core/hooks/useRouter";
-import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
+import {
+  useFindEquipmentByIdQueryQuery,
+  useUpdateEquipmentMutation,
+} from "modules/automation/services/equipment-service";
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import Loading from "modules/shared/components/Loading";
 import { useFindAlarmRulesByEquipmentIdQuery } from "modules/automation/services/alarm-rule-service";
-import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
+import {
+  useDeleteEquipmentParameterMutation,
+  useFindEquipmentParametersByEquipmentIdMutation,
+  useFindEquipmentParametersByEquipmentIdQueryQuery,
+} from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
 import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
 import Tabs from "modules/shared/components/tabs/Tabs";
 import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
+import { useToast } from "modules/shared/components/ToastProvider";
+import ParameterAssociationModal from "modules/automation/modals/parameter-association-modal/ParameterAssociationModal";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import { EquipmentParameterModel } from "modules/automation/models/automation-model";
+import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
 
 const EquipmentDetailsPage: React.FC = () => {
-  const { params, navigate, path } = useRouter();
-  const [findEquipment, { data: equipment, isLoading }] =
-    useFindEquipmentByIdMutation();
+  const { data: sites } = useFindAllSitesQuery();
+  const { params } = useRouter();
+  const { data: equipment, isLoading: isLoadingFetch } =
+    useFindEquipmentByIdQueryQuery(params.equipmentId!);
+  const [updateEquipment, { isLoading: isLoadingUpdate }] =
+    useUpdateEquipmentMutation();
   const { showModal } = useModal();
+  const toast = useToast();
 
   const handleShowEquipmentModal = () => {
     const modal = showModal(EquipmentFormModal, {
       title: "Editar equipamento",
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateEquipment({
+            id: equipment?.id ?? "",
+            ...formData,
+          }).unwrap();
+          toast.open({ message: "Equipamento atualizado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao atualizar equipamento",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+      mode: "edit",
+      data: equipment,
+      // data: {
+      //   siteId: equipment?.site?.id ?? "",
+      //   buildingId: equipment?.building?.id ?? "",
+      //   floorId: equipment?.floor?.id ?? "",
+      //   roomId: equipment?.room?.id ?? "",
+      //   component: equipment?.component ?? "",
+      //   group: equipment?.group ?? 0,
+      //   // manufactor: "",
+      //   powerLimit: equipment?.powerLimit ?? 0,
+      //   componentCode: equipment?.componentCode ?? "",
+      //   description: equipment?.description ?? "",
+      //   size: equipment?.size ?? "",
+      //   weight: equipment?.weight ?? 0,
+      // },
+    });
+  };
+
+  const handleOpenParameterAssociation = (equipmentId: string) => {
+    const modal = showModal(ParameterAssociationModal, {
+      title: "Associar parâmetros",
+      equipment: equipment?.component ?? "",
+      sites: sites ?? [],
       onConfirm: () => {
         modal.hide();
       },
       onClose: () => {
         modal.hide();
       },
-      mode: "edit",
-      data: {
-        site: equipment?.site?.id ?? "",
-        building: equipment?.building?.id ?? "",
-        floor: equipment?.floor?.id ?? "",
-        room: equipment?.room?.id ?? "",
-        name: equipment?.component ?? "",
-        group: equipment?.group ?? 0,
-        manufactor: "",
-        powerLimit: equipment?.powerLimit ?? 0,
-        serialNumber: equipment?.componentCode ?? "",
-        description: equipment?.description ?? "",
-        size: equipment?.size ?? "",
-        weight: equipment?.weight ?? 0,
+      PaperProps: {
+        sx: {
+          minWidth: "500px",
+        },
       },
     });
   };
-
-  const handleOpenParameterAssociation = (equipmentId: string) => {};
 
   const handleShowRuleModal = () => {
     const modal = showModal(RuleFormModal, {
@@ -77,15 +112,6 @@ const EquipmentDetailsPage: React.FC = () => {
       },
     });
   };
-
-  useEffect(() => {
-    async function fetchEquipment() {
-      if (params.equipmentId) {
-        await findEquipment(params.equipmentId).unwrap();
-      }
-    }
-    fetchEquipment();
-  }, [findEquipment, params.equipmentId]);
 
   return (
     <HeroContainer title={equipment?.component}>
@@ -122,7 +148,7 @@ const EquipmentDetailsPage: React.FC = () => {
           },
         ]}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>
   );
 };
@@ -187,6 +213,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
           variant="subtitle1"
           sx={{
             textDecoration: "underline",
+            my: 1,
           }}
         >
           Identidade
@@ -222,7 +249,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
               Status
             </Typography>
             <Typography variant="subtitle1" color="#9CA7B1">
-              Instalado
+              {equipment?.status}
             </Typography>
           </Grid>
           <Grid item md={3}>
@@ -230,8 +257,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
               Marca
             </Typography>
             <Typography variant="subtitle1" color="#9CA7B1">
-              {/* TODO: inserir fabricante aqui */}
-              Trane
+              {equipment?.manufactor}
             </Typography>
           </Grid>
         </Grid>
@@ -242,6 +268,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
           variant="subtitle1"
           sx={{
             textDecoration: "underline",
+            my: 1,
           }}
         >
           Parâmetros do equipamento
@@ -291,16 +318,31 @@ type ParametersTabProps = {
 };
 
 const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
+  const { showModal } = useModal();
+  const toast = useToast();
   const { navigate, path } = useRouter();
-  const [findParameters, { data: parameters, isLoading }] =
-    useFindEquipmentParametersByEquipmentIdMutation();
+  const { data: parameters, isLoading } =
+    useFindEquipmentParametersByEquipmentIdQueryQuery(equipmentId);
+  const [deleteParameter] = useDeleteEquipmentParameterMutation();
 
-  useEffect(() => {
-    async function fetchParameters() {
-      await findParameters(equipmentId).unwrap();
+  const handleEditParameter = (parameter: EquipmentParameterModel) => {
+    const modal = showModal(EquipmentParameterFormModal, {
+      title: "Editar parâmetro do equipamento",
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteParameter = async (parameter: EquipmentParameterModel) => {
+    try {
+      await deleteParameter(parameter.id).unwrap();
+      toast.open({ message: "Parâmetro excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir parâmetro", severity: "error" });
     }
-    fetchParameters();
-  }, [equipmentId, findParameters]);
+  };
 
   return (
     <>
@@ -312,59 +354,13 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
           showEdit: true,
           showDelete: true,
           selectionMode: "hide",
+          onEditRow: handleEditParameter,
+          onDeleteRow: handleDeleteParameter,
           onRowClick: (row) => {
             navigate(`${path}/parameters`, {});
           },
         }}
       />
-      <Box sx={{ width: "100%" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <TableContainer>
-            <Table size="medium">
-              <TableHead
-                sx={(theme) => ({
-                  backgroundColor: theme.palette.background.paper,
-                })}
-              >
-                <TableRow>
-                  <TableCell align="left">Parâmetro</TableCell>
-                  <TableCell align="right">Unidade</TableCell>
-                  <TableCell align="right">Limite muito baixo</TableCell>
-                  <TableCell align="right">Limite baixo</TableCell>
-                  <TableCell align="right">Limite alto</TableCell>
-                  <TableCell align="right">Limite muito alto</TableCell>
-                  <TableCell align="right">Escala</TableCell>
-                  <TableCell align="right">Tipo</TableCell>
-                  <TableCell align="right">Ações</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow hover tabIndex={-1}>
-                  <TableCell align="left">
-                    Utilizaçao do ar condicionado
-                  </TableCell>
-                  <TableCell align="right">%</TableCell>
-                  <TableCell align="right">10</TableCell>
-                  <TableCell align="right">20</TableCell>
-                  <TableCell align="right">30</TableCell>
-                  <TableCell align="right">40</TableCell>
-                  <TableCell align="right">1</TableCell>
-                  <TableCell align="right">Parâmetro fīsico</TableCell>
-                  <TableCell align="right">
-                    <Stack direction="row" justifyContent="flex-end">
-                      <EditButton mode="icon" />
-                      <DeleteButton
-                        mode="icon"
-                        onDeleteConfirmation={() => {}}
-                      />
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
-      </Box>
       <Loading open={isLoading} />
     </>
   );
@@ -375,8 +371,30 @@ type RulesTabProps = {
 };
 
 const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
+  const { showModal } = useModal();
+  const toast = useToast();
   const { data: rules, isLoading } =
     useFindAlarmRulesByEquipmentIdQuery(equipmentId);
+  const [deleteParameter] = useDeleteEquipmentParameterMutation();
+
+  const handleEditParameter = (parameter: EquipmentParameterModel) => {
+    const modal = showModal(EquipmentParameterFormModal, {
+      title: "Editar parâmetro do equipamento",
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteParameter = async (parameter: EquipmentParameterModel) => {
+    try {
+      await deleteParameter(parameter.id).unwrap();
+      toast.open({ message: "Parâmetro excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir parâmetro", severity: "error" });
+    }
+  };
 
   return (
     <>
@@ -393,9 +411,11 @@ const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
           })) ?? []
         }
         options={{
-          showEdit: false,
-          showDelete: false,
+          showEdit: true,
+          showDelete: true,
           selectionMode: "hide",
+          onEditRow: handleEditParameter,
+          onDeleteRow: handleDeleteParameter,
         }}
       />
       <Loading open={isLoading} />

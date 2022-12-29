@@ -9,8 +9,6 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 import NoDataText from "../NoDataText";
 import DeleteButton from "../DeleteButton";
 import { DataTableOptions, Order } from "./types/datatable.types";
@@ -73,7 +71,16 @@ const DataTableV2: React.FC<DataTableProps> = ({
   const [rowsPerPage, setRowsPerPage] = useState(rowsInPage);
   const [filter, setFilter] = useState("");
   const [openSearch, setOpenSearch] = useState(false);
-  const [currentRows, setCurrentRows] = useState<any[]>([]);
+  /*
+    TODO: avaliar qual melhor forma de iniciar o array do estado currentRows,
+    pois iniciando vazio, aparece a mensagem de sem resultados disponi3veis durante um tempo
+    // const [currentRows, setCurrentRows] = useState<any[]>([]);
+  */
+  const [currentRows, setCurrentRows] = useState<any[]>(
+    hidePagination
+      ? rows
+      : getFilteredRows(rows, columns, filter, page, rowsInPage, order, orderBy)
+  );
   const dispatch = useAppDispatch();
   const { userState } = useAuth();
   const [updatePreferences] = useUpdateUserPreferenciesMutation();
@@ -276,7 +283,6 @@ const DataTableV2: React.FC<DataTableProps> = ({
                       return (
                         <TableCell
                           key={index}
-                          padding="checkbox"
                           align={index === 0 ? "left" : "right"}
                           {...(!editMode && {
                             onClick: () => handleRowClick(row),
@@ -324,7 +330,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
               )}
             </TableBody>
           </Table>
-          {/* {currentRows.length === 0 ? <NoDataText /> : null} */}
+          {currentRows.length === 0 ? <NoDataText /> : null}
         </TableContainer>
         {!hidePagination && (
           <TablePagination
@@ -343,5 +349,5 @@ const DataTableV2: React.FC<DataTableProps> = ({
   );
 };
 
-export default DataTableV2;
-// export default memo(DataTableV2);
+// export default DataTableV2;
+export default memo(DataTableV2);

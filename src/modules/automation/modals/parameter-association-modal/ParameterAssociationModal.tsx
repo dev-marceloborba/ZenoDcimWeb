@@ -11,38 +11,80 @@ import TreeItem from "@mui/lab/TreeItem";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
+
+type InternalRootType = InternalSiteType[];
+
+type InternalSiteType = {
+  id: string;
+  name: string;
+  buildings?: InternalBuildingType[];
+};
+
+type InternalBuildingType = {
+  id: string;
+  name: string;
+  floors?: InternalFloorType[];
+};
+
+type InternalFloorType = {
+  id: string;
+  name: string;
+  rooms?: InternalRoomType[];
+};
+
+type InternalRoomType = {
+  id: string;
+  name: string;
+  equipments?: InternalEquipmentType[];
+};
+
+type InternalEquipmentType = {
+  id: string;
+  name: string;
+  parameters?: InternalParameterType[];
+};
+
+type InternalParameterType = {
+  id: string;
+  name: string;
+};
 
 type ParameterAssociationModalProps = {
   equipment: string;
-  sites: {
-    id: string;
-    name: string;
-    buildings: {
-      id: string;
-      name: string;
-      floors: {
-        id: string;
-        name: string;
-        rooms: {
-          id: string;
-          name: string;
-          equipments: {
-            id: string;
-            name: string;
-            parameters: {
-              id: string;
-              name: string;
-            }[];
-          }[];
-        }[];
-      }[];
-    }[];
-  }[];
+  // sites: InternalRootType;
+  sites: SiteModel[];
+  onConfirm(): void;
+  // sites: {
+  //   id: string;
+  //   name: string;
+  //   buildings: {
+  //     id: string;
+  //     name: string;
+  //     floors: {
+  //       id: string;
+  //       name: string;
+  //       rooms: {
+  //         id: string;
+  //         name: string;
+  //         equipments: {
+  //           id: string;
+  //           name: string;
+  //           parameters: {
+  //             id: string;
+  //             name: string;
+  //           }[];
+  //         }[];
+  //       }[];
+  //     }[];
+  //   }[];
+  // }[];
 } & ModalProps;
 
 const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
   equipment,
   sites,
+  onConfirm,
   ...props
 }) => {
   const handleParameterClick = (
@@ -55,6 +97,10 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
   ) => {
     const elements = [site, building, floor, room, equipment, parameter];
     console.log(elements.join("."));
+  };
+
+  const handleConfirm = () => {
+    onConfirm();
   };
 
   return (
@@ -82,41 +128,43 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
                       nodeId={building.id}
                       label={building.name}
                     >
-                      {building.floors.map((floor) => (
+                      {building.floors?.map((floor) => (
                         <TreeItem
                           key={floor.id}
                           nodeId={floor.id}
                           label={floor.name}
                         >
-                          {floor.rooms.map((room) => (
+                          {floor.rooms?.map((room) => (
                             <TreeItem
                               key={room.id}
                               nodeId={room.id}
                               label={room.name}
                             >
-                              {room.equipments.map((equipment) => (
+                              {room.equipments?.map((equipment) => (
                                 <TreeItem
                                   key={equipment.id}
                                   nodeId={equipment.id}
-                                  label={equipment.name}
+                                  label={equipment.component}
                                 >
-                                  {equipment.parameters.map((parameter) => (
-                                    <TreeItem
-                                      key={parameter.id}
-                                      nodeId={parameter.id}
-                                      label={parameter.name}
-                                      onClick={() =>
-                                        handleParameterClick(
-                                          site.name,
-                                          building.name,
-                                          floor.name,
-                                          room.name,
-                                          equipment.name,
-                                          parameter.name
-                                        )
-                                      }
-                                    />
-                                  ))}
+                                  {equipment.equipmentParameters?.map(
+                                    (parameter) => (
+                                      <TreeItem
+                                        key={parameter.id}
+                                        nodeId={parameter.id}
+                                        label={parameter.name}
+                                        onClick={() =>
+                                          handleParameterClick(
+                                            site.name,
+                                            building.name,
+                                            floor.name,
+                                            room.name,
+                                            equipment.component,
+                                            parameter.name
+                                          )
+                                        }
+                                      />
+                                    )
+                                  )}
                                 </TreeItem>
                               ))}
                             </TreeItem>
@@ -159,41 +207,43 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
                       nodeId={building.id}
                       label={building.name}
                     >
-                      {building.floors.map((floor) => (
+                      {building.floors?.map((floor) => (
                         <TreeItem
                           key={floor.id}
                           nodeId={floor.id}
                           label={floor.name}
                         >
-                          {floor.rooms.map((room) => (
+                          {floor.rooms?.map((room) => (
                             <TreeItem
                               key={room.id}
                               nodeId={room.id}
                               label={room.name}
                             >
-                              {room.equipments.map((equipment) => (
+                              {room.equipments?.map((equipment) => (
                                 <TreeItem
                                   key={equipment.id}
                                   nodeId={equipment.id}
-                                  label={equipment.name}
+                                  label={equipment.component}
                                 >
-                                  {equipment.parameters.map((parameter) => (
-                                    <TreeItem
-                                      key={parameter.id}
-                                      nodeId={parameter.id}
-                                      label={parameter.name}
-                                      // onClick={() =>
-                                      //   handleParameterClick(
-                                      //     site,
-                                      //     building,
-                                      //     floor,
-                                      //     room,
-                                      //     equipment,
-                                      //     parameter
-                                      //   )
-                                      // }
-                                    />
-                                  ))}
+                                  {equipment.equipmentParameters?.map(
+                                    (parameter) => (
+                                      <TreeItem
+                                        key={parameter.id}
+                                        nodeId={parameter.id}
+                                        label={parameter.name}
+                                        // onClick={() =>
+                                        //   handleParameterClick(
+                                        //     site,
+                                        //     building,
+                                        //     floor,
+                                        //     room,
+                                        //     equipment,
+                                        //     parameter
+                                        //   )
+                                        // }
+                                      />
+                                    )
+                                  )}
                                 </TreeItem>
                               ))}
                             </TreeItem>
@@ -209,7 +259,9 @@ const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
         </Grid>
       </Grid>
       <Center sx={{ mt: 1 }}>
-        <SubmitButton />
+        <Button variant="contained" onClick={handleConfirm}>
+          Salvar
+        </Button>
       </Center>
     </Modal>
   );

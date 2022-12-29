@@ -50,18 +50,40 @@ export enum EEquipmentGroup {
 }
 
 export enum EEquipmentStatus {
-  ONLINE = 0,
-  OFFLINE = 1,
-  INDETERMINATE = 2,
+  ARCHIVED = 0,
+  INSTALLED = 1,
+  OFF_SITE = 2,
+  PLANNED = 3,
+  POWERED_OFF = 4,
+  STORAGE = 5,
 }
 
 export interface EquipmentViewModel {
   buildingId: string;
   floorId: string;
   roomId: string;
-  siteId?: string;
+  siteId: string;
   component: string;
   componentCode: string;
+  description: string;
+  manufactor: string;
+  status: EEquipmentStatus | string;
+  group: EEquipmentGroup;
+  weight: number;
+  size: string;
+  powerLimit: number;
+}
+
+export interface UpdateEquipmentViewModel {
+  id: string;
+  buildingId: string;
+  floorId: string;
+  roomId: string;
+  siteId: string;
+  component: string;
+  componentCode: string;
+  manufactor: string;
+  status: EEquipmentStatus | string;
   description: string;
   group: EEquipmentGroup;
   weight: number;
@@ -69,9 +91,13 @@ export interface EquipmentViewModel {
   powerLimit: number;
 }
 
-export interface EquipmentModel extends EquipmentViewModel {
+export interface EquipmentModel {
   id: string;
-  status: EEquipmentStatus;
+  component: string;
+  componentCode: string;
+  description: string;
+  manufactor: string;
+  status: EEquipmentStatus | string;
   group: EEquipmentGroup;
   createdDate: Date;
   equipmentParameters?: EquipmentParameterModel[];
@@ -82,6 +108,10 @@ export interface EquipmentModel extends EquipmentViewModel {
   floor?: FloorModel;
   room?: RoomModel;
   site?: SiteModel;
+  buildingId: string;
+  floorId: string;
+  roomId: string;
+  siteId: string;
 }
 
 export interface EquipmentParameterViewModel {

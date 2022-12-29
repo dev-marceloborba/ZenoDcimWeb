@@ -46,9 +46,15 @@ const EquipmentForm: React.FC = () => {
 
   const methods = useForm<EquipmentViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
 
-  const { handleSubmit, watch, reset } = methods;
+  const {
+    handleSubmit,
+    watch,
+    reset,
+    formState: { isValid },
+  } = methods;
 
   const buildingId = watch("buildingId");
   const floorId = watch("floorId");
@@ -193,12 +199,7 @@ const EquipmentForm: React.FC = () => {
                     label="Potência limite (W)"
                     defaultValue={0}
                   />
-                  {/* <ControlledTextInput
-                    name="powerLimit"
-                    label="P"
-                    defaultValue={0}
-                  /> */}
-                  <SubmitButton label="Salvar" />
+                  <SubmitButton disabled={!isValid} />
                 </FormProvider>
               </Form>
             </Grid>
@@ -211,7 +212,7 @@ const EquipmentForm: React.FC = () => {
 };
 
 const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
-  siteId: string().notRequired(),
+  siteId: string().required("Site é obrigatório"),
   buildingId: string().required("Prédio é obrigatório"),
   floorId: string().required("Andar é obrigatório"),
   roomId: string().required("Sala é obrigatória"),
@@ -222,6 +223,8 @@ const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
   weight: number().required("Peso é obrigatório"),
   size: string().required("Classe é obrigatória"),
   powerLimit: number().required("Potência é obrigatória"),
+  manufactor: string().required("Fabricante é obrigatório"),
+  status: number().required("Status é obrigatório"),
 });
 
 export default EquipmentForm;

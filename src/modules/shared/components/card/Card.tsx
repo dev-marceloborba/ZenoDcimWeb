@@ -2,6 +2,7 @@ import MuiCard, { CardProps as MuiCardProps } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
+import Typography from "@mui/material/Typography";
 
 type CardProps = {
   showActions?: boolean;
@@ -19,7 +20,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <MuiCard {...props} sx={{ position: "relative" }}>
-      <CardHeader
+      {/* <CardHeader
         title={title}
         subheader={subheader}
         onClick={() => {
@@ -30,7 +31,18 @@ const Card: React.FC<CardProps> = ({
             cursor: "pointer",
           }
         }
-      />
+      /> */}
+      <Typography
+        variant="h5"
+        onClick={handleHeaderClick}
+        sx={{
+          cursor: "pointer",
+          mt: 1,
+          ml: 2,
+        }}
+      >
+        {title}
+      </Typography>
       <CardContent>{children}</CardContent>
       {/* {showActions} */}
     </MuiCard>

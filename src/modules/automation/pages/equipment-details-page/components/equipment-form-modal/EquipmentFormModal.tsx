@@ -7,29 +7,26 @@ import { SchemaOf, string, object, number } from "yup";
 import Form from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
-import { EquipmentViewModel } from "modules/automation/models/automation-model";
+import {
+  EEquipmentStatus,
+  EquipmentModel,
+  EquipmentViewModel,
+} from "modules/automation/models/automation-model";
 import useDataCenterLocales from "modules/maintenance/pages/register/hooks/data-center-locales.hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import {
+  BuildingModel,
+  FloorModel,
+  RoomModel,
+} from "modules/datacenter/models/datacenter-model";
 
 type FormMode = "new" | "edit";
 
 type EquipmentFormModalProps = {
   mode?: FormMode;
-  onConfirm(): void;
-  data?: {
-    site: string;
-    building: string;
-    floor: string;
-    room: string;
-    manufactor: string;
-    name: string;
-    serialNumber: string;
-    group: number;
-    weight: number;
-    size: string;
-    powerLimit: number;
-    description: string;
-  };
+  onConfirm(formData: EquipmentViewModel): void;
+  data?: Partial<EquipmentModel>;
 } & ModalProps;
 
 const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
@@ -38,49 +35,49 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   data,
   ...props
 }) => {
-  const { sites, buildings, floors, rooms, actions } = useDataCenterLocales();
+  const { data: sites } = useFindAllSitesQuery();
+  const [buildings, setBuildings] = useState<BuildingModel[]>([]);
+  const [floors, setFloors] = useState<FloorModel[]>([]);
+  const [rooms, setRooms] = useState<RoomModel[]>([]);
+  // const { sites, buildings, floors, rooms, actions } = useDataCenterLocales({
+  //   siteId: data?.siteId,
+  //   buildingId: data?.buildingId,
+  //   floorId: data?.floorId,
+  //   roomId: data?.roomId,
+  // });
+  // const { getBuildings, getFloors, getRooms } = actions;
+  // const { sites, buildings, floors, rooms, actions } = useDataCenterLocales();
   const methods = useForm<EquipmentViewModel>({
     resolver: yupResolver(validationSchema),
+    mode: "onChange",
   });
 
-  const { handleSubmit, reset, watch } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = methods;
 
-  const siteWatcher = watch("siteId");
-  const buildingWatcher = watch("buildingId");
-  const floorWatcher = watch("floorId");
-
-  useEffect(() => {
-    if (siteWatcher) {
-      actions.getBuildings(siteWatcher);
-    }
-  }, [actions, siteWatcher]);
-
-  useEffect(() => {
-    if (buildingWatcher) {
-      actions.getFloors(buildingWatcher);
-    }
-  }, [actions, buildingWatcher]);
+  const getBuildings = (siteId: string) =>
+    setBuildings(sites?.find((site) => site.id === siteId)?.buildings ?? []);
+  const getFloors = (buildingId: string) =>
+    setFloors(
+      buildings.find((building) => building.id === buildingId)?.floors ?? []
+    );
+  const getRooms = (floorId: string) =>
+    setRooms(floors.find((floor) => floor.id === floorId)?.rooms ?? []);
 
   useEffect(() => {
-    if (floorWatcher) {
-      actions.getRooms(floorWatcher);
-    }
-  }, [actions, floorWatcher]);
+    getBuildings(data?.siteId!);
+    getFloors(data?.buildingId!);
+    getRooms(data?.floorId!);
+  });
 
   useEffect(() => {
     if (data && mode === "edit") {
       reset({
-        siteId: data.site,
-        buildingId: data.building,
-        floorId: data.floor,
-        roomId: data.room,
-        component: data.name,
-        description: data.description,
-        componentCode: data.serialNumber,
-        group: data.group,
-        powerLimit: data.powerLimit,
-        size: data.size,
-        weight: data.weight,
+        ...data,
+        status: getStatusEnum(data?.status as string),
       });
     }
   }, [data, mode, reset]);
@@ -101,7 +98,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                   description: site.name,
                   value: site.id,
                 }))}
-                // onChange={(e) => actions.getBuildings(e.target.value)}
+                onChange={(e) => getBuildings(e.target.value)}
               />
             </Grid>
             <Grid item md={6}>
@@ -112,7 +109,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                   description: building.name,
                   value: building.id,
                 }))}
-                // onChange={(e) => actions.getFloors(e.target.value)}
+                onChange={(e) => getFloors(e.target.value)}
               />
             </Grid>
             <Grid item md={6}>
@@ -124,7 +121,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                   description: floor.name,
                   value: floor.id,
                 }))}
-                // onChange={(e) => actions.getRooms(e.target.value)}
+                onChange={(e) => getRooms(e.target.value)}
               />
             </Grid>
             <Grid item md={6}>
@@ -144,26 +141,20 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
             Identidade
           </Typography>
           <Grid container columnSpacing={1} rowSpacing={1}>
-            <Grid item md={6}>
+            <Grid item md={12}>
               <ControlledTextInput name="manufactor" label="Fabricante" />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput
-                fullWidth
-                name="component"
-                label="Componente"
-              />
+              <ControlledTextInput name="component" label="Componente" />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
-                fullWidth
                 name="componentCode"
                 label="Código/Nº de série"
               />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
-                fullWidth
                 name="group"
                 label="Grupo"
                 items={[
@@ -182,6 +173,38 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                 ]}
               />
             </Grid>
+            <Grid item md={6}>
+              <ControlledTextInput
+                name="status"
+                label="Status"
+                items={[
+                  {
+                    description: "Arquivado",
+                    value: 0,
+                  },
+                  {
+                    description: "Instalado",
+                    value: 1,
+                  },
+                  {
+                    description: "Fora da planta",
+                    value: 2,
+                  },
+                  {
+                    description: "Planejado",
+                    value: 3,
+                  },
+                  {
+                    description: "Desligado",
+                    value: 4,
+                  },
+                  {
+                    description: "Armazenado",
+                    value: 5,
+                  },
+                ]}
+              />
+            </Grid>
           </Grid>
 
           <Typography variant="subtitle1" sx={{ my: 1 }}>
@@ -190,22 +213,16 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
           <Grid container columnSpacing={1}>
             <Grid item md={4}>
               <ControlledTextInput
-                fullWidth
                 name="weight"
                 label="Peso (kg)"
                 defaultValue={0}
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput
-                fullWidth
-                name="size"
-                label="Tamanho (LxAxC cm)"
-              />
+              <ControlledTextInput name="size" label="Tamanho (LxAxC cm)" />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
-                fullWidth
                 name="powerLimit"
                 label="Potência limite (W)"
                 defaultValue={0}
@@ -216,14 +233,13 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
             Descrição
           </Typography>
           <ControlledTextInput
-            fullWidth
             multiline
             rows={2}
             name="description"
             label="Descrição"
           />
 
-          <SubmitButton sx={{ mt: 1 }} />
+          <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />
         </FormProvider>
       </Form>
     </Modal>
@@ -244,4 +260,23 @@ const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
   weight: number().required("Peso é obrigatório"),
   size: string().required("Classe é obrigatória"),
   powerLimit: number().required("Potência é obrigatória"),
+  manufactor: string().required("Fabricante é obrigatório"),
+  status: number().required("Status é obrigatório"),
 });
+
+function getStatusEnum(status: string) {
+  switch (status) {
+    case "Arquivado":
+      return EEquipmentStatus.ARCHIVED;
+    case "Instalado":
+      return EEquipmentStatus.INSTALLED;
+    case "Fora da planta":
+      return EEquipmentStatus.OFF_SITE;
+    case "Planejado":
+      return EEquipmentStatus.PLANNED;
+    case "Desligado":
+      return EEquipmentStatus.POWERED_OFF;
+    case "Armazenado":
+      return EEquipmentStatus.STORAGE;
+  }
+}

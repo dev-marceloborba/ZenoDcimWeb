@@ -72,4 +72,4 @@ const EnhancedTableHead: React.FC<EnhancedTableProps> = ({
   );
 };
 
-export default EnhancedTableHead;
+export default memo(EnhancedTableHead);

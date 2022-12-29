@@ -1,12 +1,12 @@
 import { CardProps } from "@mui/material/Card";
 import Card from "modules/shared/components/card/Card";
 import SettingsButton from "modules/shared/components/settings-button/SettingsButton";
-import Badge from "@mui/material/Badge";
+import Badge, { BadgeProps } from "@mui/material/Badge";
 import List from "@mui/material/List";
-import Stack from "@mui/material/Stack";
 import PowerIcon from "@mui/icons-material/Power";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LanIcon from "@mui/icons-material/Lan";
+import React from "react";
 
 type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh";
 type Parameter = {
@@ -72,19 +72,25 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
         <ParameterInfo {...parameter1} />
         <ParameterInfo {...parameter2} />
         <ParameterInfo {...parameter3} />
-        <Stack direction="row" alignItems="center" marginRight={1}>
-          <ParameterInfo {...parameter4} />
-          <AlarmBadge alarms={alarms.energy} group="energy" />
-        </Stack>
-        <Stack direction="row" alignItems="center" marginRight={1}>
-          <ParameterInfo {...parameter5} />
-          <AlarmBadge alarms={alarms.climate} group="climate" />
-        </Stack>
-        <Stack direction="row" alignItems="center" marginRight={1}>
-          <ParameterInfo {...parameter6} />
-          <AlarmBadge alarms={alarms.telecom} group="telecom" />
-        </Stack>
+        <ParameterInfo {...parameter4} />
+        <ParameterInfo {...parameter5} />
+        <ParameterInfo {...parameter6} />
       </List>
+      <AlarmBadge
+        alarms={alarms.energy}
+        group="energy"
+        sx={{ position: "absolute", bottom: 108, right: 20 }}
+      />
+      <AlarmBadge
+        alarms={alarms.climate}
+        group="climate"
+        sx={{ position: "absolute", bottom: 72, right: 20 }}
+      />
+      <AlarmBadge
+        alarms={alarms.telecom}
+        group="telecom"
+        sx={{ position: "absolute", bottom: 36, right: 20 }}
+      />
     </Card>
   );
 };
@@ -97,6 +103,9 @@ type ParameterInfoProps = {
   description: string;
   value: number;
   unit?: string;
+  marginTop?: string;
+  marginBottom?: string;
+  minHeight?: string;
 };
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
@@ -121,11 +130,12 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
         return "red";
     }
   };
-  if (!enabled) return null;
+
   return (
     <li
       style={{
         fontWeight: "bold",
+        // minHeight: "37px",
       }}
     >
       <div style={{ display: "flex", marginBottom: "0.8rem" }}>
@@ -135,7 +145,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${description}: `}
+          {enabled ? <>{`${description}: `}</> : ""}
         </div>
         <div
           style={{
@@ -143,7 +153,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${value} ${unit ?? ""}`}
+          {enabled ? <>{`${value} ${unit ?? ""}`}</> : ""}
         </div>
       </div>
     </li>
@@ -155,7 +165,7 @@ type AlarmGroup = "energy" | "climate" | "telecom";
 type AlarmBadgeProps = {
   alarms: number;
   group: AlarmGroup;
-};
+} & BadgeProps;
 
 const AlarmBadge: React.FC<AlarmBadgeProps> = ({ alarms, group, ...props }) => {
   const getAlarmIcon = (group: AlarmGroup) => {
@@ -169,7 +179,7 @@ const AlarmBadge: React.FC<AlarmBadgeProps> = ({ alarms, group, ...props }) => {
     }
   };
   return (
-    <Badge badgeContent={alarms} color="error" sx={{ marginLeft: "auto" }}>
+    <Badge badgeContent={alarms} color="error" {...props}>
       {getAlarmIcon(group)}
     </Badge>
   );
