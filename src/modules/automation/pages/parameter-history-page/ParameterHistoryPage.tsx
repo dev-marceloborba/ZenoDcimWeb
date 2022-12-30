@@ -16,6 +16,7 @@ import {
   useFindMeasureStatisticsMutation,
 } from "modules/automation/services/history-service";
 import ParameterChart from "./components/parameter-chart/ParameterChart";
+import { useFindEquipmentParameterByIdQueryQuery } from "modules/automation/services/equipment-parameter-service";
 
 type FilterState = {
   initialDate: Date | null;
@@ -27,20 +28,16 @@ export default function ParameterHistoryPage() {
     initialDate: addDaysToDate(new Date(), -7),
     finalDate: new Date(),
   });
-  const {
-    state: { data: equipmentParameter },
-  }: {
-    state: {
-      data: any;
-    };
-  } = useRouter();
   const { params } = useRouter();
+
   const [findMeasuresByParameter, { data: measures, isLoading }] =
     useFindMeasuresByParameterMutation();
   const [findStatistics, { data: statistics }] =
     useFindMeasureStatisticsMutation();
 
-  console.log(params);
+  const { data: parameter } = useFindEquipmentParameterByIdQueryQuery(
+    params.equipmentParameterId!
+  );
 
   const handleChangeInitialDate = (date: Date | null) => {
     setFilter({ ...filter, initialDate: date });
@@ -53,35 +50,29 @@ export default function ParameterHistoryPage() {
   useEffect(() => {
     async function fetchMeasures() {
       await findMeasuresByParameter({
-        parameter: equipmentParameter.parameter,
+        parameter: parameter?.name,
         initialDate: filter.initialDate,
         finalDate: filter.finalDate,
       }).unwrap();
     }
     fetchMeasures();
   }, [
-    equipmentParameter.parameter,
     filter.finalDate,
     filter.initialDate,
     findMeasuresByParameter,
+    parameter?.name,
   ]);
 
   useEffect(() => {
     async function fetchStatistcs() {
       await findStatistics({
-        name: equipmentParameter.pathname,
+        name: parameter?.name ?? "",
         initialDate: filter.initialDate,
         finalDate: filter.finalDate,
       });
     }
     fetchStatistcs();
-  }, [
-    equipmentParameter.parameter,
-    equipmentParameter.pathname,
-    filter.finalDate,
-    filter.initialDate,
-    findStatistics,
-  ]);
+  }, [filter.finalDate, filter.initialDate, findStatistics, parameter?.name]);
 
   console.log(statistics);
 
@@ -106,7 +97,7 @@ export default function ParameterHistoryPage() {
       <Grid container columnSpacing={1}>
         <Grid item md={6}>
           <DataTable
-            title={equipmentParameter.description}
+            title={parameter?.name ?? ""}
             rows={measures ?? []}
             columns={columns}
           />
@@ -114,7 +105,7 @@ export default function ParameterHistoryPage() {
         <Grid item md={6}>
           <ParameterChart
             measures={measures ?? []}
-            description={equipmentParameter.description}
+            description={parameter?.name ?? ""}
           />
         </Grid>
       </Grid>

@@ -61,6 +61,16 @@ export const equipmentParametersApi = createApi({
         method: "GET",
       }),
     }),
+    findEquipmentParameterByIdQuery: builder.query<
+      EquipmentParameterModel,
+      string
+    >({
+      query: (id) => ({
+        url: `v1/data-center/building/floor/room/equipment/parameter/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["EquipmentParameterModel"],
+    }),
     findEquipmentParametersByEquipmentId: builder.mutation<
       EquipmentParameterModel[],
       string
@@ -109,5 +119,6 @@ export const {
   useFindEquipmentParameterByIdMutation,
   useFindEquipmentParametersByEquipmentIdMutation,
   useFindEquipmentParametersByEquipmentIdQueryQuery,
+  useFindEquipmentParameterByIdQueryQuery,
   useCreateMultipleEquipmentParametersMutation,
 } = equipmentParametersApi;

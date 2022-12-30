@@ -7,36 +7,15 @@ import { datacenterPaths } from "modules/datacenter/routes/paths";
 
 const cardItems: CardSectionProps[] = [
   {
-    title: "Racks",
+    title: "Infraestrutura",
+    description: "Cadastro de sites, prédios, andares e salas",
+    path: datacenterPaths.infraSettings.shortPath,
+  },
+  {
+    title: "Racks e ocupação",
     description:
-      "Configure os racks, quais equipamentos estão instalados em cada rack, bem como sua ocupação, potência elétrica e peso",
+      "Cadastre novos Racks, defina sua potência máxima, peso limite, entre outras características",
     path: datacenterPaths.racks.shortPath,
-  },
-  {
-    title: "Equipamentos de Rack",
-    description:
-      "Registre e configure as informações dos equipamentos que são instalados dentro dos racks, servidores, patch panels, DI's e switches",
-    path: datacenterPaths.rackEquipments.shortPath,
-  },
-  {
-    title: "Salas",
-    description: "Configure e gerencie as salas do DCIM",
-    path: datacenterPaths.roomManagement.shortPath,
-  },
-  {
-    title: "Andares",
-    description: "Configure e gerencie os andares do DCIM",
-    path: datacenterPaths.floorManagement.shortPath,
-  },
-  {
-    title: "Prédios",
-    description: "Configure e gerencie os prédios do DCIM",
-    path: datacenterPaths.buildingManagement.shortPath,
-  },
-  {
-    title: "Sites",
-    description: "Configure e gerencie os sites(locais) do DCIM",
-    path: datacenterPaths.siteManagement.shortPath,
   },
 ];
 

@@ -8,6 +8,7 @@ import SiteAdmin from "modules/automation/pages/site-admin/SiteAdmin";
 import { RouteObject, useRoutes } from "react-router-dom";
 import BuildingForm from "../pages/building-form/BuildingForm";
 import DataCenterSettingsPage from "../pages/datacenter-settings-page/DataCenterSettingsPage";
+import InfrastructurePage from "../pages/infrastructure-page/InfrastructurePage";
 import RackAdminPage from "../pages/rack-admin-page/RackAdminPage";
 import RackDetailsPage from "../pages/rack-details-page/RackDetailsPage";
 import RackEquipmentsAdminPage from "../pages/rack-equipments-admin-page/RackEquipmentsAdminPage";
@@ -17,6 +18,11 @@ export const datacenterRoutes: RouteObject[] = [
   {
     path: datacenterPaths.settings.fullPath,
     element: <DataCenterSettingsPage />,
+    title: "Configurações de infraestrutura",
+  },
+  {
+    path: datacenterPaths.infraSettings.fullPath,
+    element: <InfrastructurePage />,
     title: "Configurações de infraestrutura",
   },
   {

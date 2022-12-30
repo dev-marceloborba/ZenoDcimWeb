@@ -396,7 +396,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
           onEditRow: handleEditParameter,
           onDeleteRow: handleDeleteParameter,
           onRowClick: (row) => {
-            navigate(`${path}/parameters`, {});
+            navigate(`${path}/${row.id}/history`, {});
           },
         }}
       />

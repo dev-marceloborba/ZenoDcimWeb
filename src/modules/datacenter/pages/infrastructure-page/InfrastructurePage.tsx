@@ -1,58 +1,474 @@
 import DataTableV2 from "modules/shared/components/datatableV2/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import LabelTabs from "modules/shared/components/LabelTabs";
+import Tabs from "modules/shared/components/tabs/Tabs";
+import Button from "@mui/material/Button";
+import { useModal } from "mui-modal-provider";
 import {
-  TabContextProvider,
-  useTabContext,
-} from "modules/shared/components/TabContext";
-import TabPanel from "modules/shared/components/TabPanel";
+  useCreateSiteMutation,
+  useDeleteSiteMutation,
+  useFindAllSitesQuery,
+} from "modules/datacenter/services/site-service";
+import {
+  BuildingModel,
+  FloorModel,
+  RoomModel,
+  SiteModel,
+} from "modules/datacenter/models/datacenter-model";
+import {
+  useCreateBuildingMutation,
+  useDeleteBuildingMutation,
+  useFindAllBuildingsQuery,
+} from "modules/datacenter/services/building-service";
+import {
+  useCreateFloorMutation,
+  useDeleteFloorMutation,
+  useFindAllFloorsQuery,
+} from "modules/datacenter/services/floor-service";
+import {
+  useDeleteRoomMutation,
+  useFindAllRoomsQuery,
+} from "modules/datacenter/services/room-service";
+import SiteFormModal from "modules/datacenter/modals/site-form-modal/SiteFormModal";
+import { useToast } from "modules/shared/components/ToastProvider";
+import Loading from "modules/shared/components/Loading";
+import BuildingFormModal from "modules/datacenter/modals/building-form-modal/BuildingFormModal";
+import FloorFormModal from "modules/datacenter/modals/floor-form-modal/FloorFormModal";
+import RoomFormModal from "modules/datacenter/modals/room-form-modal/RoomFormModal";
 
 export default function InfrastructurePage() {
+  const { showModal } = useModal();
+  const toast = useToast();
+  const { data: sites, isLoading: isLoadingFetchSites } =
+    useFindAllSitesQuery();
+  const { data: buildings, isLoading: isLoadingFetchBuildings } =
+    useFindAllBuildingsQuery();
+  const { data: floors, isLoading: isLoadingFetchFloors } =
+    useFindAllFloorsQuery();
+  const { data: rooms, isLoading: isLoadingFetchRooms } =
+    useFindAllRoomsQuery();
+
+  const [createSite, { isLoading: isLoadingCreateSite }] =
+    useCreateSiteMutation();
+  const [createBuilding, { isLoading: isLoadingCreateBuilding }] =
+    useCreateBuildingMutation();
+  const [createFloor, { isLoading: isLoadingCreateFloor }] =
+    useCreateFloorMutation();
+  const [createRoom, { isLoading: isLoadingCreateRoom }] =
+    useCreateFloorMutation();
+
+  const handleOpenSiteModal = () => {
+    const modal = showModal(SiteFormModal, {
+      title: "Novo site",
+      onConfirm: async (site) => {
+        modal.hide();
+        try {
+          await createSite(site).unwrap();
+          toast.open({ message: "Site criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar site", severity: "error" });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleOpenBuildingModal = () => {
+    const modal = showModal(BuildingFormModal, {
+      title: "Novo prédio",
+      data: {
+        sites,
+      },
+      onConfirm: async (building) => {
+        modal.hide();
+        try {
+          await createBuilding(building).unwrap();
+          toast.open({ message: "Prédio criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar prédio", severity: "error" });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleOpenFloorModal = () => {
+    const modal = showModal(FloorFormModal, {
+      title: "Novo prédio",
+      data: {
+        sites,
+        buildings,
+      },
+      onConfirm: async (floor) => {
+        modal.hide();
+        try {
+          await createFloor(floor).unwrap();
+          toast.open({ message: "Andar criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar andar", severity: "error" });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleOpenRoomModal = () => {
+    const modal = showModal(RoomFormModal, {
+      title: "Nova sala",
+      data: {
+        sites,
+        buildings,
+        floors,
+      },
+      onConfirm: async (room) => {
+        modal.hide();
+        try {
+          await createRoom(room).unwrap();
+          toast.open({ message: "Sala criada com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar sala", severity: "error" });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
   return (
     <HeroContainer title="Infraestrutura">
-      <TabContextProvider>
-        <LabelTabs items={["Sites", "Prédios", "Andares", "Salas"]} />
-        <SitesTab />
-        <BuildingsTab />
-        <FloorsTab />
-        <RoomsTab />
-      </TabContextProvider>
+      <Tabs
+        mode="horizontal"
+        tabLabels={["Sites", "Prédios", "Andares", "Salas"]}
+        tabItems={[
+          {
+            element: <SitesTab sites={sites ?? []} />,
+            content: (
+              <Button variant="contained" onClick={handleOpenSiteModal}>
+                Novo site
+              </Button>
+            ),
+          },
+          {
+            element: (
+              <BuildingsTab buildings={buildings ?? []} sites={sites ?? []} />
+            ),
+            content: (
+              <Button variant="contained" onClick={handleOpenBuildingModal}>
+                Novo prédio
+              </Button>
+            ),
+          },
+          {
+            element: (
+              <FloorsTab floors={floors ?? []} buildings={buildings ?? []} />
+            ),
+            content: (
+              <Button variant="contained" onClick={handleOpenFloorModal}>
+                Novo andar
+              </Button>
+            ),
+          },
+          {
+            element: (
+              <RoomsTab
+                rooms={rooms ?? []}
+                floors={floors ?? []}
+                buildings={buildings ?? []}
+                sites={sites ?? []}
+              />
+            ),
+            content: (
+              <Button variant="contained" onClick={handleOpenRoomModal}>
+                Nova sala
+              </Button>
+            ),
+          },
+        ]}
+      />
+      <Loading
+        open={
+          isLoadingCreateSite ||
+          isLoadingCreateBuilding ||
+          isLoadingCreateFloor ||
+          isLoadingCreateRoom ||
+          isLoadingFetchSites ||
+          isLoadingFetchBuildings ||
+          isLoadingFetchFloors ||
+          isLoadingFetchRooms
+        }
+      />
     </HeroContainer>
   );
 }
 
-const SitesTab: React.FC = () => {
-  const { tabIndex } = useTabContext();
+type SitesTabProps = {
+  sites: SiteModel[];
+};
+
+const SitesTab: React.FC<SitesTabProps> = ({ sites }) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+  const [deleteSite] = useDeleteSiteMutation();
+  //TODO: falta colocar update
+  const handleEditSite = (site: SiteModel) => {
+    const modal = showModal(SiteFormModal, {
+      title: "Editar site",
+      mode: "edit",
+      data: site,
+      onConfirm: (site) => {
+        console.log(site);
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleDeleteSite = async (site: SiteModel) => {
+    try {
+      await deleteSite(site.id).unwrap();
+      toast.open({ message: "Site excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir site", severity: "error" });
+    }
+  };
+
   return (
-    <TabPanel value={tabIndex} index={0}>
-      <DataTableV2 title="" rows={[]} columns={[]} />;
-    </TabPanel>
+    <DataTableV2
+      title="Sites"
+      rows={sites}
+      columns={[
+        {
+          name: "name",
+          label: "Site",
+        },
+      ]}
+      options={{
+        showEdit: true,
+        showDelete: true,
+        onEditRow: handleEditSite,
+        onDeleteRow: handleDeleteSite,
+      }}
+    />
   );
 };
 
-const BuildingsTab: React.FC = () => {
-  const { tabIndex } = useTabContext();
+type BuildingsTabProps = {
+  buildings: BuildingModel[];
+  sites: SiteModel[];
+};
+
+const BuildingsTab: React.FC<BuildingsTabProps> = ({ buildings, sites }) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+  const [deleteBuilding] = useDeleteBuildingMutation();
+
+  const handleEditBuilding = (building: BuildingModel) => {
+    const modal = showModal(BuildingFormModal, {
+      title: "Editar prédio",
+      mode: "edit",
+      data: {
+        model: building,
+        sites,
+      },
+      onConfirm: (site) => {
+        console.log(site);
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteBuilding = async (building: BuildingModel) => {
+    try {
+      await deleteBuilding(building.id).unwrap();
+      toast.open({ message: "Prédio excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir prédio", severity: "error" });
+    }
+  };
   return (
-    <TabPanel value={tabIndex} index={1}>
-      <DataTableV2 title="" rows={[]} columns={[]} />;
-    </TabPanel>
+    <DataTableV2
+      title="Prédios"
+      rows={buildings.map((building) => ({
+        ...building,
+        siteName: building.site?.name ?? "",
+      }))}
+      columns={[
+        {
+          name: "siteName",
+          label: "Site",
+        },
+        {
+          name: "name",
+          label: "Prédio",
+        },
+      ]}
+      options={{
+        showEdit: true,
+        showDelete: true,
+        onEditRow: handleEditBuilding,
+        onDeleteRow: handleDeleteBuilding,
+      }}
+    />
   );
 };
 
-const FloorsTab: React.FC = () => {
-  const { tabIndex } = useTabContext();
+type FloorsTabProps = {
+  floors: FloorModel[];
+  buildings: BuildingModel[];
+};
+
+const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+  const [deleteFloor] = useDeleteFloorMutation();
+
+  const handleEditFloor = (floor: FloorModel) => {
+    const modal = showModal(FloorFormModal, {
+      title: "Editar andar",
+      mode: "edit",
+      data: {
+        model: floor,
+        buildings,
+      },
+      onConfirm: (floor) => {
+        console.log(floor);
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteFloor = async (floor: FloorModel) => {
+    try {
+      await deleteFloor(floor.id).unwrap();
+      toast.open({ message: "Andar excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir andar", severity: "error" });
+    }
+  };
   return (
-    <TabPanel value={tabIndex} index={2}>
-      <DataTableV2 title="" rows={[]} columns={[]} />;
-    </TabPanel>
+    <DataTableV2
+      title="Andares"
+      rows={floors.map((floor) => ({
+        ...floor,
+        siteName: floor.building?.site?.name ?? "",
+        buildingName: floor.building?.name ?? "",
+      }))}
+      columns={[
+        {
+          name: "siteName",
+          label: "Site",
+        },
+        {
+          name: "buildingName",
+          label: "Prédio",
+        },
+        {
+          name: "name",
+          label: "Andar",
+        },
+      ]}
+      options={{
+        showEdit: true,
+        showDelete: true,
+        onEditRow: handleEditFloor,
+        onDeleteRow: handleDeleteFloor,
+      }}
+    />
   );
 };
 
-const RoomsTab: React.FC = () => {
-  const { tabIndex } = useTabContext();
+type RoomsTabProps = {
+  sites: SiteModel[];
+  buildings: BuildingModel[];
+  floors: FloorModel[];
+  rooms: RoomModel[];
+};
+
+const RoomsTab: React.FC<RoomsTabProps> = ({
+  sites,
+  buildings,
+  floors,
+  rooms,
+}) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+  const [deleteRoom] = useDeleteRoomMutation();
+
+  const handleEditRoom = (room: RoomModel) => {
+    const modal = showModal(RoomFormModal, {
+      title: "Editar sala",
+      mode: "edit",
+      data: {
+        model: room,
+        sites,
+        buildings,
+        floors,
+      },
+      onConfirm: (floor) => {
+        console.log(floor);
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteRoom = async (room: RoomModel) => {
+    try {
+      await deleteRoom(room.id).unwrap();
+      toast.open({ message: "Sala excluída com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({ message: "Erro ao excluir sala", severity: "error" });
+    }
+  };
   return (
-    <TabPanel value={tabIndex} index={3}>
-      <DataTableV2 title="" rows={[]} columns={[]} />;
-    </TabPanel>
+    <DataTableV2
+      title="Salas"
+      rows={rooms.map((room) => ({
+        ...room,
+        siteName: room.floor?.building?.site?.name ?? "",
+        buildingName: room.floor?.building?.name ?? "",
+        floorName: room.floor?.name ?? "",
+      }))}
+      columns={[
+        {
+          name: "siteName",
+          label: "Site",
+        },
+        {
+          name: "buildingName",
+          label: "Prédio",
+        },
+        {
+          name: "floorName",
+          label: "Andar",
+        },
+        {
+          name: "name",
+          label: "Sala",
+        },
+      ]}
+      options={{
+        showEdit: true,
+        showDelete: true,
+        onEditRow: handleEditRoom,
+        onDeleteRow: handleDeleteRoom,
+      }}
+    />
   );
 };

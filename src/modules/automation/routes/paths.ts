@@ -40,6 +40,10 @@ export const automationPaths = {
       "etc/floor/:floorId/cage/:roomId/equipment-parameters-details/:equipmentId/parameter-details/:equipmentParameterId",
     shortPath: "parameter-details",
   },
+  parameterHistory: {
+    fullPath:
+      "etc/:siteId/:buildingId/:roomId/:equipmentId/:equipmentParameterId/history",
+  },
   fireSystem: {
     fullPath: "fire-system",
   },

@@ -98,7 +98,7 @@ export const automationRoutes: RouteObject[] = [
     title: "Histórico de medidas",
   },
   {
-    path: automationPaths.parameterDetails.fullPath,
+    path: automationPaths.parameterHistory.fullPath,
     element: <ParameterHistoryPage />,
     title: "Histórico de parâmetros",
     resolver: EquipmentParameterResolver,
