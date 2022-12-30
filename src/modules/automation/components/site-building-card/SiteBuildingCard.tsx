@@ -103,9 +103,6 @@ type ParameterInfoProps = {
   description: string;
   value: number;
   unit?: string;
-  marginTop?: string;
-  marginBottom?: string;
-  minHeight?: string;
 };
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
@@ -135,7 +132,6 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
     <li
       style={{
         fontWeight: "bold",
-        // minHeight: "37px",
       }}
     >
       <div style={{ display: "flex", marginBottom: "0.8rem" }}>

@@ -8,6 +8,7 @@ import NotificationBadge from "modules/shared/components/notification-badge/Noti
 type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh" | "no-rule";
 
 type Parameter = {
+  enabled: boolean;
   description: string;
   value: number;
   status: ItemStatus;
@@ -68,6 +69,7 @@ export default RoomCard;
 
 type ParameterInfoProps = {
   status: ItemStatus;
+  enabled: boolean;
   description: string;
   value: number;
   unit?: string;
@@ -75,6 +77,7 @@ type ParameterInfoProps = {
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
   status,
+  enabled,
   description,
   value,
   unit,
@@ -109,7 +112,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${description}:`}
+          {enabled ? <>{`${description}: `}</> : ""}
         </div>
         <div
           style={{
@@ -117,7 +120,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${value} ${unit ?? ""}`}
+          {enabled ? <>{`${value} ${unit ?? ""}`}</> : ""}
         </div>
       </div>
     </li>

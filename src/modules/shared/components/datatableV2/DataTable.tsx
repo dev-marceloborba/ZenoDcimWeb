@@ -20,11 +20,13 @@ import { setPreferences } from "modules/user/stores/slices/AuthenticationSlice";
 import { useAuth } from "app/hooks/useAuth";
 import { useUpdateUserPreferenciesMutation } from "modules/user/services/user-preferencies.service";
 import EditButton from "../edit-button/EditButton";
+import { SxProps, Theme } from "@mui/material";
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
   title: string;
   options?: DataTableOptions;
+  sx?: SxProps<Theme>;
 }
 
 export interface ColumnHeader {
@@ -42,6 +44,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
   rows,
   columns,
   title,
+  sx,
   ...props
 }) => {
   const options = props.options ?? ({} as DataTableOptions);
@@ -221,7 +224,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
   }, [userPreferenceTable, userState]);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", ...sx }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
           numSelected={selectedItems.length}

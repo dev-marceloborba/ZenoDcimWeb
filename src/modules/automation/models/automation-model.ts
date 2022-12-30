@@ -169,9 +169,15 @@ export interface EditEquipmentParameterGroupViewModel {
   name: string;
 }
 
+type ParameterGroupAssignment = {
+  id: string;
+  parameter: ParameterModel;
+};
+
 export interface EquipmentParameterGroupModel
   extends EquipmentParameterGroupViewModel {
   id: string;
+  parameterGroupAssignments?: ParameterGroupAssignment[];
 }
 
 export interface ParameterViewModel {

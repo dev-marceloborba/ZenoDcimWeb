@@ -5,7 +5,6 @@ import { RootState } from "modules/core/store";
 import {
   AlarmRuleModel,
   AlarmRulesModel,
-  AlarmRuleTableViewModel,
   AlarmRuleViewModel,
   EAlarmConditonal,
   EAlarmPriority,
@@ -61,16 +60,13 @@ export const alarmRuleApi = createApi({
       }),
       invalidatesTags: ["AlarmRuleModel"],
     }),
-    findAlarmRulesByEquipmentId: builder.query<
-      AlarmRuleTableViewModel[],
-      string
-    >({
+    findAlarmRulesByEquipmentId: builder.query<AlarmRulesModel, string>({
       query: (id) => ({
         url: `v1/data-center/alarm-rules/by-equipment/${id}`,
         method: "GET",
       }),
       transformResponse: (response: AlarmRulesModel) => {
-        function getRuleConditional(conditional: EAlarmConditonal) {
+        function getDescriptionFromEnum(conditional: EAlarmConditonal) {
           switch (conditional) {
             case EAlarmConditonal.EQUAL:
               return "=";
@@ -85,7 +81,7 @@ export const alarmRuleApi = createApi({
           }
         }
 
-        function getRulePriority(priority: EAlarmPriority) {
+        function getPriorityFromEnum(priority: EAlarmPriority) {
           switch (priority) {
             case EAlarmPriority.MEDIUM:
               return "Média";
@@ -96,14 +92,12 @@ export const alarmRuleApi = createApi({
           }
         }
 
-        return response.map((x) => ({
-          name: x.name,
-          setpoint: x.setpoint,
-          enableEmail: x.enableEmail,
-          equipmentParameter: x.equipmentParameter,
-          enableNotification: x.enableNotification,
-          conditional: getRuleConditional(x.conditional),
-          priority: getRulePriority(x.priority),
+        return response.map((rule) => ({
+          ...rule,
+          conditional: getDescriptionFromEnum(
+            rule.conditional as EAlarmConditonal
+          ),
+          priority: getPriorityFromEnum(rule.priority as EAlarmPriority),
         }));
       },
       providesTags: ["AlarmRuleModel"],

@@ -151,16 +151,19 @@ const EnergyEquipments: React.FC<EquipmentData> = ({
               status="online"
               parameter1={{
                 description: equipment.parameter1?.description ?? "",
+                enabled: equipment.parameter1?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter2={{
                 description: equipment.parameter2?.description ?? "",
+                enabled: equipment.parameter2?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter3={{
                 description: equipment.parameter3?.description ?? "",
+                enabled: equipment.parameter3?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
@@ -205,16 +208,19 @@ const ClimateEquipments: React.FC<EquipmentData> = ({
               status="online"
               parameter1={{
                 description: equipment.parameter1?.description ?? "",
+                enabled: equipment.parameter1?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter2={{
                 description: equipment.parameter2?.description ?? "",
+                enabled: equipment.parameter2?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter3={{
                 description: equipment.parameter3?.description ?? "",
+                enabled: equipment.parameter3?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
@@ -257,16 +263,19 @@ const TelecomEquipments: React.FC<EquipmentData> = ({
               status="online"
               parameter1={{
                 description: equipment.parameter1?.description ?? "",
+                enabled: equipment.parameter1?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter2={{
                 description: equipment.parameter2?.description ?? "",
+                enabled: equipment.parameter2?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter3={{
                 description: equipment.parameter3?.description ?? "",
+                enabled: equipment.parameter3?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}

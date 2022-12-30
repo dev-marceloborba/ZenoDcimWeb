@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AlarmRuleViewModel } from "modules/automation/models/alarm-rule-model";
+import {
+  AlarmRuleViewModel,
+  EAlarmConditonal,
+  EAlarmPriority,
+} from "modules/automation/models/alarm-rule-model";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import {
   useCreateAlarmRuleMutation,
@@ -70,8 +74,10 @@ export default function EquipmentParameterRulesForm() {
       toast.open({ message: "Regra criada com sucesso" }).then(() => back());
     } else {
       await updateAlarmRule({
-        id: selectedParameter.alarmRuleId,
         ...data,
+        id: selectedParameter.alarmRuleId,
+        conditional: data.conditional as EAlarmConditonal,
+        priority: data.priority as EAlarmPriority,
       }).unwrap();
       toast.open({ message: "Regra alterada com sucesso" }).then(() => back());
     }

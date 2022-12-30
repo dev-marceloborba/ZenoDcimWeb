@@ -16,18 +16,21 @@ Card.args = {
   title: "MDA A",
   parameter1: {
     description: "Potência ativa",
+    enabled: true,
     status: "normal",
     unit: "MW",
     value: 12.4,
   },
   parameter2: {
     description: "Temperatura",
+    enabled: true,
     status: "highHigh",
     unit: "C",
     value: 33.5,
   },
   parameter3: {
     description: "N de equipamentos",
+    enabled: true,
     status: "no-rule",
     value: 10,
   },

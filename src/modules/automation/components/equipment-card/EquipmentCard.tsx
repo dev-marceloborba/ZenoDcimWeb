@@ -12,6 +12,7 @@ type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh" | "no-rule";
 type System = "energy" | "climate" | "telecom";
 
 type Parameter = {
+  enabled: boolean;
   description: string;
   value: number;
   status: ItemStatus;
@@ -138,6 +139,7 @@ const OnlineOfflineStatus: React.FC<OnlineOfflineStatusProps> = ({
 
 type ParameterInfoProps = {
   status: ItemStatus;
+  enabled: boolean;
   description: string;
   value: number;
   unit?: string;
@@ -145,6 +147,7 @@ type ParameterInfoProps = {
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
   status,
+  enabled,
   description,
   value,
   unit,
@@ -180,7 +183,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${description}:`}
+          {enabled ? <>{`${description}: `}</> : ""}
         </div>
         <div
           style={{
@@ -188,7 +191,7 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
             marginLeft: "0.4rem",
           }}
         >
-          {`${value} ${unit ?? ""}`}
+          {enabled ? <>{`${value} ${unit ?? ""}`}</> : ""}
         </div>
       </div>
     </li>

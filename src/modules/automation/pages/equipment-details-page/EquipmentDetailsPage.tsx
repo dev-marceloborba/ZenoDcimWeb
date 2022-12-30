@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Typography from "@mui/material/Typography";
@@ -14,11 +13,16 @@ import {
 } from "modules/automation/services/equipment-service";
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import Loading from "modules/shared/components/Loading";
-import { useFindAlarmRulesByEquipmentIdQuery } from "modules/automation/services/alarm-rule-service";
+import {
+  useCreateAlarmRuleMutation,
+  useDeleteAlarmRuleMutation,
+  useFindAlarmRulesByEquipmentIdQuery,
+  useUpdateAlarmRuleMutation,
+} from "modules/automation/services/alarm-rule-service";
 import {
   useDeleteEquipmentParameterMutation,
-  useFindEquipmentParametersByEquipmentIdMutation,
   useFindEquipmentParametersByEquipmentIdQueryQuery,
+  useUpdateEquipmentParameterMutation,
 } from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
 import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
@@ -26,17 +30,31 @@ import Tabs from "modules/shared/components/tabs/Tabs";
 import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
 import { useToast } from "modules/shared/components/ToastProvider";
 import ParameterAssociationModal from "modules/automation/modals/parameter-association-modal/ParameterAssociationModal";
-import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
+import {
+  AlarmRuleModel,
+  EAlarmConditonal,
+  EAlarmPriority,
+} from "modules/automation/models/alarm-rule-model";
+import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
 
 const EquipmentDetailsPage: React.FC = () => {
-  const { data: sites } = useFindAllSitesQuery();
   const { params } = useRouter();
   const { data: equipment, isLoading: isLoadingFetch } =
     useFindEquipmentByIdQueryQuery(params.equipmentId!);
+
+  const { data: parameters } =
+    useFindEquipmentParametersByEquipmentIdQueryQuery(params.equipmentId!);
+
+  const { data: groups } = useFindAllParameterGroupsQuery();
+
   const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
+
+  const [createRule, { isLoading: isLoadingCreateRule }] =
+    useCreateAlarmRuleMutation();
+
   const { showModal } = useModal();
   const toast = useToast();
 
@@ -64,28 +82,17 @@ const EquipmentDetailsPage: React.FC = () => {
       },
       mode: "edit",
       data: equipment,
-      // data: {
-      //   siteId: equipment?.site?.id ?? "",
-      //   buildingId: equipment?.building?.id ?? "",
-      //   floorId: equipment?.floor?.id ?? "",
-      //   roomId: equipment?.room?.id ?? "",
-      //   component: equipment?.component ?? "",
-      //   group: equipment?.group ?? 0,
-      //   // manufactor: "",
-      //   powerLimit: equipment?.powerLimit ?? 0,
-      //   componentCode: equipment?.componentCode ?? "",
-      //   description: equipment?.description ?? "",
-      //   size: equipment?.size ?? "",
-      //   weight: equipment?.weight ?? 0,
-      // },
     });
   };
 
   const handleOpenParameterAssociation = (equipmentId: string) => {
     const modal = showModal(ParameterAssociationModal, {
       title: "Associar parâmetros",
-      equipment: equipment?.component ?? "",
-      sites: sites ?? [],
+      data: {
+        equipment: equipment?.component ?? "",
+        groups: groups ?? [],
+        parameters: parameters ?? [],
+      },
       onConfirm: () => {
         modal.hide();
       },
@@ -94,7 +101,7 @@ const EquipmentDetailsPage: React.FC = () => {
       },
       PaperProps: {
         sx: {
-          minWidth: "500px",
+          minWidth: "800px",
         },
       },
     });
@@ -103,9 +110,16 @@ const EquipmentDetailsPage: React.FC = () => {
   const handleShowRuleModal = () => {
     const modal = showModal(RuleFormModal, {
       title: "Nova regra",
-      parameters: [],
-      onConfirm: (data) => {
+      parameters: parameters ?? [],
+      onConfirm: async (data) => {
         modal.hide();
+        try {
+          await createRule(data).unwrap();
+          toast.open({ message: "Regra criada com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar regra", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -128,7 +142,7 @@ const EquipmentDetailsPage: React.FC = () => {
             ),
           },
           {
-            element: <ParametersTab equipmentId={equipment?.id ?? ""} />,
+            element: <ParametersTab parameters={parameters ?? []} />,
             content: (
               <Button
                 variant="contained"
@@ -139,7 +153,12 @@ const EquipmentDetailsPage: React.FC = () => {
             ),
           },
           {
-            element: <RulesTab equipmentId={equipment?.id ?? ""} />,
+            element: (
+              <RulesTab
+                equipmentId={equipment?.id ?? ""}
+                parameters={parameters ?? []}
+              />
+            ),
             content: (
               <Button variant="contained" onClick={handleShowRuleModal}>
                 Nova regra
@@ -148,7 +167,9 @@ const EquipmentDetailsPage: React.FC = () => {
           },
         ]}
       />
-      <Loading open={isLoadingFetch || isLoadingUpdate} />
+      <Loading
+        open={isLoadingFetch || isLoadingUpdate || isLoadingCreateRule}
+      />
     </HeroContainer>
   );
 };
@@ -314,20 +335,38 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
 };
 
 type ParametersTabProps = {
-  equipmentId: string;
+  parameters: EquipmentParameterModel[];
 };
 
-const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
+const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
   const { showModal } = useModal();
   const toast = useToast();
   const { navigate, path } = useRouter();
-  const { data: parameters, isLoading } =
-    useFindEquipmentParametersByEquipmentIdQueryQuery(equipmentId);
-  const [deleteParameter] = useDeleteEquipmentParameterMutation();
+
+  const [updateParameter, { isLoading: isLoadingUpdate }] =
+    useUpdateEquipmentParameterMutation();
+
+  const [deleteParameter, { isLoading: isLoadingDelete }] =
+    useDeleteEquipmentParameterMutation();
 
   const handleEditParameter = (parameter: EquipmentParameterModel) => {
     const modal = showModal(EquipmentParameterFormModal, {
       title: "Editar parâmetro do equipamento",
+      data: parameter,
+      mode: "edit",
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateParameter(formData).unwrap();
+          toast.open({ message: "Parâmetro atualizado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao atualizar parâmetro",
+            severity: "error",
+          });
+        }
+      },
       onClose: () => {
         modal.hide();
       },
@@ -361,34 +400,57 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ equipmentId }) => {
           },
         }}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
     </>
   );
 };
 
 type RulesTabProps = {
   equipmentId: string;
+  parameters: EquipmentParameterModel[];
 };
 
-const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
+const RulesTab: React.FC<RulesTabProps> = ({ equipmentId, parameters }) => {
   const { showModal } = useModal();
   const toast = useToast();
-  const { data: rules, isLoading } =
+  const { data: rules, isLoading: isLoadingFetch } =
     useFindAlarmRulesByEquipmentIdQuery(equipmentId);
-  const [deleteParameter] = useDeleteEquipmentParameterMutation();
+  const [updateRule, { isLoading: isLoadingUpdate }] =
+    useUpdateAlarmRuleMutation();
+  const [deleteRule, { isLoading: isLoadingDelete }] =
+    useDeleteAlarmRuleMutation();
 
-  const handleEditParameter = (parameter: EquipmentParameterModel) => {
-    const modal = showModal(EquipmentParameterFormModal, {
-      title: "Editar parâmetro do equipamento",
+  const handleEditRule = (rule: AlarmRuleModel) => {
+    const modal = showModal(RuleFormModal, {
+      title: "Editar regra",
+      mode: "edit",
+      parameters,
+      data: rule,
+      onConfirm: async (formData) => {
+        modal.hide();
+        console.log(formData);
+        try {
+          await updateRule({
+            ...formData,
+            conditional: formData.conditional as EAlarmConditonal,
+            priority: formData.priority as EAlarmPriority,
+            id: rule.id,
+          }).unwrap();
+          toast.open({ message: "Regra alterada com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao alterar regra", severity: "error" });
+        }
+      },
       onClose: () => {
         modal.hide();
       },
     });
   };
 
-  const handleDeleteParameter = async (parameter: EquipmentParameterModel) => {
+  const handleDeleteRule = async (parameter: EquipmentParameterModel) => {
     try {
-      await deleteParameter(parameter.id).unwrap();
+      await deleteRule(parameter.id).unwrap();
       toast.open({ message: "Parâmetro excluído com sucesso" });
     } catch (error) {
       console.log(error);
@@ -402,23 +464,20 @@ const RulesTab: React.FC<RulesTabProps> = ({ equipmentId }) => {
         title="Regras"
         columns={ruleColumns}
         rows={
-          rules?.map((rule) => ({
-            rule: rule.name,
-            parameter: rule.equipmentParameter?.name ?? "",
-            conditional: rule.conditional,
-            setpoint: rule.setpoint,
-            priority: rule.priority,
+          rules?.map<any>((rule) => ({
+            ...rule,
+            equipmentParameterName: rule.equipmentParameter?.name,
           })) ?? []
         }
         options={{
           showEdit: true,
           showDelete: true,
           selectionMode: "hide",
-          onEditRow: handleEditParameter,
-          onDeleteRow: handleDeleteParameter,
+          onEditRow: handleEditRule,
+          onDeleteRow: handleDeleteRule,
         }}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoadingFetch || isLoadingUpdate || isLoadingDelete} />
     </>
   );
 };
@@ -460,11 +519,11 @@ const parameterColumns: ColumnHeader[] = [
 
 const ruleColumns: ColumnHeader[] = [
   {
-    name: "rule",
+    name: "name",
     label: "Regra",
   },
   {
-    name: "parameter",
+    name: "equipmentParameterName",
     label: "Parâmetro",
   },
   {

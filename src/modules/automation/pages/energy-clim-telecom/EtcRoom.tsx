@@ -93,16 +93,19 @@ const EtcRoom: React.FC = () => {
               title={room.name}
               parameter1={{
                 description: room.parameter1?.description ?? "",
+                enabled: room.parameter1?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter2={{
                 description: room.parameter2?.description ?? "",
+                enabled: room.parameter2?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}
               parameter3={{
                 description: room.parameter3?.description ?? "",
+                enabled: room.parameter3?.enabled ?? false,
                 value: 0,
                 status: "normal",
               }}

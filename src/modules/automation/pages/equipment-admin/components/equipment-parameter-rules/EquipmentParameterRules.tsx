@@ -20,7 +20,11 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import getPriorityDescription from "./helpers/getPriorityDescription";
 import getConditionalDescription from "./helpers/getConditionalDescription";
 import { useFindEquipmentByIdMutation } from "modules/automation/services/equipment-service";
-import { AlarmRuleViewModel } from "modules/automation/models/alarm-rule-model";
+import {
+  AlarmRuleViewModel,
+  EAlarmConditonal,
+  EAlarmPriority,
+} from "modules/automation/models/alarm-rule-model";
 
 type EquipmentParameterRulesViewModel = {
   id: string;
@@ -80,8 +84,12 @@ export default function EquipmentParameterRules() {
             equipmentParameterName: equipmentParameter.name,
             alarmRuleId: alarmRule.id,
             name: alarmRule.name,
-            priority: getPriorityDescription(alarmRule.priority),
-            conditional: getConditionalDescription(alarmRule.conditional),
+            priority: getPriorityDescription(
+              alarmRule.priority as EAlarmPriority
+            ),
+            conditional: getConditionalDescription(
+              alarmRule.conditional as EAlarmConditonal
+            ),
             setpoint: alarmRule.setpoint,
             enableNotification: alarmRule.enableNotification,
             enableEmail: alarmRule.enableEmail,

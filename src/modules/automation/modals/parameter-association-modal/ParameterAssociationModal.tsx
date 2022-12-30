@@ -1,263 +1,198 @@
+import React, { useState } from "react";
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
-import Grid from "@mui/material/Grid";
+// import Grid from "@mui/material/Grid";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Center from "modules/shared/components/Center";
-import SubmitButton from "modules/shared/components/SubmitButton";
 import TreeView from "@mui/lab/TreeView";
 import TreeItem from "@mui/lab/TreeItem";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { SiteModel } from "modules/datacenter/models/datacenter-model";
-
-type InternalRootType = InternalSiteType[];
-
-type InternalSiteType = {
-  id: string;
-  name: string;
-  buildings?: InternalBuildingType[];
-};
-
-type InternalBuildingType = {
-  id: string;
-  name: string;
-  floors?: InternalFloorType[];
-};
-
-type InternalFloorType = {
-  id: string;
-  name: string;
-  rooms?: InternalRoomType[];
-};
-
-type InternalRoomType = {
-  id: string;
-  name: string;
-  equipments?: InternalEquipmentType[];
-};
-
-type InternalEquipmentType = {
-  id: string;
-  name: string;
-  parameters?: InternalParameterType[];
-};
-
-type InternalParameterType = {
-  id: string;
-  name: string;
-};
+import {
+  EquipmentParameterGroupModel,
+  EquipmentParameterModel,
+  ParameterModel,
+} from "modules/automation/models/automation-model";
+import DataTable from "modules/shared/components/datatableV2/DataTable";
 
 type ParameterAssociationModalProps = {
-  equipment: string;
-  // sites: InternalRootType;
-  sites: SiteModel[];
   onConfirm(): void;
-  // sites: {
-  //   id: string;
-  //   name: string;
-  //   buildings: {
-  //     id: string;
-  //     name: string;
-  //     floors: {
-  //       id: string;
-  //       name: string;
-  //       rooms: {
-  //         id: string;
-  //         name: string;
-  //         equipments: {
-  //           id: string;
-  //           name: string;
-  //           parameters: {
-  //             id: string;
-  //             name: string;
-  //           }[];
-  //         }[];
-  //       }[];
-  //     }[];
-  //   }[];
-  // }[];
+  data: {
+    groups: EquipmentParameterGroupModel[];
+    equipment: string;
+    parameters: EquipmentParameterModel[];
+  };
 } & ModalProps;
 
 const ParameterAssociationModal: React.FC<ParameterAssociationModalProps> = ({
-  equipment,
-  sites,
+  data,
   onConfirm,
   ...props
 }) => {
-  const handleParameterClick = (
-    site: any,
-    building: any,
-    floor: any,
-    room: any,
-    equipment: any,
-    parameter: any
-  ) => {
-    const elements = [site, building, floor, room, equipment, parameter];
-    console.log(elements.join("."));
-  };
+  const { equipment, groups, parameters } = data;
+  const [selectedParametersFromGroup, setSelectedParametersFromGroup] =
+    useState<EquipmentParameterModel[]>([...parameters]);
 
   const handleConfirm = () => {
     onConfirm();
   };
 
+  const handleSelectParameter = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    parameter: any
+  ) => {
+    if (event.target.checked) {
+      const checkIfExists = selectedParametersFromGroup.find(
+        (p) => p.name === parameter.name
+      );
+      if (!checkIfExists) {
+        setSelectedParametersFromGroup((prevState) => [
+          ...prevState,
+          parameter,
+        ]);
+      }
+    } else {
+      const filteredItems = selectedParametersFromGroup.filter(
+        (x) => x.name !== parameter.name
+      );
+      setSelectedParametersFromGroup(filteredItems);
+    }
+  };
+
+  const handleSelectedItems = (
+    parametersFromEquipment: EquipmentParameterModel[]
+  ) => {
+    console.log(parametersFromEquipment);
+  };
+
   return (
     <Modal {...props}>
       <Typography>{equipment}</Typography>
-      <Grid container justifyContent="center" alignItems="Center" marginTop={1}>
-        <Grid item md={5}>
-          <Paper>
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="Center"
+        marginTop={1}
+      >
+        <Stack direction="column" justifyContent="center" alignItems="center">
+          <Typography textAlign="center">Grupo de parâmetros</Typography>
+          <Paper
+            sx={{
+              minHeight: 400,
+              minWidth: 320,
+            }}
+          >
             <TreeView
               aria-label="file system navigator"
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
-                height: 240,
+                minHeight: 400,
                 flexGrow: 1,
-                maxWidth: 650,
+                minWidth: 320,
                 overflowY: "auto",
               }}
             >
-              {sites.map((site) => (
-                <TreeItem key={site.id} nodeId={site.id} label={site.name}>
-                  {site.buildings.map((building) => (
-                    <TreeItem
-                      key={building.id}
-                      nodeId={building.id}
-                      label={building.name}
-                    >
-                      {building.floors?.map((floor) => (
-                        <TreeItem
-                          key={floor.id}
-                          nodeId={floor.id}
-                          label={floor.name}
-                        >
-                          {floor.rooms?.map((room) => (
-                            <TreeItem
-                              key={room.id}
-                              nodeId={room.id}
-                              label={room.name}
-                            >
-                              {room.equipments?.map((equipment) => (
-                                <TreeItem
-                                  key={equipment.id}
-                                  nodeId={equipment.id}
-                                  label={equipment.component}
-                                >
-                                  {equipment.equipmentParameters?.map(
-                                    (parameter) => (
-                                      <TreeItem
-                                        key={parameter.id}
-                                        nodeId={parameter.id}
-                                        label={parameter.name}
-                                        onClick={() =>
-                                          handleParameterClick(
-                                            site.name,
-                                            building.name,
-                                            floor.name,
-                                            room.name,
-                                            equipment.component,
-                                            parameter.name
-                                          )
-                                        }
-                                      />
-                                    )
-                                  )}
-                                </TreeItem>
-                              ))}
-                            </TreeItem>
-                          ))}
-                        </TreeItem>
-                      ))}
-                    </TreeItem>
-                  ))}
+              {groups.map((group) => (
+                <TreeItem key={group.id} nodeId={group.id} label={group.name}>
+                  {group.parameterGroupAssignments?.map(
+                    (parameterGroupAssignment) => {
+                      const isSelected = (row: any) =>
+                        selectedParametersFromGroup.find(
+                          (x) => x.name === row.name
+                        ) !== undefined;
+
+                      return (
+                        <FormGroup sx={{ ml: 1 }}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={isSelected(
+                                  parameterGroupAssignment.parameter
+                                )}
+                                onChange={(e, c) =>
+                                  handleSelectParameter(
+                                    e,
+                                    parameterGroupAssignment.parameter
+                                  )
+                                }
+                              />
+                            }
+                            label={parameterGroupAssignment.parameter.name}
+                          />
+                        </FormGroup>
+                      );
+                    }
+                  )}
                 </TreeItem>
               ))}
             </TreeView>
           </Paper>
-        </Grid>
-        <Grid item md={2}>
-          <Stack direction="column" alignItems="center">
-            <Button variant="outlined">{">>"}</Button>
-            <Button variant="outlined" sx={{ mt: 1 }}>
-              {"<<"}
-            </Button>
-          </Stack>
-        </Grid>
-        <Grid item md={5}>
-          <Paper>
-            <TreeView
-              aria-label="file system navigator"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              sx={{
-                height: 240,
-                flexGrow: 1,
-                maxWidth: 650,
-                overflowY: "auto",
-              }}
-            >
-              {sites.map((site) => (
-                <TreeItem key={site.id} nodeId={site.id} label={site.name}>
-                  {site.buildings.map((building) => (
-                    <TreeItem
-                      key={building.id}
-                      nodeId={building.id}
-                      label={building.name}
-                    >
-                      {building.floors?.map((floor) => (
-                        <TreeItem
-                          key={floor.id}
-                          nodeId={floor.id}
-                          label={floor.name}
-                        >
-                          {floor.rooms?.map((room) => (
-                            <TreeItem
-                              key={room.id}
-                              nodeId={room.id}
-                              label={room.name}
-                            >
-                              {room.equipments?.map((equipment) => (
-                                <TreeItem
-                                  key={equipment.id}
-                                  nodeId={equipment.id}
-                                  label={equipment.component}
-                                >
-                                  {equipment.equipmentParameters?.map(
-                                    (parameter) => (
-                                      <TreeItem
-                                        key={parameter.id}
-                                        nodeId={parameter.id}
-                                        label={parameter.name}
-                                        // onClick={() =>
-                                        //   handleParameterClick(
-                                        //     site,
-                                        //     building,
-                                        //     floor,
-                                        //     room,
-                                        //     equipment,
-                                        //     parameter
-                                        //   )
-                                        // }
-                                      />
-                                    )
-                                  )}
-                                </TreeItem>
-                              ))}
-                            </TreeItem>
-                          ))}
-                        </TreeItem>
-                      ))}
-                    </TreeItem>
-                  ))}
-                </TreeItem>
-              ))}
-            </TreeView>
-          </Paper>
-        </Grid>
-      </Grid>
+        </Stack>
+
+        <Stack
+          direction="column"
+          alignItems="center"
+          marginLeft={1}
+          marginRight={1}
+        >
+          <Button variant="outlined">{">>"}</Button>
+          <Button variant="outlined" sx={{ mt: 1 }}>
+            {"<<"}
+          </Button>
+        </Stack>
+
+        <Stack direction="column" justifyContent="center" alignItems="center">
+          <Typography textAlign="center">Parâmetros associados</Typography>
+          <DataTable
+            title=""
+            columns={[
+              {
+                name: "name",
+                label: "Parâmetro",
+              },
+              {
+                name: "unit",
+                label: "Unidade",
+              },
+            ]}
+            rows={selectedParametersFromGroup}
+            options={{
+              hidePagination: true,
+              hideSearch: false,
+              selectionMode: "show",
+              onSelectedItems: handleSelectedItems,
+              previousItems: parameters,
+            }}
+            sx={{
+              height: 400,
+              // minHeight: 400,
+              // maxHeight: 300,
+            }}
+          />
+        </Stack>
+
+        {/* <Paper>
+          <TreeView
+            aria-label="file system navigator"
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+            sx={{
+              height: 240,
+              flexGrow: 1,
+              maxWidth: 650,
+              overflowY: "auto",
+            }}
+          ></TreeView>
+        </Paper> */}
+      </Stack>
+
       <Center sx={{ mt: 1 }}>
         <Button variant="contained" onClick={handleConfirm}>
           Salvar

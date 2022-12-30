@@ -10,3 +10,5 @@ const Form: React.FC<BoxProps<"form">> = ({ children, ...props }) => {
 };
 
 export default Form;
+
+export type FormMode = "new" | "edit";
