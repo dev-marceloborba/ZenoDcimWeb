@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import DataTableV2, {
   ColumnHeader,
 } from "modules/shared/components/datatableV2/DataTable";
-import Paper, { PaperProps } from "@mui/material/Paper";
 import useRouter from "modules/core/hooks/useRouter";
 import {
   useFindEquipmentByIdQueryQuery,
@@ -38,6 +37,7 @@ import {
   EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
 import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
+import CardSection from "modules/shared/components/card-section/CardSectionv2";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
@@ -539,25 +539,3 @@ const ruleColumns: ColumnHeader[] = [
     label: "Prioridade",
   },
 ];
-
-type CardSectionProps = {
-  title?: string;
-} & PaperProps;
-
-const CardSection: React.FC<CardSectionProps> = ({
-  title = "",
-  children,
-  ...props
-}) => {
-  return (
-    <Paper
-      {...props}
-      sx={{
-        ...props.sx,
-        padding: "8px 12px",
-      }}
-    >
-      {children}
-    </Paper>
-  );
-};
