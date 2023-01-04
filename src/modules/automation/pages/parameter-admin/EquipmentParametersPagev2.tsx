@@ -10,6 +10,16 @@ import { useModal } from "mui-modal-provider";
 import PhysicalParameterModal from "modules/automation/modals/physical-parameter-modal/PhysicalParameterModal";
 import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
 import GroupParameterFormModal from "modules/automation/modals/group-parameter-form-modal/GroupParameterFormModal";
+import { useFindAllParametersQuery } from "modules/automation/services/parameter-service";
+import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
 const EquipmentParametersPage: React.FC = () => {
   const { params } = useRouter();
@@ -92,17 +102,7 @@ type TabProps = {
 };
 
 const PhysicalParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
-  const [findParameters, { data: parameters, isLoading }] =
-    useFindEquipmentParametersByEquipmentIdMutation();
-
-  useEffect(() => {
-    async function fetchParameters() {
-      if (equipmentId) {
-        await findParameters(equipmentId).unwrap();
-      }
-    }
-    fetchParameters();
-  }, [equipmentId, findParameters]);
+  const { data: parameters, isLoading } = useFindAllParametersQuery();
 
   return (
     <>
@@ -195,51 +195,78 @@ const VirtualParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
 };
 
 const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
+  const { data: groups, isLoading } = useFindAllParameterGroupsQuery();
+
   return (
     <>
-      {/* <DataTableV2
-        title=""
+      <DataTableV2
+        title="Grupo de parâmetros"
         columns={[
           {
-            name: "name",
+            name: "group",
             label: "Grupo",
           },
           {
-            name: "parameter",
-            label: "Parâmetro",
+            name: "parameters",
+            label: "Parâmetros",
           },
           {
-            name: "unit",
+            name: "units",
             label: "Unidade",
           },
           {
-            name: "lowLowLimit",
-            label: "Limite muito baixo",
-          },
-          {
-            name: "lowLimit",
-            label: "Limite baixo",
-          },
-          {
-            name: "highLimit",
-            label: "Limite alto",
-          },
-          {
-            name: "highHighLimit",
-            label: "Limite muito alto",
-          },
-          {
-            name: "scale",
+            name: "scales",
             label: "Escala",
           },
-          {
-            name: "discriminator",
-            label: "Tipo",
-          },
         ]}
-        rows={[]}
-      /> */}
+        rows={
+          groups?.map((group) => {
+            return {
+              id: group.id,
+              group: group.name,
+              parameters: group.parameterGroupAssignments?.map(
+                (assignment) => ({
+                  name: assignment.parameter.name,
+                })
+              ),
+              units: group.parameterGroupAssignments?.map((assignment) => ({
+                name: assignment.parameter.unit,
+              })),
+              scales: group.parameterGroupAssignments?.map((assignment) => ({
+                name: assignment.parameter.scale,
+              })),
+            };
+          }) ?? []
+        }
+      />
+      <Loading open={isLoading} />
     </>
+    // <TableContainer>
+    //   <Table>
+    //     <TableHead>
+    //       <TableRow>
+    //         <TableCell>Grupo</TableCell>
+    //         <TableCell>Parâmetro</TableCell>
+    //         <TableCell>Unidade</TableCell>
+    //         <TableCell>Escala</TableCell>
+    //         <TableCell>Tipo</TableCell>
+    //       </TableRow>
+    //     </TableHead>
+    //     <TableBody>
+    //       <TableRow>
+    //         <TableCell>Disjuntor 01</TableCell>
+    //         <TableCell>
+    //           <TableRow>
+    //             <TableCell>Tensão elétrica - L1</TableCell>
+    //             <TableCell>V</TableCell>
+    //             <TableCell>1</TableCell>
+    //             <TableCell>Parâmetro físico</TableCell>
+    //           </TableRow>
+    //         </TableCell>
+    //       </TableRow>
+    //     </TableBody>
+    //   </Table>
+    // </TableContainer>
   );
 };
 

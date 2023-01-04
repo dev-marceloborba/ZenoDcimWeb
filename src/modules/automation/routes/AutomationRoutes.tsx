@@ -18,10 +18,7 @@ import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
 import VirtualParameterForm from "../pages/parameter-admin/components/virtual-parameter-form/VirtualParameterForm";
 import EquipmentParameterRules from "../pages/equipment-admin/components/equipment-parameter-rules/EquipmentParameterRules";
 import EquipmentParameterRulesForm from "../pages/equipment-admin/components/equipment-parameter-rules-form/EquipmentParameterRulesForm";
-import MeasureHistory from "../pages/measure-history/MeasureHistory";
-import AlarmHistory from "../pages/alarm-history/AlarmHistory";
-import AlarmRuntime from "../pages/alarm-history/components/alarm-runtime/AlarmRuntime";
-import EquipmentParametersPage from "../pages/equipment-parameters-page/EquipmentParametersPagev2";
+import EquipmentParametersPage from "../pages/parameter-admin/EquipmentParametersPagev2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
 import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
@@ -78,24 +75,6 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.rack.fullPath,
     element: <Rack />,
     title: "Rack",
-  },
-  // Deletar, pois isto ficou na parte de alarmes
-  {
-    path: automationPaths.alarmHistory.fullPath,
-    element: <AlarmHistory />,
-    title: "Histórico de alarmes",
-  },
-  // Deletar, pois isto ficou na parte de alarmes
-  {
-    path: automationPaths.alarmRealtime.fullPath,
-    element: <AlarmRuntime />,
-    title: "Alarmes em tempo real",
-  },
-  // Deletar, pois isto ficou na parte de alarmes
-  {
-    path: automationPaths.measureHistory.fullPath,
-    element: <MeasureHistory />,
-    title: "Histórico de medidas",
   },
   {
     path: automationPaths.parameterHistory.fullPath,
@@ -154,7 +133,8 @@ export const automationRoutes: RouteObject[] = [
   },
   {
     path: automationPaths.parameterManagement.fullPath,
-    element: <ParameterAdmin />,
+    // element: <ParameterAdmin />,
+    element: <EquipmentParametersPage />,
     title: "Parâmetros",
   },
   //TODO: Deletar, formulários serão modais.

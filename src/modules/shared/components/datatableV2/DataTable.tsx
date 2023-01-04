@@ -283,21 +283,38 @@ const DataTableV2: React.FC<DataTableProps> = ({
                       </TableCell>
                     )}
                     {columns.map((column, index) => {
-                      return (
-                        <TableCell
-                          key={index}
-                          align={index === 0 ? "left" : "right"}
-                          {...(!editMode && {
-                            onClick: () => handleRowClick(row),
-                          })}
-                        >
-                          {column.renderComponent
-                            ? column.renderComponent(row[column.name])
-                            : column.customFunction
-                            ? column.customFunction(row[column.name])
-                            : CustomTableCell(row, column.name)}
-                        </TableCell>
-                      );
+                      if (Array.isArray(row[column.name])) {
+                        return (
+                          <TableCell
+                            align="right"
+                            {...(!editMode && {
+                              onClick: () => handleRowClick(row),
+                            })}
+                          >
+                            {row[column.name].map((r: any, idx: number) => (
+                              <div key={idx}>{r.name}</div>
+                              // <TableRow key={idx}>
+                              //   <TableCell>{r.name}</TableCell>
+                              // </TableRow>
+                            ))}
+                          </TableCell>
+                        );
+                      } else
+                        return (
+                          <TableCell
+                            key={index}
+                            align={index === 0 ? "left" : "right"}
+                            {...(!editMode && {
+                              onClick: () => handleRowClick(row),
+                            })}
+                          >
+                            {column.renderComponent
+                              ? column.renderComponent(row[column.name])
+                              : column.customFunction
+                              ? column.customFunction(row[column.name])
+                              : CustomTableCell(row, column.name)}
+                          </TableCell>
+                        );
                     })}
                     {(showEdit || showDelete) && (
                       <TableCell align="right">

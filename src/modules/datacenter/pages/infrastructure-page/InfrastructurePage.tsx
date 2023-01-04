@@ -7,6 +7,7 @@ import {
   useCreateSiteMutation,
   useDeleteSiteMutation,
   useFindAllSitesQuery,
+  useUpdateSiteMutation,
 } from "modules/datacenter/services/site-service";
 import {
   BuildingModel,
@@ -18,15 +19,18 @@ import {
   useCreateBuildingMutation,
   useDeleteBuildingMutation,
   useFindAllBuildingsQuery,
+  useUpdateBuildingMutation,
 } from "modules/datacenter/services/building-service";
 import {
   useCreateFloorMutation,
   useDeleteFloorMutation,
   useFindAllFloorsQuery,
+  useUpdateFloorMutation,
 } from "modules/datacenter/services/floor-service";
 import {
   useDeleteRoomMutation,
   useFindAllRoomsQuery,
+  useUpdateRoomMutation,
 } from "modules/datacenter/services/room-service";
 import SiteFormModal from "modules/datacenter/modals/site-form-modal/SiteFormModal";
 import { useToast } from "modules/shared/components/ToastProvider";
@@ -215,15 +219,26 @@ type SitesTabProps = {
 const SitesTab: React.FC<SitesTabProps> = ({ sites }) => {
   const toast = useToast();
   const { showModal } = useModal();
-  const [deleteSite] = useDeleteSiteMutation();
-  //TODO: falta colocar update
+  const [updateSite, { isLoading: isLoadingUpdate }] = useUpdateSiteMutation();
+  const [deleteSite, { isLoading: isLoadingDelete }] = useDeleteSiteMutation();
+
   const handleEditSite = (site: SiteModel) => {
     const modal = showModal(SiteFormModal, {
       title: "Editar site",
       mode: "edit",
       data: site,
-      onConfirm: (site) => {
-        console.log(site);
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateSite({
+            ...formData,
+            id: site.id,
+          }).unwrap();
+          toast.open({ message: "Site alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao alterar site", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -241,22 +256,25 @@ const SitesTab: React.FC<SitesTabProps> = ({ sites }) => {
   };
 
   return (
-    <DataTableV2
-      title="Sites"
-      rows={sites}
-      columns={[
-        {
-          name: "name",
-          label: "Site",
-        },
-      ]}
-      options={{
-        showEdit: true,
-        showDelete: true,
-        onEditRow: handleEditSite,
-        onDeleteRow: handleDeleteSite,
-      }}
-    />
+    <>
+      <DataTableV2
+        title="Sites"
+        rows={sites}
+        columns={[
+          {
+            name: "name",
+            label: "Site",
+          },
+        ]}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleEditSite,
+          onDeleteRow: handleDeleteSite,
+        }}
+      />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
+    </>
   );
 };
 
@@ -268,7 +286,10 @@ type BuildingsTabProps = {
 const BuildingsTab: React.FC<BuildingsTabProps> = ({ buildings, sites }) => {
   const toast = useToast();
   const { showModal } = useModal();
-  const [deleteBuilding] = useDeleteBuildingMutation();
+  const [updateBuilding, { isLoading: isLoadingUpdate }] =
+    useUpdateBuildingMutation();
+  const [deleteBuilding, { isLoading: isLoadingDelete }] =
+    useDeleteBuildingMutation();
 
   const handleEditBuilding = (building: BuildingModel) => {
     const modal = showModal(BuildingFormModal, {
@@ -278,8 +299,18 @@ const BuildingsTab: React.FC<BuildingsTabProps> = ({ buildings, sites }) => {
         model: building,
         sites,
       },
-      onConfirm: (site) => {
-        console.log(site);
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateBuilding({
+            ...formData,
+            id: building.id,
+          }).unwrap();
+          toast.open({ message: "Prédio alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao alterar prédio", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -297,29 +328,32 @@ const BuildingsTab: React.FC<BuildingsTabProps> = ({ buildings, sites }) => {
     }
   };
   return (
-    <DataTableV2
-      title="Prédios"
-      rows={buildings.map((building) => ({
-        ...building,
-        siteName: building.site?.name ?? "",
-      }))}
-      columns={[
-        {
-          name: "siteName",
-          label: "Site",
-        },
-        {
-          name: "name",
-          label: "Prédio",
-        },
-      ]}
-      options={{
-        showEdit: true,
-        showDelete: true,
-        onEditRow: handleEditBuilding,
-        onDeleteRow: handleDeleteBuilding,
-      }}
-    />
+    <>
+      <DataTableV2
+        title="Prédios"
+        rows={buildings.map((building) => ({
+          ...building,
+          siteName: building.site?.name ?? "",
+        }))}
+        columns={[
+          {
+            name: "siteName",
+            label: "Site",
+          },
+          {
+            name: "name",
+            label: "Prédio",
+          },
+        ]}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleEditBuilding,
+          onDeleteRow: handleDeleteBuilding,
+        }}
+      />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
+    </>
   );
 };
 
@@ -331,7 +365,10 @@ type FloorsTabProps = {
 const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
   const toast = useToast();
   const { showModal } = useModal();
-  const [deleteFloor] = useDeleteFloorMutation();
+  const [updateFloor, { isLoading: isLoadingUpdate }] =
+    useUpdateFloorMutation();
+  const [deleteFloor, { isLoading: isLoadingDelete }] =
+    useDeleteFloorMutation();
 
   const handleEditFloor = (floor: FloorModel) => {
     const modal = showModal(FloorFormModal, {
@@ -341,8 +378,15 @@ const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
         model: floor,
         buildings,
       },
-      onConfirm: (floor) => {
-        console.log(floor);
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateFloor({ ...formData, id: floor.id }).unwrap();
+          toast.open({ message: "Andar alterado com sucesso" });
+        } catch (error) {
+          console.log(floor);
+          toast.open({ message: "Erro ao alterar andar", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -360,34 +404,37 @@ const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
     }
   };
   return (
-    <DataTableV2
-      title="Andares"
-      rows={floors.map((floor) => ({
-        ...floor,
-        siteName: floor.building?.site?.name ?? "",
-        buildingName: floor.building?.name ?? "",
-      }))}
-      columns={[
-        {
-          name: "siteName",
-          label: "Site",
-        },
-        {
-          name: "buildingName",
-          label: "Prédio",
-        },
-        {
-          name: "name",
-          label: "Andar",
-        },
-      ]}
-      options={{
-        showEdit: true,
-        showDelete: true,
-        onEditRow: handleEditFloor,
-        onDeleteRow: handleDeleteFloor,
-      }}
-    />
+    <>
+      <DataTableV2
+        title="Andares"
+        rows={floors.map((floor) => ({
+          ...floor,
+          siteName: floor.building?.site?.name ?? "",
+          buildingName: floor.building?.name ?? "",
+        }))}
+        columns={[
+          {
+            name: "siteName",
+            label: "Site",
+          },
+          {
+            name: "buildingName",
+            label: "Prédio",
+          },
+          {
+            name: "name",
+            label: "Andar",
+          },
+        ]}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleEditFloor,
+          onDeleteRow: handleDeleteFloor,
+        }}
+      />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
+    </>
   );
 };
 
@@ -406,7 +453,8 @@ const RoomsTab: React.FC<RoomsTabProps> = ({
 }) => {
   const toast = useToast();
   const { showModal } = useModal();
-  const [deleteRoom] = useDeleteRoomMutation();
+  const [updateRoom, { isLoading: isLoadingUpdate }] = useUpdateRoomMutation();
+  const [deleteRoom, { isLoading: isLoadingDelete }] = useDeleteRoomMutation();
 
   const handleEditRoom = (room: RoomModel) => {
     const modal = showModal(RoomFormModal, {
@@ -418,8 +466,15 @@ const RoomsTab: React.FC<RoomsTabProps> = ({
         buildings,
         floors,
       },
-      onConfirm: (floor) => {
-        console.log(floor);
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateRoom({ ...formData, id: room.id }).unwrap();
+          toast.open({ message: "Sala alterada com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao alterar sala", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -437,38 +492,41 @@ const RoomsTab: React.FC<RoomsTabProps> = ({
     }
   };
   return (
-    <DataTableV2
-      title="Salas"
-      rows={rooms.map((room) => ({
-        ...room,
-        siteName: room.floor?.building?.site?.name ?? "",
-        buildingName: room.floor?.building?.name ?? "",
-        floorName: room.floor?.name ?? "",
-      }))}
-      columns={[
-        {
-          name: "siteName",
-          label: "Site",
-        },
-        {
-          name: "buildingName",
-          label: "Prédio",
-        },
-        {
-          name: "floorName",
-          label: "Andar",
-        },
-        {
-          name: "name",
-          label: "Sala",
-        },
-      ]}
-      options={{
-        showEdit: true,
-        showDelete: true,
-        onEditRow: handleEditRoom,
-        onDeleteRow: handleDeleteRoom,
-      }}
-    />
+    <>
+      <DataTableV2
+        title="Salas"
+        rows={rooms.map((room) => ({
+          ...room,
+          siteName: room.floor?.building?.site?.name ?? "",
+          buildingName: room.floor?.building?.name ?? "",
+          floorName: room.floor?.name ?? "",
+        }))}
+        columns={[
+          {
+            name: "siteName",
+            label: "Site",
+          },
+          {
+            name: "buildingName",
+            label: "Prédio",
+          },
+          {
+            name: "floorName",
+            label: "Andar",
+          },
+          {
+            name: "name",
+            label: "Sala",
+          },
+        ]}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleEditRoom,
+          onDeleteRow: handleDeleteRoom,
+        }}
+      />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
+    </>
   );
 };

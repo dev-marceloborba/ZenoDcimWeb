@@ -4,6 +4,7 @@ import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   FloorViewModel,
   FloorModel,
+  UpdateFloorViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
 
@@ -41,6 +42,14 @@ export const floorApi = createApi({
       query: () => ({ url: "v1/data-center/building/floor" }),
       providesTags: ["FloorModel"],
     }),
+    updateFloor: builder.mutation<void, UpdateFloorViewModel>({
+      query: (data) => ({
+        url: `v1/data-center/building/floor/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["FloorModel"],
+    }),
     deleteFloor: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/${id}`,
@@ -56,4 +65,5 @@ export const {
   useDeleteFloorMutation,
   useFindAllFloorsQuery,
   useFindFloorByIdMutation,
+  useUpdateFloorMutation,
 } = floorApi;

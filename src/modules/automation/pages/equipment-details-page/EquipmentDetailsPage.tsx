@@ -1,6 +1,4 @@
-import Grid from "@mui/material/Grid";
 import HeroContainer from "modules/shared/components/HeroContainer";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import DataTableV2, {
   ColumnHeader,
@@ -37,7 +35,8 @@ import {
   EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
 import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
-import CardSection from "modules/shared/components/card-section/CardSectionv2";
+// import CardSection from "modules/shared/components/card-section/CardSectionv2";
+import CardSection from "modules/shared/components/card-section/CardSectionv3";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
@@ -183,153 +182,74 @@ type DetailsTabProps = {
 const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
   return (
     <>
-      <CardSection>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            textDecoration: "underline",
-            my: 1,
-          }}
-        >
-          Local
-        </Typography>
-        <Grid container>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Site
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.site?.name}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Prédio
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.building?.name}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Andar
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.floor?.name}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Sala
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.room?.name}
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardSection>
-
-      <CardSection sx={{ mt: 2, mb: 1 }}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            textDecoration: "underline",
-            my: 1,
-          }}
-        >
-          Identidade
-        </Typography>
-        <Grid container rowSpacing={1}>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Equipamento
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.component}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Código/N série
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {/* TODO: colocar serial number */}
-              {equipment?.componentCode}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Grupo
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              Clima
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Status
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.status}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Marca
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.manufactor}
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardSection>
-
-      <CardSection sx={{ mt: 2, mb: 1 }}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            textDecoration: "underline",
-            my: 1,
-          }}
-        >
-          Parâmetros do equipamento
-        </Typography>
-        <Grid container rowSpacing={1}>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Peso
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {`${equipment?.weight ?? ""} kg`}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Tamanho
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {`${equipment?.size ?? ""} cm`}
-            </Typography>
-          </Grid>
-          <Grid item md={3}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Potência
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {`${equipment?.powerLimit ?? ""} W`}
-            </Typography>
-          </Grid>
-          <Grid item md={3}></Grid>
-          <Grid item md={6}>
-            <Typography variant="subtitle2" color="#9CA7B1">
-              Descrição
-            </Typography>
-            <Typography variant="subtitle1" color="#9CA7B1">
-              {equipment?.description}
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardSection>
+      <CardSection
+        title="Local"
+        items={[
+          { title: "Site", description: equipment?.site?.name },
+          {
+            title: "Prédio",
+            description: equipment?.building?.name,
+          },
+          {
+            title: "Andar",
+            description: equipment?.floor?.name,
+          },
+          {
+            title: "Sala",
+            description: equipment?.room?.name,
+          },
+        ]}
+      />
+      <CardSection
+        title="Identidade"
+        items={[
+          { title: "Equipamento", description: equipment?.component },
+          {
+            title: "Código/N série",
+            description: equipment?.componentCode,
+          },
+          {
+            title: "Grupo",
+            description: "Clima",
+          },
+          {
+            title: "Status",
+            description: equipment?.status as string,
+          },
+          {
+            title: "Marca",
+            description: equipment?.manufactor,
+          },
+        ]}
+        sx={{ mt: 1 }}
+      />
+      <CardSection
+        title="Parâmetros do equipamento"
+        items={[
+          {
+            title: "Peso",
+            description: `${equipment?.weight} kg`,
+          },
+          {
+            title: "Tamanho",
+            description: `${equipment?.size} cm`,
+          },
+          {
+            title: "Potência",
+            description: `${equipment?.powerLimit} W`,
+          },
+          {
+            title: "",
+            description: "",
+          },
+          {
+            title: "Descrição",
+            description: equipment?.description,
+            defaultSize: 6,
+          },
+        ]}
+        sx={{ mt: 1 }}
+      />
     </>
   );
 };

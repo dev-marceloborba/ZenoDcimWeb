@@ -6,6 +6,7 @@ import {
   BuildingViewModel,
   BuildingModel,
   BuildingsModel,
+  UpdateBuildingViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
 
@@ -35,7 +36,7 @@ export const buildingApi = createApi({
       invalidatesTags: ["BuildingModel", "BuildingMerged"],
     }),
     findAllBuildings: builder.query<BuildingsModel, void>({
-      query: () => ({ url: "v1/data-center/building" }),
+      query: () => ({ url: "v1/data-center/building", method: "GET" }),
       providesTags: ["BuildingModel"],
     }),
     findBuildingById: builder.mutation<BuildingModel, string>({
@@ -67,6 +68,14 @@ export const buildingApi = createApi({
       },
       providesTags: ["BuildingModel", "BuildingMerged"],
     }),
+    updateBuilding: builder.mutation<void, UpdateBuildingViewModel>({
+      query: (data) => ({
+        url: `v1/data-center/building/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["BuildingModel"],
+    }),
     deleteBuilding: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/${id}`,
@@ -83,4 +92,5 @@ export const {
   useFindAllBuildingsDeepQuery,
   useFindAllBuildingsQuery,
   useFindBuildingByIdMutation,
+  useUpdateBuildingMutation,
 } = buildingApi;

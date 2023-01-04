@@ -4,6 +4,7 @@ import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   RoomViewModel,
   RoomModel,
+  UpdateRoomViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
 
@@ -47,6 +48,14 @@ export const roomApi = createApi({
         method: "GET",
       }),
     }),
+    updateRoom: builder.mutation<void, UpdateRoomViewModel>({
+      query: (data) => ({
+        url: `v1/data-center/building/floor/room/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["RoomModel"],
+    }),
     deleteRoom: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/building/floor/room/${id}`,
@@ -63,4 +72,5 @@ export const {
   useFindAllRoomsQuery,
   useFindRoomByIdMutation,
   useFindRoomsByFloorIdMutation,
+  useUpdateRoomMutation,
 } = roomApi;

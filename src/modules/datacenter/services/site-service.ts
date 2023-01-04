@@ -4,6 +4,7 @@ import environment from "app/config/env";
 import {
   SiteViewModel,
   SiteModel,
+  UpdateSiteViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
 
@@ -40,6 +41,14 @@ export const siteApi = createApi({
       query: () => ({ url: "v1/data-center/sites" }),
       providesTags: ["SiteModel"],
     }),
+    updateSite: builder.mutation<void, UpdateSiteViewModel>({
+      query: (data) => ({
+        url: `v1/data-center/sites/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["SiteModel"],
+    }),
     deleteSite: builder.mutation<void, string>({
       query: (id) => ({
         url: `v1/data-center/sites/${id}`,
@@ -55,4 +64,5 @@ export const {
   useDeleteSiteMutation,
   useFindSiteByIdMutation,
   useFindAllSitesQuery,
+  useUpdateSiteMutation,
 } = siteApi;

@@ -4,6 +4,11 @@ export interface SiteViewModel {
   name: string;
 }
 
+export interface UpdateSiteViewModel {
+  id: string;
+  name: string;
+}
+
 export interface SiteModel extends SiteViewModel {
   id: string;
   buildings: BuildingModel[];
@@ -13,6 +18,12 @@ export type BuildingViewModel = {
   name: string;
   siteId: string;
 };
+
+export interface UpdateBuildingViewModel {
+  id: string;
+  name: string;
+  siteId?: string;
+}
 
 export interface BuildingModel extends BuildingViewModel {
   id: string;
@@ -37,6 +48,13 @@ export interface FloorViewModel {
   name: string;
 }
 
+export interface UpdateFloorViewModel {
+  id: string;
+  name: string;
+  buildingId?: string;
+  siteId?: string;
+}
+
 export interface FloorModel extends FloorViewModel {
   id: string;
   building?: BuildingModel;
@@ -53,4 +71,12 @@ export interface RoomModel extends RoomViewModel {
   id: string;
   floor?: FloorModel;
   equipments?: EquipmentModel[];
+}
+
+export interface UpdateRoomViewModel {
+  id: string;
+  name: string;
+  floorId?: string;
+  buildingId?: string;
+  siteId?: string;
 }
