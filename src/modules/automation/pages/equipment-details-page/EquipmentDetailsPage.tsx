@@ -22,7 +22,8 @@ import {
   useUpdateEquipmentParameterMutation,
 } from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
-import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
+// import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
+import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/EquipmentFormModal";
 import Tabs from "modules/shared/components/tabs/Tabs";
 import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
 import { useToast } from "modules/shared/components/ToastProvider";
@@ -37,9 +38,11 @@ import {
 import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
 // import CardSection from "modules/shared/components/card-section/CardSectionv2";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
+  const { data: sites } = useFindAllSitesQuery();
   const { data: equipment, isLoading: isLoadingFetch } =
     useFindEquipmentByIdQueryQuery(params.equipmentId!);
 
@@ -80,7 +83,10 @@ const EquipmentDetailsPage: React.FC = () => {
         modal.hide();
       },
       mode: "edit",
-      data: equipment,
+      data: {
+        model: equipment,
+        sites,
+      },
     });
   };
 

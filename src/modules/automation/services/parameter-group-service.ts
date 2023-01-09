@@ -34,7 +34,7 @@ export const parameterGroupApi = createApi({
       }),
       invalidatesTags: ["EquipmentParameterGroupModel"],
     }),
-    editEquipmentParameterGroup: builder.mutation<
+    updateEquipmentParameterGroup: builder.mutation<
       ApiResponseModel<EquipmentParameterGroupModel>,
       EditEquipmentParameterGroupViewModel
     >({
@@ -75,7 +75,7 @@ export const parameterGroupApi = createApi({
 
 export const {
   useCreateEquipmentParameterGroupMutation,
-  useEditEquipmentParameterGroupMutation,
+  useUpdateEquipmentParameterGroupMutation,
   useDeleteParameterGroupMutation,
   useFindAllParameterGroupsQuery,
   // useCreateParametersIntoGroupMutation,

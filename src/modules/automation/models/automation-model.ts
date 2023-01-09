@@ -162,6 +162,7 @@ export interface MultipleEquipmentParameterModel
 
 export interface EquipmentParameterGroupViewModel {
   name: string;
+  parametersId: string[];
 }
 
 export interface EditEquipmentParameterGroupViewModel {

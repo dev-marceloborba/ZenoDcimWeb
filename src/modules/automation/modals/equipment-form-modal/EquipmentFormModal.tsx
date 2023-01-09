@@ -12,19 +12,22 @@ import {
   EquipmentModel,
   EquipmentViewModel,
 } from "modules/automation/models/automation-model";
-import useDataCenterLocales from "modules/maintenance/pages/register/hooks/data-center-locales.hook";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
-import {
-  BuildingModel,
-  FloorModel,
-  RoomModel,
-} from "modules/datacenter/models/datacenter-model";
+import locationReducer, {
+  locationInitialState,
+  LocationReducerType,
+} from "modules/core/reducers/locationReducer";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
 
 type EquipmentFormModalProps = {
   mode?: FormMode;
   onConfirm(formData: EquipmentViewModel): void;
-  data?: Partial<EquipmentModel>;
+  //   data?: Partial<EquipmentModel>;
+  data?: {
+    model?: Partial<EquipmentModel>;
+    sites?: SiteModel[];
+  };
 } & ModalProps;
 
 const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
@@ -33,18 +36,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   data,
   ...props
 }) => {
-  const { data: sites } = useFindAllSitesQuery();
-  const [buildings, setBuildings] = useState<BuildingModel[]>([]);
-  const [floors, setFloors] = useState<FloorModel[]>([]);
-  const [rooms, setRooms] = useState<RoomModel[]>([]);
-  // const { sites, buildings, floors, rooms, actions } = useDataCenterLocales({
-  //   siteId: data?.siteId,
-  //   buildingId: data?.buildingId,
-  //   floorId: data?.floorId,
-  //   roomId: data?.roomId,
-  // });
-  // const { getBuildings, getFloors, getRooms } = actions;
-  // const { sites, buildings, floors, rooms, actions } = useDataCenterLocales();
+  const [state, dispatch] = useReducer(locationReducer, locationInitialState);
   const methods = useForm<EquipmentViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
@@ -56,29 +48,36 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
     formState: { isValid },
   } = methods;
 
-  const getBuildings = (siteId: string) =>
-    setBuildings(sites?.find((site) => site.id === siteId)?.buildings ?? []);
-  const getFloors = (buildingId: string) =>
-    setFloors(
-      buildings.find((building) => building.id === buildingId)?.floors ?? []
-    );
-  const getRooms = (floorId: string) =>
-    setRooms(floors.find((floor) => floor.id === floorId)?.rooms ?? []);
-
   useEffect(() => {
-    getBuildings(data?.siteId!);
-    getFloors(data?.buildingId!);
-    getRooms(data?.floorId!);
-  });
-
-  useEffect(() => {
-    if (data && mode === "edit") {
+    dispatch({
+      type: LocationReducerType.GET_SITES,
+      payload: { sites: data?.sites },
+    });
+    if (mode === "edit") {
+      dispatch({
+        type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+        payload: {
+          siteId: data?.model?.siteId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_FLOORS_BY_BUILDING,
+        payload: {
+          buildingId: data?.model?.buildingId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_ROOMS_BY_FLOOR,
+        payload: {
+          floorId: data?.model?.floorId,
+        },
+      });
       reset({
-        ...data,
-        status: getStatusEnum(data?.status as string),
+        ...data?.model,
+        status: getStatusEnum(data?.model?.status as string),
       });
     }
-  }, [data, mode, reset]);
+  }, [data?.model, data?.sites, mode, reset]);
 
   return (
     <Modal {...props}>
@@ -92,22 +91,36 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
               <ControlledTextInput
                 name="siteId"
                 label="Site"
-                items={sites?.map((site) => ({
+                items={state.sites.map((site) => ({
                   description: site.name,
                   value: site.id,
                 }))}
-                onChange={(e) => getBuildings(e.target.value)}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+                    payload: {
+                      siteId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
                 name="buildingId"
                 label="Prédio"
-                items={buildings?.map((building) => ({
+                items={state.buildings.map((building) => ({
                   description: building.name,
                   value: building.id,
                 }))}
-                onChange={(e) => getFloors(e.target.value)}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_FLOORS_BY_BUILDING,
+                    payload: {
+                      buildingId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
@@ -115,11 +128,18 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                 name="floorId"
                 label="Andar"
                 forceSelect
-                items={floors?.map((floor) => ({
+                items={state.floors.map((floor) => ({
                   description: floor.name,
                   value: floor.id,
                 }))}
-                onChange={(e) => getRooms(e.target.value)}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_ROOMS_BY_FLOOR,
+                    payload: {
+                      floorId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
@@ -127,7 +147,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                 name="roomId"
                 label="Sala"
                 forceSelect
-                items={rooms?.map((room) => ({
+                items={state.rooms.map((room) => ({
                   description: room.name,
                   value: room.id,
                 }))}

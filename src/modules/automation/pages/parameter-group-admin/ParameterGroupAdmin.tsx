@@ -25,7 +25,7 @@ import {
   useCreateEquipmentParameterGroupMutation,
   // useCreateParametersIntoGroupMutation,
   useDeleteParameterGroupMutation,
-  useEditEquipmentParameterGroupMutation,
+  useUpdateEquipmentParameterGroupMutation,
   useFindAllParameterGroupsQuery,
 } from "modules/automation/services/parameter-group-service";
 import Loading from "modules/shared/components/Loading";
@@ -60,7 +60,7 @@ export default function ParameterGroupAdmin() {
   const [
     editEquipmentParameterGroup,
     { isLoading: isLoadingEditEquipmentParameterGroup },
-  ] = useEditEquipmentParameterGroupMutation();
+  ] = useUpdateEquipmentParameterGroupMutation();
   const { showModal } = useModal();
 
   const [selectedParameters, setSelectedParameters] = useState<any>([]);
@@ -78,7 +78,7 @@ export default function ParameterGroupAdmin() {
     const modal = showModal(CreateGroupModal, {
       onConfirm: async (value) => {
         modal.hide();
-        await createGroup({ name: value }).unwrap();
+        await createGroup({ name: value, parametersId: [] }).unwrap();
       },
       onCancel: () => {
         modal.hide();

@@ -1,9 +1,9 @@
 import { RouteObject, useRoutes } from "react-router-dom";
 import DataCenterSettingsPage from "../pages/datacenter-settings-page/DataCenterSettingsPage";
 import InfrastructurePage from "../pages/infrastructure-page/InfrastructurePage";
-import RackAdminPage from "../pages/rack-admin-page/RackAdminPage";
-import RackDetailsPage from "../pages/rack-details-page/RackDetailsPage";
+import RackDetailsPage from "../pages/rack-occupation-page/rack-details-page/RackDetailsPage";
 import RackEquipmentsAdminPage from "../pages/rack-equipments-admin-page/RackEquipmentsAdminPage";
+import RackOccupationPage from "../pages/rack-occupation-page/RackOccupationPage";
 import { datacenterPaths } from "./paths";
 
 export const datacenterRoutes: RouteObject[] = [
@@ -19,7 +19,7 @@ export const datacenterRoutes: RouteObject[] = [
   },
   {
     path: datacenterPaths.racks.fullPath,
-    element: <RackAdminPage />,
+    element: <RackOccupationPage />,
     title: "Rack",
   },
   {

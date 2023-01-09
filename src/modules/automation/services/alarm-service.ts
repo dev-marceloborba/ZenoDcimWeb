@@ -34,29 +34,22 @@ export const alarmApi = createApi({
         },
       }),
       transformResponse: (baseValue: AlarmModel[]) => {
-        const values: AlarmTableViewModel[] = [];
-        baseValue.forEach((alarm) => {
+        return baseValue.map<AlarmTableViewModel>((alarm) => {
           const fields = alarm.pathname
             ?.split("*")
             .map((x) => x.replaceAll("_", " "));
-          values.push({
-            id: alarm.id,
+          return {
+            ...alarm,
             building: fields[1],
             floor: fields[2],
             room: fields[3],
             equipment: fields[4],
             parameter: fields[5],
-            acked: false,
-            rule: alarm.alarmRule.name,
-            value: alarm.value,
-            inDate: alarm.inDate,
-            outDate: alarm.outDate,
-            recognizedDate: alarm.recognizedDate,
             ruleId: alarm.alarmRule.id,
-            status: alarm.status,
-          });
+            rule: alarm.alarmRule.name,
+            acked: false,
+          };
         });
-        return values;
       },
       invalidatesTags: ["AlarmModel"],
     }),

@@ -11,6 +11,7 @@ import DataTable, {
 } from "modules/shared/components/datatableV2/DataTable";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import Loading from "modules/shared/components/Loading";
+import AlarmIndicator from "modules/alarms/components/alarm-indicator/AlarmIndicator";
 
 export default function AlarmHistory() {
   const [findAllAlarms, { data: alarms, isLoading }] =
@@ -38,6 +39,8 @@ export default function AlarmHistory() {
     fetchAlarms();
   }, [filters.finalDate, filters.initialDate, findAllAlarms]);
 
+  console.log(alarms);
+
   return (
     <HeroContainer title="Histórico de alarmes">
       <Row sx={{ mb: 2 }} justifyContent="space-between">
@@ -62,6 +65,7 @@ export default function AlarmHistory() {
         columns={columns}
         options={{
           userPreferenceTable: "alarmHistoryTable",
+          selectionMode: "hide",
         }}
       />
       <Loading open={isLoading} />
@@ -70,6 +74,11 @@ export default function AlarmHistory() {
 }
 
 const columns: ColumnHeader[] = [
+  {
+    name: "priority",
+    label: "Prioridade",
+    renderComponent: (row) => <AlarmIndicator status={row} />,
+  },
   {
     name: "building",
     label: "Prédio",

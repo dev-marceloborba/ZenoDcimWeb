@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import Button from "@mui/material/Button";
-import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
-import useRouter from "modules/core/hooks/useRouter";
-import DataTableV2 from "modules/shared/components/datatableV2/DataTable";
+import DataTableV2, {
+  ColumnHeader,
+} from "modules/shared/components/datatableV2/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
 import Tabs from "modules/shared/components/tabs/Tabs";
@@ -10,8 +9,18 @@ import { useModal } from "mui-modal-provider";
 import PhysicalParameterModal from "modules/automation/modals/physical-parameter-modal/PhysicalParameterModal";
 import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
 import GroupParameterFormModal from "modules/automation/modals/group-parameter-form-modal/GroupParameterFormModal";
-import { useFindAllParametersQuery } from "modules/automation/services/parameter-service";
-import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
+import {
+  useCreateParameterMutation,
+  useDeleteParameterMutation,
+  useFindAllParametersQuery,
+  useUpdateParameterMutation,
+} from "modules/automation/services/parameter-service";
+import {
+  useCreateEquipmentParameterGroupMutation,
+  useDeleteParameterGroupMutation,
+  useFindAllParameterGroupsQuery,
+  useUpdateEquipmentParameterGroupMutation,
+} from "modules/automation/services/parameter-group-service";
 import {
   Table,
   TableBody,
@@ -20,14 +29,47 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import {
+  EquipmentParameterGroupModel,
+  ParameterModel,
+} from "modules/automation/models/automation-model";
+import { useToast } from "modules/shared/components/ToastProvider";
+import {
+  useCreateVirtualParameterMutation,
+  useDeleteVirtualParameterMutation,
+  useUpdateVirtualParameterMutation,
+} from "modules/automation/services/virtual-parameter-service";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
 
 const EquipmentParametersPage: React.FC = () => {
-  const { params } = useRouter();
+  const toast = useToast();
   const { showModal } = useModal();
+  const { data: sites } = useFindAllSitesQuery();
+  const { data: parameters, isLoading: isLoadingFetch } =
+    useFindAllParametersQuery();
+  const [createParameter, { isLoading: isLoadingCreateParameter }] =
+    useCreateParameterMutation();
+  const [
+    createVirtualParameter,
+    { isLoading: isLoadingCreateVirtualParameter },
+  ] = useCreateVirtualParameterMutation();
+  const [createGroup, { isLoading: isLoadingCreateGroup }] =
+    useCreateEquipmentParameterGroupMutation();
 
   const handleOpenPhysicalParameterModal = () => {
     const modal = showModal(PhysicalParameterModal, {
       title: "Novo parâmetro físico",
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await createParameter(formData).unwrap();
+          toast.open({ message: "Parâmetro criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar parâmetro", severity: "error" });
+        }
+      },
       onClose: () => {
         modal.hide();
       },
@@ -37,6 +79,22 @@ const EquipmentParametersPage: React.FC = () => {
   const handleOpenVirtualParameterModal = () => {
     const modal = showModal(VirtualParameterFormModal, {
       title: "Novo parâmetro virtual",
+      data: {
+        sites,
+      },
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await createVirtualParameter(formData).unwrap();
+          toast.open({ message: "Parâmetro virtual criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao criar parâmetro virtual",
+            severity: "error",
+          });
+        }
+      },
       onClose: () => {
         modal.hide();
       },
@@ -46,6 +104,19 @@ const EquipmentParametersPage: React.FC = () => {
   const handleOpenGroupParameterModal = () => {
     const modal = showModal(GroupParameterFormModal, {
       title: "Novo grupo de parâmetros",
+      data: {
+        parameters,
+      },
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await createGroup(formData).unwrap();
+          toast.open({ message: "Grupo criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar grupo", severity: "error" });
+        }
+      },
       onClose: () => {
         modal.hide();
       },
@@ -59,7 +130,14 @@ const EquipmentParametersPage: React.FC = () => {
         tabLabels={["P. físico", "P. virtual", "Grupo de parâmetros"]}
         tabItems={[
           {
-            element: <PhysicalParameterTab equipmentId={params.equipmentId!} />,
+            element: (
+              <PhysicalParameterTab
+                parameters={
+                  parameters?.filter((x) => x.discriminator === "Parameter") ??
+                  []
+                }
+              />
+            ),
             content: (
               <Button
                 variant="contained"
@@ -70,7 +148,16 @@ const EquipmentParametersPage: React.FC = () => {
             ),
           },
           {
-            element: <VirtualParameterTab equipmentId={params.equipmentId!} />,
+            element: (
+              <VirtualParameterTab
+                parameters={
+                  parameters?.filter(
+                    (x) => x.discriminator === "VirtualParameter"
+                  ) ?? []
+                }
+                sites={sites}
+              />
+            ),
             content: (
               <Button
                 variant="contained"
@@ -81,7 +168,7 @@ const EquipmentParametersPage: React.FC = () => {
             ),
           },
           {
-            element: <GroupParameterTab equipmentId={params.equipmentId!} />,
+            element: <GroupParameterTab parameters={parameters ?? []} />,
             content: (
               <Button
                 variant="contained"
@@ -93,109 +180,273 @@ const EquipmentParametersPage: React.FC = () => {
           },
         ]}
       />
+      <Loading
+        open={
+          isLoadingFetch ||
+          isLoadingCreateParameter ||
+          isLoadingCreateVirtualParameter ||
+          isLoadingCreateGroup
+        }
+      />
     </HeroContainer>
   );
 };
 
 type TabProps = {
-  equipmentId: string;
+  parameters: ParameterModel[];
 };
 
-const PhysicalParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
-  const { data: parameters, isLoading } = useFindAllParametersQuery();
+const PhysicalParameterTab: React.FC<TabProps> = ({ parameters }) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+  const [updateParameter, { isLoading: isLoadingUpdate }] =
+    useUpdateParameterMutation();
+
+  const [deleteParameter, { isLoading: isLoadingDelete }] =
+    useDeleteParameterMutation();
+
+  const handleUpdateParameter = (parameter: ParameterModel) => {
+    const modal = showModal(PhysicalParameterModal, {
+      title: "Editar parâmetro",
+      mode: "edit",
+      data: parameter,
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateParameter({ ...formData, id: parameter.id }).unwrap();
+          toast.open({ message: "Parâmetro alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao alterar parâmetro",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleDeleteParameter = async ({ id }: ParameterModel) => {
+    try {
+      await deleteParameter(id).unwrap();
+      toast.open({ message: "Parâmetro excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({
+        message: "Erro ao excluir parâmetro",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <>
       <DataTableV2
-        title=""
-        columns={[
-          {
-            name: "name",
-            label: "Parâmetro",
-          },
-          {
-            name: "unit",
-            label: "Unidade",
-          },
-          {
-            name: "lowLowLimit",
-            label: "Limite muito baixo",
-          },
-          {
-            name: "lowLimit",
-            label: "Limite baixo",
-          },
-          {
-            name: "highLimit",
-            label: "Limite alto",
-          },
-          {
-            name: "highHighLimit",
-            label: "Limite muito alto",
-          },
-          {
-            name: "scale",
-            label: "Escala",
-          },
-          {
-            name: "discriminator",
-            label: "Tipo",
-          },
-        ]}
+        title="Parâmetro fīsico"
+        columns={physicalParametersColumns}
         rows={parameters ?? []}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          selectionMode: "hide",
+          onEditRow: handleUpdateParameter,
+          onDeleteRow: handleDeleteParameter,
+        }}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoadingUpdate || isLoadingDelete} />
     </>
   );
 };
 
-const VirtualParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
+const physicalParametersColumns: ColumnHeader[] = [
+  {
+    name: "name",
+    label: "Parâmetro",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+  },
+  {
+    name: "lowLowLimit",
+    label: "Limite muito baixo",
+  },
+  {
+    name: "lowLimit",
+    label: "Limite baixo",
+  },
+  {
+    name: "highLimit",
+    label: "Limite alto",
+  },
+  {
+    name: "highHighLimit",
+    label: "Limite muito alto",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+  },
+];
+
+type VirtualParamterTabProps = {
+  parameters: ParameterModel[];
+  sites?: SiteModel[];
+};
+
+const VirtualParameterTab: React.FC<VirtualParamterTabProps> = ({
+  parameters,
+  sites,
+}) => {
+  const toast = useToast();
+  const { showModal } = useModal();
+
+  const [updateParameter] = useUpdateVirtualParameterMutation();
+  const [deleteParameter] = useDeleteVirtualParameterMutation();
+
+  const handleUpdateParameter = (parameter: ParameterModel) => {
+    const modal = showModal(VirtualParameterFormModal, {
+      title: "Editar parâmetro",
+      mode: "edit",
+      data: {
+        model: parameter,
+        sites,
+      },
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateParameter({ ...formData, id: parameter.id });
+          toast.open({ message: "Parâmetro virtual alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao alterar parâmetro virtual",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
+  const handleDeleteParameter = async ({ id }: ParameterModel) => {
+    try {
+      await deleteParameter(id).unwrap();
+      toast.open({ message: "Parâmetro virtual excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({
+        message: "Erro ao excluir parâmetro virtual",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <>
-      {/* <DataTableV2
-        title="Parâmetro"
-        columns={[
-          {
-            name: "name",
-            label: "Parâmetro",
-          },
-          {
-            name: "unit",
-            label: "Unidade",
-          },
-          {
-            name: "lowLowLimit",
-            label: "Limite muito baixo",
-          },
-          {
-            name: "lowLimit",
-            label: "Limite baixo",
-          },
-          {
-            name: "highLimit",
-            label: "Limite alto",
-          },
-          {
-            name: "highHighLimit",
-            label: "Limite muito alto",
-          },
-          {
-            name: "scale",
-            label: "Escala",
-          },
-          {
-            name: "expression",
-            label: "Expressão",
-          },
-        ]}
-        rows={[]}
-      /> */}
+      <DataTableV2
+        title="Parâmetro virtual"
+        columns={virtualParametersColumns}
+        rows={parameters ?? []}
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleUpdateParameter,
+          onDeleteRow: handleDeleteParameter,
+          selectionMode: "hide",
+        }}
+      />
     </>
   );
 };
 
-const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
+const virtualParametersColumns: ColumnHeader[] = [
+  {
+    name: "name",
+    label: "Parâmetro",
+  },
+  {
+    name: "unit",
+    label: "Unidade",
+  },
+  {
+    name: "lowLowLimit",
+    label: "Limite muito baixo",
+  },
+  {
+    name: "lowLimit",
+    label: "Limite baixo",
+  },
+  {
+    name: "highLimit",
+    label: "Limite alto",
+  },
+  {
+    name: "highHighLimit",
+    label: "Limite muito alto",
+  },
+  {
+    name: "scale",
+    label: "Escala",
+  },
+  {
+    name: "expression",
+    label: "Expressão",
+  },
+];
+
+type GroupParameterProps = {
+  parameters: ParameterModel[];
+};
+
+const GroupParameterTab: React.FC<GroupParameterProps> = ({ parameters }) => {
+  const toast = useToast();
+  const { showModal } = useModal();
   const { data: groups, isLoading } = useFindAllParameterGroupsQuery();
+  const [updateGroup, { isLoading: isLoadingUpdate }] =
+    useUpdateEquipmentParameterGroupMutation();
+  const [deleteGroup, { isLoading: isLoadingDelete }] =
+    useDeleteParameterGroupMutation();
+
+  const handleUpdateGroup = (group: EquipmentParameterGroupModel) => {
+    const modal = showModal(GroupParameterFormModal, {
+      title: "Editar grupo",
+      mode: "edit",
+      data: {
+        model: group,
+        parameters,
+      },
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateGroup({ ...formData, id: group.id }).unwrap();
+          toast.open({ message: "Grupo alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao alterar grupo", severity: "error" });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+  const handleDeleteGroup = async ({ id }: EquipmentParameterGroupModel) => {
+    try {
+      await deleteGroup(id).unwrap();
+      toast.open({ message: "Grupo excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({
+        message: "Erro ao excluir grupo",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -203,7 +454,7 @@ const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
         title="Grupo de parâmetros"
         columns={[
           {
-            name: "group",
+            name: "name",
             label: "Grupo",
           },
           {
@@ -220,12 +471,13 @@ const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
           },
         ]}
         rows={
-          groups?.map((group) => {
+          groups?.map<any>((group: EquipmentParameterGroupModel) => {
             return {
               id: group.id,
-              group: group.name,
+              name: group.name,
               parameters: group.parameterGroupAssignments?.map(
                 (assignment) => ({
+                  id: assignment.parameter.id,
                   name: assignment.parameter.name,
                 })
               ),
@@ -238,8 +490,15 @@ const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
             };
           }) ?? []
         }
+        options={{
+          showEdit: true,
+          showDelete: true,
+          onEditRow: handleUpdateGroup,
+          onDeleteRow: handleDeleteGroup,
+          selectionMode: "hide",
+        }}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoading || isLoadingUpdate || isLoadingDelete} />
     </>
     // <TableContainer>
     //   <Table>
@@ -271,3 +530,11 @@ const GroupParameterTab: React.FC<TabProps> = ({ equipmentId }) => {
 };
 
 export default EquipmentParametersPage;
+
+export type ParameterGroupViewModel = {
+  id: string;
+  group: string;
+  parameters: { id: string; name: string }[] | undefined;
+  scales: { name: string }[] | undefined;
+  units: { name: string }[] | undefined;
+};

@@ -1,15 +1,26 @@
+import { useEffect } from "react";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
-import Form from "modules/shared/components/Form";
+import Form, { FormMode } from "modules/shared/components/Form";
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import { number, object, SchemaOf, string } from "yup";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ParameterViewModel } from "modules/automation/models/automation-model";
+import {
+  ParameterModel,
+  ParameterViewModel,
+} from "modules/automation/models/automation-model";
 
-type PhysicalParameterModalProps = {} & ModalProps;
+type PhysicalParameterModalProps = {
+  onConfirm(formData: ParameterViewModel): void;
+  mode?: FormMode;
+  data?: ParameterModel;
+} & ModalProps;
 
 const PhysicalParameterModal: React.FC<PhysicalParameterModalProps> = ({
+  onConfirm,
+  mode = "new",
+  data,
   ...props
 }) => {
   const methods = useForm({
@@ -20,11 +31,16 @@ const PhysicalParameterModal: React.FC<PhysicalParameterModalProps> = ({
   const {
     handleSubmit,
     reset,
-    formState: { isValid, isSubmitSuccessful },
-    setValue,
+    formState: { isValid },
   } = methods;
 
-  const onSubmit = async (viewModel: ParameterViewModel) => {};
+  const onSubmit = (formData: ParameterViewModel) => onConfirm(formData);
+
+  useEffect(() => {
+    if (mode === "edit") {
+      reset({ ...data });
+    }
+  }, [data, mode, reset]);
 
   return (
     <Modal {...props}>

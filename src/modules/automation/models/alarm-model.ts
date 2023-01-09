@@ -1,3 +1,5 @@
+import { EAlarmPriority } from "./alarm-rule-model";
+
 export interface AlarmModel {
   value: number;
   status: number;
@@ -8,6 +10,7 @@ export interface AlarmModel {
   outDate: Date;
   recognizedDate: Date;
   pathname: string;
+  priority: EAlarmPriority;
   notificationEnabled: boolean;
   alarmRule: {
     id: string;
@@ -49,6 +52,7 @@ export interface AlarmTableViewModel {
   recognizedDate: Date | null;
   acked: boolean;
   status: EAlarmStatus;
+  priority: EAlarmPriority;
 }
 
 export enum EAlarmStatus {
