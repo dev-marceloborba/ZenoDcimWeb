@@ -2,18 +2,31 @@ import { yupResolver } from "@hookform/resolvers/yup";
 // import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { CreateRackViewModel } from "modules/datacenter/models/rack.model";
+import locationReducer, {
+  locationInitialState,
+  LocationReducerType,
+} from "modules/core/reducers/locationReducer";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
+import {
+  CreateRackViewModel,
+  RackModel,
+  RackTableViewModel,
+} from "modules/datacenter/models/rack.model";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import Form, { FormMode } from "modules/shared/components/Form";
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
 import SubmitButton from "modules/shared/components/SubmitButton";
+import { useEffect, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { number, object, SchemaOf, string } from "yup";
 
 type RackFormModalProps = {
   onConfirm(formData: CreateRackViewModel): void;
   mode?: FormMode;
-  data?: any;
+  data?: {
+    model?: RackTableViewModel;
+    sites?: SiteModel[];
+  };
 } & ModalProps;
 
 const RackFormModal: React.FC<RackFormModalProps> = ({
@@ -22,6 +35,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
   data,
   ...props
 }) => {
+  const [state, dispatch] = useReducer(locationReducer, locationInitialState);
   const methods = useForm<FormProps>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
@@ -30,10 +44,43 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
   const {
     handleSubmit,
     reset,
-    formState: { isValid, isSubmitSuccessful },
+    formState: { isValid },
   } = methods;
 
   const onSubmit = (formData: CreateRackViewModel) => onConfirm(formData);
+
+  useEffect(() => {
+    dispatch({
+      type: LocationReducerType.GET_SITES,
+      payload: {
+        sites: data?.sites,
+      },
+    });
+  }, [data?.sites]);
+
+  useEffect(() => {
+    if (mode === "edit") {
+      dispatch({
+        type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+        payload: {
+          siteId: data?.model?.siteId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_FLOORS_BY_BUILDING,
+        payload: {
+          buildingId: data?.model?.buildingId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_ROOMS_BY_FLOOR,
+        payload: {
+          floorId: data?.model?.floorId,
+        },
+      });
+      reset({ ...data?.model });
+    }
+  }, [data?.model, mode, reset]);
 
   return (
     <Modal {...props}>
@@ -48,7 +95,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
             marginBottom={1}
           >
             <Grid item md={6}>
-              <ControlledTextInput name="title" label="Título do rack" />
+              <ControlledTextInput name="name" label="Título do rack" />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput name="localization" label="Localização" />
@@ -87,31 +134,64 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
               <ControlledTextInput
                 name="siteId"
                 label="Site"
-                // items={infra.sites ?? []}
-                // onChange={(e) => selections.siteSelection(e.target.value)}
+                items={state.sites.map((x) => ({
+                  description: x.name,
+                  value: x.id,
+                }))}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+                    payload: {
+                      siteId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
                 name="buildingId"
                 label="Prédio"
-                // items={infra.buildings ?? []}
-                // onChange={(e) => selections.buildingSelection(e.target.value)}
+                items={state.buildings.map((x) => ({
+                  description: x.name,
+                  value: x.id,
+                }))}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_FLOORS_BY_BUILDING,
+                    payload: {
+                      buildingId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
                 name="floorId"
                 label="Andar"
-                // items={infra.floors ?? []}
-                // onChange={(e) => selections.floorSelection(e.target.value)}
+                items={state.floors.map((x) => ({
+                  description: x.name,
+                  value: x.id,
+                }))}
+                onChange={(e) =>
+                  dispatch({
+                    type: LocationReducerType.GET_ROOMS_BY_FLOOR,
+                    payload: {
+                      floorId: e.target.value,
+                    },
+                  })
+                }
               />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
                 name="roomId"
                 label="Sala"
-                // items={infra.rooms ?? []}
+                items={state.rooms.map((x) => ({
+                  description: x.name,
+                  value: x.id,
+                }))}
               />
             </Grid>
           </Grid>
@@ -133,8 +213,6 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
               />
             </Grid>
           </Grid>
-
-          {/* <ControlledTextInput name="localization" label="Localização" /> */}
           <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />
           {/* <Button onClick={onCancel}>Cancelar</Button> */}
         </Form>
@@ -144,9 +222,13 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
 };
 
 type FormProps = {
-  size: string;
+  name: string;
   localization: string;
+  size: string;
+  capacity: number;
+  power: number;
   weight: number;
+  description: string;
   roomId: string;
   floorId: string;
   buildingId: string;
@@ -154,9 +236,13 @@ type FormProps = {
 };
 
 const validationSchema: SchemaOf<FormProps> = object().shape({
-  size: string().required("Tamanho do rack é obrigatório"),
+  name: string().required("Nome é obrigatório"),
   localization: string().required("Localização do rack é obrigatória"),
+  size: string().required("Tamanho do rack é obrigatório"),
+  capacity: number().required("Capacidade é obrigatório"),
+  power: number().required("Potência é obrigatória"),
   weight: number().required("Peso total do rack é obrigatório"),
+  description: string().required("Descrição é obrigatório"),
   roomId: string().required("Sala é obrigatória"),
   floorId: string().required("Andar é obrigatório"),
   buildingId: string().required("Prédio é obrigatório"),

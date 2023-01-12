@@ -18,11 +18,26 @@ import RackStatisticsCard from "./components/rack-statistics-card/RackStatistics
 import IconButton from "@mui/material/Button";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { ERackMount } from "modules/datacenter/models/rack.model";
+import { ERackMount, RackModel } from "modules/datacenter/models/rack.model";
+import useRouter from "modules/core/hooks/useRouter";
+import { useFindRackByIdQuery } from "modules/datacenter/services/rack.service";
+import {
+  useCreateRackEquipmentMutation,
+  useFindRackEquipmentByIdMutation,
+} from "modules/datacenter/services/rack-equipment.service";
+import Loading from "modules/shared/components/Loading";
 
 export default function RackDetailsPage() {
+  const { params } = useRouter();
   const { showModal } = useModal();
   const toast = useToast();
+  const {
+    data: rack,
+    isLoading: loadingFetchRack,
+    refetch,
+  } = useFindRackByIdQuery(params.rackId!);
+  const [createRackEquipment, { isLoading: loadingCreateRack }] =
+    useCreateRackEquipmentMutation();
 
   const handleEditRack = () => {
     const modal = showModal(RackFormModal, {
@@ -30,6 +45,15 @@ export default function RackDetailsPage() {
       onConfirm: (formData) => {
         console.log(formData);
         modal.hide();
+        try {
+          toast.open({ message: "Equipamento de rack alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao alterar equipamento de rack",
+            severity: "error",
+          });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -39,23 +63,43 @@ export default function RackDetailsPage() {
   const handleInsertEquipment = () => {
     const modal = showModal(RackEquipmentFormModal, {
       title: "Inserir equipamento",
-      onConfirm: (formData) => {
+      onConfirm: async (formData) => {
         modal.hide();
+        try {
+          await createRackEquipment({
+            ...formData,
+            rackId: rack?.id ?? "",
+          }).unwrap();
+          toast.open({ message: "Equipamento de rack adicionado com sucesso" });
+          refetch();
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao adicionar equipamento de rack",
+            severity: "error",
+          });
+        }
       },
       onClose: () => {
         modal.hide();
+      },
+      PaperProps: {
+        sx: {
+          minWidth: "650px",
+          maxWidth: "900px",
+        },
       },
     });
   };
 
   return (
-    <HeroContainer title="Rack 1020">
+    <HeroContainer title={rack?.name}>
       <Tabs
         mode="horizontal"
         tabLabels={["Detalhes", "Ocupação"]}
         tabItems={[
           {
-            element: <DetailsTab />,
+            element: <DetailsTab rack={rack} />,
             content: (
               <Button variant="contained" onClick={handleEditRack}>
                 Editar rack
@@ -63,7 +107,7 @@ export default function RackDetailsPage() {
             ),
           },
           {
-            element: <OccupationTab />,
+            element: <OccupationTab rack={rack} />,
             content: (
               <Button variant="contained" onClick={handleInsertEquipment}>
                 Inserir equipamento
@@ -72,11 +116,16 @@ export default function RackDetailsPage() {
           },
         ]}
       />
+      <Loading open={loadingCreateRack || loadingFetchRack} />
     </HeroContainer>
   );
 }
 
-const DetailsTab: React.FC = () => {
+type DetailsTabProps = {
+  rack: RackModel | undefined;
+};
+
+const DetailsTab: React.FC<DetailsTabProps> = ({ rack }) => {
   return (
     <>
       <CardSection
@@ -84,19 +133,19 @@ const DetailsTab: React.FC = () => {
         items={[
           {
             title: "Site",
-            description: "Site 01",
+            description: rack?.site.name,
           },
           {
             title: "Prédio",
-            description: "Data Hall 01",
+            description: rack?.building.name,
           },
           {
             title: "Andar",
-            description: "Terreo",
+            description: rack?.floor.name,
           },
           {
             title: "Sala",
-            description: "MDA A",
+            description: rack?.room.name,
           },
         ]}
       />
@@ -105,7 +154,7 @@ const DetailsTab: React.FC = () => {
         items={[
           {
             title: "Rack",
-            description: "Rack 1020",
+            description: rack?.name,
             defaultSize: 12,
           },
         ]}
@@ -117,23 +166,23 @@ const DetailsTab: React.FC = () => {
         items={[
           {
             title: "Potência do rack",
-            description: "10 kW",
+            description: `${rack?.power} kW`,
           },
           {
             title: "Unid. de rack",
-            description: "42 U",
+            description: `${rack?.capacity} U`,
           },
           {
             title: "Peso suportável",
-            description: "1500 kg",
+            description: `${rack?.weight} kg`,
           },
           {
             title: "Tamanho (a x c x p)",
-            description: "230 x 60 x 60 cm",
+            description: `${rack?.size} cm`,
           },
           {
             title: "Descrição",
-            description: "Cliente ABC",
+            description: rack?.description,
             defaultSize: 6,
           },
         ]}
@@ -142,11 +191,15 @@ const DetailsTab: React.FC = () => {
   );
 };
 
-const OccupationTab: React.FC = () => {
-  const [rackView, setRackView] = useState<"front" | "back">("front");
+const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
+  const [
+    findRackEquipment,
+    { data: rackEquipment, isLoading: loadingFindRack },
+  ] = useFindRackEquipmentByIdMutation();
 
-  // const toggleRackView = () =>
-  //   setRackView((prevState) => (prevState === "back" ? "front" : "back"));
+  const handleSelectedEquipment = async ({ id }: RackSlotItem) => {
+    await findRackEquipment(id).unwrap();
+  };
 
   return (
     <Grid container columnSpacing={1}>
@@ -157,309 +210,326 @@ const OccupationTab: React.FC = () => {
       >
         <Grid container columnSpacing={2}>
           <Grid item md={4}>
-            <RackStatisticsCard title="Potência livre" value={1500} unit="W" />
+            <RackStatisticsCard
+              title="Potência livre"
+              value={rack?.statistics?.availablePower}
+              unit="W"
+            />
           </Grid>
           <Grid item md={4}>
-            <RackStatisticsCard title="Peso livre" value={200} unit="kg" />
+            <RackStatisticsCard
+              title="Peso livre"
+              value={rack?.statistics?.availableWeight}
+              unit="kg"
+            />
           </Grid>
           <Grid item md={4}>
-            <RackStatisticsCard title="RU's livre" value={10} unit="U" />
+            <RackStatisticsCard
+              title="RU's livre"
+              value={rack?.statistics?.availableSpace}
+              unit="U"
+            />
           </Grid>
         </Grid>
-        <Typography variant="h4">HP Proliant</Typography>
-        <CardSection
-          title="Local"
-          items={[
-            {
-              title: "Rack",
-              description: "Rack 1020",
-            },
-            {
-              title: "Posição",
-              description: "12 U",
-            },
-          ]}
-        />
-        <CardSection
-          title="Dados do equipamento"
-          items={[
-            {
-              title: "Marca",
-              description: "HP",
-              defaultSize: 4,
-            },
-            {
-              title: "Modelo",
-              description: "Proliant 350XP",
-              defaultSize: 4,
-            },
-            {
-              title: "Montagem",
-              description: "Rack 19''",
-              defaultSize: 4,
-            },
-            {
-              title: "Tamanho",
-              description: "200 x 600 x 600 mm",
-              defaultSize: 4,
-            },
-            {
-              title: "Peso",
-              description: "25 kg",
-              defaultSize: 4,
-            },
-            {
-              title: "RU's",
-              description: "5 RU's",
-              defaultSize: 4,
-            },
-            {
-              title: "Potência",
-              description: "1000 W",
-              defaultSize: 4,
-            },
-            {
-              title: "Orientação",
-              description: "Frontside",
-              defaultSize: 4,
-            },
-            {
-              title: "Status",
-              description: "Instalado",
-              defaultSize: 4,
-            },
-          ]}
-          sx={{ my: 1 }}
-        />
-        <CardSection
-          title="Identidade"
-          items={[
-            {
-              title: "Número de série",
-              description: "87858987858458",
-              defaultSize: 4,
-            },
-            {
-              title: "Cliente",
-              description: "Banco ABC",
-              defaultSize: 4,
-            },
-            {
-              title: "Nome equipamento",
-              description: "HP Proliant",
-              defaultSize: 4,
-            },
-            {
-              title: "Tipo",
-              description: "Demo item",
-              defaultSize: 4,
-            },
-            {
-              title: "Função",
-              description: "Desenvolvimento",
-              defaultSize: 4,
-            },
-          ]}
-        />
+        {rackEquipment ? (
+          <div>
+            <Typography variant="h4">
+              {rackEquipment?.baseEquipment.name}
+            </Typography>
+            <CardSection
+              title="Local"
+              items={[
+                {
+                  title: "Rack",
+                  description: rackEquipment?.rack.name,
+                },
+                {
+                  title: "Posição",
+                  description: `${rackEquipment?.initialPosition} U`,
+                },
+              ]}
+            />
+            <CardSection
+              title="Dados do equipamento"
+              items={[
+                {
+                  title: "Marca",
+                  description: rackEquipment?.baseEquipment.manufactor,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Modelo",
+                  description: rackEquipment?.baseEquipment.model,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Montagem",
+                  description: rackEquipment.rackMountType as string,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Tamanho",
+                  description: `${rackEquipment.baseEquipment.size} mm`,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Peso",
+                  description: `${rackEquipment?.weight} kg`,
+                  defaultSize: 4,
+                },
+                {
+                  title: "RU's",
+                  description: `${rackEquipment?.occupation} RU's`,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Potência",
+                  description: `${rackEquipment?.power} W`,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Orientação",
+                  description: rackEquipment.rackEquipmentOrientation as string,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Status",
+                  description: rackEquipment.status as string,
+                  defaultSize: 4,
+                },
+              ]}
+              sx={{ my: 1 }}
+            />
+            <CardSection
+              title="Identidade"
+              items={[
+                {
+                  title: "Número de série",
+                  description: rackEquipment?.baseEquipment.serialNumber,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Cliente",
+                  description: rackEquipment?.client,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Nome equipamento",
+                  description: rackEquipment?.baseEquipment.name,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Tipo",
+                  description: rackEquipment.rackEquipmentType as string,
+                  defaultSize: 4,
+                },
+                {
+                  title: "Função",
+                  description: rackEquipment?.function,
+                  defaultSize: 4,
+                },
+              ]}
+            />
+          </div>
+        ) : null}
       </Grid>
       <Grid item md={5} sx={{ position: "relative" }}>
-        <div
-          style={{
-            // position: "absolute",
-            width: "100%",
-            top: -70,
-          }}
-        >
-          {/* <Stack direction="row" justifyContent="space-evenly">
-            <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
-              <ChevronLeftIcon />
-            </IconButton>
-            <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
-              <ChevronRightIcon />
-            </IconButton>
-          </Stack> */}
-
-          <RackSlot
-            mode={rackView}
-            items={[
-              {
-                leftPosition: 42,
-                rightPosition: 1,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
+        <RackSlot
+          rackSize={rack?.capacity ?? 0}
+          items={
+            rack?.rackSlots?.map((rackSlot) => ({
+              id: rackSlot.equipmentId,
+              name: rackSlot.description,
+              position: {
+                initial: rackSlot.initialPosition,
+                final: rackSlot.finalPosition,
               },
-              {
-                leftPosition: 41,
-                rightPosition: 2,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 40,
-                rightPosition: 3,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 39,
-                rightPosition: 4,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 38,
-                rightPosition: 5,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 37,
-                rightPosition: 6,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 36,
-                rightPosition: 7,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 35,
-                rightPosition: 8,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 34,
-                rightPosition: 9,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 33,
-                rightPosition: 10,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 32,
-                rightPosition: 11,
-                equipmentId: "",
-                label: "HP  Proliant",
-                rackMount: ERackMount.RACK_19_FRONTSIDE,
-                items: [
-                  {
-                    leftPosition: 31,
-                    rightPosition: 12,
-                    equipmentId: "",
-                    label: "HP  Proliant",
-                    rackMount: ERackMount.RACK_19_FRONTSIDE,
-                  },
-                  {
-                    leftPosition: 30,
-                    rightPosition: 13,
-                    equipmentId: "",
-                    label: "HP  Proliant",
-                    rackMount: ERackMount.RACK_19_FRONTSIDE,
-                  },
-                ],
-              },
-              {
-                leftPosition: 31,
-                rightPosition: 12,
-                equipmentId: "",
-                label: "HP  Proliant",
-                rackMount: ERackMount.RACK_19_FRONTSIDE,
-              },
-              {
-                leftPosition: 30,
-                rightPosition: 13,
-                equipmentId: "",
-                label: "HP  Proliant",
-                rackMount: ERackMount.RACK_19_FRONTSIDE,
-              },
-              {
-                leftPosition: 29,
-                rightPosition: 14,
-                equipmentId: "",
-                label: "HP  Proliant",
-                rackMount: ERackMount.RACK_19_FRONTSIDE,
-              },
-              {
-                leftPosition: 28,
-                rightPosition: 15,
-                equipmentId: "",
-                label: "HP  Proliant",
-                rackMount: ERackMount.RACK_19_FRONTSIDE,
-              },
-              {
-                leftPosition: 27,
-                rightPosition: 16,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-              {
-                leftPosition: 26,
-                rightPosition: 17,
-                equipmentId: "",
-                label: "Disponível",
-                rackMount: ERackMount.NO_ONE,
-              },
-            ]}
-            onSelectEquipment={() => {}}
-          />
-        </div>
+              rackMount: rackSlot.rackMountType,
+            })) ?? []
+          }
+          onSelectEquipment={handleSelectedEquipment}
+          selectedRackSlotId={rackEquipment?.id ?? ""}
+        />
       </Grid>
+      <Loading open={loadingFindRack} />
     </Grid>
   );
 };
 
 type RackSlotProps = {
+  rackSize: number;
   items: RackSlotItem[];
   onSelectEquipment(slot: RackSlotItem): void;
-  mode?: RackMode;
-  slots?: IRackSlot[];
+  selectedRackSlotId?: string;
 };
 
 type RackMode = "front" | "back";
 
-type IRackSlot = {
-  leftPosition: number;
-  rightPosition: number;
-  occupedSlots?: IRackSlot[];
-};
-
 type RackSlotItem = {
-  equipmentId: string;
-  leftPosition: number;
-  rightPosition: number;
-  label: string;
+  id: string;
+  name: string;
+  position: {
+    initial: number;
+    final: number;
+  };
   rackMount: ERackMount;
-  items?: RackSlotItem[];
 };
 
 const RackSlot: React.FC<RackSlotProps> = ({
+  rackSize,
   items,
-  mode,
   onSelectEquipment,
+  selectedRackSlotId,
 }) => {
   const [rackView, setRackView] = useState<RackMode>("front");
 
   const toggleRackView = () =>
     setRackView((prevState) => (prevState === "back" ? "front" : "back"));
 
+  return (
+    <Paper sx={{ position: "relative" }}>
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          top: 0,
+          right: 0,
+        }}
+      >
+        <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
+          <ChevronLeftIcon />
+        </IconButton>
+        <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
+          <ChevronRightIcon />
+        </IconButton>
+      </div>
+
+      <Typography textAlign="center" variant="h6" sx={{ my: 0 }}>
+        {rackView === "front" ? "Front view" : "Back view"}
+      </Typography>
+
+      <div style={{ overflow: "auto", maxHeight: "640px", marginTop: "16px" }}>
+        {items.map((item, idx) => {
+          if (item.rackMount === ERackMount.NO_ONE) {
+            return (
+              <AvailableSlot
+                key={idx}
+                position={{
+                  left:
+                    rackView === "back"
+                      ? item.position.initial
+                      : rackSize - item.position.initial + 1,
+                  right:
+                    rackView === "front"
+                      ? item.position.initial
+                      : rackSize - item.position.initial + 1,
+                }}
+              />
+            );
+          } else {
+            return (
+              <OccupiedSlot
+                key={idx}
+                rackView={rackView}
+                rackSlot={item}
+                rackSize={rackSize}
+                description={item.name}
+                mountType={item.rackMount}
+                position={{
+                  left: item.position.initial,
+                  right: item.position.initial,
+                }}
+                slots={Array.from(
+                  { length: item.position.final - item.position.initial + 1 },
+                  (_, idx) => idx
+                )}
+                onSlotClick={onSelectEquipment}
+                selectedRackSlotId={selectedRackSlotId}
+              />
+            );
+          }
+        })}
+      </div>
+    </Paper>
+  );
+};
+
+type AvailableSlotProps = {
+  position: {
+    left: number;
+    right: number;
+  };
+};
+
+const AvailableSlot: React.FC<AvailableSlotProps> = ({ position }) => {
+  return (
+    <Paper
+      sx={{
+        borderRadius: 0,
+        boxShadow: 0,
+        padding: "0 20px",
+      }}
+    >
+      <Divider />
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        minHeight={"24px"}
+      >
+        <Avatar
+          sx={{
+            ml: 1,
+            fontSize: "12px",
+            width: "20px",
+            height: "20px",
+          }}
+        >
+          {position.left}
+        </Avatar>
+        <Typography>Disponível</Typography>
+        <Avatar
+          sx={{
+            ml: 1,
+            fontSize: "12px",
+            width: "20px",
+            height: "20px",
+          }}
+        >
+          {position.right}
+        </Avatar>
+      </Stack>
+      <Divider />
+    </Paper>
+  );
+};
+
+type OccupiedSlotProps = {
+  rackView: RackMode;
+  rackSlot: RackSlotItem;
+  rackSize: number;
+  description: string;
+  slots: number[];
+  position: {
+    left: number;
+    right: number;
+  };
+  mountType: ERackMount;
+  onSlotClick(slot: RackSlotItem): void;
+  selectedRackSlotId?: string;
+};
+
+const OccupiedSlot: React.FC<OccupiedSlotProps> = ({
+  rackView,
+  rackSlot,
+  rackSize,
+  selectedRackSlotId,
+  description,
+  slots,
+  position,
+  mountType,
+  onSlotClick,
+}) => {
   const getBackgroundColor = (rackMount: ERackMount) => {
     switch (rackMount) {
       case ERackMount.RACK_19_FRONTSIDE:
@@ -484,90 +554,90 @@ const RackSlot: React.FC<RackSlotProps> = ({
   };
 
   return (
-    <Paper sx={{ position: "relative" }}>
-      <div
-        style={{
-          display: "flex",
-          position: "absolute",
-          top: 0,
-          right: 0,
-        }}
-      >
-        <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
-          <ChevronLeftIcon />
-        </IconButton>
-        <IconButton onClick={toggleRackView} sx={{ minWidth: 0 }}>
-          <ChevronRightIcon />
-        </IconButton>
-      </div>
-
-      <Typography textAlign="center" variant="h6" sx={{ my: 0 }}>
-        {rackView === "front" ? "Front view" : "Back view"}
-      </Typography>
-
-      <div style={{ overflow: "auto", maxHeight: "430px", marginTop: "16px" }}>
-        {items.map((item, idx) => {
-          const rackEquipmentColor = getBackgroundColor(item.rackMount);
-          return (
-            <Paper
-              key={idx}
+    <div style={{ position: "relative", padding: "0 20px" }}>
+      <Divider />
+      {slots.map((_, idx) => (
+        <Paper
+          key={idx}
+          sx={{
+            borderRadius: 0,
+            boxShadow: 0,
+            backgroundColor: getBackgroundColor(mountType),
+          }}
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            minHeight={"24px"}
+          >
+            <Avatar
               sx={{
-                backgroundColor: rackEquipmentColor,
-                borderRadius: 0,
-                boxShadow: 0,
+                ml: 1,
+                fontSize: "12px",
+                width: "20px",
+                height: "20px",
               }}
             >
-              {idx === 0 && rackEquipmentColor == null ? <Divider /> : null}
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                minHeight={"24px"}
-              >
-                <Avatar
-                  sx={{
-                    ml: 1,
-                    fontSize: "12px",
-                    width: "20px",
-                    height: "20px",
-                  }}
-                >
-                  {rackView === "front"
-                    ? item.leftPosition
-                    : item.rightPosition}
-                </Avatar>
-                <Button
-                  onClick={() => onSelectEquipment(item)}
-                  sx={{ padding: 0 }}
-                >
-                  <Typography
-                    sx={{
-                      color: rackEquipmentColor ? "#000" : "#a1d9f0",
-                    }}
-                  >
-                    {item.label}
-                  </Typography>
-                </Button>
-                <Avatar
-                  sx={{
-                    mr: 1,
-                    fontSize: "12px",
-                    width: "20px",
-                    height: "20px",
-                  }}
-                >
-                  {rackView === "front"
-                    ? item.rightPosition
-                    : item.leftPosition}
-                </Avatar>
-              </Stack>
-              {idx !== items.length - 1 && rackEquipmentColor === null ? (
-                <Divider />
-              ) : null}
-            </Paper>
-          );
-        })}
+              {rackView === "back"
+                ? position.left + idx
+                : rackSize - position.left - idx}
+            </Avatar>
+            <Avatar
+              sx={{
+                ml: 1,
+                fontSize: "12px",
+                width: "20px",
+                height: "20px",
+              }}
+            >
+              {rackView === "front"
+                ? position.right + idx
+                : rackSize - position.left - idx}
+            </Avatar>
+          </Stack>
+        </Paper>
+      ))}
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          cursor: "pointer",
+          width: "100%",
+          textAlign: "center",
+        }}
+        onClick={() => onSlotClick(rackSlot)}
+      >
+        {description}
       </div>
-    </Paper>
+      {selectedRackSlotId && selectedRackSlotId === rackSlot.id ? (
+        <>
+          <ChevronRightIcon
+            sx={{
+              position: "absolute",
+              width: "20px",
+              height: "20px",
+              padding: 0,
+              top: "50%",
+              left: 0,
+              transform: "translate(0%, -50%)",
+            }}
+          />
+          <ChevronLeftIcon
+            sx={{
+              position: "absolute",
+              width: "20px",
+              height: "20px",
+              padding: 0,
+              top: "50%",
+              right: 0,
+              transform: "translate(0%, -50%)",
+            }}
+          />
+        </>
+      ) : null}
+    </div>
   );
 };

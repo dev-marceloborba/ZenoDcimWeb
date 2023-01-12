@@ -11,7 +11,7 @@ export const datacenterPaths = {
     shortPath: "racks",
   },
   rackDetails: {
-    fullPath: "infastructure-settings/racks/:id",
+    fullPath: "infastructure-settings/racks/:rackId",
     shortPath: "details",
   },
   rackEquipments: {

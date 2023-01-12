@@ -90,7 +90,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
       if (realtimeAlarms?.message) {
         const payload = realtimeAlarms.message.toString();
         const obj = JSON.parse(payload);
-        console.log(obj);
+        // console.log(obj);
         setAlarms(
           obj.map((alarm: any, index: number) => {
             const ds = splitPathnameIntoFields(alarm.pathname);
@@ -129,10 +129,10 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (lastKeepAliveValue === keepAliveValue) {
-        console.log("offline!");
+        // console.log("offline!");
         setServiceStatus("offline");
       } else {
-        console.log("online");
+        // console.log("online");
         setServiceStatus("connected");
       }
       lastKeepAliveValue = keepAliveValue;

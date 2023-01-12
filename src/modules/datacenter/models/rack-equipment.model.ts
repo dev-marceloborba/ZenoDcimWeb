@@ -1,13 +1,24 @@
+import { EEquipmentStatus } from "modules/automation/models/automation-model";
 import { BaseEquipmentModel } from "./base-equipment.model";
-import { RackModel } from "./rack.model";
+import { ERackMount, RackModel } from "./rack.model";
 
 export interface RackEquipmentModel {
   id: string;
   baseEquipment: BaseEquipmentModel;
+  client: string;
+  function: string;
   initialPosition: number;
   finalPosition: number;
+  rackMountType: ERackMount | string;
+  rackEquipmentOrientation: ERackEquipmentOrientation | string;
+  size: string;
+  occupation: number;
+  power: number;
+  weight: number;
+  status: EEquipmentStatus | string;
+  description: string;
   rack: RackModel;
-  rackEquipmentType: ERackEquipmentType;
+  rackEquipmentType: ERackEquipmentType | string;
 }
 
 export interface CreateRackEquipmentViewModel {
@@ -18,7 +29,36 @@ export interface CreateRackEquipmentViewModel {
   initialPosition: number;
   finalPosition: number;
   rackEquipmentType: ERackEquipmentType;
-  rackLocalization?: string;
+  rackId: string;
+  client: string;
+  function: string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
+  size: string;
+  occupation: number;
+  power: number;
+  weight: number;
+  status: EEquipmentStatus;
+  description: string;
+}
+
+export interface RackEquipmentViewModel {
+  name: string;
+  model: string;
+  manufactor: string;
+  serialNumber: string;
+  initialPosition: number;
+  finalPosition: number;
+  rackEquipmentType: ERackEquipmentType;
+  client: string;
+  function: string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
+  size: string;
+  occupation: number;
+  weight: number;
+  status: EEquipmentStatus;
+  description: string;
 }
 
 export interface UpdateRackEquipmentViewModel {
@@ -30,6 +70,15 @@ export interface UpdateRackEquipmentViewModel {
   initialPosition: number;
   finalPosition: number;
   rackEquipmentType: ERackEquipmentType;
+  client: string;
+  function: string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
+  size: string;
+  occupation: number;
+  weight: number;
+  status: EEquipmentStatus;
+  description: string;
 }
 
 export interface RackEquipmentsTableViewModel {
@@ -37,11 +86,19 @@ export interface RackEquipmentsTableViewModel {
   name: string;
   model: string;
   manufactor: string;
-  size: number;
+  size: string;
   serialNumber: string;
   initialPosition: number;
   finalPosition: number;
-  rackEquipmentType: ERackEquipmentType;
+  rackEquipmentType: ERackEquipmentType | string;
+  client: string;
+  function: string;
+  rackMountType: ERackMount | string;
+  rackEquipmentOrientation: ERackEquipmentOrientation | string;
+  occupation: number;
+  weight: number;
+  status: EEquipmentStatus | string;
+  description: string;
 }
 
 export enum ERackEquipmentType {
@@ -49,4 +106,10 @@ export enum ERackEquipmentType {
   SWITCH = 1,
   STORAGE = 2,
   BACKUP_ROBOT = 3,
+}
+
+export enum ERackEquipmentOrientation {
+  FRONTSIDED = 0,
+  BACKSIDED = 1,
+  BOTHSIDED = 2,
 }

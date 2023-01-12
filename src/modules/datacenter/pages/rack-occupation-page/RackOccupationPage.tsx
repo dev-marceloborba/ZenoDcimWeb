@@ -1,5 +1,6 @@
 import useRouter from "modules/core/hooks/useRouter";
 import {
+  useCreateRackMutation,
   useDeleteRackMutation,
   useFindAllRacksQuery,
   useUpdateRackMutation,
@@ -14,21 +15,34 @@ import { RackModel } from "modules/datacenter/models/rack.model";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { useModal } from "mui-modal-provider";
 import RackFormModal from "modules/datacenter/modals/rack-form-modal/RackFormModal";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 
 export default function RackOccupationPage() {
   const toast = useToast();
   const { showModal } = useModal();
   const { path, navigate } = useRouter();
 
+  const { data: sites, isLoading: loadingSites } = useFindAllSitesQuery();
   const { data: racks, isLoading: loadingFetch } = useFindAllRacksQuery();
+  const [createRack, { isLoading: isLoadingCreate }] = useCreateRackMutation();
   const [updateRack, { isLoading: loadingUpdate }] = useUpdateRackMutation();
   const [deleteRack, { isLoading: loadingDelete }] = useDeleteRackMutation();
 
   const handleOpenRackModal = () => {
     const modal = showModal(RackFormModal, {
       title: "Novo rack",
-      onConfirm: (formData) => {
+      data: {
+        sites,
+      },
+      onConfirm: async (formData) => {
         modal.hide();
+        try {
+          await createRack(formData).unwrap();
+          toast.open({ message: "Rack criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({ message: "Erro ao criar rack", severity: "error" });
+        }
       },
       onClose: () => {
         modal.hide();
@@ -40,14 +54,17 @@ export default function RackOccupationPage() {
     const modal = showModal(RackFormModal, {
       title: "Novo rack",
       mode: "edit",
-      data: rack,
+      data: {
+        model: rack,
+        sites,
+      },
       onConfirm: async (formData) => {
         modal.hide();
         await updateRack({
           ...formData,
           id: rack.id,
         }).unwrap();
-        toast.open({ message: "Rack criado com sucesso" });
+        toast.open({ message: "Rack alterado com sucesso" });
         try {
         } catch (error) {
           console.log(error);
@@ -115,7 +132,7 @@ const columns: ColumnHeader[] = [
     label: "Sala",
   },
   {
-    name: "rack",
+    name: "name",
     label: "Rack",
   },
   {
@@ -123,7 +140,7 @@ const columns: ColumnHeader[] = [
     label: "Potência (kW)",
   },
   {
-    name: "occupation",
+    name: "capacity",
     label: "RU's",
   },
   {

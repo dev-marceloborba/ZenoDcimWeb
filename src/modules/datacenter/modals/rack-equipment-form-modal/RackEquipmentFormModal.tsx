@@ -8,11 +8,19 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { number, object, SchemaOf, string } from "yup";
 import { ERackEquipmentType } from "app/models/rack.model";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  CreateRackEquipmentViewModel,
+  ERackEquipmentOrientation,
+  RackEquipmentModel,
+} from "modules/datacenter/models/rack-equipment.model";
+import { useEffect } from "react";
+import { ERackMount } from "modules/datacenter/models/rack.model";
+import { EEquipmentStatus } from "modules/automation/models/automation-model";
 
 type RackEquipmentFormModalFormProps = {
-  onConfirm(formData: any): void;
+  onConfirm(formData: Omit<CreateRackEquipmentViewModel, "rackId">): void;
   mode?: FormMode;
-  data?: any;
+  data?: RackEquipmentModel;
 } & ModalProps;
 
 const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
@@ -29,10 +37,28 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
   const {
     handleSubmit,
     reset,
-    formState: { isValid, isSubmitSuccessful },
+    formState: { isValid },
   } = methods;
 
-  const onSubmit: SubmitHandler<FormProps> = (data) => onConfirm(data);
+  const onSubmit: SubmitHandler<FormProps> = (data) =>
+    onConfirm({
+      ...data,
+      finalPosition: data.initialPosition + data.occupation - 1,
+    });
+
+  useEffect(() => {
+    if (mode === "edit") {
+      reset({
+        ...data,
+        rackMountType: data?.rackMountType as ERackMount,
+        rackEquipmentOrientation:
+          data?.rackEquipmentOrientation as ERackEquipmentOrientation,
+        status: data?.status as EEquipmentStatus,
+        rackEquipmentType: data?.rackEquipmentType as ERackEquipmentType,
+      });
+    }
+  }, [data, mode, reset]);
+
   return (
     <Modal {...props}>
       <FormProvider {...methods}>
@@ -79,7 +105,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
-                name="equipmenFunction"
+                name="function"
                 label="Função do equipamento"
               />
             </Grid>
@@ -101,7 +127,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
-                name="mount"
+                name="rackMountType"
                 label="Montagem"
                 items={[
                   {
@@ -151,7 +177,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
-                name="orientation"
+                name="rackEquipmentOrientation"
                 label="Orientação"
                 items={[
                   {
@@ -170,7 +196,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="ruSize" label="RU's" />
+              <ControlledTextInput name="occupation" label="RU's" />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput name="power" label="Potência" />
@@ -208,7 +234,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
               />
             </Grid>
           </Grid>
-          <Typography>Local</Typography>
+          <Typography variant="subtitle1">Local</Typography>
           <Grid
             container
             rowSpacing={1}
@@ -217,11 +243,14 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             marginBottom={1}
           >
             <Grid item md={4}>
-              <ControlledTextInput name="ruPosition" label="Posição (RU)" />
+              <ControlledTextInput
+                name="initialPosition"
+                label="Posição (RU)"
+              />
             </Grid>
           </Grid>
 
-          <Typography>Descrição</Typography>
+          <Typography variant="subtitle1">Descrição</Typography>
           <Grid
             container
             rowSpacing={1}
@@ -252,8 +281,18 @@ type FormProps = {
   model: string;
   manufactor: string;
   serialNumber: string;
-  size: number;
+  size: string;
+  initialPosition: number;
   rackEquipmentType: ERackEquipmentType;
+  client: string;
+  function: string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
+  occupation: number;
+  weight: number;
+  power: number;
+  status: EEquipmentStatus;
+  description: string;
 };
 
 const validationSchema: SchemaOf<FormProps> = object().shape({
@@ -261,6 +300,18 @@ const validationSchema: SchemaOf<FormProps> = object().shape({
   model: string().required("Modelo é obrigatório"),
   manufactor: string().required("Fabricante é obrigatório"),
   serialNumber: string().required("Número de série é obrigatório"),
-  size: number().required("Tamanho é obrigatório"),
+  size: string().required("Tamanho é obrigatório"),
   rackEquipmentType: number().required("Tipo de equipamento é obrigatório"),
+  initialPosition: number().required("Posição é obrigatória"),
+  client: string().required("Cliente é obrigatório"),
+  function: string().required("Função do equipamento é obrigatório"),
+  rackMountType: number().required("Montagem do rack é obrigatório"),
+  rackEquipmentOrientation: number().required(
+    "Orientação do equipamento é obrigatória"
+  ),
+  occupation: number().required("Ocupação é obrigatória"),
+  weight: number().required("Peso é obrigatorio"),
+  power: number().required("Potência é obrigatoria"),
+  status: number().required("Status é obrigatório"),
+  description: string().required("Descrição é obrigatória"),
 });

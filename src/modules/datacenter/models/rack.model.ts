@@ -7,30 +7,48 @@ import {
 
 export interface RackModel {
   id: string;
+  name: string;
   localization: string;
-  size: number;
+  size: string;
+  capacity: number;
+  power: number;
   weight: number;
+  description: string;
   site: SiteModel;
   building: BuildingModel;
   floor: FloorModel;
   room: RoomModel;
+  statistics?: RackStatistics;
+  rackSlots?: RackSlot[];
 }
 
 export interface RackTableViewModel {
   id: string;
+  name: string;
   localization: string;
-  size: number;
+  size: string;
+  capacity: number;
+  power: number;
   weight: number;
+  description: string;
   site: string;
   building: string;
   floor: string;
   room: string;
+  siteId: string;
+  buildingId: string;
+  floorId: string;
+  roomId: string;
 }
 
 export interface CreateRackViewModel {
-  weight: number;
+  name: string;
   localization: string;
-  size: number;
+  size: string;
+  capacity: number;
+  power: number;
+  weight: number;
+  description: string;
   siteId: string;
   buildingId: string;
   floorId: string;
@@ -39,8 +57,19 @@ export interface CreateRackViewModel {
 
 export interface UpdateRackViewModel {
   id: string;
+  name: string;
   localization: string;
-  size: number;
+  size: string;
+  capacity: number;
+  power: number;
+  weight: number;
+  description: string;
+}
+
+export interface RackStatistics {
+  availablePower: number;
+  availableWeight: number;
+  availableSpace: number;
 }
 
 export interface RackStatistcsModel {
@@ -60,6 +89,7 @@ export interface RackSlot {
   finalPosition: number;
   description: string;
   equipmentId: string;
+  rackMountType: ERackMount;
 }
 
 export enum ERackMount {

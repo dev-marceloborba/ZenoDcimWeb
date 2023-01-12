@@ -50,24 +50,25 @@ export const rackApi = createApi({
       }),
       transformResponse: (response: RackModel[]) => {
         return response.map((r) => ({
-          id: r.id,
+          ...r,
+          site: r.site?.name ?? "",
           building: r.building?.name ?? "",
           floor: r.floor?.name ?? "",
-          localization: r.localization,
           room: r.room?.name ?? "",
-          site: r.site?.name ?? "",
-          size: r.size,
-          weight: r.weight,
+          siteId: r.site.id,
+          buildingId: r.building.id,
+          floorId: r.floor.id,
+          roomId: r.room.id,
         }));
       },
       providesTags: ["RackModel"],
     }),
-    findRackById: builder.mutation<RackModel, string>({
+    findRackById: builder.query<RackModel, string>({
       query: (id) => ({
         url: `v1/racks/${id}`,
         method: "GET",
       }),
-      invalidatesTags: ["RackModel"],
+      providesTags: ["RackModel"],
     }),
     deleteRack: builder.mutation<RackModel, string>({
       query: (id) => ({
@@ -89,7 +90,7 @@ export const {
   useCreateRackMutation,
   useDeleteRackMutation,
   useFindAllRacksQuery,
-  useFindRackByIdMutation,
+  useFindRackByIdQuery,
   useUpdateRackMutation,
   useFindRackStatistcsMutation,
 } = rackApi;
