@@ -4,13 +4,11 @@ import {
   useTabContext,
 } from "modules/shared/components/TabContext";
 import LabelTabs from "modules/shared/components/LabelTabs";
-import Card3ParametersSettings from "modules/automation/components/card-3-parameter-settings/Card3ParametersSettings";
 import EquipmentCard from "modules/automation/components/equipment-card/EquipmentCard";
 import {
   useLoadEquipmentCardsQuery,
   useUpdateEquipmentCardMutation,
 } from "modules/automation/services/equipment-card-service";
-import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
@@ -23,7 +21,7 @@ import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automat
 
 const EtcEquipment: React.FC = () => {
   const { params, navigate, path } = useRouter();
-  const [findParameters, { data: parameters }] =
+  const [findParameters, { isLoading: loadingFetchParameters }] =
     useFindEquipmentParametersByEquipmentIdMutation();
   const { data: equipmentsCards, isLoading: isLoadingFetch } =
     useLoadEquipmentCardsQuery(params.roomId!);
@@ -32,17 +30,15 @@ const EtcEquipment: React.FC = () => {
   const { showModal } = useModal();
   const toast = useToast();
 
-  console.log(params);
-  console.log(parameters);
-
   const onShowSettingsModal = async (
     id: string,
+    equipmentId: string,
     name: string,
     parameter1: any,
     parameter2: any,
     parameter3: any
   ) => {
-    await findParameters(id).unwrap();
+    const parameters = await findParameters(equipmentId).unwrap();
     const modal = showModal(Card3ParameterEquipmentSettings, {
       id,
       name,
@@ -61,6 +57,11 @@ const EtcEquipment: React.FC = () => {
         modal.hide();
       },
       data: {
+        parameters:
+          parameters.map((parameter) => ({
+            id: parameter.id,
+            label: parameter.name,
+          })) ?? [],
         parameter1: {
           parameter: parameter1,
           equipmentId: parameter1?.equipmentParameter.equipmentId,
@@ -112,7 +113,9 @@ const EtcEquipment: React.FC = () => {
           }
         />
       </TabContextProvider>
-      <Loading open={isLoadingFetch || isLoadingUpdate} />
+      <Loading
+        open={isLoadingFetch || isLoadingUpdate || loadingFetchParameters}
+      />
     </HeroContainer>
   );
 };
@@ -123,6 +126,7 @@ type EquipmentData = {
   equipments: EquipmentCardModel[];
   handleOnSettingsClick(
     id: string,
+    equipmentId: string,
     name: string,
     parameter1: any,
     parameter2: any,
@@ -172,6 +176,7 @@ const EnergyEquipments: React.FC<EquipmentData> = ({
               onSettingsClick={() => {
                 handleOnSettingsClick(
                   equipment.id,
+                  equipment.equipmentId,
                   equipment.name,
                   equipment.parameter1,
                   equipment.parameter2,
@@ -229,6 +234,7 @@ const ClimateEquipments: React.FC<EquipmentData> = ({
               onSettingsClick={() => {
                 handleOnSettingsClick(
                   equipment.id,
+                  equipment.equipmentId,
                   equipment.name,
                   equipment.parameter1,
                   equipment.parameter2,
@@ -284,6 +290,7 @@ const TelecomEquipments: React.FC<EquipmentData> = ({
               onSettingsClick={() => {
                 handleOnSettingsClick(
                   equipment.id,
+                  equipment.equipmentId,
                   equipment.name,
                   equipment.parameter1,
                   equipment.parameter2,

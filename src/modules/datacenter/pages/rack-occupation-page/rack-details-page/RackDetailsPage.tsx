@@ -43,7 +43,6 @@ export default function RackDetailsPage() {
     const modal = showModal(RackFormModal, {
       title: "Editar rack",
       onConfirm: (formData) => {
-        console.log(formData);
         modal.hide();
         try {
           toast.open({ message: "Equipamento de rack alterado com sucesso" });
@@ -269,7 +268,7 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
                 },
                 {
                   title: "Tamanho",
-                  description: `${rackEquipment.baseEquipment.size} mm`,
+                  description: `${rackEquipment.size} cm`,
                   defaultSize: 4,
                 },
                 {

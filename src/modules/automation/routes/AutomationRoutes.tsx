@@ -21,6 +21,7 @@ import EtcRoom from "../pages/energy-clim-telecom/EtcRoom";
 import BuildingResolver from "./resolvers/BuildingResolver";
 import EtcEquipment from "../pages/energy-clim-telecom/EtcEquipment";
 import EquipmentDetailsPage from "../pages/equipment-details-page/EquipmentDetailsPage";
+import MeasureHistory from "../pages/measure-history/MeasureHistory";
 
 export const automationRoutes: RouteObject[] = [
   {
@@ -121,6 +122,11 @@ export const automationRoutes: RouteObject[] = [
     // element: <ParameterAdmin />,
     element: <EquipmentParametersPage />,
     title: "Parâmetros",
+  },
+  {
+    path: automationPaths.measureHistory.fullPath,
+    element: <MeasureHistory />,
+    title: "Histórico de medições",
   },
 ];
 

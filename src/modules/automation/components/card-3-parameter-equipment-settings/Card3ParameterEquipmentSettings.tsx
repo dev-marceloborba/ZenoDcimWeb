@@ -13,12 +13,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 
-type Equipment = {
-  id: string;
-  label: string;
-  parameters: Parameter[];
-};
-
 type Parameter = {
   id: string;
   label: string;
@@ -29,6 +23,7 @@ type Card3ParametersSettingsProps = {
   name: string;
   onSave(state: NullableParameters, id: string): void;
   data: {
+    parameters: Parameter[];
     parameter1: {
       parameter: ParameterState | null;
       equipmentId: string | null;
@@ -82,7 +77,7 @@ const loadInitialState = (
 export default function Card3ParameterEquipmentSettings(
   props: Card3ParametersSettingsProps
 ) {
-  const { data, id, name, onSave, open } = props;
+  const { data, id, name, onSave } = props;
   const [state, setState] = useState<Parameters>({
     parameter1: loadInitialState(data.parameter1.parameter, 1),
     parameter2: loadInitialState(data.parameter2.parameter, 2),
@@ -156,10 +151,10 @@ export default function Card3ParameterEquipmentSettings(
               description: state.parameter1.description,
               enabled: state.parameter1.enabled,
             }}
+            parameters={data.parameters}
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
-            previousEquipmentId={data.parameter1.equipmentId ?? ""}
             previousParameterId={data.parameter1.parameterId ?? ""}
           />
 
@@ -170,10 +165,10 @@ export default function Card3ParameterEquipmentSettings(
               description: state.parameter2.description,
               enabled: state.parameter2.enabled,
             }}
+            parameters={data.parameters}
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
-            previousEquipmentId={data.parameter2.equipmentId ?? ""}
             previousParameterId={data.parameter2.parameterId ?? ""}
           />
 
@@ -184,10 +179,10 @@ export default function Card3ParameterEquipmentSettings(
               description: state.parameter3.description,
               enabled: state.parameter3.enabled,
             }}
+            parameters={data.parameters}
             handleAllowInformation={handleAllowInformation}
             handleChangeInformation={handleChangeInformation}
             handleParameterSelection={onParameterSelection}
-            previousEquipmentId={data.parameter3.equipmentId ?? ""}
             previousParameterId={data.parameter3.parameterId ?? ""}
           />
         </Grid>
@@ -233,6 +228,7 @@ export default function Card3ParameterEquipmentSettings(
 
 type InformationSectionProps = {
   title: string;
+  parameters: Parameter[];
   parameter: {
     name: string;
     enabled: boolean;
@@ -248,23 +244,23 @@ type InformationSectionProps = {
     id: string,
     description: string
   ): void;
-  previousEquipmentId?: string;
   previousParameterId?: string;
 };
 
 const InformationSection: React.FC<InformationSectionProps> = ({
   title,
   parameter,
-  previousEquipmentId,
+  parameters,
   previousParameterId,
   handleAllowInformation,
   handleChangeInformation,
   handleParameterSelection,
   ...props
 }) => {
-  const [parameterOptions, setParameterOptions] = useState<Parameter[]>([]);
-
-  const [parameterValue, setParameterValue] = useState<Parameter | null>();
+  // const [parameterOptions, setParameterOptions] = useState<Parameter[]>([...parameters]);
+  const [parameterValue, setParameterValue] = useState<Parameter | null>(
+    parameters.find((p) => p.id === previousParameterId) ?? null
+  );
 
   return (
     <>
@@ -295,7 +291,7 @@ const InformationSection: React.FC<InformationSectionProps> = ({
           value={parameterValue}
           getOptionLabel={(option) => option.label}
           disabled={!parameter.enabled}
-          options={parameterOptions}
+          options={parameters}
           renderInput={(params) => (
             <TextField {...params} name="parameter" label="Parâmetro" />
           )}
