@@ -28,7 +28,7 @@ import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 const EquipmentAdmin: React.FC = () => {
   const toast = useToast();
   const { showModal } = useModal();
-  const { navigate } = useRouter();
+  const { navigate, path } = useRouter();
 
   const { data: sites } = useFindAllSitesQuery();
   const { data, isLoading } = useFindAllEquipmentsDetailedQuery();
@@ -122,6 +122,10 @@ const EquipmentAdmin: React.FC = () => {
     }
   };
 
+  const handleOpenDetails = ({ id }: EquipmentModel) => {
+    navigate(`${path}/details/${id}`, {});
+  };
+
   return (
     <HeroContainer title="Configuração de equipamentos">
       <Tooltip title="Criar novo equipamento">
@@ -146,6 +150,7 @@ const EquipmentAdmin: React.FC = () => {
           selectionMode: "hide",
           onCopyItem: handleDuplicateItem,
           userPreferenceTable: "equipmentTable",
+          onRowClick: handleOpenDetails,
         }}
       />
       <Loading

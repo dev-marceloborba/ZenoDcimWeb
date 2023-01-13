@@ -14,6 +14,8 @@ const mqttConfig = {
   connectTimeout: 1000 * 2,
 };
 
+export const signalrUrl = process.env.REACT_APP_SIGNALR_SERVER ?? "";
+
 export default environment;
 
 export { brokerUrl, mqttConfig };

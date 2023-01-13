@@ -107,6 +107,11 @@ export const automationRoutes: RouteObject[] = [
     title: "Equipamentos",
   },
   {
+    path: automationPaths.equipmentDetails.fullPath,
+    element: <EquipmentDetailsPage />,
+    title: "Detalhes",
+  },
+  {
     path: automationPaths.equipmentParametersAssociation.fullPath,
     element: <EquipmentParametersAssociation />,
     title: "Associação de parâmetros",

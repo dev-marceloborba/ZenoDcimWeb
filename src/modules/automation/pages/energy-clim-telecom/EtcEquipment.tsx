@@ -18,10 +18,13 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import { useModal } from "mui-modal-provider";
 import { EquipmentCardModel } from "modules/automation/models/equipment-card-model";
 import TabPanel from "modules/shared/components/TabPanel";
+import Card3ParameterEquipmentSettings from "modules/automation/components/card-3-parameter-equipment-settings/Card3ParameterEquipmentSettings";
+import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
 
 const EtcEquipment: React.FC = () => {
-  const { data: equipments } = useFindAllEquipmentsQuery();
   const { params, navigate, path } = useRouter();
+  const [findParameters, { data: parameters }] =
+    useFindEquipmentParametersByEquipmentIdMutation();
   const { data: equipmentsCards, isLoading: isLoadingFetch } =
     useLoadEquipmentCardsQuery(params.roomId!);
   const [updateCard, { isLoading: isLoadingUpdate }] =
@@ -29,27 +32,21 @@ const EtcEquipment: React.FC = () => {
   const { showModal } = useModal();
   const toast = useToast();
 
-  const onShowSettingsModal = (
+  console.log(params);
+  console.log(parameters);
+
+  const onShowSettingsModal = async (
     id: string,
     name: string,
     parameter1: any,
     parameter2: any,
     parameter3: any
   ) => {
-    const modal = showModal(Card3ParametersSettings, {
+    await findParameters(id).unwrap();
+    const modal = showModal(Card3ParameterEquipmentSettings, {
       id,
       name,
       title: "Configuração do Card",
-      equipments:
-        equipments?.map((equipment) => ({
-          id: equipment.id,
-          label: equipment.component,
-          parameters:
-            equipment.equipmentParameters?.map((parameter) => ({
-              id: parameter.id,
-              label: parameter.name,
-            })) ?? [],
-        })) ?? [],
       onSave: async (state, id) => {
         modal.hide();
         try {

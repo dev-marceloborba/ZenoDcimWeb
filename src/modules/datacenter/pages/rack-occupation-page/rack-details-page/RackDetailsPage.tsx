@@ -581,7 +581,7 @@ const OccupiedSlot: React.FC<OccupiedSlotProps> = ({
             >
               {rackView === "back"
                 ? position.left + idx
-                : rackSize - position.left - idx}
+                : rackSize - position.left - idx + 1}
             </Avatar>
             <Avatar
               sx={{
@@ -593,7 +593,7 @@ const OccupiedSlot: React.FC<OccupiedSlotProps> = ({
             >
               {rackView === "front"
                 ? position.right + idx
-                : rackSize - position.left - idx}
+                : rackSize - position.left - idx + 1}
             </Avatar>
           </Stack>
         </Paper>

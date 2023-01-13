@@ -60,6 +60,10 @@ export const automationPaths = {
     fullPath: "settings/equipments",
     shortPath: "equipments",
   },
+  equipmentDetails: {
+    fullPath: "settings/equipments/details/:equipmentId",
+    shortPath: "details",
+  },
   equipmentForm: {
     fullPath: "settings/equipments/form",
     shortPath: "form",
