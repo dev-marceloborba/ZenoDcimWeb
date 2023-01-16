@@ -95,8 +95,6 @@ export default function VirtualParameterForm() {
     if (mode === "edit" && virtualParameter) {
       setValue("name", virtualParameter.name);
       setValue("unit", virtualParameter.unit);
-      setValue("lowLimit", virtualParameter.lowLimit);
-      setValue("highLimit", virtualParameter.highLimit);
       setValue("scale", virtualParameter.scale);
       setValue("expression", virtualParameter.expression);
     }
@@ -106,10 +104,7 @@ export default function VirtualParameterForm() {
     if (isSubmitSuccessful) {
       reset({
         expression: "",
-        lowLowLimit: 0,
-        lowLimit: 0,
-        highLimit: 0,
-        highHighLimit: 0,
+
         name: "",
         scale: 0,
         unit: "",
@@ -130,10 +125,6 @@ export default function VirtualParameterForm() {
         >
           <ControlledTextInput label="Parâmetro" name="name" />
           <ControlledTextInput label="Unidade" name="unit" />
-          <ControlledTextInput label="Limite muito baixo" name="lowLowLimit" />
-          <ControlledTextInput label="Limite baixo" name="lowLimit" />
-          <ControlledTextInput label="Limite alto" name="highLimit" />
-          <ControlledTextInput label="Limite muito alto" name="highHighLimit" />
           <ControlledTextInput label="Escala" name="scale" defaultValue={1} />
           <ControlledTextInput label="Expressão" name="expression" />
           <SubmitButton disabled={!isValid} label="Salvar" />

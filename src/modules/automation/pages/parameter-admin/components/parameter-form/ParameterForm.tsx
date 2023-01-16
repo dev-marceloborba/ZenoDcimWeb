@@ -63,10 +63,6 @@ export default function ParameterForm() {
       if (mode === "edit") {
         setValue("name", data?.name);
         setValue("unit", data?.unit);
-        setValue("lowLowLimit", data?.lowLowLimit);
-        setValue("lowLimit", data?.lowLimit);
-        setValue("highLimit", data?.highLimit);
-        setValue("highHighLimit", data?.highHighLimit);
         setValue("scale", data?.scale);
       }
     }

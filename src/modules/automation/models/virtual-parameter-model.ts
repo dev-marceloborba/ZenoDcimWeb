@@ -2,10 +2,6 @@ export interface VirtualParameterViewModel {
   name: string;
   unit: string;
   scale: number;
-  lowLowLimit: number;
-  lowLimit: number;
-  highLimit: number;
-  highHighLimit: number;
   expression: string;
 }
 
