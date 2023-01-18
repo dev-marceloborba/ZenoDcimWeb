@@ -45,10 +45,6 @@ export const parameterPlainToParameterViewModel = (
 ) => {
   return data.map<ParameterViewModel>((d) => ({
     name: d.parameter,
-    lowLowLimit: 0,
-    lowLimit: d.min,
-    highLimit: d.max,
-    highHighLimit: 0,
     scale: 1,
     unit: d.unit,
     groupId,

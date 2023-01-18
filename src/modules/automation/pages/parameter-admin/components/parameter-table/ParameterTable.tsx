@@ -109,22 +109,6 @@ const columns: ColumnHeader[] = [
     label: "Unidade",
   },
   {
-    name: "lowLowLimit",
-    label: "Limite muito baixo",
-  },
-  {
-    name: "lowLimit",
-    label: "Limite baixo",
-  },
-  {
-    name: "highLimit",
-    label: "Limite alto",
-  },
-  {
-    name: "highHighLimit",
-    label: "Limite muito alto",
-  },
-  {
     name: "scale",
     label: "Escala",
   },

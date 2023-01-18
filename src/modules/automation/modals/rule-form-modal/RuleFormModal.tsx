@@ -15,6 +15,7 @@ import {
   EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
 import { useEffect } from "react";
+import { EAlarmType } from "modules/automation/models/alarm-model";
 
 type RuleFormModalProps = {
   mode?: FormMode;
@@ -57,6 +58,7 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
           data?.conditional as string
         ),
         priority: getPriorityEnumFromDescription(data?.priority as string),
+        type: getAlarmTypeEnumFromDescription(data?.type as string),
       });
     }
   }, [data, mode, reset]);
@@ -149,6 +151,7 @@ type FormProps = {
   priority: number;
   conditional: number;
   setpoint: number;
+  type: number;
   equipmentParameterId: string;
   enableNotification?: boolean;
   enableEmail?: boolean;
@@ -158,6 +161,7 @@ const validationSchema: SchemaOf<FormProps> = object().shape({
   name: string().required("Nome é obrigatório"),
   priority: number().required("Prioridade é obrigatória"),
   conditional: number().required("Condição é obrigatória"),
+  type: number().required("Tipo é obrigatório"),
   setpoint: number().required("Set point é obrigatório"),
   equipmentParameterId: string().required("Parâmetro é obrigatório"),
   enableNotification: boolean().notRequired(),
@@ -190,4 +194,8 @@ function getPriorityEnumFromDescription(description: string): EAlarmPriority {
     default:
       return EAlarmPriority.LOW;
   }
+}
+
+function getAlarmTypeEnumFromDescription(description: string) {
+  return description === "Alarme" ? EAlarmType.ALARM : EAlarmType.EVENT;
 }

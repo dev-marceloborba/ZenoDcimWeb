@@ -34,14 +34,6 @@ const columns: ColumnHeader[] = [
     label: "Unidade",
   },
   {
-    name: "lowLimit",
-    label: "Limite inferior",
-  },
-  {
-    name: "highLimit",
-    label: "Limite superior",
-  },
-  {
     name: "scale",
     label: "Escala",
   },

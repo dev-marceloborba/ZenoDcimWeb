@@ -6,9 +6,7 @@ import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAd
 import { automationPaths } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcFloorv2";
 import Cage from "../pages/cage/Cage";
-import Rack from "../pages/rack/Rack";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
-import EquipmentParametersAssociation from "../pages/equipment-admin/components/equipment-parameters-association/EquipmentParametersAssociation";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
 import EquipmentParametersPage from "../pages/parameter-admin/EquipmentParametersPagev2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
@@ -65,11 +63,6 @@ export const automationRoutes: RouteObject[] = [
     resolver: RoomResolver,
   },
   {
-    path: automationPaths.rack.fullPath,
-    element: <Rack />,
-    title: "Rack",
-  },
-  {
     path: automationPaths.parameterHistory.fullPath,
     element: <ParameterHistoryPage />,
     title: "Histórico de parâmetros",
@@ -113,13 +106,7 @@ export const automationRoutes: RouteObject[] = [
     title: "Detalhes",
   },
   {
-    path: automationPaths.equipmentParametersAssociation.fullPath,
-    element: <EquipmentParametersAssociation />,
-    title: "Associação de parâmetros",
-  },
-  {
     path: automationPaths.parameterManagement.fullPath,
-    // element: <ParameterAdmin />,
     element: <EquipmentParametersPage />,
     title: "Parâmetros",
   },

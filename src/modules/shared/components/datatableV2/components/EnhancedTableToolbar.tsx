@@ -10,9 +10,11 @@ import SearchInput from "../components/SearchInput";
 import { EnhancedTableToolbarProps } from "../types/datatable.types";
 import DeleteButton from "../../DeleteButton";
 import IconButton from "@mui/material/IconButton";
+import Menu from "modules/shared/components/menu/Menu";
 // icons
 import SearchIcon from "@mui/icons-material/Search";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ColumnMenu from "./ColumnMenu";
 
 const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
   numSelected,
@@ -82,6 +84,7 @@ const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
               </IconButton>
             </Tooltip>
           </Visible>
+          {/* <ColumnMenu /> */}
         </Row>
       )}
     </Toolbar>

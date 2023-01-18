@@ -1,4 +1,4 @@
-import { AlarmRulesModel } from "./alarm-rule-model";
+import { AlarmRuleEditor, AlarmRulesModel } from "./alarm-rule-model";
 
 export interface SiteViewModel {
   name: string;
@@ -124,6 +124,18 @@ export interface EquipmentParameterViewModel {
   expression?: string;
 }
 
+export interface EquipmentParameterEditor {
+  id: string;
+  equipmentId: string;
+  name: string;
+  unit: string;
+  scale: number;
+  dataSource: string;
+  address: string;
+  expression?: string;
+  alarmRules?: AlarmRuleEditor[];
+}
+
 export interface UpdateEquipmentParameterViewModel {
   id: string;
   name: string;
@@ -139,6 +151,7 @@ export interface EquipmentParameterModel extends EquipmentParameterViewModel {
   alarmRules?: AlarmRulesModel;
   pathname?: string;
   equipment: EquipmentModel;
+  discriminator: string;
 }
 
 export type MultipleEquipmentsViewModel = {

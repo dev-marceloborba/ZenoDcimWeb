@@ -76,10 +76,6 @@ export default function ParameterForm() {
       reset({
         name: "",
         unit: "",
-        lowLowLimit: 0,
-        lowLimit: 0,
-        highLimit: 0,
-        highHighLimit: 0,
         scale: 0,
       });
     }
@@ -100,10 +96,6 @@ export default function ParameterForm() {
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
-          <ControlledTextInput name="lowLowLimit" label="Limite muito baixo" />
-          <ControlledTextInput name="lowLimit" label="Limite baixo" />
-          <ControlledTextInput name="highLimit" label="Limite alto" />
-          <ControlledTextInput name="highHighLimit" label="Limite muito alto" />
           <ControlledTextInput name="scale" label="Escala" defaultValue={1} />
           <SubmitButton disabled={!isValid} label="Salvar" />
         </FormProvider>
@@ -116,9 +108,5 @@ export default function ParameterForm() {
 const validationSchema = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
-  lowLowLimit: number().notRequired(),
-  lowLimit: number().notRequired(),
-  highLimit: number().notRequired(),
-  highHighLimit: number().notRequired(),
   scale: number().required("Escala é obrigatória"),
 });

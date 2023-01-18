@@ -6,9 +6,11 @@ import {
 } from "modules/alarms/models/alarm-statistics.model";
 import { RootState } from "modules/core/store";
 import {
+  AlarmFilterViewModel,
   AlarmModel,
   AlarmTableViewModel,
   AlarmViewModel,
+  EAlarmType,
 } from "../models/alarm-model";
 
 export const alarmApi = createApi({
@@ -25,12 +27,17 @@ export const alarmApi = createApi({
   }),
   tagTypes: ["AlarmModel"],
   endpoints: (builder) => ({
-    findAllAlarms: builder.mutation<AlarmTableViewModel[], AlarmViewModel>({
+    findAllAlarms: builder.mutation<
+      AlarmTableViewModel[],
+      AlarmFilterViewModel
+    >({
       query: (params) => ({
         url: "v1/alarms",
         params: {
           initialDate: params.initialDate?.toUTCString(),
           finalDate: params.finalDate?.toUTCString(),
+          priority: params.priority,
+          type: params.type,
         },
       }),
       transformResponse: (baseValue: AlarmModel[]) => {
@@ -48,6 +55,11 @@ export const alarmApi = createApi({
             ruleId: alarm.alarmRule.id,
             rule: alarm.alarmRule.name,
             acked: false,
+            priority: alarm.alarmRule.priority,
+            type:
+              (alarm.type as EAlarmType) === EAlarmType.ALARM
+                ? "Alarme"
+                : "Evento",
           };
         });
       },

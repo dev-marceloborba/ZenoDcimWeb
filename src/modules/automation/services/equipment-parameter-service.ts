@@ -7,6 +7,7 @@ import {
   MultipleEquipmentParameterViewModel,
   MultipleEquipmentParameterModel,
   UpdateEquipmentParameterViewModel,
+  EquipmentParameterEditor,
 } from "modules/automation/models/automation-model";
 import { RootState } from "modules/core/store";
 
@@ -26,7 +27,7 @@ export const equipmentParametersApi = createApi({
   endpoints: (builder) => ({
     createEquipmentParameter: builder.mutation<
       ApiResponseModel<EquipmentParameterModel>,
-      EquipmentParameterViewModel
+      EquipmentParameterEditor
     >({
       query: (params) => ({
         url: "v1/data-center/building/floor/room/equipment/parameter",

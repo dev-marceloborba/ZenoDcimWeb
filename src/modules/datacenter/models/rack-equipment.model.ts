@@ -9,16 +9,16 @@ export interface RackEquipmentModel {
   function: string;
   initialPosition: number;
   finalPosition: number;
-  rackMountType: ERackMount | string;
-  rackEquipmentOrientation: ERackEquipmentOrientation | string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
   size: string;
   occupation: number;
   power: number;
   weight: number;
-  status: EEquipmentStatus | string;
+  status: EEquipmentStatus;
   description: string;
   rack: RackModel;
-  rackEquipmentType: ERackEquipmentType | string;
+  rackEquipmentType: ERackEquipmentType;
 }
 
 export interface CreateRackEquipmentViewModel {

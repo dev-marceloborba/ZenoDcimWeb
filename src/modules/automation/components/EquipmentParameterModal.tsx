@@ -58,8 +58,6 @@ const EquipmentParameterModal: React.FC<EquipmentParameterModalProps> = ({
           <FormProvider {...methods}>
             <ControlledTextInput name="name" label="Parâmetro" />
             <ControlledTextInput name="unit" label="Unidade" />
-            <ControlledTextInput name="lowLimit" label="Limite inferior" />
-            <ControlledTextInput name="highLimit" label="Limite superior" />
             <ControlledTextInput name="scale" label="Escala" />
             <ControlledTextInput name="dataSource" label="Fonte de dados" />
             <ControlledTextInput name="address" label="Endereço" />
@@ -74,8 +72,6 @@ const EquipmentParameterModal: React.FC<EquipmentParameterModalProps> = ({
 const validationSchema = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
-  lowLimit: number().required("Limite mínimo é obrigatório"),
-  highLimit: number().required("Limite máximo é obrigatório"),
   scale: number().required("Escala é obrigatória"),
   dataSource: string().required("Fonte de dados é obrigatória"),
   address: string().required("Endereço é obrigatório"),

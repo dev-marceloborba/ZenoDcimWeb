@@ -5,18 +5,27 @@ import Form, { FormMode } from "modules/shared/components/Form";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { array, number, object, SchemaOf, string } from "yup";
-import { EquipmentParameterModel } from "modules/automation/models/automation-model";
+import {
+  EquipmentParameterEditor,
+  EquipmentParameterModel,
+} from "modules/automation/models/automation-model";
 import React, { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import RemoveButton from "modules/shared/components/remove-button/RemoveButton";
 import AddButton from "modules/shared/components/add-button/AddButton";
+import {
+  AlarmRuleEditor,
+  EAlarmConditonal,
+  EAlarmPriority,
+} from "modules/automation/models/alarm-rule-model";
+import { EAlarmType } from "modules/automation/models/alarm-model";
 
 type Props = {
   mode?: FormMode;
   data?: EquipmentParameterModel;
-  onConfirm(data: any): void;
+  onConfirm(data: EquipmentParameterEditor): void;
 } & ModalProps;
 
 const EquipmentParameterFormModal: React.FC<Props> = ({
@@ -32,13 +41,13 @@ const EquipmentParameterFormModal: React.FC<Props> = ({
       name: "",
       scale: 0,
       unit: "",
-      trigger: [],
+      alarmRules: [],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: methods.control,
-    name: "trigger",
+    name: "alarmRules",
   });
 
   const {
@@ -47,16 +56,39 @@ const EquipmentParameterFormModal: React.FC<Props> = ({
     formState: { isValid },
   } = methods;
 
-  const onSubmit = (formData: any) => {
-    console.log(formData);
-    // onConfirm(formData);
-  };
+  const onSubmit = (formData: FormProps) =>
+    onConfirm({
+      ...formData,
+      id: "",
+      equipmentId: "",
+      dataSource: "",
+      address: "",
+      alarmRules:
+        formData.alarmRules.map<AlarmRuleEditor>((x) => ({
+          ...x,
+          id: "",
+          enableEmail: false,
+          enableNotification: false,
+        })) ?? [],
+    });
 
   const onRemove = (index: number) => remove(index);
 
   useEffect(() => {
     if (mode === "edit") {
-      reset({ ...data });
+      reset({
+        name: data?.name,
+        scale: data?.scale,
+        unit: data?.unit,
+        alarmRules:
+          data?.alarmRules?.map<AlarmRule>((x) => ({
+            name: x.name,
+            conditional: x.conditional as EAlarmConditonal,
+            priority: x.priority as EAlarmPriority,
+            setpoint: x.setpoint,
+            type: x.type as EAlarmType,
+          })) ?? [],
+      });
     }
   }, [data, mode, reset]);
 
@@ -109,11 +141,11 @@ const EquipmentParameterFormModal: React.FC<Props> = ({
               type="button"
               onClick={() =>
                 append({
-                  value: 0,
-                  comparator: 0,
+                  setpoint: 0,
+                  conditional: 0,
                   type: 0,
-                  severity: 0,
-                  message: "",
+                  priority: 0,
+                  name: "",
                 })
               }
             />
@@ -131,13 +163,15 @@ type FormProps = {
   name: string;
   unit: string;
   scale: number;
-  trigger: {
-    value: number;
-    comparator: number;
-    type: number;
-    severity: number;
-    message: string;
-  }[];
+  alarmRules: AlarmRule[];
+};
+
+type AlarmRule = {
+  setpoint: number;
+  conditional: number;
+  type: number;
+  priority: number;
+  name: string;
 };
 
 const validationSchema: SchemaOf<FormProps> = object().shape({
@@ -146,13 +180,13 @@ const validationSchema: SchemaOf<FormProps> = object().shape({
   scale: number().required("Escala é obrigatória"),
   // address: string().required("Endereço é obrigatório"),
   // dataSource: string().required("Fonte de dados é obrigatório"),
-  trigger: array(
+  alarmRules: array(
     object().shape({
-      value: number().required("Valor é obrigatório"),
-      comparator: number().required("Comparador é obrigatório"),
+      setpoint: number().required("Valor é obrigatório"),
+      conditional: number().required("Comparador é obrigatório"),
       type: number().required("Tipo é obrigatório"),
-      severity: number().required("Severidade é obrigatório"),
-      message: string().required("Mensagem é obrigatória"),
+      priority: number().required("Severidade é obrigatório"),
+      name: string().required("Mensagem é obrigatória"),
     })
   ),
 });
@@ -172,11 +206,14 @@ const AlarmSetting: React.FC<AlarmSettingProps> = ({ index, onRemove }) => {
     >
       <Grid container columnSpacing={1} rowSpacing={1}>
         <Grid item md={3}>
-          <ControlledTextInput name={`trigger.${index}.value`} label="Valor" />
+          <ControlledTextInput
+            name={`alarmRules.${index}.setpoint`}
+            label="Valor"
+          />
         </Grid>
         <Grid item md={3}>
           <ControlledTextInput
-            name={`trigger.${index}.comparator`}
+            name={`alarmRules.${index}.conditional`}
             label="Comparador"
             items={[
               {
@@ -204,7 +241,7 @@ const AlarmSetting: React.FC<AlarmSettingProps> = ({ index, onRemove }) => {
         </Grid>
         <Grid item md={3}>
           <ControlledTextInput
-            name={`trigger.${index}.type`}
+            name={`alarmRules.${index}.type`}
             label="Alarme/Evento"
             items={[
               {
@@ -220,7 +257,7 @@ const AlarmSetting: React.FC<AlarmSettingProps> = ({ index, onRemove }) => {
         </Grid>
         <Grid item md={3}>
           <ControlledTextInput
-            name={`trigger.${index}.severity`}
+            name={`alarmRules.${index}.priority`}
             label="Severidade"
             items={[
               {
@@ -244,7 +281,7 @@ const AlarmSetting: React.FC<AlarmSettingProps> = ({ index, onRemove }) => {
         </Grid>
         <Grid item md={12}>
           <ControlledTextInput
-            name={`trigger.${index}.message`}
+            name={`alarmRules.${index}.name`}
             label="Mensagem"
             multiline
             rows={2}

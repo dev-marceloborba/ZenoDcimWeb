@@ -76,8 +76,6 @@ export interface EquipmentParameterRequest {
   equipmentId?: string;
   name: string;
   unit: string;
-  lowLimit: number;
-  highLimit: number;
   scale: number;
   dataSource: string;
   address: string;
@@ -120,8 +118,6 @@ export interface EquipmentParameterGroupResponse
 export interface ParameterRequest {
   name: string;
   unit: string;
-  lowLimit: number;
-  highLimit: number;
   scale: number;
   groupId: string;
 }

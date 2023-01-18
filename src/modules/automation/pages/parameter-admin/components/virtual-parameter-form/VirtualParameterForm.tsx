@@ -144,9 +144,5 @@ const schemaValidation = object().shape({
   name: string().required("Nome é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   scale: number().required("Escala é obrigatória"),
-  lowLowLimit: number().notRequired(),
-  lowLimit: number().notRequired(),
-  highLimit: number().notRequired(),
-  highHighLimit: number().notRequired(),
   expression: string().required("Expressão é obrigatória"),
 });

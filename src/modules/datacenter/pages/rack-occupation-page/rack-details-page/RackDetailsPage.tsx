@@ -24,8 +24,15 @@ import { useFindRackByIdQuery } from "modules/datacenter/services/rack.service";
 import {
   useCreateRackEquipmentMutation,
   useFindRackEquipmentByIdMutation,
+  useUpdateRackEquipmentMutation,
 } from "modules/datacenter/services/rack-equipment.service";
 import Loading from "modules/shared/components/Loading";
+import {
+  getEquipmentOrientation,
+  getEquipmentStatus,
+  getMountTypeDescription,
+  getRackEquipmentType,
+} from "./utils/rackDetailsUtils";
 
 export default function RackDetailsPage() {
   const { params } = useRouter();
@@ -106,7 +113,7 @@ export default function RackDetailsPage() {
             ),
           },
           {
-            element: <OccupationTab rack={rack} />,
+            element: <OccupationTab rack={rack} reload={() => refetch()} />,
             content: (
               <Button variant="contained" onClick={handleInsertEquipment}>
                 Inserir equipamento
@@ -122,6 +129,7 @@ export default function RackDetailsPage() {
 
 type DetailsTabProps = {
   rack: RackModel | undefined;
+  reload?(): void;
 };
 
 const DetailsTab: React.FC<DetailsTabProps> = ({ rack }) => {
@@ -190,14 +198,52 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ rack }) => {
   );
 };
 
-const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
+const OccupationTab: React.FC<DetailsTabProps> = ({ rack, reload }) => {
+  const { showModal } = useModal();
+  const toast = useToast();
   const [
     findRackEquipment,
     { data: rackEquipment, isLoading: loadingFindRack },
   ] = useFindRackEquipmentByIdMutation();
+  const [updateEquipment] = useUpdateRackEquipmentMutation();
 
   const handleSelectedEquipment = async ({ id }: RackSlotItem) => {
     await findRackEquipment(id).unwrap();
+  };
+
+  const handleEditEquipment = () => {
+    const modal = showModal(RackEquipmentFormModal, {
+      title: "Alterar equipamento",
+      mode: "edit",
+      data: rackEquipment,
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateEquipment({
+            ...formData,
+            id: rackEquipment?.id ?? "",
+          }).unwrap();
+          reload!();
+          await findRackEquipment(rackEquipment?.id ?? "").unwrap();
+          toast.open({ message: "Equipamento de rack alterado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao alterar equipamento de rack",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+      PaperProps: {
+        sx: {
+          minWidth: "650px",
+          maxWidth: "900px",
+        },
+      },
+    });
   };
 
   return (
@@ -263,7 +309,9 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
                 },
                 {
                   title: "Montagem",
-                  description: rackEquipment.rackMountType as string,
+                  description: getMountTypeDescription(
+                    rackEquipment.rackMountType
+                  ),
                   defaultSize: 4,
                 },
                 {
@@ -288,12 +336,14 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
                 },
                 {
                   title: "Orientação",
-                  description: rackEquipment.rackEquipmentOrientation as string,
+                  description: getEquipmentOrientation(
+                    rackEquipment.rackEquipmentOrientation
+                  ),
                   defaultSize: 4,
                 },
                 {
                   title: "Status",
-                  description: rackEquipment.status as string,
+                  description: getEquipmentStatus(rackEquipment.status),
                   defaultSize: 4,
                 },
               ]}
@@ -319,7 +369,9 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
                 },
                 {
                   title: "Tipo",
-                  description: rackEquipment.rackEquipmentType as string,
+                  description: getRackEquipmentType(
+                    rackEquipment.rackEquipmentType
+                  ),
                   defaultSize: 4,
                 },
                 {
@@ -329,6 +381,13 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack }) => {
                 },
               ]}
             />
+            <Button
+              variant="contained"
+              onClick={handleEditEquipment}
+              sx={{ mt: 1 }}
+            >
+              Editar
+            </Button>
           </div>
         ) : null}
       </Grid>

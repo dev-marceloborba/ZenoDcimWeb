@@ -3,13 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
 
-export type AlarmStatus =
-  | "online"
-  | "offline"
-  | "normal"
-  | "alert"
-  | "danger"
-  | "critical";
+export type AlarmStatus = "highSeverity" | "mediumSeverity" | "lowSeverity";
 
 export type AlarmIndicatorProps = {
   description?: string;
@@ -38,10 +32,9 @@ const AlarmIndicator: React.FC<AlarmIndicatorProps> = ({ ...props }) => {
         to: routeDestinationPath,
       })}
     >
-      {status === "normal" ? <OkLevelIndicator /> : null}
-      {status === "alert" ? <TwoLevelIndicator /> : null}
-      {status === "danger" ? <OneLevelIndicator /> : null}
-      {status === "critical" ? <ThreeLevelIndicator /> : null}
+      {status === "mediumSeverity" ? <TwoLevelIndicator /> : null}
+      {status === "highSeverity" ? <OneLevelIndicator /> : null}
+      {status === "lowSeverity" ? <ThreeLevelIndicator /> : null}
       {description ? (
         <Typography sx={{ ml: 1 }}>
           {value ? `${description}: ${value} ${unit}` : description}
@@ -53,37 +46,32 @@ const AlarmIndicator: React.FC<AlarmIndicatorProps> = ({ ...props }) => {
 
 export default AlarmIndicator;
 
-const OkLevelIndicator: React.FC = () => (
-  <Box
-    sx={{
-      width: "16px",
-      height: "16px",
-      borderRadius: "100%",
-      backgroundColor: "green",
-      marginLeft: "3px",
-      marginRight: "4px",
-    }}
-  />
-);
-
 const OneLevelIndicator: React.FC = () => {
   return (
-    <Box
-      sx={{
-        width: "18px",
-        height: "18px",
-        backgroundColor: "red",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+    <div
+      style={{
+        display: "inline-block",
+        width: 0,
+        height: 0,
+        borderStyle: "solid",
+        borderWidth: "10px 10px 10px 10px",
+        borderColor: "red",
         fontSize: 12,
         color: "#000",
-        marginRight: "4px",
+        position: "relative",
         marginLeft: "2px",
       }}
     >
-      1
-    </Box>
+      <div
+        style={{
+          position: "absolute",
+          left: -3,
+          top: -10,
+        }}
+      >
+        1
+      </div>
+    </div>
   );
 };
 

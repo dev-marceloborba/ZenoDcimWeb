@@ -50,6 +50,10 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
     if (mode === "edit") {
       reset({
         ...data,
+        name: data?.baseEquipment.name,
+        serialNumber: data?.baseEquipment.serialNumber,
+        manufactor: data?.baseEquipment.manufactor,
+        model: data?.baseEquipment.model,
         rackMountType: data?.rackMountType as ERackMount,
         rackEquipmentOrientation:
           data?.rackEquipmentOrientation as ERackEquipmentOrientation,

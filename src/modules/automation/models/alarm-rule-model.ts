@@ -1,11 +1,24 @@
+import { EAlarmType } from "./alarm-model";
 import { EquipmentParameterModel } from "./automation-model";
 
 export interface AlarmRuleViewModel {
   name: string;
   priority: EAlarmPriority | string;
   conditional: EAlarmConditonal | string;
+  type: EAlarmType | string;
   setpoint: number;
   equipmentParameterId: string;
+  enableNotification: boolean;
+  enableEmail: boolean;
+}
+
+export interface AlarmRuleEditor {
+  id: string;
+  name: string;
+  priority: EAlarmPriority | string;
+  conditional: EAlarmConditonal | string;
+  type: EAlarmType | string;
+  setpoint: number;
   enableNotification: boolean;
   enableEmail: boolean;
 }

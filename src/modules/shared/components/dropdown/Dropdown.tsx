@@ -5,15 +5,15 @@ type DropdownProps = { items: MenuItems } & TextFieldProps;
 
 type MenuItems = {
   value: number;
-  description: string;
+  label: string;
 }[];
 
 const Dropdown: React.FC<DropdownProps> = ({ items, ...props }) => {
   return (
-    <TextField variant="outlined" defaultValue="" {...props} select>
+    <TextField variant="outlined" defaultValue="" {...props} select fullWidth>
       {items.map((item) => (
         <MenuItem key={item.value} value={item.value}>
-          {item.description}
+          {item.label}
         </MenuItem>
       ))}
     </TextField>

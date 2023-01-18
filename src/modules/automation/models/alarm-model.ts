@@ -12,6 +12,7 @@ export interface AlarmModel {
   pathname: string;
   priority: EAlarmPriority;
   notificationEnabled: boolean;
+  type: EAlarmType | string;
   alarmRule: {
     id: string;
     name: string;
@@ -53,6 +54,7 @@ export interface AlarmTableViewModel {
   acked: boolean;
   status: EAlarmStatus;
   priority: EAlarmPriority;
+  type: EAlarmType | string;
 }
 
 export enum EAlarmStatus {
@@ -61,9 +63,21 @@ export enum EAlarmStatus {
   ACKED = 3,
 }
 
+export enum EAlarmType {
+  ALARM = 0,
+  EVENT = 1,
+}
+
 export interface AlarmViewModel {
   initialDate?: Date | null;
   finalDate?: Date | null;
+}
+
+export interface AlarmFilterViewModel {
+  initialDate?: Date | null;
+  finalDate?: Date | null;
+  priority: number | null;
+  type: number | null;
 }
 
 export type AlarmZone =

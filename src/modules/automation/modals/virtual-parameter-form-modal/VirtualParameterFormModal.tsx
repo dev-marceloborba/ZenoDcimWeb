@@ -108,16 +108,6 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
               <ControlledTextInput label="Parâmetro" name="name" />
               <ControlledTextInput label="Unidade" name="unit" />
               <ControlledTextInput
-                label="Limite muito baixo"
-                name="lowLowLimit"
-              />
-              <ControlledTextInput label="Limite baixo" name="lowLimit" />
-              <ControlledTextInput label="Limite alto" name="highLimit" />
-              <ControlledTextInput
-                label="Limite muito alto"
-                name="highHighLimit"
-              />
-              <ControlledTextInput
                 label="Escala"
                 name="scale"
                 defaultValue={1}
@@ -233,9 +223,5 @@ const schemaValidation = object().shape({
   name: string().required("Nome é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   scale: number().required("Escala é obrigatória"),
-  lowLowLimit: number().notRequired(),
-  lowLimit: number().notRequired(),
-  highLimit: number().notRequired(),
-  highHighLimit: number().notRequired(),
   expression: string().required("Expressão é obrigatória"),
 });

@@ -17,17 +17,15 @@ import {
   useUpdateAlarmRuleMutation,
 } from "modules/automation/services/alarm-rule-service";
 import {
+  useCreateEquipmentParameterMutation,
   useDeleteEquipmentParameterMutation,
-  useFindEquipmentParametersByEquipmentIdQueryQuery,
   useUpdateEquipmentParameterMutation,
 } from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
-// import EquipmentFormModal from "./components/equipment-form-modal/EquipmentFormModal";
 import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/EquipmentFormModal";
 import Tabs from "modules/shared/components/tabs/Tabs";
 import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
 import { useToast } from "modules/shared/components/ToastProvider";
-import ParameterAssociationModal from "modules/automation/modals/parameter-association-modal/ParameterAssociationModal";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
 import {
@@ -35,7 +33,6 @@ import {
   EAlarmConditonal,
   EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
-import { useFindAllParameterGroupsQuery } from "modules/automation/services/parameter-group-service";
 // import CardSection from "modules/shared/components/card-section/CardSectionv2";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
@@ -46,16 +43,13 @@ const EquipmentDetailsPage: React.FC = () => {
   const { data: equipment, isLoading: isLoadingFetch } =
     useFindEquipmentByIdQueryQuery(params.equipmentId!);
 
-  const { data: parameters } =
-    useFindEquipmentParametersByEquipmentIdQueryQuery(params.equipmentId!);
-
-  const { data: groups } = useFindAllParameterGroupsQuery();
-
   const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
 
   const [createRule, { isLoading: isLoadingCreateRule }] =
     useCreateAlarmRuleMutation();
+
+  const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
 
   const { showModal } = useModal();
   const toast = useToast();
@@ -90,24 +84,27 @@ const EquipmentDetailsPage: React.FC = () => {
     });
   };
 
-  const handleOpenParameterAssociation = (equipmentId: string) => {
-    const modal = showModal(ParameterAssociationModal, {
-      title: "Associar parâmetros",
-      data: {
-        equipment: equipment?.component ?? "",
-        groups: groups ?? [],
-        parameters: parameters ?? [],
-      },
-      onConfirm: () => {
+  const handleOpenParameterAssociation = () => {
+    const modal = showModal(EquipmentParameterFormModal, {
+      title: "Novo parâmetro do equipamento",
+      onConfirm: async (formData) => {
         modal.hide();
+        try {
+          await createEquipmentParameter({
+            ...formData,
+            equipmentId: params.equipmentId!,
+          }).unwrap();
+          toast.open({ message: "Parâmetro atualizado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao adicionar parâmetro",
+            severity: "error",
+          });
+        }
       },
       onClose: () => {
         modal.hide();
-      },
-      PaperProps: {
-        sx: {
-          minWidth: "800px",
-        },
       },
     });
   };
@@ -115,7 +112,7 @@ const EquipmentDetailsPage: React.FC = () => {
   const handleShowRuleModal = () => {
     const modal = showModal(RuleFormModal, {
       title: "Nova regra",
-      parameters: parameters ?? [],
+      parameters: equipment?.equipmentParameters ?? [],
       onConfirm: async (data) => {
         modal.hide();
         try {
@@ -147,13 +144,17 @@ const EquipmentDetailsPage: React.FC = () => {
             ),
           },
           {
-            element: <ParametersTab parameters={parameters ?? []} />,
+            element: (
+              <ParametersTab
+                parameters={equipment?.equipmentParameters ?? []}
+              />
+            ),
             content: (
               <Button
                 variant="contained"
-                onClick={() => handleOpenParameterAssociation(equipment!.id)}
+                onClick={() => handleOpenParameterAssociation()}
               >
-                Associar parâmetros
+                Adicionar parâmetro
               </Button>
             ),
           },
@@ -161,7 +162,7 @@ const EquipmentDetailsPage: React.FC = () => {
             element: (
               <RulesTab
                 equipmentId={equipment?.id ?? ""}
-                parameters={parameters ?? []}
+                parameters={equipment?.equipmentParameters ?? []}
               />
             ),
             content: (
@@ -418,29 +419,16 @@ const parameterColumns: ColumnHeader[] = [
     label: "Unidade",
   },
   {
-    name: "lowLowLimit",
-    label: "Limite muito baixo",
-  },
-  {
-    name: "lowLimit",
-    label: "Limite baixo",
-  },
-  {
-    name: "highLimit",
-    label: "Limite alto",
-  },
-  {
-    name: "highHighLimit",
-    label: "Limite muito alto",
-  },
-  {
     name: "scale",
     label: "Escala",
   },
-  // {
-  //   name: "type",
-  //   label: "Tipo",
-  // },
+  {
+    name: "expression",
+    label: "Tipo",
+    renderComponent: (row: string) => (
+      <>{row?.length > 0 ? "Virtual" : "Físico"}</>
+    ),
+  },
 ];
 
 const ruleColumns: ColumnHeader[] = [

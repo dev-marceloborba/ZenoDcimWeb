@@ -43,8 +43,6 @@ const ParameterModal: React.FC<ParameterModalProps> = ({
         <FormProvider {...methods}>
           <ControlledTextInput name="name" label="Parâmetro" />
           <ControlledTextInput name="unit" label="Unidade" />
-          <ControlledTextInput name="lowLimit" label="Limite inferior" />
-          <ControlledTextInput name="highLimit" label="Limite superior" />
           <ControlledTextInput name="scale" label="Escala" />
           <ControlledTextInput
             name="groupId"
@@ -67,8 +65,6 @@ export default ParameterModal;
 const validationSchema = object().shape({
   name: string().required("Parâmetro é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
-  lowLimit: number().required("Limite inferior é obrigatório"),
-  highLimit: number().required("Limite superior é obrigatório"),
   scale: number().required("Escala é obrigatória"),
   groupId: string().required("Grupo é obrigatório"),
 });

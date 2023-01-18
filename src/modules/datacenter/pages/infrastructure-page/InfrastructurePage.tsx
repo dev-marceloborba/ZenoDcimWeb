@@ -101,7 +101,7 @@ export default function InfrastructurePage() {
   };
   const handleOpenFloorModal = () => {
     const modal = showModal(FloorFormModal, {
-      title: "Novo prédio",
+      title: "Novo andar",
       data: {
         sites,
         buildings,
