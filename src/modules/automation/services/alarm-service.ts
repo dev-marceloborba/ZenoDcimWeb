@@ -9,8 +9,6 @@ import {
   AlarmFilterViewModel,
   AlarmModel,
   AlarmTableViewModel,
-  AlarmViewModel,
-  EAlarmType,
 } from "../models/alarm-model";
 
 export const alarmApi = createApi({
@@ -56,10 +54,6 @@ export const alarmApi = createApi({
             rule: alarm.alarmRule.name,
             acked: false,
             priority: alarm.alarmRule.priority,
-            type:
-              (alarm.type as EAlarmType) === EAlarmType.ALARM
-                ? "Alarme"
-                : "Evento",
           };
         });
       },

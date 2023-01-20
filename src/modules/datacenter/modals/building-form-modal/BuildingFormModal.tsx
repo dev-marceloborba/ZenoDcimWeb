@@ -1,5 +1,5 @@
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
@@ -30,30 +30,15 @@ const BuildingFormModal: React.FC<FormProps> = ({
   const methods = useForm<BuildingViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: data?.model,
   });
 
   const {
     handleSubmit,
-    reset,
-    formState: { isValid, isSubmitSuccessful },
+    formState: { isValid },
   } = methods;
 
   const onSubmit: SubmitHandler<BuildingViewModel> = (data) => onConfirm(data);
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({
-        name: "",
-        siteId: "",
-      });
-    }
-  }, [isSubmitSuccessful, reset]);
-
-  useEffect(() => {
-    if (mode === "edit") {
-      reset({ ...data?.model });
-    }
-  }, [data?.model, mode, reset]);
 
   return (
     <Modal {...props}>

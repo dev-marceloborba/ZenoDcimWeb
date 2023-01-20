@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
 import useRouter from "modules/core/hooks/useRouter";
 import DataTable, {
   ColumnHeader,
@@ -11,12 +15,17 @@ import Loading from "modules/shared/components/Loading";
 import Row from "modules/shared/components/Row";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
-import {
-  useFindMeasuresByParameterMutation,
-  useFindMeasureStatisticsMutation,
-} from "modules/automation/services/history-service";
+import { useFindMeasuresByParameterMutation } from "modules/automation/services/history-service";
 import ParameterChart from "./components/parameter-chart/ParameterChart";
 import { useFindEquipmentParameterByIdQueryQuery } from "modules/automation/services/equipment-parameter-service";
+import Tabs from "modules/shared/components/tabs/Tabs";
+import { EquipmentParameterModel } from "modules/automation/models/automation-model";
+import CardSection from "modules/shared/components/card-section/CardSectionv3";
+import {
+  getAlarmConditionalFromEnum,
+  getAlarmPriorityFromEnum,
+  getAlarmTypeFromEnum,
+} from "modules/alarms/utils/alarmUtils";
 
 type FilterState = {
   initialDate: Date | null;
@@ -24,91 +33,24 @@ type FilterState = {
 };
 
 export default function ParameterHistoryPage() {
-  const [filter, setFilter] = useState<FilterState>({
-    initialDate: addDaysToDate(new Date(), -7),
-    finalDate: new Date(),
-  });
   const { params } = useRouter();
-
-  const [findMeasuresByParameter, { data: measures, isLoading }] =
-    useFindMeasuresByParameterMutation();
-  const [findStatistics, { data: statistics }] =
-    useFindMeasureStatisticsMutation();
-
-  const { data: parameter } = useFindEquipmentParameterByIdQueryQuery(
-    params.equipmentParameterId!
-  );
-
-  const handleChangeInitialDate = (date: Date | null) => {
-    setFilter({ ...filter, initialDate: date });
-  };
-
-  const handleChangeFinalDate = (date: Date | null) => {
-    setFilter({ ...filter, finalDate: date });
-  };
-
-  useEffect(() => {
-    async function fetchMeasures() {
-      await findMeasuresByParameter({
-        parameter: parameter?.name,
-        initialDate: filter.initialDate,
-        finalDate: filter.finalDate,
-      }).unwrap();
-    }
-    fetchMeasures();
-  }, [
-    filter.finalDate,
-    filter.initialDate,
-    findMeasuresByParameter,
-    parameter?.name,
-  ]);
-
-  useEffect(() => {
-    async function fetchStatistcs() {
-      await findStatistics({
-        name: parameter?.name ?? "",
-        initialDate: filter.initialDate,
-        finalDate: filter.finalDate,
-      });
-    }
-    fetchStatistcs();
-  }, [filter.finalDate, filter.initialDate, findStatistics, parameter?.name]);
-
-  console.log(statistics);
-
+  const { data: parameter, isLoading } =
+    useFindEquipmentParameterByIdQueryQuery(params.equipmentParameterId!);
   return (
     <HeroContainer title="Histórico de parâmetro">
-      <Row sx={{ mb: 2 }}>
-        <DateTimePicker
-          label="Data inicial"
-          value={filter.initialDate}
-          onChange={() => {}}
-          renderInput={(params) => <TextField {...params} />}
-          onAccept={handleChangeInitialDate}
-        />
-        <DateTimePicker
-          label="Data final"
-          value={filter.finalDate}
-          onChange={() => {}}
-          renderInput={(params) => <TextField {...params} sx={{ ml: 1 }} />}
-          onAccept={handleChangeFinalDate}
-        />
-      </Row>
-      <Grid container columnSpacing={1}>
-        <Grid item md={6}>
-          <DataTable
-            title={parameter?.name ?? ""}
-            rows={measures ?? []}
-            columns={columns}
-          />
-        </Grid>
-        <Grid item md={6}>
-          <ParameterChart
-            measures={measures ?? []}
-            description={parameter?.name ?? ""}
-          />
-        </Grid>
-      </Grid>
+      <Tabs
+        mode="horizontal"
+        tabLabels={["Detalhes", "Histórico"]}
+        tabItems={[
+          {
+            element: <DetailsTab parameter={parameter} />,
+            content: <Button variant="contained">Editar parâmetro</Button>,
+          },
+          {
+            element: <HistorianTab parameter={parameter} />,
+          },
+        ]}
+      />
       <Loading open={isLoading} />
     </HeroContainer>
   );
@@ -129,3 +71,174 @@ const columns: ColumnHeader[] = [
     customFunction: (row) => getTimeStampFormat(row),
   },
 ];
+
+type DetailsTabProps = {
+  parameter: EquipmentParameterModel | undefined;
+};
+
+const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
+  return (
+    <>
+      <CardSection
+        title="Dados do parâmetro"
+        items={[
+          {
+            title: "Título",
+            description: parameter?.name,
+          },
+          {
+            title: "Unidade",
+            description: parameter?.unit,
+          },
+          {
+            title: "Escala",
+            description: parameter?.scale.toString(),
+          },
+        ]}
+      />
+      {parameter?.alarmRules?.map((alarmRule, idx) => (
+        // <CardSection
+        //   sx={{ my: 1 }}
+        //   key={alarmRule.id}
+        //   title="Trigger"
+        //   items={[
+        //     {
+        //       title: "Tipo",
+        //       description: alarmRule.type as string,
+        //     },
+        //   ]}
+        // />
+        <TriggerDetails
+          key={alarmRule.id}
+          index={idx}
+          value={alarmRule.setpoint}
+          message={alarmRule.name}
+          comparator={getAlarmConditionalFromEnum(alarmRule.conditional)}
+          severity={getAlarmPriorityFromEnum(alarmRule.priority)}
+          type={getAlarmTypeFromEnum(alarmRule.type)}
+        />
+      ))}
+    </>
+  );
+};
+
+type HistorianTabProps = {
+  parameter: EquipmentParameterModel | undefined;
+};
+
+const HistorianTab: React.FC<HistorianTabProps> = ({ parameter }) => {
+  const [filter, setFilter] = useState<FilterState>({
+    initialDate: addDaysToDate(new Date(), -7),
+    finalDate: new Date(),
+  });
+  const [findMeasuresByParameter, { data: measures, isLoading }] =
+    useFindMeasuresByParameterMutation();
+
+  const handleChangeDates = (
+    date: Date | null | undefined,
+    interval: keyof Pick<FilterState, "initialDate" | "finalDate">
+  ) =>
+    setFilter((prevState) => ({
+      ...prevState,
+      [interval]: date,
+    }));
+
+  useEffect(() => {
+    async function fetchMeasures() {
+      await findMeasuresByParameter({
+        parameter: parameter?.name,
+        initialDate: filter.initialDate,
+        finalDate: filter.finalDate,
+      }).unwrap();
+    }
+    fetchMeasures();
+  }, [
+    filter.finalDate,
+    filter.initialDate,
+    findMeasuresByParameter,
+    parameter?.name,
+  ]);
+
+  return (
+    <>
+      <Row sx={{ mb: 2 }}>
+        <DateTimePicker
+          label="Data inicial"
+          value={filter.initialDate}
+          onChange={() => {}}
+          renderInput={(params) => <TextField {...params} />}
+          onAccept={(d) => handleChangeDates(d, "initialDate")}
+        />
+        <DateTimePicker
+          label="Data final"
+          value={filter.finalDate}
+          onChange={() => {}}
+          renderInput={(params) => <TextField {...params} sx={{ ml: 1 }} />}
+          onAccept={(d) => handleChangeDates(d, "finalDate")}
+        />
+      </Row>
+      <Grid container columnSpacing={1}>
+        <Grid item md={6}>
+          <DataTable
+            title={parameter?.name ?? ""}
+            rows={measures ?? []}
+            columns={columns}
+          />
+        </Grid>
+        <Grid item md={6}>
+          <ParameterChart
+            measures={measures ?? []}
+            description={parameter?.name ?? ""}
+          />
+        </Grid>
+      </Grid>
+      <Loading open={isLoading} />
+    </>
+  );
+};
+
+type TriggerDetailsProps = {
+  index: number;
+  type: string;
+  value: number;
+  comparator: string;
+  severity: string;
+  message: string;
+};
+
+const TriggerDetails: React.FC<TriggerDetailsProps> = ({
+  index,
+  type,
+  value,
+  comparator,
+  severity,
+  message,
+}) => {
+  return (
+    <Stack direction="row">
+      <Avatar>{index}</Avatar>
+      <Grid container rowSpacing={1} columnSpacing={1}>
+        <Grid item md={3}>
+          <Typography>Tipo</Typography>
+          <Typography>{type}</Typography>
+        </Grid>
+        <Grid item md={3}>
+          <Typography>Valor</Typography>
+          <Typography>{value}</Typography>
+        </Grid>
+        <Grid item md={3}>
+          <Typography>Comparador</Typography>
+          <Typography>{comparator}</Typography>
+        </Grid>
+        <Grid item md={3}>
+          <Typography>Severidade</Typography>
+          <Typography>{severity}</Typography>
+        </Grid>
+        <Grid item md={3}>
+          <Typography>Mensagem</Typography>
+          <Typography>{message}</Typography>
+        </Grid>
+      </Grid>
+    </Stack>
+  );
+};

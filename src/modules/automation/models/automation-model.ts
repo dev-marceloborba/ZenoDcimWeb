@@ -67,7 +67,7 @@ export interface EquipmentViewModel {
   componentCode: string;
   description: string;
   manufactor: string;
-  status: EEquipmentStatus | string;
+  status: EEquipmentStatus;
   group: EEquipmentGroup;
   weight: number;
   size: string;
@@ -83,7 +83,7 @@ export interface UpdateEquipmentViewModel {
   component: string;
   componentCode: string;
   manufactor: string;
-  status: EEquipmentStatus | string;
+  status: EEquipmentStatus;
   description: string;
   group: EEquipmentGroup;
   weight: number;
@@ -97,7 +97,7 @@ export interface EquipmentModel {
   componentCode: string;
   description: string;
   manufactor: string;
-  status: EEquipmentStatus | string;
+  status: EEquipmentStatus;
   group: EEquipmentGroup;
   createdDate: Date;
   equipmentParameters?: EquipmentParameterModel[];

@@ -90,14 +90,14 @@ export interface RackEquipmentsTableViewModel {
   serialNumber: string;
   initialPosition: number;
   finalPosition: number;
-  rackEquipmentType: ERackEquipmentType | string;
+  rackEquipmentType: ERackEquipmentType;
   client: string;
   function: string;
-  rackMountType: ERackMount | string;
-  rackEquipmentOrientation: ERackEquipmentOrientation | string;
+  rackMountType: ERackMount;
+  rackEquipmentOrientation: ERackEquipmentOrientation;
   occupation: number;
   weight: number;
-  status: EEquipmentStatus | string;
+  status: EEquipmentStatus;
   description: string;
 }
 

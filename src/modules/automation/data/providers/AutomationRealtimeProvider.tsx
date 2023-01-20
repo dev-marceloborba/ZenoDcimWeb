@@ -93,6 +93,11 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
         // console.log(obj);
         setAlarms(
           obj.map((alarm: any, index: number) => {
+            //*********************************************************************************************************
+            //TODO: assim que alterado para o runtime enviar os dados de prioridade e tipo, remover estas duas linhas
+            alarm.priority = 1; //essa
+            alarm.type = 0; // e essa
+            //*********************************************************************************************************
             const ds = splitPathnameIntoFields(alarm.pathname);
             return {
               id: alarm.id,
@@ -110,6 +115,8 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
               ruleId: alarm.ruleId,
               status: alarm.status,
               value: alarm.value,
+              priority: alarm.priority,
+              type: alarm.type,
             };
           })
         );

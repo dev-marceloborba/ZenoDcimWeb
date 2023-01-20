@@ -4,7 +4,6 @@ import { ApiResponseModel } from "modules/shared/models/api-response-model";
 
 import { RootState } from "modules/core/store";
 import {
-  EEquipmentStatus,
   EquipmentModel,
   EquipmentViewModel,
   MultipleEquipmentsViewModel,
@@ -77,28 +76,6 @@ export const equipmentApi = createApi({
         url: `v1/data-center/building/floor/room/equipment/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: EquipmentModel) => {
-        function getEquipmentStatus(status: EEquipmentStatus) {
-          switch (status) {
-            case EEquipmentStatus.ARCHIVED:
-              return "Arquivado";
-            case EEquipmentStatus.INSTALLED:
-              return "Instalado";
-            case EEquipmentStatus.OFF_SITE:
-              return "Fora da planta";
-            case EEquipmentStatus.PLANNED:
-              return "Planejado";
-            case EEquipmentStatus.POWERED_OFF:
-              return "Desligado";
-            case EEquipmentStatus.STORAGE:
-              return "Armazenado";
-          }
-        }
-        return {
-          ...response,
-          status: getEquipmentStatus(response.status as EEquipmentStatus),
-        };
-      },
       providesTags: ["EquipmentModel"],
     }),
     findEquipmentsByRoomId: builder.mutation<EquipmentModel[], string>({

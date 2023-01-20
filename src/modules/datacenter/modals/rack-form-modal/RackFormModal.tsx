@@ -9,7 +9,6 @@ import locationReducer, {
 import { SiteModel } from "modules/datacenter/models/datacenter-model";
 import {
   CreateRackViewModel,
-  RackModel,
   RackTableViewModel,
 } from "modules/datacenter/models/rack.model";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
@@ -39,6 +38,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
   const methods = useForm<FormProps>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: data?.model,
   });
 
   const {
@@ -78,7 +78,6 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
           floorId: data?.model?.floorId,
         },
       });
-      reset({ ...data?.model });
     }
   }, [data?.model, mode, reset]);
 

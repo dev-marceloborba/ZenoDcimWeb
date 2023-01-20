@@ -1,5 +1,4 @@
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
-import { useEffect } from "react";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import {
   SiteModel,
@@ -26,27 +25,15 @@ const SiteFormModal: React.FC<FormProps> = ({
   const methods = useForm<SiteViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: data,
   });
 
   const {
     handleSubmit,
-    reset,
-    formState: { isValid, isSubmitSuccessful },
+    formState: { isValid },
   } = methods;
 
   const onSubmit: SubmitHandler<SiteViewModel> = (data) => onConfirm(data);
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({ name: "" });
-    }
-  }, [isSubmitSuccessful, reset]);
-
-  useEffect(() => {
-    if (mode === "edit") {
-      reset({ ...data });
-    }
-  }, [data, mode, reset]);
 
   return (
     <Modal {...props}>

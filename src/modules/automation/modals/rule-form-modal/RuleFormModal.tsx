@@ -11,11 +11,7 @@ import { EquipmentParameterModel } from "modules/automation/models/automation-mo
 import {
   AlarmRuleModel,
   AlarmRuleViewModel,
-  EAlarmConditonal,
-  EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
-import { useEffect } from "react";
-import { EAlarmType } from "modules/automation/models/alarm-model";
 
 type RuleFormModalProps = {
   mode?: FormMode;
@@ -34,11 +30,11 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
   const methods = useForm<FormProps>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: data,
   });
   const {
     handleSubmit,
-    reset,
-    formState: { isValid, isSubmitSuccessful },
+    formState: { isValid },
   } = methods;
 
   const onSubmit: SubmitHandler<FormProps> = (data) => {
@@ -48,20 +44,6 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
       enableEmail: data?.enableEmail ?? false,
     });
   };
-
-  useEffect(() => {
-    if (mode === "edit") {
-      console.log(data);
-      reset({
-        ...data,
-        conditional: getConditionalEnumFromDescription(
-          data?.conditional as string
-        ),
-        priority: getPriorityEnumFromDescription(data?.priority as string),
-        type: getAlarmTypeEnumFromDescription(data?.type as string),
-      });
-    }
-  }, [data, mode, reset]);
 
   return (
     <Modal {...props}>
@@ -167,35 +149,3 @@ const validationSchema: SchemaOf<FormProps> = object().shape({
   enableNotification: boolean().notRequired(),
   enableEmail: boolean().notRequired(),
 });
-
-function getConditionalEnumFromDescription(
-  description: string
-): EAlarmConditonal {
-  switch (description) {
-    case "Menor":
-      return EAlarmConditonal.LOWER;
-    case "Menor ou igual":
-      return EAlarmConditonal.LOWER_EQUAL;
-    case "Maior":
-      return EAlarmConditonal.GREATER;
-    case "Maior ou igual":
-      return EAlarmConditonal.GREATER_EQUAL;
-    default:
-      return EAlarmConditonal.EQUAL;
-  }
-}
-
-function getPriorityEnumFromDescription(description: string): EAlarmPriority {
-  switch (description) {
-    case "Média":
-      return EAlarmPriority.MEDIUM;
-    case "Alta":
-      return EAlarmPriority.HIGH;
-    default:
-      return EAlarmPriority.LOW;
-  }
-}
-
-function getAlarmTypeEnumFromDescription(description: string) {
-  return description === "Alarme" ? EAlarmType.ALARM : EAlarmType.EVENT;
-}

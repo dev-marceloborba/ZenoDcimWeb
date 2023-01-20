@@ -12,7 +12,7 @@ export interface AlarmModel {
   pathname: string;
   priority: EAlarmPriority;
   notificationEnabled: boolean;
-  type: EAlarmType | string;
+  type: EAlarmType;
   alarmRule: {
     id: string;
     name: string;
@@ -54,7 +54,7 @@ export interface AlarmTableViewModel {
   acked: boolean;
   status: EAlarmStatus;
   priority: EAlarmPriority;
-  type: EAlarmType | string;
+  type: EAlarmType;
 }
 
 export enum EAlarmStatus {

@@ -28,6 +28,7 @@ import Stack from "@mui/material/Stack";
 import { AlarmStatisticsViewModel } from "modules/alarms/models/alarm-statistics.model";
 import KpiCard from "modules/shared/components/kpi-card/KpiCard";
 import Typography from "@mui/material/Typography";
+import AlarmLegend from "modules/alarms/components/alarm-legend/AlarmLegend";
 
 export default function AlarmHistory() {
   return (
@@ -152,20 +153,7 @@ const HistorianTab: React.FC = () => {
             width: "200px",
           }}
         >
-          <div>
-            <AlarmIndicator
-              status="highSeverity"
-              description="Severidade alta"
-            />
-            <AlarmIndicator
-              status="mediumSeverity"
-              description="Severidade média"
-            />
-            <AlarmIndicator
-              status="lowSeverity"
-              description="Severidade baixa"
-            />
-          </div>
+          <AlarmLegend />
         </div>
       </Stack>
       <DataTable

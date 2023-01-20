@@ -48,11 +48,11 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   const methods = useForm<EquipmentViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: data,
   });
 
   const {
     handleSubmit,
-    reset,
     formState: { isValid },
   } = methods;
 
@@ -70,15 +70,6 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
     getFloors(data?.buildingId!);
     getRooms(data?.floorId!);
   });
-
-  useEffect(() => {
-    if (data && mode === "edit") {
-      reset({
-        ...data,
-        status: getStatusEnum(data?.status as string),
-      });
-    }
-  }, [data, mode, reset]);
 
   return (
     <Modal {...props}>
@@ -261,20 +252,3 @@ const validationSchema: SchemaOf<EquipmentViewModel> = object().shape({
   manufactor: string().required("Fabricante é obrigatório"),
   status: number().required("Status é obrigatório"),
 });
-
-function getStatusEnum(status: string) {
-  switch (status) {
-    case "Arquivado":
-      return EEquipmentStatus.ARCHIVED;
-    case "Instalado":
-      return EEquipmentStatus.INSTALLED;
-    case "Fora da planta":
-      return EEquipmentStatus.OFF_SITE;
-    case "Planejado":
-      return EEquipmentStatus.PLANNED;
-    case "Desligado":
-      return EEquipmentStatus.POWERED_OFF;
-    case "Armazenado":
-      return EEquipmentStatus.STORAGE;
-  }
-}

@@ -11,12 +11,6 @@ import {
 import { EquipmentModel } from "modules/automation/models/automation-model";
 import Loading from "modules/shared/components/Loading";
 import {
-  useCreateAlarmRuleMutation,
-  useDeleteAlarmRuleMutation,
-  useFindAlarmRulesByEquipmentIdQuery,
-  useUpdateAlarmRuleMutation,
-} from "modules/automation/services/alarm-rule-service";
-import {
   useCreateEquipmentParameterMutation,
   useDeleteEquipmentParameterMutation,
   useUpdateEquipmentParameterMutation,
@@ -24,18 +18,13 @@ import {
 import { useModal } from "mui-modal-provider";
 import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/EquipmentFormModal";
 import Tabs from "modules/shared/components/tabs/Tabs";
-import RuleFormModal from "modules/automation/modals/rule-form-modal/RuleFormModal";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
-import {
-  AlarmRuleModel,
-  EAlarmConditonal,
-  EAlarmPriority,
-} from "modules/automation/models/alarm-rule-model";
-// import CardSection from "modules/shared/components/card-section/CardSectionv2";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import Stack from "@mui/material/Stack";
+import { getEquipmentStatusFromEnum } from "modules/automation/utils/equipmentUtils";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
@@ -45,9 +34,6 @@ const EquipmentDetailsPage: React.FC = () => {
 
   const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
-
-  const [createRule, { isLoading: isLoadingCreateRule }] =
-    useCreateAlarmRuleMutation();
 
   const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
 
@@ -109,31 +95,11 @@ const EquipmentDetailsPage: React.FC = () => {
     });
   };
 
-  const handleShowRuleModal = () => {
-    const modal = showModal(RuleFormModal, {
-      title: "Nova regra",
-      parameters: equipment?.equipmentParameters ?? [],
-      onConfirm: async (data) => {
-        modal.hide();
-        try {
-          await createRule(data).unwrap();
-          toast.open({ message: "Regra criada com sucesso" });
-        } catch (error) {
-          console.log(error);
-          toast.open({ message: "Erro ao criar regra", severity: "error" });
-        }
-      },
-      onClose: () => {
-        modal.hide();
-      },
-    });
-  };
-
   return (
     <HeroContainer title={equipment?.component}>
       <Tabs
         mode="horizontal"
-        tabLabels={["Detalhes", "Parâmetros", "Regras"]}
+        tabLabels={["Detalhes", "Parâmetros"]}
         tabItems={[
           {
             element: <DetailsTab equipment={equipment} />,
@@ -150,32 +116,22 @@ const EquipmentDetailsPage: React.FC = () => {
               />
             ),
             content: (
-              <Button
-                variant="contained"
-                onClick={() => handleOpenParameterAssociation()}
-              >
-                Adicionar parâmetro
-              </Button>
-            ),
-          },
-          {
-            element: (
-              <RulesTab
-                equipmentId={equipment?.id ?? ""}
-                parameters={equipment?.equipmentParameters ?? []}
-              />
-            ),
-            content: (
-              <Button variant="contained" onClick={handleShowRuleModal}>
-                Nova regra
-              </Button>
+              <Stack direction="row">
+                <Button
+                  variant="contained"
+                  onClick={() => handleOpenParameterAssociation()}
+                >
+                  Adicionar parâmetro físico
+                </Button>
+                <Button variant="contained" sx={{ ml: 1 }}>
+                  Adicionar parâmetro virtual
+                </Button>
+              </Stack>
             ),
           },
         ]}
       />
-      <Loading
-        open={isLoadingFetch || isLoadingUpdate || isLoadingCreateRule}
-      />
+      <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>
   );
 };
@@ -221,7 +177,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
           },
           {
             title: "Status",
-            description: equipment?.status as string,
+            description: getEquipmentStatusFromEnum(equipment?.status ?? 0),
           },
           {
             title: "Marca",
@@ -268,7 +224,7 @@ type ParametersTabProps = {
 const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
   const { showModal } = useModal();
   const toast = useToast();
-  const { navigate, path } = useRouter();
+  const { navigate, path, params } = useRouter();
 
   const [updateParameter, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentParameterMutation();
@@ -284,7 +240,12 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
       onConfirm: async (formData) => {
         modal.hide();
         try {
-          await updateParameter(formData).unwrap();
+          var result = await updateParameter({
+            ...formData,
+            equipmentId: params.equipmentId!,
+            id: parameter.id,
+          }).unwrap();
+          console.log(result);
           toast.open({ message: "Parâmetro atualizado com sucesso" });
         } catch (error) {
           console.log(error);
@@ -315,7 +276,12 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
       <DataTableV2
         title="Parâmetros"
         columns={parameterColumns}
-        rows={parameters ?? []}
+        rows={
+          parameters.map((parameter) => ({
+            ...parameter,
+            triggers: parameter.alarmRules?.length ?? 0,
+          })) ?? []
+        }
         options={{
           showEdit: true,
           showDelete: true,
@@ -328,83 +294,6 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
         }}
       />
       <Loading open={isLoadingUpdate || isLoadingDelete} />
-    </>
-  );
-};
-
-type RulesTabProps = {
-  equipmentId: string;
-  parameters: EquipmentParameterModel[];
-};
-
-const RulesTab: React.FC<RulesTabProps> = ({ equipmentId, parameters }) => {
-  const { showModal } = useModal();
-  const toast = useToast();
-  const { data: rules, isLoading: isLoadingFetch } =
-    useFindAlarmRulesByEquipmentIdQuery(equipmentId);
-  const [updateRule, { isLoading: isLoadingUpdate }] =
-    useUpdateAlarmRuleMutation();
-  const [deleteRule, { isLoading: isLoadingDelete }] =
-    useDeleteAlarmRuleMutation();
-
-  const handleEditRule = (rule: AlarmRuleModel) => {
-    const modal = showModal(RuleFormModal, {
-      title: "Editar regra",
-      mode: "edit",
-      parameters,
-      data: rule,
-      onConfirm: async (formData) => {
-        modal.hide();
-        console.log(formData);
-        try {
-          await updateRule({
-            ...formData,
-            conditional: formData.conditional as EAlarmConditonal,
-            priority: formData.priority as EAlarmPriority,
-            id: rule.id,
-          }).unwrap();
-          toast.open({ message: "Regra alterada com sucesso" });
-        } catch (error) {
-          console.log(error);
-          toast.open({ message: "Erro ao alterar regra", severity: "error" });
-        }
-      },
-      onClose: () => {
-        modal.hide();
-      },
-    });
-  };
-
-  const handleDeleteRule = async (parameter: EquipmentParameterModel) => {
-    try {
-      await deleteRule(parameter.id).unwrap();
-      toast.open({ message: "Parâmetro excluído com sucesso" });
-    } catch (error) {
-      console.log(error);
-      toast.open({ message: "Erro ao excluir parâmetro", severity: "error" });
-    }
-  };
-
-  return (
-    <>
-      <DataTableV2
-        title="Regras"
-        columns={ruleColumns}
-        rows={
-          rules?.map<any>((rule) => ({
-            ...rule,
-            equipmentParameterName: rule.equipmentParameter?.name,
-          })) ?? []
-        }
-        options={{
-          showEdit: true,
-          showDelete: true,
-          selectionMode: "hide",
-          onEditRow: handleEditRule,
-          onDeleteRow: handleDeleteRule,
-        }}
-      />
-      <Loading open={isLoadingFetch || isLoadingUpdate || isLoadingDelete} />
     </>
   );
 };
@@ -423,33 +312,14 @@ const parameterColumns: ColumnHeader[] = [
     label: "Escala",
   },
   {
+    name: "triggers",
+    label: "Triggers",
+  },
+  {
     name: "expression",
     label: "Tipo",
     renderComponent: (row: string) => (
       <>{row?.length > 0 ? "Virtual" : "Físico"}</>
     ),
-  },
-];
-
-const ruleColumns: ColumnHeader[] = [
-  {
-    name: "name",
-    label: "Regra",
-  },
-  {
-    name: "equipmentParameterName",
-    label: "Parâmetro",
-  },
-  {
-    name: "conditional",
-    label: "Condicional",
-  },
-  {
-    name: "setpoint",
-    label: "Setpoint",
-  },
-  {
-    name: "priority",
-    label: "Prioridade",
   },
 ];

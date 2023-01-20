@@ -34,13 +34,4 @@ const gridItems = [
       automationPaths.equipmentManagement.fullPath,
     ]),
   },
-  {
-    title: "Parâmetros",
-    description: "Configure e gerencie os parâmetros físicos do DCIM",
-    path: compositePathRoute([
-      HomePath,
-      AutomationPath,
-      automationPaths.parameterManagement.fullPath,
-    ]),
-  },
 ];

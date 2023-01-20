@@ -34,7 +34,7 @@ const Wrapper = styled(Box)`
   flex-grow: 1;
   height: 100vh;
   overflow: auto;
-  padding: 4rem 0;
+  padding: 1rem 0;
 `;
 
 const Separator = styled(Divider)`

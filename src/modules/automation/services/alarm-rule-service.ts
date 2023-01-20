@@ -6,8 +6,6 @@ import {
   AlarmRuleModel,
   AlarmRulesModel,
   AlarmRuleViewModel,
-  EAlarmConditonal,
-  EAlarmPriority,
   UpdateAlarmRuleViewModel,
 } from "../models/alarm-rule-model";
 
@@ -65,41 +63,6 @@ export const alarmRuleApi = createApi({
         url: `v1/data-center/alarm-rules/by-equipment/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: AlarmRulesModel) => {
-        function getDescriptionFromEnum(conditional: EAlarmConditonal) {
-          switch (conditional) {
-            case EAlarmConditonal.EQUAL:
-              return "=";
-            case EAlarmConditonal.GREATER:
-              return ">";
-            case EAlarmConditonal.GREATER_EQUAL:
-              return ">=";
-            case EAlarmConditonal.LOWER:
-              return "<";
-            case EAlarmConditonal.LOWER_EQUAL:
-              return "<=";
-          }
-        }
-
-        function getPriorityFromEnum(priority: EAlarmPriority) {
-          switch (priority) {
-            case EAlarmPriority.MEDIUM:
-              return "Média";
-            case EAlarmPriority.HIGH:
-              return "Alta";
-            case EAlarmPriority.LOW:
-              return "Baixa";
-          }
-        }
-
-        return response.map((rule) => ({
-          ...rule,
-          conditional: getDescriptionFromEnum(
-            rule.conditional as EAlarmConditonal
-          ),
-          priority: getPriorityFromEnum(rule.priority as EAlarmPriority),
-        }));
-      },
       providesTags: ["AlarmRuleModel"],
     }),
     deleteAlarmRule: builder.mutation<void, string>({

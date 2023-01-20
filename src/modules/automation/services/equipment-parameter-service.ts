@@ -2,11 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
-  EquipmentParameterViewModel,
   EquipmentParameterModel,
   MultipleEquipmentParameterViewModel,
   MultipleEquipmentParameterModel,
-  UpdateEquipmentParameterViewModel,
   EquipmentParameterEditor,
 } from "modules/automation/models/automation-model";
 import { RootState } from "modules/core/store";
@@ -38,7 +36,7 @@ export const equipmentParametersApi = createApi({
     }),
     updateEquipmentParameter: builder.mutation<
       ApiResponseModel<EquipmentParameterModel>,
-      UpdateEquipmentParameterViewModel
+      EquipmentParameterEditor
     >({
       query: (params) => ({
         url: `v1/data-center/building/floor/room/equipment/parameter/${params.id}`,

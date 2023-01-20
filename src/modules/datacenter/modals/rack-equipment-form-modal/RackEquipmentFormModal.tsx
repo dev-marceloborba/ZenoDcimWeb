@@ -13,7 +13,6 @@ import {
   ERackEquipmentOrientation,
   RackEquipmentModel,
 } from "modules/datacenter/models/rack-equipment.model";
-import { useEffect } from "react";
 import { ERackMount } from "modules/datacenter/models/rack.model";
 import { EEquipmentStatus } from "modules/automation/models/automation-model";
 
@@ -32,11 +31,21 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
   const methods = useForm<FormProps>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
+    defaultValues: {
+      ...data,
+      name: data?.baseEquipment.name,
+      serialNumber: data?.baseEquipment.serialNumber,
+      manufactor: data?.baseEquipment.manufactor,
+      model: data?.baseEquipment.model,
+      rackMountType: data?.rackMountType,
+      rackEquipmentOrientation: data?.rackEquipmentOrientation,
+      status: data?.status,
+      rackEquipmentType: data?.rackEquipmentType,
+    },
   });
 
   const {
     handleSubmit,
-    reset,
     formState: { isValid },
   } = methods;
 
@@ -45,23 +54,6 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
       ...data,
       finalPosition: data.initialPosition + data.occupation - 1,
     });
-
-  useEffect(() => {
-    if (mode === "edit") {
-      reset({
-        ...data,
-        name: data?.baseEquipment.name,
-        serialNumber: data?.baseEquipment.serialNumber,
-        manufactor: data?.baseEquipment.manufactor,
-        model: data?.baseEquipment.model,
-        rackMountType: data?.rackMountType as ERackMount,
-        rackEquipmentOrientation:
-          data?.rackEquipmentOrientation as ERackEquipmentOrientation,
-        status: data?.status as EEquipmentStatus,
-        rackEquipmentType: data?.rackEquipmentType as ERackEquipmentType,
-      });
-    }
-  }, [data, mode, reset]);
 
   return (
     <Modal {...props}>
