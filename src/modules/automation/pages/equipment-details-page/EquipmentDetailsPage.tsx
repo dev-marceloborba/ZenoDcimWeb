@@ -29,8 +29,11 @@ import { getEquipmentStatusFromEnum } from "modules/automation/utils/equipmentUt
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
   const { data: sites } = useFindAllSitesQuery();
-  const { data: equipment, isLoading: isLoadingFetch } =
-    useFindEquipmentByIdQueryQuery(params.equipmentId!);
+  const {
+    data: equipment,
+    isLoading: isLoadingFetch,
+    refetch,
+  } = useFindEquipmentByIdQueryQuery(params.equipmentId!);
 
   const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
@@ -74,7 +77,7 @@ const EquipmentDetailsPage: React.FC = () => {
     const modal = showModal(EquipmentParameterFormModal, {
       title: "Novo parâmetro do equipamento",
       onConfirm: async (formData) => {
-        modal.hide();
+        modal.destroy();
         try {
           await createEquipmentParameter({
             ...formData,
@@ -90,7 +93,7 @@ const EquipmentDetailsPage: React.FC = () => {
         }
       },
       onClose: () => {
-        modal.hide();
+        modal.destroy();
       },
     });
   };
@@ -113,6 +116,7 @@ const EquipmentDetailsPage: React.FC = () => {
             element: (
               <ParametersTab
                 parameters={equipment?.equipmentParameters ?? []}
+                refetch={refetch}
               />
             ),
             content: (
@@ -219,9 +223,13 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
 
 type ParametersTabProps = {
   parameters: EquipmentParameterModel[];
+  refetch(): void;
 };
 
-const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
+const ParametersTab: React.FC<ParametersTabProps> = ({
+  parameters,
+  refetch,
+}) => {
   const { showModal } = useModal();
   const toast = useToast();
   const { navigate, path, params } = useRouter();
@@ -238,14 +246,14 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
       data: parameter,
       mode: "edit",
       onConfirm: async (formData) => {
-        modal.hide();
+        modal.destroy();
         try {
-          var result = await updateParameter({
+          await updateParameter({
             ...formData,
             equipmentId: params.equipmentId!,
             id: parameter.id,
           }).unwrap();
-          console.log(result);
+          refetch();
           toast.open({ message: "Parâmetro atualizado com sucesso" });
         } catch (error) {
           console.log(error);
@@ -256,7 +264,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({ parameters }) => {
         }
       },
       onClose: () => {
-        modal.hide();
+        modal.destroy();
       },
     });
   };

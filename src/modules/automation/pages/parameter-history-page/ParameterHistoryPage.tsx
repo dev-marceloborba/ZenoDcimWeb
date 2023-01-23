@@ -3,6 +3,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -17,7 +18,10 @@ import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { useFindMeasuresByParameterMutation } from "modules/automation/services/history-service";
 import ParameterChart from "./components/parameter-chart/ParameterChart";
-import { useFindEquipmentParameterByIdQueryQuery } from "modules/automation/services/equipment-parameter-service";
+import {
+  useFindEquipmentParameterByIdQueryQuery,
+  useUpdateEquipmentParameterMutation,
+} from "modules/automation/services/equipment-parameter-service";
 import Tabs from "modules/shared/components/tabs/Tabs";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
@@ -26,6 +30,9 @@ import {
   getAlarmPriorityFromEnum,
   getAlarmTypeFromEnum,
 } from "modules/alarms/utils/alarmUtils";
+import { useModal } from "mui-modal-provider";
+import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
+import { useToast } from "modules/shared/components/ToastProvider";
 
 type FilterState = {
   initialDate: Date | null;
@@ -34,8 +41,44 @@ type FilterState = {
 
 export default function ParameterHistoryPage() {
   const { params } = useRouter();
-  const { data: parameter, isLoading } =
-    useFindEquipmentParameterByIdQueryQuery(params.equipmentParameterId!);
+  const { showModal } = useModal();
+  const toast = useToast();
+  const {
+    data: parameter,
+    isLoading,
+    refetch,
+  } = useFindEquipmentParameterByIdQueryQuery(params.equipmentParameterId!);
+  const [updateParameter, { isLoading: isLoadingUpdate }] =
+    useUpdateEquipmentParameterMutation();
+
+  const handleEditParameter = () => {
+    const modal = showModal(EquipmentParameterFormModal, {
+      title: "Editar parâmetro",
+      mode: "edit",
+      data: parameter,
+      onConfirm: async (formData) => {
+        modal.hide();
+        try {
+          await updateParameter({
+            ...formData,
+            equipmentId: params.equipmentId!,
+            id: parameter!.id,
+          }).unwrap();
+          refetch();
+          toast.open({ message: "Parâmetro atualizado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao atualizar parâmetro",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
   return (
     <HeroContainer title="Histórico de parâmetro">
       <Tabs
@@ -44,14 +87,18 @@ export default function ParameterHistoryPage() {
         tabItems={[
           {
             element: <DetailsTab parameter={parameter} />,
-            content: <Button variant="contained">Editar parâmetro</Button>,
+            content: (
+              <Button variant="contained" onClick={handleEditParameter}>
+                Editar parâmetro
+              </Button>
+            ),
           },
           {
             element: <HistorianTab parameter={parameter} />,
           },
         ]}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoading || isLoadingUpdate} />
     </HeroContainer>
   );
 }
@@ -96,6 +143,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
           },
         ]}
       />
+      <Typography variant="subtitle1">Triggers</Typography>
       {parameter?.alarmRules?.map((alarmRule, idx) => (
         // <CardSection
         //   sx={{ my: 1 }}
@@ -110,7 +158,7 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
         // />
         <TriggerDetails
           key={alarmRule.id}
-          index={idx}
+          index={idx + 1}
           value={alarmRule.setpoint}
           message={alarmRule.name}
           comparator={getAlarmConditionalFromEnum(alarmRule.conditional)}
@@ -215,30 +263,32 @@ const TriggerDetails: React.FC<TriggerDetailsProps> = ({
   message,
 }) => {
   return (
-    <Stack direction="row">
-      <Avatar>{index}</Avatar>
-      <Grid container rowSpacing={1} columnSpacing={1}>
-        <Grid item md={3}>
-          <Typography>Tipo</Typography>
-          <Typography>{type}</Typography>
+    <Paper sx={{ mt: 1 }}>
+      <Stack direction="row" justifyContent="center" alignItems="center">
+        <Avatar sx={{ mx: 1 }}>{index}</Avatar>
+        <Grid container rowSpacing={1} columnSpacing={1}>
+          <Grid item md={3}>
+            <Typography>Tipo</Typography>
+            <Typography>{type}</Typography>
+          </Grid>
+          <Grid item md={3}>
+            <Typography>Valor</Typography>
+            <Typography>{value}</Typography>
+          </Grid>
+          <Grid item md={3}>
+            <Typography>Comparador</Typography>
+            <Typography>{comparator}</Typography>
+          </Grid>
+          <Grid item md={3}>
+            <Typography>Severidade</Typography>
+            <Typography>{severity}</Typography>
+          </Grid>
+          <Grid item md={3}>
+            <Typography>Mensagem</Typography>
+            <Typography>{message}</Typography>
+          </Grid>
         </Grid>
-        <Grid item md={3}>
-          <Typography>Valor</Typography>
-          <Typography>{value}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography>Comparador</Typography>
-          <Typography>{comparator}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography>Severidade</Typography>
-          <Typography>{severity}</Typography>
-        </Grid>
-        <Grid item md={3}>
-          <Typography>Mensagem</Typography>
-          <Typography>{message}</Typography>
-        </Grid>
-      </Grid>
-    </Stack>
+      </Stack>
+    </Paper>
   );
 };
