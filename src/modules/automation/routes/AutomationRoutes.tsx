@@ -8,7 +8,6 @@ import EtcFloor from "../pages/energy-clim-telecom/EtcFloorv2";
 import Cage from "../pages/cage/Cage";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
-import EquipmentParametersPage from "../pages/parameter-admin/EquipmentParametersPagev2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
 import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
@@ -52,11 +51,6 @@ export const automationRoutes: RouteObject[] = [
     resolver: EquipmentResolver,
   },
   {
-    path: automationPaths.equipmentParameters.fullPath,
-    element: <EquipmentParametersPage />,
-    title: "Parâmetros",
-  },
-  {
     path: automationPaths.cage.fullPath,
     element: <Cage />,
     title: "Equipamento",
@@ -90,12 +84,6 @@ export const automationRoutes: RouteObject[] = [
   },
   // Deletar, está duplicado.
   {
-    path: automationPaths.equipmentParameterDetails.fullPath,
-    element: <EquipmentParametersPage />,
-    title: "Parâmetros de equipamento",
-    resolver: EquipmentResolver,
-  },
-  {
     path: automationPaths.equipmentManagement.fullPath,
     element: <EquipmentAdmin />,
     title: "Equipamentos",
@@ -104,11 +92,6 @@ export const automationRoutes: RouteObject[] = [
     path: automationPaths.equipmentDetails.fullPath,
     element: <EquipmentDetailsPage />,
     title: "Detalhes",
-  },
-  {
-    path: automationPaths.parameterManagement.fullPath,
-    element: <EquipmentParametersPage />,
-    title: "Parâmetros",
   },
   {
     path: automationPaths.measureHistory.fullPath,

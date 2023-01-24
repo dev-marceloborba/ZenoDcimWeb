@@ -145,17 +145,6 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
       />
       <Typography variant="subtitle1">Triggers</Typography>
       {parameter?.alarmRules?.map((alarmRule, idx) => (
-        // <CardSection
-        //   sx={{ my: 1 }}
-        //   key={alarmRule.id}
-        //   title="Trigger"
-        //   items={[
-        //     {
-        //       title: "Tipo",
-        //       description: alarmRule.type as string,
-        //     },
-        //   ]}
-        // />
         <TriggerDetails
           key={alarmRule.id}
           index={idx + 1}

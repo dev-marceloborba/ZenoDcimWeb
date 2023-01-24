@@ -17,17 +17,24 @@ import {
 } from "modules/automation/services/equipment-parameter-service";
 import { useModal } from "mui-modal-provider";
 import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/EquipmentFormModal";
+
 import Tabs from "modules/shared/components/tabs/Tabs";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
 import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
+import EquipmentParameterFormModalv2 from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModalv2";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 import Stack from "@mui/material/Stack";
 import { getEquipmentStatusFromEnum } from "modules/automation/utils/equipmentUtils";
+import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
+  const { showModal } = useModal();
+  const toast = useToast();
+
   const { data: sites } = useFindAllSitesQuery();
   const {
     data: equipment,
@@ -37,11 +44,7 @@ const EquipmentDetailsPage: React.FC = () => {
 
   const [updateEquipment, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentMutation();
-
   const [createEquipmentParameter] = useCreateEquipmentParameterMutation();
-
-  const { showModal } = useModal();
-  const toast = useToast();
 
   const handleShowEquipmentModal = () => {
     const modal = showModal(EquipmentFormModal, {
@@ -73,7 +76,7 @@ const EquipmentDetailsPage: React.FC = () => {
     });
   };
 
-  const handleOpenParameterAssociation = () => {
+  const handleOpenPhysicalParameterModal = () => {
     const modal = showModal(EquipmentParameterFormModal, {
       title: "Novo parâmetro do equipamento",
       onConfirm: async (formData) => {
@@ -98,6 +101,33 @@ const EquipmentDetailsPage: React.FC = () => {
     });
   };
 
+  const handleOpenVirtualParameterModal = () => {
+    const modal = showModal(VirtualParameterFormModal, {
+      title: "Adicionar parâmetro virtual",
+      data: {
+        sites,
+      },
+      onConfirm: async (formData) => {
+        try {
+          await createEquipmentParameter({
+            ...formData,
+            equipmentId: params.equipmentId!,
+          }).unwrap();
+          toast.open({ message: "Parâmetro virtual criado com sucesso" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao adicionar parâmetro virtual",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+    });
+  };
+
   return (
     <HeroContainer title={equipment?.component}>
       <Tabs
@@ -115,6 +145,7 @@ const EquipmentDetailsPage: React.FC = () => {
           {
             element: (
               <ParametersTab
+                sites={sites ?? []}
                 parameters={equipment?.equipmentParameters ?? []}
                 refetch={refetch}
               />
@@ -123,11 +154,15 @@ const EquipmentDetailsPage: React.FC = () => {
               <Stack direction="row">
                 <Button
                   variant="contained"
-                  onClick={() => handleOpenParameterAssociation()}
+                  onClick={() => handleOpenPhysicalParameterModal()}
                 >
                   Adicionar parâmetro físico
                 </Button>
-                <Button variant="contained" sx={{ ml: 1 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleOpenVirtualParameterModal}
+                  sx={{ ml: 1 }}
+                >
                   Adicionar parâmetro virtual
                 </Button>
               </Stack>
@@ -222,11 +257,13 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
 };
 
 type ParametersTabProps = {
+  sites: SiteModel[];
   parameters: EquipmentParameterModel[];
   refetch(): void;
 };
 
 const ParametersTab: React.FC<ParametersTabProps> = ({
+  sites,
   parameters,
   refetch,
 }) => {
@@ -241,11 +278,21 @@ const ParametersTab: React.FC<ParametersTabProps> = ({
     useDeleteEquipmentParameterMutation();
 
   const handleEditParameter = (parameter: EquipmentParameterModel) => {
-    const modal = showModal(EquipmentParameterFormModal, {
+    let modalToShow: any = EquipmentParameterFormModalv2;
+    let params: any = parameter;
+    if (parameter.expression) {
+      modalToShow = VirtualParameterFormModal;
+      params = {
+        model: parameter,
+        sites,
+      };
+    }
+
+    const modal = showModal(modalToShow, {
       title: "Editar parâmetro do equipamento",
-      data: parameter,
+      data: params,
       mode: "edit",
-      onConfirm: async (formData) => {
+      onConfirm: async (formData: any) => {
         modal.destroy();
         try {
           await updateParameter({
