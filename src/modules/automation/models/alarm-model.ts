@@ -13,6 +13,7 @@ export interface AlarmModel {
   priority: EAlarmPriority;
   notificationEnabled: boolean;
   type: EAlarmType;
+  operator: string;
   alarmRule: {
     id: string;
     name: string;

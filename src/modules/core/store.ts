@@ -25,10 +25,12 @@ import { userPreferenciesApi } from "modules/user/services/user-preferencies.ser
 import { siteBuildingCardApi } from "modules/automation/services/site-building-card-service";
 import { roomCardSettingsApi } from "modules/automation/services/room-card-service";
 import { equipmentCardSettingsApi } from "modules/automation/services/equipment-card-service";
+import alarmFilterSlice from "modules/alarms/pages/alarm-realtime/slices/alarmFilterSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    alarmFilter: alarmFilterSlice,
     [userApi.reducerPath]: userApi.reducer,
     [companyApi.reducerPath]: companyApi.reducer,
     [equipmentApi.reducerPath]: equipmentApi.reducer,

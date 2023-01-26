@@ -6,6 +6,7 @@ import {
   EAlarmConditonal,
   EAlarmPriority,
 } from "modules/automation/models/alarm-rule-model";
+import { AlarmStatus } from "../components/alarm-indicator/AlarmIndicator";
 
 export function getAlarmConditionalFromEnum(e: EAlarmConditonal) {
   switch (e) {
@@ -50,5 +51,18 @@ export function getAlarmStatusFromEnum(e: EAlarmStatus) {
       return "Ativo";
     case EAlarmStatus.INACTIVE:
       return "Inativo";
+  }
+}
+
+export function getAlarmStatusFromPriority(
+  priority: EAlarmPriority
+): AlarmStatus {
+  switch (priority) {
+    case EAlarmPriority.HIGH:
+      return "highSeverity";
+    case EAlarmPriority.MEDIUM:
+      return "mediumSeverity";
+    case EAlarmPriority.LOW:
+      return "lowSeverity";
   }
 }

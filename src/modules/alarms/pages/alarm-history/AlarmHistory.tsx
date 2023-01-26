@@ -29,6 +29,7 @@ import { AlarmStatisticsViewModel } from "modules/alarms/models/alarm-statistics
 import KpiCard from "modules/shared/components/kpi-card/KpiCard";
 import Typography from "@mui/material/Typography";
 import AlarmLegend from "modules/alarms/components/alarm-legend/AlarmLegend";
+import { getAlarmStatusFromPriority } from "modules/alarms/utils/alarmUtils";
 
 export default function AlarmHistory() {
   return (
@@ -169,17 +170,6 @@ const HistorianTab: React.FC = () => {
     </div>
   );
 };
-
-function getAlarmStatusFromPriority(priority: EAlarmPriority): AlarmStatus {
-  switch (priority) {
-    case EAlarmPriority.HIGH:
-      return "highSeverity";
-    case EAlarmPriority.MEDIUM:
-      return "mediumSeverity";
-    case EAlarmPriority.LOW:
-      return "lowSeverity";
-  }
-}
 
 const columns: ColumnHeader[] = [
   {

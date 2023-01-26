@@ -238,7 +238,15 @@ const DataTableV2: React.FC<DataTableProps> = ({
           handleCopyItems={handleCopyItems}
         />
         <TableContainer>
-          <Table aria-labelledby="tableTitle" size={"medium"}>
+          <Table
+            aria-labelledby="tableTitle"
+            size={"medium"}
+            sx={{
+              "& .MuiTableCell-root": {
+                padding: "4px 8px",
+              },
+            }}
+          >
             <EnhancedTableHead
               numSelected={selectedItems.length}
               selectionMode={selectionMode}

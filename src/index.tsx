@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
-
 import { Provider } from "react-redux";
 import CssBaseLine from "@mui/material/CssBaseline";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
@@ -9,7 +8,6 @@ import { store } from "modules/core/store";
 import { Connector } from "mqtt-react-hooks";
 import { ReactFlowProvider } from "react-flow-renderer";
 import { brokerUrl, mqttConfig, signalrUrl } from "app/config/env";
-// import ModalProvider from "app/hooks/useModal";
 import ModalProvider from "mui-modal-provider";
 import { ptBR } from "@mui/material/locale";
 import AppRoutes from "modules/AppRoutes";
@@ -30,39 +28,42 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <SignalRContext.Provider url={signalrUrl} withCredentials={false}>
-      <Provider store={store}>
-        <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
-          <CssBaseLine />
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={ptBrLocale}
-          >
-            <LayoutProvider>
-              <Connector
-                brokerUrl={brokerUrl}
-                options={{
-                  ...mqttConfig,
-                  protocol: "wss",
-                }}
-              >
-                <ToastProvider>
-                  <ReactFlowProvider>
-                    <ModalProvider>
-                      <NotificationProvider>
-                        <AutomationRealtimeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={{ ...brandingDarkTheme, ptBR }}>
+        <CssBaseLine />
+        <LocalizationProvider
+          dateAdapter={AdapterDateFns}
+          adapterLocale={ptBrLocale}
+        >
+          <ToastProvider>
+            <ReactFlowProvider>
+              <ModalProvider>
+                <NotificationProvider>
+                  <Connector
+                    brokerUrl={brokerUrl}
+                    options={{
+                      ...mqttConfig,
+                      protocol: "wss",
+                    }}
+                  >
+                    <AutomationRealtimeProvider>
+                      <SignalRContext.Provider
+                        url={signalrUrl}
+                        withCredentials={false}
+                      >
+                        <LayoutProvider>
                           <AppRoutes />
-                        </AutomationRealtimeProvider>
-                      </NotificationProvider>
-                    </ModalProvider>
-                  </ReactFlowProvider>
-                </ToastProvider>
-              </Connector>
-            </LayoutProvider>
-          </LocalizationProvider>
-        </ThemeProvider>
-      </Provider>
-    </SignalRContext.Provider>
+                        </LayoutProvider>
+                      </SignalRContext.Provider>
+                    </AutomationRealtimeProvider>
+                  </Connector>
+                </NotificationProvider>
+              </ModalProvider>
+            </ReactFlowProvider>
+          </ToastProvider>
+        </LocalizationProvider>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 
