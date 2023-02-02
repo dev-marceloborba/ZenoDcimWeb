@@ -1,3 +1,5 @@
+import { EquipmentParameterModel } from "./automation-model";
+
 export interface EquipmentCardModel {
   id: string;
   equipmentId: string;
@@ -12,6 +14,7 @@ export interface EquipmentCardViewModel {}
 type ParameterInfo = {
   description: string;
   enabled: boolean;
+  equipmentParameter?: EquipmentParameterModel;
   equipmentParameterId: string;
 };
 

@@ -1,8 +1,12 @@
+import { AlarmTotalizerStatisticsModel } from "modules/automation/models/alam-totalizer-statistics.model";
+import { AlarmGroupStatistics } from "modules/automation/models/alarm-group-statistics.model";
 import {
   AlarmModel,
   AlarmTableViewModel,
   EAlarmStatus,
 } from "modules/automation/models/alarm-model";
+import { RealtimeModel } from "modules/automation/models/realtime-model";
+import { TagModel } from "modules/automation/models/tag.model";
 import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { useMqttState, useSubscription } from "mqtt-react-hooks";
@@ -10,47 +14,56 @@ import { useEffect, useState } from "react";
 import AutomationRealtimeContext from "../contexts/automationRealtimeContext";
 import { RealtimeStatus } from "../types/automationRealtime";
 
-const data = new Map();
+const data = new Map<string, TagModel>();
+const siteStatistics = new Map<string, AlarmGroupStatistics>();
+const buildingStatistics = new Map<string, AlarmGroupStatistics>();
+const roomStatistics = new Map<string, AlarmTotalizerStatisticsModel>();
+const equipmentStatistics = new Map<string, AlarmTotalizerStatisticsModel>();
 const alarmData = new Map();
 
-// const getValues = () => Array.from(data, ([_, value]) => value);
-
-function convertMessageToArrayOfTags(obj: any) {
-  const keys = Object.keys(obj);
-  const values = Object.values(obj);
-
-  let output = [];
-
-  for (let i = 0; i < keys.length; i++) {
-    output.push({
-      name: keys[i]
-        .replaceAll("*", "")
-        .replaceAll("_", "")
-        .replaceAll(/\s/g, ""),
-      value: values[i],
-    });
-  }
-  return output;
-}
 let keepAliveValue = 0;
 let lastKeepAliveValue = 0;
 
 const AutomationRealtimeProvider: React.FC = ({ children }) => {
   const [state, setState] = useState({
-    data: new Map(),
+    data: new Map<string, TagModel>(),
   });
   const [alarms, setAlarms] = useState<AlarmTableViewModel[]>([]);
+  const [siteAlarmStatistics, setSiteAlarmStatistics] = useState({
+    data: new Map<string, AlarmGroupStatistics>(),
+  });
+  const [buildingAlarmStatistics, setBuildingAlarmStatistics] = useState({
+    data: new Map<string, AlarmGroupStatistics>(),
+  });
+  const [roomAlarmStatistics, setRoomAlarmStatistics] = useState({
+    data: new Map<string, AlarmTotalizerStatisticsModel>(),
+  });
+  const [equipmentAlarmStatistics, setEquipmentAlarmStatistics] = useState({
+    data: new Map<string, AlarmTotalizerStatisticsModel>(),
+  });
+
   const { message: keepAlive } = useSubscription("/keep-alive");
-  const { message: realtimeTags } = useSubscription("/tags");
-  const { message: realtimeAlarms, connectionStatus } =
-    useSubscription("/current-alarms");
+  const { message: topLevel } = useSubscription("/runtime");
   const { client } = useMqttState();
   const [serviceStatus, setServiceStatus] =
     useState<RealtimeStatus>("connected");
 
   const getRealtimeValue = (key: string) => state.data.get(key)?.value ?? 0;
 
+  const getTag = (key: string): TagModel =>
+    state.data.get(key) ?? { value: 0, unit: "", timestamp: null };
+
   const getRealtimeAlarm = (key: string) => alarmData.get(key) as AlarmModel;
+
+  const getSiteStatistics = (key: string) => siteAlarmStatistics.data.get(key)!;
+
+  const getBuildingStatistics = (key: string) =>
+    buildingAlarmStatistics.data.get(key)!;
+
+  const getRoomStatistics = (key: string) => roomAlarmStatistics.data.get(key)!;
+
+  const getEquipmentStatistics = (key: string) =>
+    equipmentAlarmStatistics.data.get(key)!;
 
   const getRealtimeStatus = (status: string | Error): RealtimeStatus => {
     switch (status) {
@@ -72,53 +85,90 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
-    if (realtimeTags) {
-      if (realtimeTags?.message) {
-        const payload = realtimeTags.message.toString();
-        const obj = JSON.parse(payload);
-        const values = convertMessageToArrayOfTags(obj);
-        values.forEach((value: any) => {
-          data.set(value.name, value);
+    if (topLevel) {
+      if (topLevel?.message) {
+        const payload = topLevel.message.toString();
+        const obj = JSON.parse(payload) as RealtimeModel;
+        const alarmTemp: AlarmTableViewModel[] = [];
+        obj.forEach((site) => {
+          siteStatistics.set(site.name, {
+            totalAlarmsByClimate: site.totalAlarmsByClimate,
+            totalAlarmsByEnergy: site.totalAlarmsByEnergy,
+            totalAlarmsByTelecom: site.totalAlarmsByTelecom,
+          });
+          site.buildings.forEach((building) => {
+            buildingStatistics.set(building.name, {
+              totalAlarmsByClimate: building.totalAlarmsByClimate,
+              totalAlarmsByEnergy: building.totalAlarmsByEnergy,
+              totalAlarmsByTelecom: building.totalAlarmsByTelecom,
+            });
+            building.floors.forEach((floor) => {
+              floor.rooms.forEach((room) => {
+                roomStatistics.set(room.name, {
+                  totalAlarms: room.totalAlarms,
+                });
+                room.equipments.forEach((equipment) => {
+                  equipmentStatistics.set(equipment.name, {
+                    totalAlarms: equipment.totalAlarms,
+                  });
+                  equipment.parameters.forEach((parameter) => {
+                    data.set(parameter.name, {
+                      value: parameter.value,
+                      timestamp: parameter.timestamp,
+                      unit: parameter.unit,
+                    });
+                    let alarmsInTag: any[] = [];
+                    parameter.alarms.forEach((alarm) => {
+                      if (
+                        alarm.status === EAlarmStatus.ACKED ||
+                        alarm.status === EAlarmStatus.ACTIVE
+                      ) {
+                        alarmsInTag.push(alarm);
+                        const ds = splitPathnameIntoFields(alarm.pathname);
+                        alarmTemp.push({
+                          id: alarm.id,
+                          acked: false,
+                          site: ds.site,
+                          building: ds.building,
+                          equipment: ds.equipment,
+                          floor: ds.floor,
+                          inDate: alarm.inDate,
+                          outDate: alarm.outDate,
+                          recognizedDate: alarm.recognizedDate,
+                          parameter: ds.parameter,
+                          parameterId: "",
+                          room: ds.room,
+                          rule: ds.alarm ?? "",
+                          ruleId: alarm.ruleId,
+                          status: alarm.status,
+                          value: alarm.value,
+                          priority: alarm.priority,
+                          type: alarm.type,
+                          operator: alarm.operator,
+                        });
+                      }
+                    });
+                    data.set(parameter.name, {
+                      value: parameter.value,
+                      timestamp: parameter.timestamp,
+                      unit: parameter.unit,
+                      alarms: alarmsInTag,
+                    });
+                  });
+                });
+              });
+            });
+          });
         });
         setState({ data });
+        setSiteAlarmStatistics({ data: siteStatistics });
+        setBuildingAlarmStatistics({ data: buildingStatistics });
+        setRoomAlarmStatistics({ data: roomStatistics });
+        setEquipmentAlarmStatistics({ data: equipmentStatistics });
+        setAlarms(alarmTemp);
       }
     }
-  }, [realtimeTags]);
-
-  useEffect(() => {
-    if (realtimeAlarms) {
-      if (realtimeAlarms?.message) {
-        const payload = realtimeAlarms.message.toString();
-        const obj = JSON.parse(payload);
-        // console.log(obj);
-        setAlarms(
-          obj.map((alarm: any, index: number) => {
-            const ds = splitPathnameIntoFields(alarm.pathname);
-            return {
-              id: alarm.id,
-              acked: false,
-              building: ds.building,
-              equipment: ds.equipment,
-              floor: ds.floor,
-              inDate: alarm.inDate,
-              outDate: alarm.outDate,
-              recognizedDate: alarm.recognizedDate,
-              parameter: ds.parameter,
-              parameterId: "",
-              room: ds.room,
-              rule: alarm.name,
-              ruleId: alarm.ruleId,
-              status: alarm.status,
-              value: alarm.value,
-              priority: alarm.priority,
-              type: alarm.type,
-              operator: alarm.operator,
-            };
-          })
-        );
-      }
-    }
-  }, [realtimeAlarms]);
+  }, [topLevel]);
 
   // keep alive
   useEffect(() => {
@@ -146,7 +196,12 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
   return (
     <AutomationRealtimeContext.Provider
       value={{
-        getRealtimeValue: getRealtimeValue,
+        getRealtimeValue,
+        getTag,
+        getSiteStatistics,
+        getBuildingStatistics,
+        getRoomStatistics,
+        getEquipmentStatistics,
         alarms,
         activeAlarms: alarms.filter((x) => x.status === EAlarmStatus.ACTIVE)
           .length,

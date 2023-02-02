@@ -1,12 +1,14 @@
 import Grid from "@mui/material/Grid";
 import Card3ParametersSettings from "modules/automation/components/card-3-parameter-settings/Card3ParametersSettings";
 import RoomCard from "modules/automation/components/room-card/RoomCard";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 
 import {
   useLoadRoomCardsQuery,
   useUpdateRoomCardMutation,
 } from "modules/automation/services/room-card-service";
+import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
 import useRouter from "modules/core/hooks/useRouter";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import Loading from "modules/shared/components/Loading";
@@ -23,6 +25,7 @@ const EtcRoom: React.FC = () => {
     useUpdateRoomCardMutation();
   const { showModal } = useModal();
   const toast = useToast();
+  const { getTag, getRoomStatistics } = useAutomationRealtime();
 
   const onShowSettingsModal = (
     id: string,
@@ -87,48 +90,60 @@ const EtcRoom: React.FC = () => {
   return (
     <HeroContainer>
       <Grid container columnSpacing={1}>
-        {rooms?.map((room) => (
-          <Grid key={room.id} item md={4}>
-            <RoomCard
-              title={room.name}
-              parameter1={{
-                description: room.parameter1?.description ?? "",
-                enabled: room.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: room.parameter2?.description ?? "",
-                enabled: room.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: room.parameter3?.description ?? "",
-                enabled: room.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              activeAlarms={{
-                status: "highHigh",
-                value: 20,
-              }}
-              hideSettings={false}
-              onSettingsClick={() => {
-                onShowSettingsModal(
-                  room.id,
-                  room.name,
-                  room.parameter1,
-                  room.parameter2,
-                  room.parameter3
-                );
-              }}
-              onTitleClick={() => {
-                navigate(`${path}/${room.roomId}`, {});
-              }}
-            />
-          </Grid>
-        ))}
+        {rooms?.map((room) => {
+          const tag1 = getTag(
+            room.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            room.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            room.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const roomStatistics = getRoomStatistics(room.name);
+          return (
+            <Grid key={room.id} item md={4}>
+              <RoomCard
+                title={room.name}
+                parameter1={{
+                  description: room.parameter1?.description ?? "",
+                  enabled: room.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: room.parameter2?.description ?? "",
+                  enabled: room.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: room.parameter3?.description ?? "",
+                  enabled: room.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                activeAlarms={{
+                  status: "highHigh",
+                  value: roomStatistics.totalAlarms,
+                }}
+                hideSettings={false}
+                onSettingsClick={() => {
+                  onShowSettingsModal(
+                    room.id,
+                    room.name,
+                    room.parameter1,
+                    room.parameter2,
+                    room.parameter3
+                  );
+                }}
+                onTitleClick={() => {
+                  navigate(`${path}/${room.roomId}`, {});
+                }}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
       <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>

@@ -18,6 +18,8 @@ import { EquipmentCardModel } from "modules/automation/models/equipment-card-mod
 import TabPanel from "modules/shared/components/TabPanel";
 import Card3ParameterEquipmentSettings from "modules/automation/components/card-3-parameter-equipment-settings/Card3ParameterEquipmentSettings";
 import { useFindEquipmentParametersByEquipmentIdMutation } from "modules/automation/services/equipment-parameter-service";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
+import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
 
 const EtcEquipment: React.FC = () => {
   const { params, navigate, path } = useRouter();
@@ -141,54 +143,67 @@ const EnergyEquipments: React.FC<EquipmentData> = ({
   handleOnTitleClick,
 }) => {
   const { tabIndex } = useTabContext();
+  const { getTag, getEquipmentStatistics } = useAutomationRealtime();
   return (
     <TabPanel index={0} value={tabIndex}>
       <Grid container columnSpacing={1} rowSpacing={1}>
-        {equipments.map((equipment) => (
-          <Grid key={equipment.id} item md={4}>
-            <EquipmentCard
-              title={equipment.name}
-              system="energy"
-              status="online"
-              parameter1={{
-                description: equipment.parameter1?.description ?? "",
-                enabled: equipment.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: equipment.parameter2?.description ?? "",
-                enabled: equipment.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: equipment.parameter3?.description ?? "",
-                enabled: equipment.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              activeAlarms={{
-                status: "highHigh",
-                value: 20,
-              }}
-              hideSettings={false}
-              onSettingsClick={() => {
-                handleOnSettingsClick(
-                  equipment.id,
-                  equipment.equipmentId,
-                  equipment.name,
-                  equipment.parameter1,
-                  equipment.parameter2,
-                  equipment.parameter3
-                );
-              }}
-              onTitleClick={() => {
-                handleOnTitleClick(equipment.equipmentId);
-              }}
-            />
-          </Grid>
-        ))}
+        {equipments.map((equipment) => {
+          const tag1 = getTag(
+            equipment.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            equipment.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            equipment.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const equipmentStatistics = getEquipmentStatistics(equipment.name);
+          return (
+            <Grid key={equipment.id} item md={4}>
+              <EquipmentCard
+                title={equipment.name}
+                system="energy"
+                status="online"
+                parameter1={{
+                  description: equipment.parameter1?.description ?? "",
+                  enabled: equipment.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: equipment.parameter2?.description ?? "",
+                  enabled: equipment.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: equipment.parameter3?.description ?? "",
+                  enabled: equipment.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                activeAlarms={{
+                  status: "highHigh",
+                  value: equipmentStatistics.totalAlarms,
+                }}
+                hideSettings={false}
+                onSettingsClick={() => {
+                  handleOnSettingsClick(
+                    equipment.id,
+                    equipment.equipmentId,
+                    equipment.name,
+                    equipment.parameter1,
+                    equipment.parameter2,
+                    equipment.parameter3
+                  );
+                }}
+                onTitleClick={() => {
+                  handleOnTitleClick(equipment.equipmentId);
+                }}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </TabPanel>
   );
@@ -199,52 +214,65 @@ const ClimateEquipments: React.FC<EquipmentData> = ({
   handleOnSettingsClick,
 }) => {
   const { tabIndex } = useTabContext();
+  const { getTag, getEquipmentStatistics } = useAutomationRealtime();
   return (
     <TabPanel index={1} value={tabIndex}>
       <Grid container columnSpacing={1} rowSpacing={1}>
-        {equipments.map((equipment) => (
-          <Grid key={equipment.id} item md={4}>
-            <EquipmentCard
-              title={equipment.name}
-              system="climate"
-              status="online"
-              parameter1={{
-                description: equipment.parameter1?.description ?? "",
-                enabled: equipment.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: equipment.parameter2?.description ?? "",
-                enabled: equipment.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: equipment.parameter3?.description ?? "",
-                enabled: equipment.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              activeAlarms={{
-                status: "highHigh",
-                value: 20,
-              }}
-              hideSettings={false}
-              onSettingsClick={() => {
-                handleOnSettingsClick(
-                  equipment.id,
-                  equipment.equipmentId,
-                  equipment.name,
-                  equipment.parameter1,
-                  equipment.parameter2,
-                  equipment.parameter3
-                );
-              }}
-              onTitleClick={() => {}}
-            />
-          </Grid>
-        ))}
+        {equipments.map((equipment) => {
+          const tag1 = getTag(
+            equipment.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            equipment.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            equipment.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const equipmentStatistics = getEquipmentStatistics(equipment.name);
+          return (
+            <Grid key={equipment.id} item md={4}>
+              <EquipmentCard
+                title={equipment.name}
+                system="climate"
+                status="online"
+                parameter1={{
+                  description: equipment.parameter1?.description ?? "",
+                  enabled: equipment.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: equipment.parameter2?.description ?? "",
+                  enabled: equipment.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: equipment.parameter3?.description ?? "",
+                  enabled: equipment.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                activeAlarms={{
+                  status: "highHigh",
+                  value: equipmentStatistics.totalAlarms,
+                }}
+                hideSettings={false}
+                onSettingsClick={() => {
+                  handleOnSettingsClick(
+                    equipment.id,
+                    equipment.equipmentId,
+                    equipment.name,
+                    equipment.parameter1,
+                    equipment.parameter2,
+                    equipment.parameter3
+                  );
+                }}
+                onTitleClick={() => {}}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </TabPanel>
   );
@@ -255,52 +283,65 @@ const TelecomEquipments: React.FC<EquipmentData> = ({
   handleOnSettingsClick,
 }) => {
   const { tabIndex } = useTabContext();
+  const { getTag, getEquipmentStatistics } = useAutomationRealtime();
   return (
     <TabPanel index={2} value={tabIndex}>
       <Grid container columnSpacing={1} rowSpacing={1}>
-        {equipments.map((equipment) => (
-          <Grid key={equipment.id} item md={4}>
-            <EquipmentCard
-              title={equipment.name}
-              system="telecom"
-              status="online"
-              parameter1={{
-                description: equipment.parameter1?.description ?? "",
-                enabled: equipment.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: equipment.parameter2?.description ?? "",
-                enabled: equipment.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: equipment.parameter3?.description ?? "",
-                enabled: equipment.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              activeAlarms={{
-                status: "highHigh",
-                value: 20,
-              }}
-              hideSettings={false}
-              onSettingsClick={() => {
-                handleOnSettingsClick(
-                  equipment.id,
-                  equipment.equipmentId,
-                  equipment.name,
-                  equipment.parameter1,
-                  equipment.parameter2,
-                  equipment.parameter3
-                );
-              }}
-              onTitleClick={() => {}}
-            />
-          </Grid>
-        ))}
+        {equipments.map((equipment) => {
+          const tag1 = getTag(
+            equipment.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            equipment.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            equipment.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const equipmentStatistics = getEquipmentStatistics(equipment.name);
+          return (
+            <Grid key={equipment.id} item md={4}>
+              <EquipmentCard
+                title={equipment.name}
+                system="telecom"
+                status="online"
+                parameter1={{
+                  description: equipment.parameter1?.description ?? "",
+                  enabled: equipment.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: equipment.parameter2?.description ?? "",
+                  enabled: equipment.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: equipment.parameter3?.description ?? "",
+                  enabled: equipment.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                activeAlarms={{
+                  status: "highHigh",
+                  value: equipmentStatistics.totalAlarms,
+                }}
+                hideSettings={false}
+                onSettingsClick={() => {
+                  handleOnSettingsClick(
+                    equipment.id,
+                    equipment.equipmentId,
+                    equipment.name,
+                    equipment.parameter1,
+                    equipment.parameter2,
+                    equipment.parameter3
+                  );
+                }}
+                onTitleClick={() => {}}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </TabPanel>
   );

@@ -54,6 +54,8 @@ export const alarmApi = createApi({
             rule: alarm.alarmRule.name,
             acked: false,
             priority: alarm.alarmRule.priority,
+            operator: alarm.operator,
+            parameterId: alarm.id,
           };
         });
       },

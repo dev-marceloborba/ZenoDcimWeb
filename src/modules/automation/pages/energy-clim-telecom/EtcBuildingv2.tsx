@@ -11,6 +11,8 @@ import {
 } from "modules/automation/services/site-building-card-service";
 import { useToast } from "modules/shared/components/ToastProvider";
 import useRouter from "modules/core/hooks/useRouter";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
+import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
 
 export default function EtcBuilding() {
   const { data: sites, isLoading: isLoadingFetch } = useLoadCardsQuery();
@@ -20,6 +22,7 @@ export default function EtcBuilding() {
   const { showModal } = useModal();
   const toast = useToast();
   const { navigate } = useRouter();
+  const { getTag, getSiteStatistics } = useAutomationRealtime();
 
   const onShowSettingsModal = (
     id: string,
@@ -111,71 +114,92 @@ export default function EtcBuilding() {
         rowSpacing={2}
         sx={{ mt: 2 }}
       >
-        {sites?.map((site) => (
-          <Grid key={site.siteId} item md={6}>
-            <SiteBuildingCard
-              title={site.name}
-              siteId={site.siteId}
-              parameter1={{
-                description: site.parameter1?.description ?? "",
-                enabled: site.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: site.parameter2?.description ?? "",
-                enabled: site.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: site.parameter3?.description ?? "",
-                enabled: site.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter4={{
-                description: site.parameter4?.description ?? "",
-                enabled: site.parameter4?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter5={{
-                description: site.parameter5?.description ?? "",
-                enabled: site.parameter5?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter6={{
-                description: site.parameter6?.description ?? "",
-                enabled: site.parameter6?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              alarms={{
-                energy: 0,
-                climate: 0,
-                telecom: 0,
-              }}
-              hideSettings={false}
-              onSettingsClick={() =>
-                onShowSettingsModal(
-                  site.id,
-                  site.name,
-                  site.parameter1,
-                  site.parameter2,
-                  site.parameter3,
-                  site.parameter4,
-                  site.parameter5,
-                  site.parameter6
-                )
-              }
-              onTitleClick={() =>
-                navigate(`/zeno/automation/etc/${site.siteId}`, {})
-              }
-            />
-          </Grid>
-        ))}
+        {sites?.map((site) => {
+          const tag1 = getTag(
+            site.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            site.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            site.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const tag4 = getTag(
+            site.parameter4?.equipmentParameter?.pathname ?? ""
+          );
+          const tag5 = getTag(
+            site.parameter5?.equipmentParameter?.pathname ?? ""
+          );
+          const tag6 = getTag(
+            site.parameter6?.equipmentParameter?.pathname ?? ""
+          );
+          const siteStatistics = getSiteStatistics(site.name);
+          return (
+            <Grid key={site.siteId} item md={6}>
+              <SiteBuildingCard
+                title={site.name}
+                siteId={site.siteId}
+                parameter1={{
+                  description: site.parameter1?.description ?? "",
+                  enabled: site.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: site.parameter2?.description ?? "",
+                  enabled: site.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: site.parameter3?.description ?? "",
+                  enabled: site.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                parameter4={{
+                  description: site.parameter4?.description ?? "",
+                  enabled: site.parameter4?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag4.alarms),
+                  ...tag4,
+                }}
+                parameter5={{
+                  description: site.parameter5?.description ?? "",
+                  enabled: site.parameter5?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag5.alarms),
+                  ...tag5,
+                }}
+                parameter6={{
+                  description: site.parameter6?.description ?? "",
+                  enabled: site.parameter6?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag6.alarms),
+                  ...tag6,
+                }}
+                alarms={{
+                  energy: siteStatistics.totalAlarmsByEnergy,
+                  climate: siteStatistics.totalAlarmsByClimate,
+                  telecom: siteStatistics.totalAlarmsByTelecom,
+                }}
+                hideSettings={false}
+                onSettingsClick={() =>
+                  onShowSettingsModal(
+                    site.id,
+                    site.name,
+                    site.parameter1,
+                    site.parameter2,
+                    site.parameter3,
+                    site.parameter4,
+                    site.parameter5,
+                    site.parameter6
+                  )
+                }
+                onTitleClick={() =>
+                  navigate(`/zeno/automation/etc/${site.siteId}`, {})
+                }
+              />
+            </Grid>
+          );
+        })}
       </Grid>
       <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>

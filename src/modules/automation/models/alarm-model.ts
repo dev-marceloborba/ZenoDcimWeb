@@ -56,6 +56,8 @@ export interface AlarmTableViewModel {
   status: EAlarmStatus;
   priority: EAlarmPriority;
   type: EAlarmType;
+  parameterId: string;
+  operator: string;
 }
 
 export enum EAlarmStatus {

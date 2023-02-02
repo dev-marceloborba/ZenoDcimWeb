@@ -12,6 +12,8 @@ import { useModal } from "mui-modal-provider";
 import { useToast } from "modules/shared/components/ToastProvider";
 import Card6ParametersSettings from "modules/automation/components/card-6-parameters-settings/Card6ParametersSettings";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
+import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
 
 const EtcFloor: React.FC = () => {
   const { data: equipments } = useFindAllEquipmentsQuery();
@@ -22,6 +24,7 @@ const EtcFloor: React.FC = () => {
     useUpdateSiteBuildingCardMutation();
   const { showModal } = useModal();
   const toast = useToast();
+  const { getTag, getBuildingStatistics } = useAutomationRealtime();
 
   const onShowSettingsModal = (
     id: string,
@@ -106,71 +109,92 @@ const EtcFloor: React.FC = () => {
   return (
     <HeroContainer title="Energia, clima e telecom">
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        {buildings?.map((building) => (
-          <Grid key={building.buildingId} item md={6}>
-            <SiteBuildingCard
-              title={building.name}
-              buildingId={building.buildingId}
-              parameter1={{
-                description: building.parameter1?.description ?? "",
-                enabled: building.parameter1?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter2={{
-                description: building.parameter2?.description ?? "",
-                enabled: building.parameter2?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter3={{
-                description: building.parameter3?.description ?? "",
-                enabled: building.parameter3?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter4={{
-                description: building.parameter4?.description ?? "",
-                enabled: building.parameter4?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter5={{
-                description: building.parameter5?.description ?? "",
-                enabled: building.parameter5?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              parameter6={{
-                description: building.parameter6?.description ?? "",
-                enabled: building.parameter6?.enabled ?? false,
-                value: 0,
-                status: "normal",
-              }}
-              alarms={{
-                energy: 0,
-                climate: 0,
-                telecom: 0,
-              }}
-              hideSettings={false}
-              onSettingsClick={() =>
-                onShowSettingsModal(
-                  building.id,
-                  building.name,
-                  building.parameter1,
-                  building.parameter2,
-                  building.parameter3,
-                  building.parameter4,
-                  building.parameter5,
-                  building.parameter6
-                )
-              }
-              onTitleClick={() => {
-                navigate(`${path}/${building.buildingId}`, {});
-              }}
-            />
-          </Grid>
-        ))}
+        {buildings?.map((building) => {
+          const tag1 = getTag(
+            building.parameter1?.equipmentParameter?.pathname ?? ""
+          );
+          const tag2 = getTag(
+            building.parameter2?.equipmentParameter?.pathname ?? ""
+          );
+          const tag3 = getTag(
+            building.parameter3?.equipmentParameter?.pathname ?? ""
+          );
+          const tag4 = getTag(
+            building.parameter4?.equipmentParameter?.pathname ?? ""
+          );
+          const tag5 = getTag(
+            building.parameter5?.equipmentParameter?.pathname ?? ""
+          );
+          const tag6 = getTag(
+            building.parameter6?.equipmentParameter?.pathname ?? ""
+          );
+          const buildingStatistics = getBuildingStatistics(building.name);
+          return (
+            <Grid key={building.buildingId} item md={6}>
+              <SiteBuildingCard
+                title={building.name}
+                buildingId={building.buildingId}
+                parameter1={{
+                  description: building.parameter1?.description ?? "",
+                  enabled: building.parameter1?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  ...tag1,
+                }}
+                parameter2={{
+                  description: building.parameter2?.description ?? "",
+                  enabled: building.parameter2?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  ...tag2,
+                }}
+                parameter3={{
+                  description: building.parameter3?.description ?? "",
+                  enabled: building.parameter3?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  ...tag3,
+                }}
+                parameter4={{
+                  description: building.parameter4?.description ?? "",
+                  enabled: building.parameter4?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag4.alarms),
+                  ...tag4,
+                }}
+                parameter5={{
+                  description: building.parameter5?.description ?? "",
+                  enabled: building.parameter5?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag5.alarms),
+                  ...tag5,
+                }}
+                parameter6={{
+                  description: building.parameter6?.description ?? "",
+                  enabled: building.parameter6?.enabled ?? false,
+                  status: getStatusInAlarmsByPriorities(tag6.alarms),
+                  ...tag6,
+                }}
+                alarms={{
+                  energy: buildingStatistics.totalAlarmsByEnergy,
+                  climate: buildingStatistics.totalAlarmsByClimate,
+                  telecom: buildingStatistics.totalAlarmsByTelecom,
+                }}
+                hideSettings={false}
+                onSettingsClick={() =>
+                  onShowSettingsModal(
+                    building.id,
+                    building.name,
+                    building.parameter1,
+                    building.parameter2,
+                    building.parameter3,
+                    building.parameter4,
+                    building.parameter5,
+                    building.parameter6
+                  )
+                }
+                onTitleClick={() => {
+                  navigate(`${path}/${building.buildingId}`, {});
+                }}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
       <Loading open={isLoadingFetch || isLoadingUpdate} />
     </HeroContainer>

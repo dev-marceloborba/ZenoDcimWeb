@@ -5,6 +5,7 @@ type DataStructure = {
   room: string;
   equipment: string;
   parameter: string;
+  alarm?: string;
 };
 
 export default function splitPathnameIntoFields(
@@ -18,5 +19,6 @@ export default function splitPathnameIntoFields(
     room: fields[3],
     equipment: fields[4],
     parameter: fields[5],
+    alarm: fields.length === 7 ? fields[6] : "",
   };
 }
