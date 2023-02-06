@@ -2,10 +2,6 @@ export const automationPaths = {
   energyClimateTelecom: {
     fullpath: "etc",
   },
-  // energyClimateTelecomFloor: {
-  //   fullPath: "etc/floor/:floorId",
-  //   shortPath: "floor",
-  // },
   energyClimateTelecomFloor: {
     fullPath: "etc/:siteId",
     shortPath: "floor",
@@ -26,23 +22,15 @@ export const automationPaths = {
     fullPath: "etc/floor/:floorId/cage/:roomId",
     shortPath: "cage",
   },
-  equipmentParameterDetails: {
-    fullPath:
-      "etc/floor/:floorId/cage/:roomId/equipment-parameters-details/:equipmentId",
-    shortPath: "equipment-parameters-details",
-  },
   rack: {
     fullPath: "etc/floor/cage/rack",
     shortPath: "rack",
   },
-  parameterDetails: {
-    fullPath:
-      "etc/floor/:floorId/cage/:roomId/equipment-parameters-details/:equipmentId/parameter-details/:equipmentParameterId",
-    shortPath: "parameter-details",
-  },
   parameterHistory: {
     fullPath:
       "etc/:siteId/:buildingId/:roomId/:equipmentId/:equipmentParameterId/history",
+    alternativePath:
+      "settings/equipments/details/:equipmentId/:equipmentParameterId/history",
   },
   fireSystem: {
     fullPath: "fire-system",

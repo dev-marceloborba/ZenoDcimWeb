@@ -22,7 +22,8 @@ import { groupApi } from "modules/user/services/groups.service";
 import { rackApi } from "modules/datacenter/services/rack.service";
 import { rackEquipmentApi } from "modules/datacenter/services/rack-equipment.service";
 import { userPreferenciesApi } from "modules/user/services/user-preferencies.service";
-import { siteBuildingCardApi } from "modules/automation/services/site-building-card-service";
+import { buildingCardApi } from "modules/automation/services/building-card-service";
+import { siteCardApi } from "modules/automation/services/site-card-service";
 import { roomCardSettingsApi } from "modules/automation/services/room-card-service";
 import { equipmentCardSettingsApi } from "modules/automation/services/equipment-card-service";
 import alarmFilterSlice from "modules/alarms/pages/alarm-realtime/slices/alarmFilterSlice";
@@ -51,7 +52,8 @@ export const store = configureStore({
     [rackApi.reducerPath]: rackApi.reducer,
     [rackEquipmentApi.reducerPath]: rackEquipmentApi.reducer,
     [userPreferenciesApi.reducerPath]: userPreferenciesApi.reducer,
-    [siteBuildingCardApi.reducerPath]: siteBuildingCardApi.reducer,
+    [siteCardApi.reducerPath]: siteCardApi.reducer,
+    [buildingCardApi.reducerPath]: buildingCardApi.reducer,
     [roomCardSettingsApi.reducerPath]: roomCardSettingsApi.reducer,
     [equipmentCardSettingsApi.reducerPath]: equipmentCardSettingsApi.reducer,
   },
@@ -80,7 +82,8 @@ export const store = configureStore({
       rackApi.middleware,
       rackEquipmentApi.middleware,
       userPreferenciesApi.middleware,
-      siteBuildingCardApi.middleware,
+      siteCardApi.middleware,
+      buildingCardApi.middleware,
       roomCardSettingsApi.middleware,
       equipmentCardSettingsApi.middleware
     ),

@@ -5,11 +5,9 @@ import EquipmentConectivity from "modules/automation/pages/equipment-connectivit
 import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAdminv2";
 import { automationPaths } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcFloorv2";
-import Cage from "../pages/cage/Cage";
 import AutomationSettings from "../pages/automation-settings/AutomationSettings";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
-import FloorResolver from "./resolvers/FloorResolver";
 import RoomResolver from "./resolvers/RoomResolver";
 import EquipmentResolver from "./resolvers/EquipmentResolver";
 import EquipmentParameterResolver from "./resolvers/EquipmentParameterResolver";
@@ -51,13 +49,13 @@ export const automationRoutes: RouteObject[] = [
     resolver: EquipmentResolver,
   },
   {
-    path: automationPaths.cage.fullPath,
-    element: <Cage />,
-    title: "Equipamento",
-    resolver: RoomResolver,
+    path: automationPaths.parameterHistory.fullPath,
+    element: <ParameterHistoryPage />,
+    title: "Histórico de parâmetros",
+    resolver: EquipmentParameterResolver,
   },
   {
-    path: automationPaths.parameterHistory.fullPath,
+    path: automationPaths.parameterHistory.alternativePath,
     element: <ParameterHistoryPage />,
     title: "Histórico de parâmetros",
     resolver: EquipmentParameterResolver,

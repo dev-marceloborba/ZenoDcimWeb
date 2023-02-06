@@ -2,9 +2,9 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import {
-  useLoadBuildingCardsQuery,
-  useUpdateSiteBuildingCardMutation,
-} from "modules/automation/services/site-building-card-service";
+  useLoadCardsQuery,
+  useUpdateBuildingCardMutation,
+} from "modules/automation/services/building-card-service";
 import useRouter from "modules/core/hooks/useRouter";
 import SiteBuildingCard from "modules/automation/components/site-building-card/SiteBuildingCard";
 import Loading from "modules/shared/components/Loading";
@@ -18,10 +18,11 @@ import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automati
 const EtcFloor: React.FC = () => {
   const { data: equipments } = useFindAllEquipmentsQuery();
   const { params, navigate, path } = useRouter();
-  const { data: buildings, isLoading: isLoadingFetch } =
-    useLoadBuildingCardsQuery(params.siteId!);
+  const { data: buildings, isLoading: isLoadingFetch } = useLoadCardsQuery(
+    params.siteId!
+  );
   const [updateCard, { isLoading: isLoadingUpdate }] =
-    useUpdateSiteBuildingCardMutation();
+    useUpdateBuildingCardMutation();
   const { showModal } = useModal();
   const toast = useToast();
   const { getTag, getBuildingStatistics } = useAutomationRealtime();
@@ -171,9 +172,9 @@ const EtcFloor: React.FC = () => {
                   ...tag6,
                 }}
                 alarms={{
-                  energy: buildingStatistics.totalAlarmsByEnergy,
-                  climate: buildingStatistics.totalAlarmsByClimate,
-                  telecom: buildingStatistics.totalAlarmsByTelecom,
+                  energy: buildingStatistics?.totalAlarmsByEnergy ?? 0,
+                  climate: buildingStatistics?.totalAlarmsByClimate ?? 0,
+                  telecom: buildingStatistics?.totalAlarmsByTelecom ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() =>

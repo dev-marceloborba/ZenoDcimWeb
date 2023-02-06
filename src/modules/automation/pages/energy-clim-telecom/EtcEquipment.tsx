@@ -184,7 +184,7 @@ const EnergyEquipments: React.FC<EquipmentData> = ({
                 }}
                 activeAlarms={{
                   status: "highHigh",
-                  value: equipmentStatistics.totalAlarms,
+                  value: equipmentStatistics?.totalAlarms ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() => {
@@ -255,7 +255,7 @@ const ClimateEquipments: React.FC<EquipmentData> = ({
                 }}
                 activeAlarms={{
                   status: "highHigh",
-                  value: equipmentStatistics.totalAlarms,
+                  value: equipmentStatistics?.totalAlarms ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() => {
@@ -324,7 +324,7 @@ const TelecomEquipments: React.FC<EquipmentData> = ({
                 }}
                 activeAlarms={{
                   status: "highHigh",
-                  value: equipmentStatistics.totalAlarms,
+                  value: equipmentStatistics?.totalAlarms ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() => {

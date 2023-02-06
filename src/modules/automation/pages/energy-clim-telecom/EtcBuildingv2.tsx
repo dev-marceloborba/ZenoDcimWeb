@@ -6,9 +6,9 @@ import { useModal } from "mui-modal-provider";
 import Card6ParametersSettings from "modules/automation/components/card-6-parameters-settings/Card6ParametersSettings";
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 import {
-  useUpdateSiteBuildingCardMutation,
+  useUpdateSiteCardMutation,
   useLoadCardsQuery,
-} from "modules/automation/services/site-building-card-service";
+} from "modules/automation/services/site-card-service";
 import { useToast } from "modules/shared/components/ToastProvider";
 import useRouter from "modules/core/hooks/useRouter";
 import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
@@ -18,7 +18,7 @@ export default function EtcBuilding() {
   const { data: sites, isLoading: isLoadingFetch } = useLoadCardsQuery();
   const { data: equipments } = useFindAllEquipmentsQuery();
   const [updateCard, { isLoading: isLoadingUpdate }] =
-    useUpdateSiteBuildingCardMutation();
+    useUpdateSiteCardMutation();
   const { showModal } = useModal();
   const toast = useToast();
   const { navigate } = useRouter();
@@ -176,9 +176,9 @@ export default function EtcBuilding() {
                   ...tag6,
                 }}
                 alarms={{
-                  energy: siteStatistics.totalAlarmsByEnergy,
-                  climate: siteStatistics.totalAlarmsByClimate,
-                  telecom: siteStatistics.totalAlarmsByTelecom,
+                  energy: siteStatistics?.totalAlarmsByEnergy ?? 0,
+                  climate: siteStatistics?.totalAlarmsByClimate ?? 0,
+                  telecom: siteStatistics?.totalAlarmsByTelecom ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() =>

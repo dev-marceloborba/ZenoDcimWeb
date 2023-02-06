@@ -180,11 +180,6 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
 
   return (
     <Modal {...props}>
-      {/* <Paper sx={{ padding: 1, width: "100%" }}> */}
-      {/* <Stack direction="row" justifyContent="space-between">
-        <Typography variant="h4">Configuração do Card</Typography>
-        <CloseButton onClick={(e) => onClose!(e, "escapeKeyDown")} />
-      </Stack> */}
       <Grid
         container
         columnSpacing={2}
@@ -313,15 +308,7 @@ const Card6ParametersSettings: React.FC<Card6ParametersSettingsProps> = ({
         <Button variant="contained" onClick={handleOnSave}>
           Salvar
         </Button>
-        {/* <Button
-          variant="outlined"
-          onClick={(e) => onClose!(e, "escapeKeyDown")}
-          sx={{ marginLeft: 1 }}
-        >
-          Cancelar
-        </Button> */}
       </Stack>
-      {/* </Paper> */}
     </Modal>
   );
 };

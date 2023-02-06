@@ -1,8 +1,8 @@
 import { EquipmentParameterModel } from "./automation-model";
 
-export interface BuildingCardModel {
+export interface SiteCardModel {
   id: string;
-  buildingId: string;
+  siteId: string;
   name: string;
   parameter1: ParameterInfo | null;
   parameter2: ParameterInfo | null;
@@ -11,7 +11,7 @@ export interface BuildingCardModel {
   parameter5: ParameterInfo | null;
   parameter6: ParameterInfo | null;
 }
-export interface BuildingCardViewModel {}
+export interface SiteCardViewModel {}
 
 type ParameterInfo = {
   description: string;
@@ -20,7 +20,7 @@ type ParameterInfo = {
   equipmentParameter?: EquipmentParameterModel;
 };
 
-export interface UpdateBuildingCardViewModel {
+export interface UpdateSiteCardViewModel {
   id: string;
   parameter1: ParameterInfo | null;
   parameter2: ParameterInfo | null;
