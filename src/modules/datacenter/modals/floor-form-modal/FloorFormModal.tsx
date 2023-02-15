@@ -1,18 +1,20 @@
 import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
-import React from "react";
+import React, { useEffect, useReducer } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOf, string, object } from "yup";
 import Form, { FormMode } from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
-
 import {
-  BuildingModel,
   FloorModel,
   FloorViewModel,
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
+import locationReducer, {
+  locationInitialState,
+  LocationReducerType,
+} from "modules/core/reducers/locationReducer";
 
 type FormProps = {
   onConfirm(floor: FloorViewModel): void;
@@ -20,7 +22,6 @@ type FormProps = {
   data?: {
     model?: FloorModel;
     sites?: SiteModel[];
-    buildings?: BuildingModel[];
   };
 } & ModalProps;
 
@@ -30,10 +31,14 @@ const FloorFormModal: React.FC<FormProps> = ({
   data,
   ...props
 }) => {
+  const [state, dispatch] = useReducer(locationReducer, locationInitialState);
   const methods = useForm<FloorViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
-    defaultValues: data?.model,
+    defaultValues: {
+      ...data?.model,
+      siteId: data?.model?.building?.site?.id,
+    },
   });
   const {
     handleSubmit,
@@ -41,6 +46,21 @@ const FloorFormModal: React.FC<FormProps> = ({
   } = methods;
 
   const onSubmit: SubmitHandler<FloorViewModel> = (data) => onConfirm(data);
+
+  useEffect(() => {
+    dispatch({
+      type: LocationReducerType.GET_SITES,
+      payload: { sites: data?.sites },
+    });
+    if (mode === "edit") {
+      dispatch({
+        type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+        payload: {
+          siteId: data?.model?.building?.site?.id,
+        },
+      });
+    }
+  }, [data?.model?.building?.site?.id, data?.sites, mode]);
 
   return (
     <Modal {...props}>
@@ -54,14 +74,28 @@ const FloorFormModal: React.FC<FormProps> = ({
       >
         <FormProvider {...methods}>
           <ControlledTextInput
+            name="siteId"
+            label="Site"
+            items={state.sites.map((site) => ({
+              description: site.name,
+              value: site.id,
+            }))}
+            onChange={(e) =>
+              dispatch({
+                type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+                payload: {
+                  siteId: e.target.value,
+                },
+              })
+            }
+          />
+          <ControlledTextInput
             name="buildingId"
             label="Prédio"
-            items={
-              data?.buildings?.map((building) => ({
-                description: building.name,
-                value: building.id,
-              })) ?? []
-            }
+            items={state.buildings.map((building) => ({
+              description: building.name,
+              value: building.id,
+            }))}
           />
           <ControlledTextInput name="name" label="Nome do andar" />
           <SubmitButton disabled={!isValid} />
@@ -74,6 +108,7 @@ const FloorFormModal: React.FC<FormProps> = ({
 export default FloorFormModal;
 
 const validationSchema: SchemaOf<FloorViewModel> = object().shape({
+  siteId: string().notRequired(),
   name: string().required("Nome é obrigatório"),
   buildingId: string().required("Prédio é obrigatório"),
 });

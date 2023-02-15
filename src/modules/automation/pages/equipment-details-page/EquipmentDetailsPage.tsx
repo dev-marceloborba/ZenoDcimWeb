@@ -29,6 +29,7 @@ import Stack from "@mui/material/Stack";
 import { getEquipmentStatusFromEnum } from "modules/automation/utils/equipmentUtils";
 import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
 import { SiteModel } from "modules/datacenter/models/datacenter-model";
+import cleanPathnameGenerator from "modules/utils/cleanPathnameGenerator";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
@@ -80,11 +81,20 @@ const EquipmentDetailsPage: React.FC = () => {
     const modal = showModal(EquipmentParameterFormModal, {
       title: "Novo parâmetro do equipamento",
       onConfirm: async (formData) => {
+        const cleanPathname = cleanPathnameGenerator({
+          site: equipment?.site?.name ?? "",
+          building: equipment?.building?.name ?? "",
+          floor: equipment?.floor?.name ?? "",
+          room: equipment?.room?.name ?? "",
+          equipment: equipment?.component ?? "",
+          parameter: formData.name,
+        });
         modal.destroy();
         try {
           await createEquipmentParameter({
             ...formData,
             equipmentId: params.equipmentId!,
+            pathname: cleanPathname,
           }).unwrap();
           toast.open({ message: "Parâmetro atualizado com sucesso" });
         } catch (error) {
@@ -145,6 +155,7 @@ const EquipmentDetailsPage: React.FC = () => {
           {
             element: (
               <ParametersTab
+                equipment={equipment}
                 sites={sites ?? []}
                 parameters={equipment?.equipmentParameters ?? []}
                 refetch={refetch}
@@ -257,12 +268,14 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ equipment }) => {
 };
 
 type ParametersTabProps = {
+  equipment: EquipmentModel | undefined;
   sites: SiteModel[];
   parameters: EquipmentParameterModel[];
   refetch(): void;
 };
 
 const ParametersTab: React.FC<ParametersTabProps> = ({
+  equipment,
   sites,
   parameters,
   refetch,
@@ -299,6 +312,14 @@ const ParametersTab: React.FC<ParametersTabProps> = ({
             ...formData,
             equipmentId: params.equipmentId!,
             id: parameter.id,
+            pathname: cleanPathnameGenerator({
+              site: equipment?.site?.name ?? "",
+              building: equipment?.building?.name ?? "",
+              floor: equipment?.floor?.name ?? "",
+              room: equipment?.room?.name ?? "",
+              equipment: equipment?.component ?? "",
+              parameter: formData.name,
+            }),
           }).unwrap();
           refetch();
           toast.open({ message: "Parâmetro atualizado com sucesso" });

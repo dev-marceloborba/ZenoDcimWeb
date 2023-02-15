@@ -122,6 +122,7 @@ export interface EquipmentParameterViewModel {
   dataSource: string;
   address: string;
   expression?: string;
+  pathname: string;
 }
 
 export interface EquipmentParameterEditor {
@@ -134,6 +135,7 @@ export interface EquipmentParameterEditor {
   address: string;
   expression?: string;
   alarmRules?: AlarmRuleEditor[];
+  pathname: string;
 }
 
 export interface UpdateEquipmentParameterViewModel {
@@ -144,6 +146,7 @@ export interface UpdateEquipmentParameterViewModel {
   dataSource: string;
   address: string;
   expression?: string;
+  pathname: string;
 }
 
 export interface EquipmentParameterModel extends EquipmentParameterViewModel {

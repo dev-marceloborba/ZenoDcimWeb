@@ -24,7 +24,6 @@ import DatacenterTreeviewExplorer from "modules/datacenter/components/datacenter
 import Tabs from "modules/shared/components/tabs/Tabs";
 import TriggerSetting from "modules/automation/components/trigger-setting-custom-form/TriggerSettingCustomFormv2";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import AddButton from "modules/shared/components/add-button/AddButton";
 import { AlarmRuleEditor } from "modules/automation/models/alarm-rule-model";
 
@@ -79,6 +78,7 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
       scale: formData.scale,
       unit: formData.unit,
       expression: "",
+      pathname: "",
       alarmRules: formData.alarmRules.map<AlarmRuleEditor>((x) => ({
         ...x,
         id: x._id ?? defaultGuid,
@@ -126,6 +126,26 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
 
 export default VirtualParameterFormModal;
 
+const fakeValuesMap = new Map<string, number>();
+
+function validateExpression(expression: string) {
+  let expressionWithValues = expression;
+
+  fakeValuesMap.forEach((value, key) => {
+    expressionWithValues = expressionWithValues.replaceAll(
+      key,
+      value.toString()
+    );
+  });
+
+  try {
+    eval(expressionWithValues);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 type AlarmRule = {
   _id?: string;
   setpoint: number;
@@ -150,7 +170,15 @@ const schemaValidation = object().shape({
   name: string().required("Nome é obrigatório"),
   unit: string().required("Unidade é obrigatória"),
   scale: number().required("Escala é obrigatória"),
-  expression: string().required("Expressão é obrigatória"),
+  expression: string()
+    .required("Expressão é obrigatória")
+    .test("valid-expression", "Expressão inválida", function (value) {
+      if (!value) {
+        return true;
+      }
+      const result = validateExpression(value);
+      return result;
+    }),
   alarmRules: array(
     object().shape({
       _id: string().notRequired(),
@@ -182,11 +210,17 @@ const ParameterTab: React.FC<ParameterTabProps> = ({
   ...props
 }) => {
   const handleParameterClick = (selection: ParameterSelection) => {
-    const pathname = Object.values(selection).join(".");
-    methods.setValue("expression", currentExpression + pathname);
+    const expression = Object.values(selection).join(".");
+    const concExpression = currentExpression + expression;
+    methods.setValue("expression", concExpression, {
+      shouldValidate: true,
+    });
+    fakeValuesMap.set(expression, 1);
   };
 
   const currentExpression = methods.watch("expression");
+
+  if (currentExpression === "") fakeValuesMap.clear();
 
   return (
     <Grid container columnSpacing={1}>

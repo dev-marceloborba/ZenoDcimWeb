@@ -45,7 +45,6 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
 
   const {
     handleSubmit,
-    reset,
     formState: { isValid },
   } = methods;
 
@@ -74,7 +73,13 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
         },
       });
     }
-  }, [data?.model, data?.sites, mode, reset]);
+  }, [
+    data?.model?.buildingId,
+    data?.model?.floorId,
+    data?.model?.siteId,
+    data?.sites,
+    mode,
+  ]);
 
   return (
     <Modal {...props}>

@@ -28,6 +28,7 @@ import {
   useUpdateFloorMutation,
 } from "modules/datacenter/services/floor-service";
 import {
+  useCreateRoomMutation,
   useDeleteRoomMutation,
   useFindAllRoomsQuery,
   useUpdateRoomMutation,
@@ -58,7 +59,7 @@ export default function InfrastructurePage() {
   const [createFloor, { isLoading: isLoadingCreateFloor }] =
     useCreateFloorMutation();
   const [createRoom, { isLoading: isLoadingCreateRoom }] =
-    useCreateFloorMutation();
+    useCreateRoomMutation();
 
   const handleOpenSiteModal = () => {
     const modal = showModal(SiteFormModal, {
@@ -104,7 +105,6 @@ export default function InfrastructurePage() {
       title: "Novo andar",
       data: {
         sites,
-        buildings,
       },
       onConfirm: async (floor) => {
         modal.hide();
@@ -126,8 +126,6 @@ export default function InfrastructurePage() {
       title: "Nova sala",
       data: {
         sites,
-        buildings,
-        floors,
       },
       onConfirm: async (room) => {
         modal.hide();
@@ -170,9 +168,7 @@ export default function InfrastructurePage() {
             ),
           },
           {
-            element: (
-              <FloorsTab floors={floors ?? []} buildings={buildings ?? []} />
-            ),
+            element: <FloorsTab floors={floors ?? []} sites={sites ?? []} />,
             content: (
               <Button variant="contained" onClick={handleOpenFloorModal}>
                 Novo andar
@@ -359,10 +355,10 @@ const BuildingsTab: React.FC<BuildingsTabProps> = ({ buildings, sites }) => {
 
 type FloorsTabProps = {
   floors: FloorModel[];
-  buildings: BuildingModel[];
+  sites: SiteModel[];
 };
 
-const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
+const FloorsTab: React.FC<FloorsTabProps> = ({ floors, sites }) => {
   const toast = useToast();
   const { showModal } = useModal();
   const [updateFloor, { isLoading: isLoadingUpdate }] =
@@ -376,7 +372,7 @@ const FloorsTab: React.FC<FloorsTabProps> = ({ floors, buildings }) => {
       mode: "edit",
       data: {
         model: floor,
-        buildings,
+        sites,
       },
       onConfirm: async (formData) => {
         modal.hide();
@@ -463,8 +459,6 @@ const RoomsTab: React.FC<RoomsTabProps> = ({
       data: {
         model: room,
         sites,
-        buildings,
-        floors,
       },
       onConfirm: async (formData) => {
         modal.hide();

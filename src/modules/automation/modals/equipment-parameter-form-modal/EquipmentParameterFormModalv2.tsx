@@ -64,6 +64,7 @@ const EquipmentParameterFormModalv2: React.FC<Props> = ({
       scale: formData.scale,
       unit: formData.unit,
       expression: "",
+      pathname: "",
       alarmRules: formData.alarmRules.map<AlarmRuleEditor>((x) => ({
         ...x,
         id: x._id ?? defaultGuid,

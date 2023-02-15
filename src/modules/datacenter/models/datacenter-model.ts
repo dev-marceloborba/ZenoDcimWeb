@@ -46,6 +46,7 @@ export type BuildingMerged = {
 export interface FloorViewModel {
   buildingId: string;
   name: string;
+  siteId?: string;
 }
 
 export interface UpdateFloorViewModel {
@@ -65,6 +66,7 @@ export interface RoomViewModel {
   buildingId: string;
   floorId: string;
   name: string;
+  siteId?: string;
 }
 
 export interface RoomModel extends RoomViewModel {
