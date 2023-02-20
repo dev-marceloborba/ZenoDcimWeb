@@ -13,7 +13,7 @@ import { useModal } from "mui-modal-provider";
 import {
   useCreateEquipmentMutation,
   useDeleteEquipmentMutation,
-  useFindAllEquipmentsDetailedQuery,
+  useFindAllEquipmentsQuery,
   useFindEquipmentByIdMutation,
   useUpdateEquipmentMutation,
 } from "modules/automation/services/equipment-service";
@@ -21,7 +21,6 @@ import {
   EquipmentModel,
   EquipmentViewModel,
 } from "modules/automation/models/automation-model";
-import getDateFormat from "modules/utils/helpers/getDateFormat";
 import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/EquipmentFormModal";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 
@@ -31,7 +30,7 @@ const EquipmentAdmin: React.FC = () => {
   const { navigate, path } = useRouter();
 
   const { data: sites } = useFindAllSitesQuery();
-  const { data, isLoading } = useFindAllEquipmentsDetailedQuery();
+  const { data: equipments, isLoading } = useFindAllEquipmentsQuery();
   const [findEquipment] = useFindEquipmentByIdMutation();
   const [createEquipment, { isLoading: isLoadingCreate }] =
     useCreateEquipmentMutation();
@@ -39,6 +38,8 @@ const EquipmentAdmin: React.FC = () => {
     useUpdateEquipmentMutation();
   const [deleteEquipment, { isLoading: isLoadingDelete }] =
     useDeleteEquipmentMutation();
+
+  console.log(equipments);
 
   const handleOpenEquipmentModal = () => {
     const modal = showModal(EquipmentFormModal, {
@@ -65,9 +66,10 @@ const EquipmentAdmin: React.FC = () => {
     });
   };
 
-  const handleUpdateEquipment = (equipment: EquipmentModel) => {
+  const handleUpdateEquipment = async (equipment: EquipmentModel) => {
     const modal = showModal(EquipmentFormModal, {
       title: "Editar equipamento",
+      mode: "edit",
       data: {
         sites,
         model: equipment,
@@ -140,7 +142,7 @@ const EquipmentAdmin: React.FC = () => {
 
       <DataTable
         columns={columns}
-        rows={data ?? []}
+        rows={equipments ?? []}
         title="Equipamentos"
         options={{
           showEdit: true,
@@ -166,19 +168,19 @@ export default EquipmentAdmin;
 
 const columns: ColumnHeader[] = [
   {
-    name: "name",
+    name: "component",
     label: "Componente",
   },
   {
-    name: "building",
+    name: "building.name",
     label: "Prédio",
   },
   {
-    name: "floor",
+    name: "floor.name",
     label: "Andar",
   },
   {
-    name: "room",
+    name: "room.name",
     label: "Sala",
   },
   {
@@ -190,10 +192,7 @@ const columns: ColumnHeader[] = [
     label: "Tamanho (LxAxC cm)",
   },
   {
-    name: "createdAt",
+    name: "createdDate",
     label: "Data de criação",
-    customFunction: (row) => {
-      return getDateFormat(row);
-    },
   },
 ];

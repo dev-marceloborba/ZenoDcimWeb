@@ -15,12 +15,14 @@ import Menu from "modules/shared/components/menu/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ColumnMenu from "./ColumnMenu";
+import DownloadButton from "../../download-button/DownloadButton";
 
 const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
   numSelected,
   title,
   hideSearch,
   onDelete,
+  onDownload,
   toggleTitleAndSearch,
   filter,
   setFilter,
@@ -84,6 +86,7 @@ const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
               </IconButton>
             </Tooltip>
           </Visible>
+          <DownloadButton mode="icon" onClick={onDownload} />
           {/* <ColumnMenu /> */}
         </Row>
       )}

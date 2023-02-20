@@ -282,7 +282,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({
 }) => {
   const { showModal } = useModal();
   const toast = useToast();
-  const { navigate, path, params } = useRouter();
+  const { navigate, path } = useRouter();
 
   const [updateParameter, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentParameterMutation();

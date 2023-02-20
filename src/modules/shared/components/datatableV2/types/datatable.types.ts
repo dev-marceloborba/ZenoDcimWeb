@@ -46,6 +46,7 @@ export interface EnhancedTableToolbarProps {
   title: string;
   hideSearch: boolean;
   onDelete: () => void;
+  onDownload(): void;
   toggleTitleAndSearch: () => void;
   filter: string;
   openSearch: boolean;

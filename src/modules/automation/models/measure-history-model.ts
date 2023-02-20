@@ -1,5 +1,3 @@
-import { EquipmentParameterModel } from "./automation-model";
-
 export interface MeasureModel {
   value: any;
   timestamp: string;

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { RootState } from "modules/core/store";
 import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
+import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import {
   MeasureHistoryViewModel,
   MeasuresHistoryModel,
@@ -34,6 +35,12 @@ export const historyApi = createApi({
             finalDate: params.finalDate?.toUTCString(),
           },
         };
+      },
+      transformResponse: (baseValue: MeasuresHistoryModel) => {
+        return baseValue.map((m) => ({
+          ...m,
+          timestamp: getTimeStampFormat(m.timestamp),
+        }));
       },
     }),
     findMeasuresByParameter: builder.mutation<
@@ -94,6 +101,21 @@ export const historyApi = createApi({
         };
       },
     }),
+    downloadMeasureReport: builder.mutation<any, any>({
+      query: () => ({
+        url: "v1/reports/measure-history/MeasureReport",
+        headers: {
+          "Content-Type": "application/pdf",
+        },
+        method: "GET",
+        // responseHandler: (response) => response.blob(),
+        responseHandler: async (response) =>
+          window.location.assign(
+            window.URL.createObjectURL(await response.blob())
+          ),
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 
@@ -102,4 +124,5 @@ export const {
   useFindAllMeasuresByEquipmentMutation,
   useFindMeasuresByParameterMutation,
   useFindMeasureStatisticsMutation,
+  useDownloadMeasureReportMutation,
 } = historyApi;

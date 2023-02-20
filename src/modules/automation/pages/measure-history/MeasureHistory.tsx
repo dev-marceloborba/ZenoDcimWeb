@@ -1,45 +1,31 @@
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import {
   MeasureHistoryModel,
   MeasureHistoryViewModel,
 } from "modules/automation/models/measure-history-model";
-import { useFindAllMeasuresMutation } from "modules/automation/services/history-service";
+import {
+  useDownloadMeasureReportMutation,
+  useFindAllMeasuresMutation,
+} from "modules/automation/services/history-service";
 import Loading from "modules/shared/components/Loading";
 import { useEffect, useRef, useState } from "react";
 import Row from "modules/shared/components/Row";
 import { useModal } from "mui-modal-provider";
 import FiltersPopup from "./filters-popup/FiltersPopup";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
-import useRouter from "modules/core/hooks/useRouter";
-import compositePathRoute from "modules/utils/compositePathRoute";
-import { HomePath } from "modules/paths";
-import { AutomationPath } from "modules/home/routes/paths";
-import { automationPaths } from "modules/automation/routes/paths";
-
-type HistoryViewModel = {
-  site: string;
-  building: string;
-  floor: string;
-  room: string;
-  equipment: string;
-  name: string;
-  value: number;
-  timestamp: string;
-};
+import DownloadButton from "modules/shared/components/download-button/DownloadButton";
+import { CSVDownload, CSVLink } from "react-csv";
 
 export default function MeasureHistory() {
   const [filters, setFilters] = useState<MeasureHistoryViewModel>({
     initialDate: addDaysToDate(new Date(), -7),
     finalDate: new Date(),
   });
-  const { navigate } = useRouter();
-  const [measures, setMeasures] = useState<HistoryViewModel[]>([]);
   const siteRef = useRef<HTMLInputElement>();
   const buildindRef = useRef<HTMLInputElement>();
   const floorRef = useRef<HTMLInputElement>();
@@ -54,41 +40,20 @@ export default function MeasureHistory() {
   // const [findAllMeasures, { data: measures, isLoading }] =
   //   useFindAllMeasuresMutation();
 
-  const [findAllMeasures, { isLoading }] = useFindAllMeasuresMutation();
+  const [findAllMeasures, { data: measures, isLoading }] =
+    useFindAllMeasuresMutation();
+  const [generateReport, { isLoading: loadingReport }] =
+    useDownloadMeasureReportMutation();
 
   useEffect(() => {
     async function fetchMeasures() {
-      let output: HistoryViewModel[] = [];
-      const result = await findAllMeasures(filters).unwrap();
-      for (let i = 0; i < result.length; i++) {
-        const fields = result[i].name
-          ?.split("*")
-          .map((x) => x.replace("_", " ").replace("_", " ")) as string[];
-
-        output.push({
-          site: fields[0],
-          building: fields[1],
-          floor: fields[2],
-          room: fields[3],
-          equipment: fields[4],
-          name: fields[5],
-          value: result[i].value,
-          timestamp: getTimeStampFormat(result[i].timestamp),
-        });
-      }
-      setMeasures(output);
+      await findAllMeasures(filters).unwrap();
     }
     fetchMeasures();
   }, [filters, findAllMeasures]);
 
   const handleRowClick = (row: MeasureHistoryModel) => {
     console.log(row);
-    // navigate(
-    //   compositePathRoute([HomePath, AutomationPath, ParameterDetailsPath]),
-    //   {
-    //     state: row.name ?? "",
-    //   }
-    // );
   };
 
   const handleOpenFiltersPopup = () => {
@@ -138,7 +103,7 @@ export default function MeasureHistory() {
         </Button>
       </Row> */}
       {/* <Button onClick={handleOpenFiltersPopup}>Filtros</Button> */}
-      <Row sx={{ mb: 2 }}>
+      <Row sx={{ mb: 2 }} alignItems="center">
         <DateTimePicker
           label="Data inicial"
           value={filters.initialDate}
@@ -154,6 +119,19 @@ export default function MeasureHistory() {
           renderInput={(params) => <TextField sx={{ ml: 2 }} {...params} />}
           onAccept={handleChangeFinalDate}
         />
+        {/* <DownloadButton
+          href={`https://localhost:5001/v1/reports/measure-history/MeasureReport?initialDate=${filters.initialDate?.toUTCString()}&finalDate=${filters.finalDate?.toUTCString()}`}
+        /> */}
+        {/* <Button
+          target="_blank"
+          onClick={async () => {
+            await generateReport({}).unwrap();
+          }}
+        >
+          Download
+        </Button> */}
+        {/* <CSVDownload target="_blank" data={measures ?? []} /> */}
+        {/* <CSVLink data={measures ?? []}>Download me</CSVLink> */}
       </Row>
 
       <DataTable
@@ -163,9 +141,10 @@ export default function MeasureHistory() {
         options={{
           onRowClick: handleRowClick,
           rowsInPage: 25,
+          selectionMode: "hide",
         }}
       />
-      <Loading open={isLoading} />
+      <Loading open={isLoading || loadingReport} />
     </HeroContainer>
   );
 }
@@ -192,7 +171,7 @@ const columns: ColumnHeader[] = [
     label: "Equipamento",
   },
   {
-    name: "name",
+    name: "parameter",
     label: "Parâmetro",
   },
   {

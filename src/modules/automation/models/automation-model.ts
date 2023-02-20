@@ -99,7 +99,7 @@ export interface EquipmentModel {
   manufactor: string;
   status: EEquipmentStatus;
   group: EEquipmentGroup;
-  createdDate: Date;
+  createdDate: Date | string;
   equipmentParameters?: EquipmentParameterModel[];
   weight: number;
   size: string;

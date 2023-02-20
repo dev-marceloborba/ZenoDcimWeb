@@ -10,6 +10,7 @@ import {
   UpdateEquipmentViewModel,
 } from "../models/automation-model";
 import { BuildingsModel } from "modules/datacenter/models/datacenter-model";
+import getDateFormat from "modules/utils/helpers/getDateFormat";
 
 export const equipmentApi = createApi({
   reducerPath: "equipmentApi",
@@ -41,29 +42,12 @@ export const equipmentApi = createApi({
         url: "v1/data-center/building/floor/room/equipment",
       }),
       providesTags: ["EquipmentModel"],
-    }),
-    findAllEquipmentsDetailed: builder.query<EquipmentModel[], void>({
-      query: () => ({
-        url: "v1/data-center/building/floor/room/equipment",
-      }),
-      transformResponse: (data: any[]) => {
-        const vet: any[] = [];
-        data.forEach((equipment) => {
-          vet.push({
-            id: equipment.id,
-            name: equipment.component,
-            weight: equipment.weight,
-            size: equipment.size,
-            powerLimit: equipment.powerLimit,
-            building: equipment.building?.name,
-            floor: equipment.floor?.name,
-            room: equipment.room?.name,
-            createdAt: equipment.createdDate,
-          });
-        });
-        return vet;
+      transformResponse: (baseValue: EquipmentModel[]) => {
+        return baseValue.map((equipment) => ({
+          ...equipment,
+          createdDate: getDateFormat(equipment.createdDate),
+        }));
       },
-      providesTags: ["EquipmentModel"],
     }),
     findEquipmentById: builder.mutation<EquipmentModel, string>({
       query: (id) => ({
@@ -116,7 +100,6 @@ export const equipmentApi = createApi({
 export const {
   useCreateEquipmentMutation,
   useFindAllEquipmentsQuery,
-  useFindAllEquipmentsDetailedQuery,
   useFindEquipmentsByRoomIdMutation,
   useCreateMultipleEquipmentsMutation,
   useDeleteEquipmentMutation,

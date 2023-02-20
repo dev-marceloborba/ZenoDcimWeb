@@ -21,6 +21,8 @@ import { useAuth } from "app/hooks/useAuth";
 import { useUpdateUserPreferenciesMutation } from "modules/user/services/user-preferencies.service";
 import EditButton from "../edit-button/EditButton";
 import { SxProps, Theme } from "@mui/material";
+import generateCSV from "./utils/generateCSV";
+import getNestedProperty from "./utils/getNestedProperty";
 interface DataTableProps {
   columns: ColumnHeader[];
   rows: any[];
@@ -36,8 +38,8 @@ export interface ColumnHeader {
   customFunction?: (row: any) => any;
 }
 
-const CustomTableCell = (row: any, columName: string) => {
-  return <>{row[columName]}</>;
+const CustomTableCell = (row: any, key: string) => {
+  return <>{getNestedProperty(row, key.split("."))}</>;
 };
 
 const DataTableV2: React.FC<DataTableProps> = ({
@@ -191,6 +193,17 @@ const DataTableV2: React.FC<DataTableProps> = ({
     if (onCopyItem) onCopyItem(selectedItems[0]);
   };
 
+  const handleDownloadData = async () => {
+    const csvContent = (await generateCSV(rows, columns)) as string;
+
+    const link = document.createElement("a");
+    link.setAttribute("href", csvContent);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // reset selection state on new rows
   useEffect(() => {
     if (rows.length > 0) setSelectedItems([]);
@@ -231,6 +244,7 @@ const DataTableV2: React.FC<DataTableProps> = ({
           title={title}
           hideSearch={hideSearch}
           onDelete={handleDeleteSelection}
+          onDownload={handleDownloadData}
           toggleTitleAndSearch={handleToggleSearchAndTitle}
           filter={filter}
           setFilter={setFilter}

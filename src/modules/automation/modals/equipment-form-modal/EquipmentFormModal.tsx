@@ -8,12 +8,10 @@ import Form, { FormMode } from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
 import {
-  EEquipmentStatus,
   EquipmentModel,
   EquipmentViewModel,
 } from "modules/automation/models/automation-model";
 import { useEffect, useReducer } from "react";
-import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 import locationReducer, {
   locationInitialState,
   LocationReducerType,
@@ -23,7 +21,6 @@ import { SiteModel } from "modules/datacenter/models/datacenter-model";
 type EquipmentFormModalProps = {
   mode?: FormMode;
   onConfirm(formData: EquipmentViewModel): void;
-  //   data?: Partial<EquipmentModel>;
   data?: {
     model?: Partial<EquipmentModel>;
     sites?: SiteModel[];
