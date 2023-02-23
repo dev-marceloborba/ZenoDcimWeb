@@ -3,50 +3,33 @@ import ListItemText from "@mui/material/ListItemText";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import CloseButton from "modules/shared/components/close-button/CloseButton";
+import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 
 type AlarmNotificationProps = {
   id: string;
-  currentDate: string;
-  site: string;
-  building: string;
-  floor: string;
-  equipment: string;
-  parameter: string;
+  createdDate: Date;
+  title: string;
+  message: string;
   handleCloseNotification(id: string): void;
 } & PaperProps;
 
 const AlarmNotification: React.FC<AlarmNotificationProps> = ({
   id,
-  currentDate,
-  site,
-  building,
-  floor,
-  equipment,
-  parameter,
+  createdDate,
+  title,
+  message,
   handleCloseNotification,
   ...props
 }) => {
-  const getBeautyPath = () => {
-    return (
-      site +
-      " / " +
-      building +
-      " / " +
-      floor +
-      " / " +
-      equipment +
-      " / " +
-      parameter
-    );
-  };
-
   return (
     <Paper {...props}>
       <ListItem>
         <ListItemText>
-          <Typography variant="subtitle2">{getBeautyPath()}</Typography>
-          <Typography>Novo alarme</Typography>
-          <Typography variant="caption">{currentDate}</Typography>
+          <Typography variant="subtitle2">{message}</Typography>
+          <Typography>{title}</Typography>
+          <Typography variant="caption">
+            {getTimeStampFormat(createdDate)}
+          </Typography>
         </ListItemText>
         <CloseButton
           tooltip="Limpar notificação"

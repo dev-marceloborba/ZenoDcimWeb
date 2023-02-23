@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import CloseButton from "modules/shared/components/close-button/CloseButton";
 import { useNotifications } from "modules/shared/components/notification-provider/NotificationProvider";
 import AlarmNotification from "modules/alarms/components/alarm-notification/AlarmNotification";
-import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
 
 const NotificationsPanel: React.FC = () => {
   const { notifications, removeNotification, removeAllNotifications } =
@@ -46,13 +45,10 @@ const NotificationsPanel: React.FC = () => {
         }}
       >
         {notifications.map((notification, index) => {
-          const data = splitPathnameIntoFields(notification.message);
           return (
             <React.Fragment key={index}>
               <AlarmNotification
-                currentDate="18-11-2022 14:10"
-                id={notification.id}
-                {...data}
+                {...notification}
                 sx={{ mb: 1 }}
                 handleCloseNotification={handleCloseNotification}
               />

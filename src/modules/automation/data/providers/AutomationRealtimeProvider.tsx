@@ -23,6 +23,7 @@ const alarmData = new Map();
 
 let keepAliveValue = 0;
 let lastKeepAliveValue = 0;
+let offlineCounter = 0;
 
 const AutomationRealtimeProvider: React.FC = ({ children }) => {
   const [state, setState] = useState({
@@ -42,7 +43,8 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
     data: new Map<string, AlarmTotalizerStatisticsModel>(),
   });
 
-  const { message: keepAlive } = useSubscription("/keep-alive");
+  const { message: keepAlive, connectionStatus } =
+    useSubscription("/keep-alive");
   const { message: topLevel } = useSubscription("/runtime");
   const { client } = useMqttState();
   const [serviceStatus, setServiceStatus] =
@@ -66,15 +68,19 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
     equipmentAlarmStatistics.data.get(key)!;
 
   const getRealtimeStatus = (status: string | Error): RealtimeStatus => {
+    if (offlineCounter > 10) offlineCounter = 0;
     switch (status) {
       case "Offline":
-        return "offline";
+        offlineCounter++;
+        return offlineCounter > 2 ? "offline" : "loading";
       case "Connecting":
         return "loading";
       case "Connected":
         return "connected";
-      default:
+      case "Reconnecting":
         return "offline";
+      default:
+        return "connected";
     }
   };
 
@@ -206,9 +212,9 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
         activeAlarms: alarms.filter((x) => x.status === EAlarmStatus.ACTIVE)
           .length,
         publish,
-        // status: getRealtimeStatus(connectionStatus),
         status: serviceStatus,
         getRealtimeAlarm,
+        connectionStatus: getRealtimeStatus(connectionStatus),
       }}
     >
       {children}

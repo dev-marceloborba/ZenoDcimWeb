@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -21,6 +21,7 @@ import { AlarmModel } from "modules/automation/models/alarm-model";
 import Menu from "modules/shared/components/menu/Menu";
 import NotificationsPanel from "../notifications-panel/NotificationsPanel";
 import NotificationBadge from "modules/shared/components/notification-badge/NotificationBadge";
+import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 
 type MenuState = {
   notifications: null | HTMLElement;
@@ -34,12 +35,12 @@ const Header: React.FC = () => {
   const { signout } = useAuth();
   const toast = useToast();
   const { notifications, addNotification } = useNotifications();
+  const { connectionStatus } = useAutomationRealtime();
 
   SignalRContext.useSignalREffect(
     "SendAlarmNotification",
     (message) => {
       const alarm = message as AlarmModel;
-      console.log(alarm);
       toast.open({
         message: "Novo alarme",
         position: "top-right",
@@ -47,12 +48,24 @@ const Header: React.FC = () => {
       });
       addNotification({
         id: alarm.id,
-        message: alarm.pathname,
-        createdDate: alarm.createdDate,
+        message: alarm.pathname.replaceAll("*", " / ").replaceAll("_", " "),
+        createdDate: new Date(alarm.createdDate),
+        title: "Novo alarme",
       });
     },
     []
   );
+
+  useEffect(() => {
+    if (connectionStatus === "offline") {
+      addNotification({
+        id: "",
+        message: "Servidor MQTT offline",
+        createdDate: new Date(),
+        title: "Comunicação",
+      });
+    }
+  }, [addNotification, connectionStatus]);
 
   const { toggleDrawer } = useLayout();
   const [menuState, setMenuState] = React.useState<MenuState>({

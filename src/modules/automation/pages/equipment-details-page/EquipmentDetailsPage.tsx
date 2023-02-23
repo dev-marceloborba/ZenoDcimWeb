@@ -21,8 +21,7 @@ import EquipmentFormModal from "modules/automation/modals/equipment-form-modal/E
 import Tabs from "modules/shared/components/tabs/Tabs";
 import { useToast } from "modules/shared/components/ToastProvider";
 import { EquipmentParameterModel } from "modules/automation/models/automation-model";
-import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
-import EquipmentParameterFormModalv2 from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModalv2";
+import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModalv2";
 import CardSection from "modules/shared/components/card-section/CardSectionv3";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 import Stack from "@mui/material/Stack";
@@ -291,7 +290,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({
     useDeleteEquipmentParameterMutation();
 
   const handleEditParameter = (parameter: EquipmentParameterModel) => {
-    let modalToShow: any = EquipmentParameterFormModalv2;
+    let modalToShow: any = EquipmentParameterFormModal;
     let params: any = parameter;
     if (parameter.expression) {
       modalToShow = VirtualParameterFormModal;

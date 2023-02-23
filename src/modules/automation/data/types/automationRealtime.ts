@@ -21,6 +21,7 @@ export type AutomationRealtimeProps = {
   publish(topic: string, data: string): void;
   status: RealtimeStatus;
   activeAlarms: number;
+  connectionStatus: RealtimeStatus;
 };
 
 export type RealtimeStatus = "loading" | "offline" | "connected";

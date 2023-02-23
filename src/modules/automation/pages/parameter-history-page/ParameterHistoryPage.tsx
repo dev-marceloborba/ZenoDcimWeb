@@ -31,7 +31,7 @@ import {
   getAlarmTypeFromEnum,
 } from "modules/alarms/utils/alarmUtils";
 import { useModal } from "mui-modal-provider";
-import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModal";
+import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModalv2";
 import { useToast } from "modules/shared/components/ToastProvider";
 
 type FilterState = {

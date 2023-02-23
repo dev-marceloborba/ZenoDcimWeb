@@ -5,7 +5,6 @@ import EquipmentConectivity from "modules/automation/pages/equipment-connectivit
 import EquipmentAdmin from "modules/automation/pages/equipment-admin/EquipmentAdminv2";
 import { automationPaths } from "./paths";
 import EtcFloor from "../pages/energy-clim-telecom/EtcFloorv2";
-import AutomationSettings from "../pages/automation-settings/AutomationSettings";
 import EtcBuilding from "../pages/energy-clim-telecom/EtcBuildingv2";
 import ParameterHistoryPage from "../pages/parameter-history-page/ParameterHistoryPage";
 import RoomResolver from "./resolvers/RoomResolver";
@@ -75,12 +74,6 @@ export const automationRoutes: RouteObject[] = [
     element: <EquipmentConectivity />,
     title: "Conectividade de equipamentos",
   },
-  {
-    path: automationPaths.automationSettings.fullPath,
-    element: <AutomationSettings />,
-    title: "Configurações de automação",
-  },
-  // Deletar, está duplicado.
   {
     path: automationPaths.equipmentManagement.fullPath,
     element: <EquipmentAdmin />,

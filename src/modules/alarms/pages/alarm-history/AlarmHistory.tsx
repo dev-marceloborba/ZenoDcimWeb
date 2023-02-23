@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import {
-  AlarmFilterViewModel,
-  AlarmViewModel,
-} from "modules/automation/models/alarm-model";
+import { AlarmFilterViewModel } from "modules/automation/models/alarm-model";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import {
@@ -16,20 +13,17 @@ import DataTable, {
 } from "modules/shared/components/datatableV2/DataTable";
 import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import Loading from "modules/shared/components/Loading";
-import AlarmIndicator, {
-  AlarmStatus,
-} from "modules/alarms/components/alarm-indicator/AlarmIndicator";
+import AlarmIndicator from "modules/alarms/components/alarm-indicator/AlarmIndicator";
 import Tabs from "modules/shared/components/tabs/Tabs";
-// import AutoCompleteDropdown from "modules/shared/components/autocomplete-dropdown/AutocompleteDropdown";
 import Dropdown from "modules/shared/components/dropdown/Dropdown";
 import Grid from "@mui/material/Grid";
-import { EAlarmPriority } from "modules/automation/models/alarm-rule-model";
 import Stack from "@mui/material/Stack";
 import { AlarmStatisticsViewModel } from "modules/alarms/models/alarm-statistics.model";
 import KpiCard from "modules/shared/components/kpi-card/KpiCard";
 import Typography from "@mui/material/Typography";
 import AlarmLegend from "modules/alarms/components/alarm-legend/AlarmLegend";
 import { getAlarmStatusFromPriority } from "modules/alarms/utils/alarmUtils";
+import EquipmentAlarmsChart from "modules/alarms/components/equipment-alarms-chart/EquipmentAlarmsChart";
 
 export default function AlarmHistory() {
   return (
@@ -282,6 +276,16 @@ const StatisticsTab: React.FC = () => {
           />
         </Grid>
       </Grid>
+      <Stack marginTop={1}>
+        <EquipmentAlarmsChart
+          equipments={
+            statistics?.categories.map(({ pathname }) => {
+              return pathname.replaceAll("_", " ").replaceAll("*", "-");
+            }) ?? []
+          }
+          values={statistics?.categories.map((v) => v.total) ?? []}
+        />
+      </Stack>
       <Typography variant="h6" sx={{ my: 1 }}>
         Tempos
       </Typography>

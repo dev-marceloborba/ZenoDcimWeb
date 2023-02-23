@@ -32,18 +32,21 @@ function loadInitalData(): NotificationStateProps {
 const NotificationProvider: React.FC = ({ children }) => {
   const [state, setState] = useState<NotificationStateProps>(loadInitalData);
 
-  const handleAddNotification = useCallback((notification: Notification) => {
-    setState((prevState) => [...prevState, { ...notification }]);
-  }, []);
-
-  const handleRemoveNotification = useCallback(
-    (id: string) => {
-      const arr = [...state];
-      const removed = arr.filter((x) => x.id !== id);
-      setState(removed);
+  const handleAddNotification = useCallback(
+    (notification: Notification) => {
+      if (state.findIndex((x) => x.message === notification.message) !== -1) {
+        return;
+      }
+      setState((prevState) => [...prevState, { ...notification }]);
     },
     [state]
   );
+
+  const handleRemoveNotification = useCallback((id: string) => {
+    setState((prevState) => {
+      return prevState.filter((x) => x.id !== id);
+    });
+  }, []);
 
   useEffect(() => {
     if (state.length > 0) {

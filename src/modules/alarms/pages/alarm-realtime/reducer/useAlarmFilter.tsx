@@ -6,24 +6,57 @@ import alarmFilterReducer, {
   AlarmFilterReducerType,
 } from "./alarmFilterReducer";
 
-function filterAlarms(
+function filterAlarmsByPriority(
   alarms: AlarmModel[],
-  priority: EAlarmPriority | number,
-  type: EAlarmType | number
+  priority: EAlarmPriority | number
 ) {
-  let filteredAlarms: AlarmModel[] = [];
-  if (priority === 4 && type === 4) {
-    filteredAlarms = alarms;
-  } else if (priority === 4 && type !== 4) {
-    filteredAlarms = alarms.filter((x) => x.type === type);
-  } else if (priority !== 4 && type === 4) {
-    filteredAlarms = alarms.filter((x) => x.priority === priority);
-  } else {
-    filteredAlarms = alarms.filter(
-      (x) => x.type === type && x.priority === priority
-    );
+  switch (priority) {
+    case 0:
+      return [];
+    case 1:
+      return alarms.filter((x) => x.priority === EAlarmPriority.LOW);
+    case 2:
+      return alarms.filter((x) => x.priority === EAlarmPriority.MEDIUM);
+    case 3:
+      return alarms.filter(
+        (x) =>
+          x.priority === EAlarmPriority.LOW ||
+          x.priority === EAlarmPriority.MEDIUM
+      );
+    case 4:
+      return alarms.filter((x) => x.priority === EAlarmPriority.HIGH);
+    case 5:
+      return alarms.filter(
+        (x) =>
+          x.priority === EAlarmPriority.LOW ||
+          x.priority === EAlarmPriority.HIGH
+      );
+    case 6:
+      return alarms.filter(
+        (x) =>
+          x.priority === EAlarmPriority.MEDIUM ||
+          x.priority === EAlarmPriority.HIGH
+      );
+    case 7:
+      return alarms;
+    default:
+      return alarms;
   }
-  return filteredAlarms;
+}
+
+function filterAlarmsByType(alarms: AlarmModel[], type: EAlarmType | number) {
+  switch (type) {
+    case 0:
+      return [];
+    case 1:
+      return alarms.filter((x) => x.type === EAlarmType.ALARM);
+    case 2:
+      return alarms.filter((x) => x.type === EAlarmType.EVENT);
+    case 3:
+      return alarms;
+    default:
+      return alarms;
+  }
 }
 
 export default function useAlarmFilter(alarms: AlarmModel[]) {
@@ -32,13 +65,23 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
     alarmFilterInitialState
   );
 
-  const changeAlarmType = (type: EAlarmType | number) =>
+  const toggleAlarmType = () => {
     dispatch({
-      type: AlarmFilterReducerType.ALARM,
-      payload: {
-        alarmType: type,
-      },
+      type: AlarmFilterReducerType.TOGGLE_ALARM_TYPE,
     });
+  };
+
+  const toggleEventType = () => {
+    dispatch({
+      type: AlarmFilterReducerType.TOGGLE_EVENT_TYPE,
+    });
+  };
+
+  const toggleAlarmEventType = () => {
+    dispatch({
+      type: AlarmFilterReducerType.TOGGLE_ALARM_EVENT_TYPE,
+    });
+  };
 
   const toggleHighPriority = () => {
     dispatch({
@@ -59,58 +102,24 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
   };
 
   useEffect(() => {
-    if (
-      state.alarmPriority.high &&
-      state.alarmPriority.medium &&
-      state.alarmPriority.low
-    ) {
-      dispatch({
-        type: AlarmFilterReducerType.COMPUTE_PRIORITY,
-        payload: {
-          computedPriority: 4,
-        },
-      });
-    } else if (
-      state.alarmPriority.high &&
-      !state.alarmPriority.medium &&
-      !state.alarmPriority.low
-    ) {
-      dispatch({
-        type: AlarmFilterReducerType.COMPUTE_PRIORITY,
-        payload: {
-          computedPriority: EAlarmPriority.HIGH,
-        },
-      });
-    } else if (
-      !state.alarmPriority.high &&
-      state.alarmPriority.medium &&
-      !state.alarmPriority.low
-    ) {
-      dispatch({
-        type: AlarmFilterReducerType.COMPUTE_PRIORITY,
-        payload: {
-          computedPriority: EAlarmPriority.MEDIUM,
-        },
-      });
-    } else if (
-      !state.alarmPriority.high &&
-      !state.alarmPriority.medium &&
-      state.alarmPriority.low
-    ) {
-      dispatch({
-        type: AlarmFilterReducerType.COMPUTE_PRIORITY,
-        payload: {
-          computedPriority: EAlarmPriority.LOW,
-        },
-      });
-    }
+    dispatch({
+      type: AlarmFilterReducerType.COMPUTE_PRIORITY,
+      payload: {
+        computedPriority:
+          Number(state.alarmPriority.low) * 1 +
+          Number(state.alarmPriority.medium) * 2 +
+          Number(state.alarmPriority.high) * 4,
+      },
+    });
+
     dispatch({
       type: AlarmFilterReducerType.FILTER_ALARMS,
       payload: {
-        filteredAlarms: filterAlarms(
-          alarms,
-          state.computedPriority,
-          state.alarmType
+        filteredAlarms: filterAlarmsByType(
+          filterAlarmsByPriority(alarms, state.computedPriority),
+          Number(state.alarmType.alarms) * 1 +
+            Number(state.alarmType.events) * 2 +
+            Number(state.alarmType.alarms_events) * 3
         ),
       },
     });
@@ -119,13 +128,19 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
     state.alarmPriority.high,
     state.alarmPriority.low,
     state.alarmPriority.medium,
-    state.alarmType,
+    state.alarmType.alarms,
+    state.alarmType.events,
+    state.alarmType.alarms_events,
     state.computedPriority,
   ]);
 
   return {
     filters: state,
-    changeAlarmType,
+    alarmFilters: {
+      toggleAlarmType,
+      toggleEventType,
+      toggleAlarmEventType,
+    },
     priorities: {
       toggleHighPriority,
       toggleMediumPriority,

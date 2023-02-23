@@ -82,7 +82,7 @@ export default function UserHelp() {
                       criticidade de um parâmetro.
                     </p>
                     <p>
-                      É representado por um triângulo laranja com o valor 2
+                      É representado por um triângulo amarelo com o valor 2
                       centralizado.
                     </p>
                   </li>
@@ -96,8 +96,8 @@ export default function UserHelp() {
                       criticidade de um parâmetro.
                     </p>
                     <p>
-                      É representado por um triângulo invertido amarelo com o
-                      valor 1 centralizado.
+                      É representado por um triângulo invertido laranja com o
+                      valor 3 centralizado.
                     </p>
                   </li>
                 </ul>

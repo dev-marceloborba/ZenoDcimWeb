@@ -14,5 +14,6 @@ export interface NotificationViewModel {
 export type Notification = {
   id: string;
   message: string;
-  createdDate: string;
+  createdDate: Date;
+  title: string;
 };

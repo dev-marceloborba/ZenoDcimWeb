@@ -1,6 +1,6 @@
 import DataTable, {
   ColumnHeader,
-} from "modules/shared/components/datatable/DataTable";
+} from "modules/shared/components/datatableV2/DataTable";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import { useModal } from "mui-modal-provider";
 import UserGroupFormModal from "./components/user-group-form-modal/UserGroupFormModal";

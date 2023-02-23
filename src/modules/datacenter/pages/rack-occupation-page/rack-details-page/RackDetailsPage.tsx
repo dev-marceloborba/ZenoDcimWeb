@@ -23,6 +23,7 @@ import useRouter from "modules/core/hooks/useRouter";
 import { useFindRackByIdQuery } from "modules/datacenter/services/rack.service";
 import {
   useCreateRackEquipmentMutation,
+  useDeleteRackEquipmentMutation,
   useFindRackEquipmentByIdMutation,
   useUpdateRackEquipmentMutation,
 } from "modules/datacenter/services/rack-equipment.service";
@@ -33,6 +34,8 @@ import {
   getMountTypeDescription,
   getRackEquipmentType,
 } from "./utils/rackDetailsUtils";
+import EditButton from "modules/shared/components/edit-button/EditButton";
+import DeleteButton from "modules/shared/components/DeleteButton";
 
 export default function RackDetailsPage() {
   const { params } = useRouter();
@@ -81,7 +84,8 @@ export default function RackDetailsPage() {
         } catch (error) {
           console.log(error);
           toast.open({
-            message: "Erro ao adicionar equipamento de rack",
+            //@ts-ignore
+            message: `Erro ao adicionar equipamento de rack: ${error.data}`,
             severity: "error",
           });
         }
@@ -206,6 +210,7 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack, reload }) => {
     { data: rackEquipment, isLoading: loadingFindRack },
   ] = useFindRackEquipmentByIdMutation();
   const [updateEquipment] = useUpdateRackEquipmentMutation();
+  const [deleteEquipment] = useDeleteRackEquipmentMutation();
 
   const handleSelectedEquipment = async ({ id }: RackSlotItem) => {
     await findRackEquipment(id).unwrap();
@@ -244,6 +249,20 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack, reload }) => {
         },
       },
     });
+  };
+
+  const handleDeleteRackEquipment = async () => {
+    try {
+      await deleteEquipment(rackEquipment!.id).unwrap();
+      reload!();
+      toast.open({ message: "Equipamento excluído com sucesso" });
+    } catch (error) {
+      console.log(error);
+      toast.open({
+        message: `Erro ao excluir equipamento`,
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -381,13 +400,14 @@ const OccupationTab: React.FC<DetailsTabProps> = ({ rack, reload }) => {
                 },
               ]}
             />
-            <Button
-              variant="contained"
-              onClick={handleEditEquipment}
-              sx={{ mt: 1 }}
-            >
-              Editar
-            </Button>
+            <Stack direction="row" sx={{ mt: 1 }}>
+              <EditButton mode="button" onClick={handleEditEquipment} />
+              <DeleteButton
+                mode="button"
+                onDeleteConfirmation={handleDeleteRackEquipment}
+                sx={{ ml: 2 }}
+              />
+            </Stack>
           </div>
         ) : null}
       </Grid>

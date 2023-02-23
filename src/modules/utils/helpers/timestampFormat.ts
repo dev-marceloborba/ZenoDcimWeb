@@ -1,7 +1,7 @@
 import { format, utcToZonedTime } from "date-fns-tz";
 import { ptBR } from "date-fns/locale";
 
-export default function getTimeStampFormat(date: string | null): string {
+export default function getTimeStampFormat(date: string | Date | null): string {
   if (date) {
     const tzDate = utcToZonedTime(date, "America/Sao_Paulo");
     return format(tzDate, "dd/MM/yyyy HH:mm:ss.SSS", {

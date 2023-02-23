@@ -1,4 +1,4 @@
-import { AlarmModel, EAlarmType } from "modules/automation/models/alarm-model";
+import { AlarmModel } from "modules/automation/models/alarm-model";
 import { EAlarmPriority } from "modules/automation/models/alarm-rule-model";
 
 export const alarmFilterInitialState: AlarmFilterReducerState = {
@@ -7,7 +7,11 @@ export const alarmFilterInitialState: AlarmFilterReducerState = {
     low: true,
     medium: true,
   },
-  alarmType: 4,
+  alarmType: {
+    alarms: false,
+    events: false,
+    alarms_events: true,
+  },
   computedPriority: 4,
   filteredAlarms: [],
 };
@@ -18,8 +22,13 @@ type AlarmPriority = {
   low: boolean;
 };
 
+type AlarmType = {
+  alarms: boolean;
+  events: boolean;
+  alarms_events: boolean;
+};
+
 export enum AlarmFilterReducerType {
-  ALARM,
   TOGGLE_HIGH_PRIORITY,
   TOGGLE_MEDIUM_PRIORITY,
   TOGGLE_LOW_PRIORITY,
@@ -27,10 +36,13 @@ export enum AlarmFilterReducerType {
   ACK,
   FILTER_ALARMS,
   SET_ALARMS,
+  TOGGLE_ALARM_TYPE,
+  TOGGLE_EVENT_TYPE,
+  TOGGLE_ALARM_EVENT_TYPE,
 }
 
 export type AlarmFilterReducerState = {
-  alarmType: EAlarmType | number;
+  alarmType: AlarmType;
   alarmPriority: AlarmPriority;
   computedPriority: EAlarmPriority | number;
   filteredAlarms: AlarmModel[];
@@ -47,11 +59,32 @@ export default function alarmFilterReducer(
 ): AlarmFilterReducerState {
   const { type, payload } = action;
   switch (type) {
-    case AlarmFilterReducerType.ALARM:
-      const { alarmType } = payload;
+    case AlarmFilterReducerType.TOGGLE_ALARM_TYPE:
       return {
         ...state,
-        alarmType,
+        alarmType: {
+          alarms: true,
+          alarms_events: false,
+          events: false,
+        },
+      };
+    case AlarmFilterReducerType.TOGGLE_EVENT_TYPE:
+      return {
+        ...state,
+        alarmType: {
+          alarms: false,
+          alarms_events: false,
+          events: true,
+        },
+      };
+    case AlarmFilterReducerType.TOGGLE_ALARM_EVENT_TYPE:
+      return {
+        ...state,
+        alarmType: {
+          alarms: false,
+          alarms_events: true,
+          events: false,
+        },
       };
     case AlarmFilterReducerType.TOGGLE_HIGH_PRIORITY:
       return {

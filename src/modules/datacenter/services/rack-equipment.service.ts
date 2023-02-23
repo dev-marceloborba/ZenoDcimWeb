@@ -1,17 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import environment from "app/config/env";
-import { EEquipmentStatus } from "modules/automation/models/automation-model";
 import { RootState } from "modules/core/store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   CreateRackEquipmentViewModel,
-  ERackEquipmentOrientation,
-  ERackEquipmentType,
   RackEquipmentModel,
   RackEquipmentsTableViewModel,
   UpdateRackEquipmentViewModel,
 } from "../models/rack-equipment.model";
-import { ERackMount } from "../models/rack.model";
 
 export const rackEquipmentApi = createApi({
   reducerPath: "rackEquipmentApi",

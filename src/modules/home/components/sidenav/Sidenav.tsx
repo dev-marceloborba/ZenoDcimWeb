@@ -8,11 +8,8 @@ import ListItemLink, {
 } from "modules/shared/components/ListItemLink";
 
 // icons
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import StorageIcon from "@mui/icons-material/Storage";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import PeopleIcon from "@mui/icons-material/People";
-import VideocamIcon from "@mui/icons-material/Videocam";
 import LineStyleIcon from "@mui/icons-material/LineStyle";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -23,7 +20,6 @@ import { automationPaths } from "modules/automation/routes/paths";
 import {
   AlarmHistoryPath,
   AlarmRealtimePath,
-  AlarmStatisticsPath,
 } from "modules/alarms/routes/paths";
 import { datacenterPaths } from "modules/datacenter/routes/paths";
 
@@ -113,10 +109,6 @@ const menuItems: ListItemLinkProps[] = [
         primary: "Tempo real",
         to: `/${HomePath}/${AlarmsPath}/${AlarmRealtimePath}`,
       },
-      {
-        primary: "Estatísticas",
-        to: `/${HomePath}/${AlarmsPath}/${AlarmStatisticsPath}`,
-      },
     ],
   },
   // {
@@ -162,7 +154,7 @@ const menuItems: ListItemLinkProps[] = [
       },
       {
         primary: "Configurações de automação",
-        to: `/${HomePath}/${AutomationPath}/${automationPaths.automationSettings.fullPath}`,
+        to: `/${HomePath}/${AutomationPath}/${automationPaths.equipmentManagement.fullPath}`,
       },
     ],
   },
