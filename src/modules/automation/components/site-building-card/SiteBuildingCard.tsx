@@ -7,6 +7,7 @@ import PowerIcon from "@mui/icons-material/Power";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LanIcon from "@mui/icons-material/Lan";
 import React from "react";
+import Link from "modules/shared/components/link/Link";
 
 type ItemStatus = "normal" | "lowLow" | "low" | "high" | "highHigh";
 type Parameter = {
@@ -15,6 +16,12 @@ type Parameter = {
   unit?: string;
   value: number;
   status: ItemStatus;
+  equipmentParameterId: string;
+  equipmentId: string;
+  roomId: string;
+  floorId: string;
+  buildingId: string;
+  siteId: string;
 };
 
 type SiteBuildingCardProps = {
@@ -35,6 +42,7 @@ type SiteBuildingCardProps = {
   hideSettings?: boolean;
   onTitleClick(): void;
   onSettingsClick(siteId: string, buildingId: string): void;
+  historyPath: string;
 } & CardProps;
 
 const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
@@ -49,6 +57,7 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
   parameter6,
   alarms,
   hideSettings = true,
+  historyPath,
   onTitleClick,
   onSettingsClick,
   ...props
@@ -69,12 +78,12 @@ const SiteBuildingCard: React.FC<SiteBuildingCardProps> = ({
         />
       )}
       <List sx={{ mt: 0 }}>
-        <ParameterInfo {...parameter1} />
-        <ParameterInfo {...parameter2} />
-        <ParameterInfo {...parameter3} />
-        <ParameterInfo {...parameter4} />
-        <ParameterInfo {...parameter5} />
-        <ParameterInfo {...parameter6} />
+        <ParameterInfo {...parameter1} historyPath={historyPath} />
+        <ParameterInfo {...parameter2} historyPath={historyPath} />
+        <ParameterInfo {...parameter3} historyPath={historyPath} />
+        <ParameterInfo {...parameter4} historyPath={historyPath} />
+        <ParameterInfo {...parameter5} historyPath={historyPath} />
+        <ParameterInfo {...parameter6} historyPath={historyPath} />
       </List>
       <AlarmBadge
         alarms={alarms.energy}
@@ -103,6 +112,13 @@ type ParameterInfoProps = {
   description: string;
   value: number;
   unit?: string;
+  equipmentId: string;
+  equipmentParameterId: string;
+  roomId: string;
+  floorId: string;
+  buildingId: string;
+  siteId: string;
+  historyPath: string;
 };
 
 const ParameterInfo: React.FC<ParameterInfoProps> = ({
@@ -111,7 +127,13 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
   description,
   value,
   unit,
-  ...props
+  equipmentId,
+  equipmentParameterId,
+  roomId,
+  floorId,
+  buildingId,
+  siteId,
+  historyPath,
 }) => {
   const getColorByStatus = (status: ItemStatus) => {
     switch (status) {
@@ -135,14 +157,22 @@ const ParameterInfo: React.FC<ParameterInfoProps> = ({
       }}
     >
       <div style={{ display: "flex", marginBottom: "0.8rem" }}>
-        <div
-          style={{
+        <Link
+          href={historyPath
+            .replace(":siteId", siteId)
+            .replace(":buildingId", buildingId)
+            .replace(":floorId", floorId)
+            .replace(":roomId", roomId)
+            .replace(":equipmentId", equipmentId)
+            .replace(":equipmentParameterId", equipmentParameterId)}
+          sx={{
             color: getColorByStatus(status),
             marginLeft: "0.4rem",
+            cursor: "pointer",
           }}
         >
           {enabled ? <>{`${description}: `}</> : ""}
-        </div>
+        </Link>
         <div
           style={{
             color: getColorByStatus(status),

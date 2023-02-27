@@ -53,6 +53,7 @@ const ZenoHome: React.FC = () => {
         </Box>
       </Box>
       {/* <Footer /> */}
+      <footer></footer>
       <Loading open={isLoading} />
     </>
   );

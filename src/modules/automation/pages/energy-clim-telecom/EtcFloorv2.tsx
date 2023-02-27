@@ -14,6 +14,7 @@ import Card6ParametersSettings from "modules/automation/components/card-6-parame
 import { useFindAllEquipmentsQuery } from "modules/automation/services/equipment-service";
 import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
+import { automationPaths } from "modules/automation/routes/paths";
 
 const EtcFloor: React.FC = () => {
   const { data: equipments } = useFindAllEquipmentsQuery();
@@ -134,41 +135,138 @@ const EtcFloor: React.FC = () => {
             <Grid key={building.buildingId} item md={6}>
               <SiteBuildingCard
                 title={building.name}
+                historyPath={automationPaths.parameterHistory.pathFromBuilding}
                 buildingId={building.buildingId}
                 parameter1={{
                   description: building.parameter1?.description ?? "",
                   enabled: building.parameter1?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  equipmentId:
+                    building.parameter1?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter1?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter1?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter1?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter1?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter1?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag1,
                 }}
                 parameter2={{
                   description: building.parameter2?.description ?? "",
                   enabled: building.parameter2?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  equipmentId:
+                    building.parameter2?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter2?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter2?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter2?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter2?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter2?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag2,
                 }}
                 parameter3={{
                   description: building.parameter3?.description ?? "",
                   enabled: building.parameter3?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  equipmentId:
+                    building.parameter3?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter3?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter3?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter3?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter3?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter3?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag3,
                 }}
                 parameter4={{
                   description: building.parameter4?.description ?? "",
                   enabled: building.parameter4?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag4.alarms),
+                  equipmentId:
+                    building.parameter4?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter4?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter4?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter4?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter4?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter4?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag4,
                 }}
                 parameter5={{
                   description: building.parameter5?.description ?? "",
                   enabled: building.parameter5?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag5.alarms),
+                  equipmentId:
+                    building.parameter5?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter5?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter5?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter5?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter5?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter5?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag5,
                 }}
                 parameter6={{
                   description: building.parameter6?.description ?? "",
                   enabled: building.parameter6?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag6.alarms),
+                  equipmentId:
+                    building.parameter6?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    building.parameter6?.equipmentParameterId ?? "",
+                  roomId:
+                    building.parameter6?.equipmentParameter?.equipment.roomId ??
+                    "",
+                  floorId:
+                    building.parameter6?.equipmentParameter?.equipment
+                      .floorId ?? "",
+                  buildingId:
+                    building.parameter6?.equipmentParameter?.equipment
+                      .buildingId ?? "",
+                  siteId:
+                    building.parameter6?.equipmentParameter?.equipment.siteId ??
+                    "",
                   ...tag6,
                 }}
                 alarms={{

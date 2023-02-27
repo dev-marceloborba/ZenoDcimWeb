@@ -7,6 +7,11 @@ import { useFindAllWorkOrdersQuery } from "modules/maintenance/services/maintena
 import Loading from "modules/shared/components/Loading";
 import { WorkEventsTableViewModel } from "modules/maintenance/models/work-order.model";
 import useRouter from "modules/core/hooks/useRouter";
+import {
+  getMaintenanceTypeDescription,
+  getOperationNatureDescription,
+} from "modules/maintenance/utils/work-order.utils";
+import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 
 const Events: React.FC = () => {
   const { data: workOrders, isLoading } = useFindAllWorkOrdersQuery();
@@ -24,7 +29,17 @@ const Events: React.FC = () => {
     <HeroContainer title="Histórico de manutenção">
       <DataTable
         title="Ordens de serviço"
-        rows={workOrders ?? []}
+        rows={
+          workOrders?.map((workOrder) => ({
+            ...workOrder,
+            operationNature: getOperationNatureDescription(workOrder.nature),
+            maintenanceType: getMaintenanceTypeDescription(
+              workOrder.maintenanceType
+            ),
+            initialDate: getTimeStampFormat(workOrder.initialDate),
+            finalDate: getTimeStampFormat(workOrder.finalDate),
+          })) ?? []
+        }
         columns={columns}
         options={{
           onRowClick: (row) => handleOpenWorkOrderDetails(row),
@@ -42,7 +57,7 @@ const columns: ColumnHeader[] = [
     label: "Título",
   },
   {
-    name: "equipment",
+    name: "equipment.component",
     label: "Equipamento",
   },
   {

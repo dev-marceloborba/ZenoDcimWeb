@@ -6,7 +6,6 @@ import {
   CreateRackViewModel,
   RackModel,
   RackStatistcsModel,
-  RackTableViewModel,
   UpdateRackViewModel,
 } from "../models/rack.model";
 
@@ -43,24 +42,11 @@ export const rackApi = createApi({
       }),
       invalidatesTags: ["RackModel"],
     }),
-    findAllRacks: builder.query<RackTableViewModel[], void>({
+    findAllRacks: builder.query<RackModel[], void>({
       query: () => ({
         url: "v1/racks",
         method: "GET",
       }),
-      transformResponse: (response: RackModel[]) => {
-        return response.map((r) => ({
-          ...r,
-          site: r.site?.name ?? "",
-          building: r.building?.name ?? "",
-          floor: r.floor?.name ?? "",
-          room: r.room?.name ?? "",
-          siteId: r.site.id,
-          buildingId: r.building.id,
-          floorId: r.floor.id,
-          roomId: r.room.id,
-        }));
-      },
       providesTags: ["RackModel"],
     }),
     findRackById: builder.query<RackModel, string>({

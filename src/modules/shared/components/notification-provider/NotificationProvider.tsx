@@ -56,6 +56,19 @@ const NotificationProvider: React.FC = ({ children }) => {
     }
   }, [state]);
 
+  const checkNotifications = () => {
+    setState(loadInitalData());
+  };
+
+  useEffect(() => {
+    let subscribed = true;
+    if (subscribed)
+      window.addEventListener("storage", checkNotifications, false);
+    return () => {
+      subscribed = false;
+    };
+  }, []);
+
   return (
     <NotificationContext.Provider
       value={{

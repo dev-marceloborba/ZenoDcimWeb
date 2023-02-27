@@ -5,7 +5,6 @@ import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   CreateRackEquipmentViewModel,
   RackEquipmentModel,
-  RackEquipmentsTableViewModel,
   UpdateRackEquipmentViewModel,
 } from "../models/rack-equipment.model";
 
@@ -21,7 +20,7 @@ export const rackEquipmentApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+  tagTypes: ["RackEquipmentModel"],
   endpoints: (builder) => ({
     createRackEquipment: builder.mutation<
       ApiResponseModel<RackEquipmentModel>,
@@ -32,7 +31,7 @@ export const rackEquipmentApi = createApi({
         method: "POST",
         body: params,
       }),
-      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+      invalidatesTags: ["RackEquipmentModel"],
     }),
     updateRackEquipment: builder.mutation<
       RackEquipmentModel,
@@ -43,7 +42,7 @@ export const rackEquipmentApi = createApi({
         method: "PUT",
         body: params,
       }),
-      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+      invalidatesTags: ["RackEquipmentModel"],
     }),
     placeRackEquipment: builder.mutation<any, any>({
       query: (params) => ({
@@ -51,73 +50,40 @@ export const rackEquipmentApi = createApi({
         method: "PUT",
         body: params,
       }),
-      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+      invalidatesTags: ["RackEquipmentModel"],
     }),
-    findAllRackEquipments: builder.query<RackEquipmentsTableViewModel[], void>({
+    findAllRackEquipments: builder.query<RackEquipmentModel[], void>({
       query: (params) => ({
         url: "v1/rack-equipments",
         method: "GET",
       }),
-      providesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
-      transformResponse: (response: RackEquipmentModel[]) => {
-        return response.map<RackEquipmentsTableViewModel>((rack) => ({
-          ...rack,
-          name: rack.baseEquipment.name,
-          model: rack.baseEquipment.model,
-          manufactor: rack.baseEquipment.manufactor,
-          serialNumber: rack.baseEquipment.serialNumber,
-        }));
-      },
+      providesTags: ["RackEquipmentModel"],
     }),
     findRackEquipmentById: builder.mutation<RackEquipmentModel, string>({
       query: (id) => ({
         url: `v1/rack-equipments/${id}`,
         method: "GET",
       }),
-      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+      invalidatesTags: ["RackEquipmentModel"],
     }),
-    findRackEquipmentsByRackId: builder.mutation<
-      RackEquipmentsTableViewModel[],
-      string
-    >({
+    findRackEquipmentsByRackId: builder.mutation<RackEquipmentModel[], string>({
       query: (id) => ({
         url: `v1/rack-equipments/rack/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: RackEquipmentModel[]) => {
-        return response.map<RackEquipmentsTableViewModel>((rack) => ({
-          ...rack,
-          name: rack.baseEquipment.name,
-          model: rack.baseEquipment.model,
-          manufactor: rack.baseEquipment.manufactor,
-          serialNumber: rack.baseEquipment.serialNumber,
-        }));
-      },
     }),
-    findEquipmentsWithoutRack: builder.mutation<
-      RackEquipmentsTableViewModel[],
-      void
-    >({
+    findEquipmentsWithoutRack: builder.mutation<RackEquipmentModel[], void>({
       query: () => ({
         url: "v1/rack-equipments/without-rack",
         method: "GET",
       }),
-      transformResponse: (response: RackEquipmentModel[]) => {
-        return response.map<RackEquipmentsTableViewModel>((rack) => ({
-          ...rack,
-          name: rack.baseEquipment.name,
-          model: rack.baseEquipment.model,
-          manufactor: rack.baseEquipment.manufactor,
-          serialNumber: rack.baseEquipment.serialNumber,
-        }));
-      },
     }),
     deleteRackEquipment: builder.mutation<RackEquipmentModel, string>({
       query: (id) => ({
         url: `v1/rack-equipments/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["RackEquipmentModel", "RackEquipmentsTableViewModel"],
+      invalidatesTags: ["RackEquipmentModel"],
     }),
   }),
 });

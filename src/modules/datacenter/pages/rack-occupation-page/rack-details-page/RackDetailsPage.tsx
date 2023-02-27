@@ -20,7 +20,10 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { ERackMount, RackModel } from "modules/datacenter/models/rack.model";
 import useRouter from "modules/core/hooks/useRouter";
-import { useFindRackByIdQuery } from "modules/datacenter/services/rack.service";
+import {
+  useFindRackByIdQuery,
+  useUpdateRackMutation,
+} from "modules/datacenter/services/rack.service";
 import {
   useCreateRackEquipmentMutation,
   useDeleteRackEquipmentMutation,
@@ -36,6 +39,7 @@ import {
 } from "./utils/rackDetailsUtils";
 import EditButton from "modules/shared/components/edit-button/EditButton";
 import DeleteButton from "modules/shared/components/DeleteButton";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 
 export default function RackDetailsPage() {
   const { params } = useRouter();
@@ -48,20 +52,29 @@ export default function RackDetailsPage() {
   } = useFindRackByIdQuery(params.rackId!);
   const [createRackEquipment, { isLoading: loadingCreateRack }] =
     useCreateRackEquipmentMutation();
+  const { data: sites, isLoading: loadingSites } = useFindAllSitesQuery();
+  const [updateRack, { isLoading: loadingUpdate }] = useUpdateRackMutation();
 
   const handleEditRack = () => {
+    console.log(rack);
     const modal = showModal(RackFormModal, {
       title: "Editar rack",
-      onConfirm: (formData) => {
+      mode: "edit",
+      data: {
+        model: rack as any,
+        sites,
+      },
+      onConfirm: async (formData) => {
         modal.hide();
         try {
-          toast.open({ message: "Equipamento de rack alterado com sucesso" });
+          await updateRack({
+            ...formData,
+            id: rack!.id,
+          }).unwrap();
+          toast.open({ message: "Rack alterado com sucesso" });
         } catch (error) {
           console.log(error);
-          toast.open({
-            message: "Erro ao alterar equipamento de rack",
-            severity: "error",
-          });
+          toast.open({ message: "Erro ao alterar rack", severity: "error" });
         }
       },
       onClose: () => {

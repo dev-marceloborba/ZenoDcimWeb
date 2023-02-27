@@ -1,5 +1,4 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-// import { Button } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import locationReducer, {
@@ -9,7 +8,7 @@ import locationReducer, {
 import { SiteModel } from "modules/datacenter/models/datacenter-model";
 import {
   CreateRackViewModel,
-  RackTableViewModel,
+  RackModel,
 } from "modules/datacenter/models/rack.model";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import Form, { FormMode } from "modules/shared/components/Form";
@@ -23,7 +22,7 @@ type RackFormModalProps = {
   onConfirm(formData: CreateRackViewModel): void;
   mode?: FormMode;
   data?: {
-    model?: RackTableViewModel;
+    model?: RackModel;
     sites?: SiteModel[];
   };
 } & ModalProps;
@@ -38,7 +37,12 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
   const methods = useForm<FormProps>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
-    defaultValues: data?.model,
+    defaultValues: {
+      ...data?.model,
+      siteId: data?.model?.site.id,
+      buildingId: data?.model?.building.id,
+      floorId: data?.model?.floor.id,
+    },
   });
 
   const {
@@ -63,19 +67,19 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
       dispatch({
         type: LocationReducerType.GET_BUILDINGS_BY_SITE,
         payload: {
-          siteId: data?.model?.siteId,
+          siteId: data?.model?.site.id,
         },
       });
       dispatch({
         type: LocationReducerType.GET_FLOORS_BY_BUILDING,
         payload: {
-          buildingId: data?.model?.buildingId,
+          buildingId: data?.model?.building.id,
         },
       });
       dispatch({
         type: LocationReducerType.GET_ROOMS_BY_FLOOR,
         payload: {
-          floorId: data?.model?.floorId,
+          floorId: data?.model?.floor.id,
         },
       });
     }

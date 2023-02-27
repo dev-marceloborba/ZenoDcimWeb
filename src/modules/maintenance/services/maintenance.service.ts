@@ -6,13 +6,14 @@ import {
   CreateWorkOrderViewModel,
   WorkOrderModel,
   UpdateWorkOrderViewModel,
-  WorkEventsTableViewModel,
   WorkOrderDetailsViewModel,
-  EWorkOrderNature,
-  EMaintenanceType,
-  EWorkOrderType,
-  EOrderPriority,
 } from "../models/work-order.model";
+import {
+  getMaintenanceType,
+  getOrderNature,
+  getOrderType,
+  getWorkOrderPriorityDescription,
+} from "../utils/work-order.utils";
 
 export const maintenanceApi = createApi({
   reducerPath: "maintenanceApi",
@@ -48,52 +49,12 @@ export const maintenanceApi = createApi({
         invalidatesTags: ["WorkOrderModel"],
       }
     ),
-    findAllWorkOrders: builder.query<WorkEventsTableViewModel[], void>({
+    findAllWorkOrders: builder.query<WorkOrderModel[], void>({
       query: () => ({
         url: "v1/work-orders",
         method: "GET",
       }),
       providesTags: ["WorkOrderModel"],
-      transformResponse: (response: WorkOrderModel[]) => {
-        function getMaintenanceTypeDescription(
-          maintenanceType: EMaintenanceType
-        ) {
-          switch (maintenanceType) {
-            case EMaintenanceType.CORRECTIVE:
-              return "Corretiva";
-            case EMaintenanceType.PREVENTIVE:
-              return "Preventiva";
-          }
-        }
-
-        function getOperationNatureDescription(
-          operationNature: EWorkOrderNature
-        ) {
-          switch (operationNature) {
-            case EWorkOrderNature.ATTENDANCE:
-              return "Acompanhamento";
-            case EWorkOrderNature.CUSTOMER_SERVICE:
-              return "Atendimento";
-            case EWorkOrderNature.EMERGENCY:
-              return "Emergência";
-            case EWorkOrderNature.PLANNED:
-              return "Planejada";
-          }
-        }
-
-        return response.map<WorkEventsTableViewModel>((workOrder) => ({
-          id: workOrder.id,
-          title: workOrder?.title ?? "",
-          maintenanceType: getMaintenanceTypeDescription(
-            workOrder.maintenanceType
-          ),
-          operationNature: getOperationNatureDescription(workOrder.nature),
-          equipment: workOrder.equipment.component,
-          responsible: workOrder.responsible,
-          initialDate: getTimeStampFormat(workOrder.initialDate),
-          finalDate: getTimeStampFormat(workOrder.finalDate),
-        }));
-      },
     }),
     findWorkOrderById: builder.mutation<WorkOrderDetailsViewModel, string>({
       query: (id) => ({
@@ -102,49 +63,6 @@ export const maintenanceApi = createApi({
       }),
       transformResponse: (response: WorkOrderModel) => {
         let output: WorkOrderDetailsViewModel = {} as WorkOrderDetailsViewModel;
-        function getOrderNature(nature: EWorkOrderNature) {
-          switch (nature) {
-            case EWorkOrderNature.ATTENDANCE:
-              return "Acompanhamento";
-            case EWorkOrderNature.CUSTOMER_SERVICE:
-              return "Atendimento";
-            case EWorkOrderNature.EMERGENCY:
-              return "Emergência";
-            case EWorkOrderNature.PLANNED:
-              return "Planejada";
-          }
-        }
-
-        function getMaintenanceType(maintenanceType: EMaintenanceType) {
-          switch (maintenanceType) {
-            case EMaintenanceType.CORRECTIVE:
-              return "Corretiva";
-            case EMaintenanceType.PREVENTIVE:
-              return "Preventiva";
-          }
-        }
-
-        function getOrderType(orderType: EWorkOrderType) {
-          switch (orderType) {
-            case EWorkOrderType.ELECTRICAL:
-              return "Elétrica";
-            case EWorkOrderType.NETWORK:
-              return "Rede";
-          }
-        }
-
-        function getWorkOrderPriorityDescription(
-          workOrderPriority: EOrderPriority
-        ) {
-          switch (workOrderPriority) {
-            case EOrderPriority.LOW:
-              return "Baixa";
-            case EOrderPriority.MEDIUM:
-              return "Média";
-            case EOrderPriority.HIGH:
-              return "Alta";
-          }
-        }
 
         output.id = response.id;
         output.site = response.site.name;

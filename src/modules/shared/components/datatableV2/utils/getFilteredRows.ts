@@ -1,6 +1,7 @@
 import { ColumnHeader } from "../DataTable";
 import { Order } from "../types/datatable.types";
 import getComparator from "./getComparator";
+import getNestedProperty from "./getNestedProperty";
 
 export default function getFilteredRows(
   rows: any[],
@@ -13,9 +14,10 @@ export default function getFilteredRows(
 ): any[] {
   return rows
     .filter((row) =>
-      columns.some((column) =>
-        row[column.name].toString().toLowerCase().includes(filter.toLowerCase())
-      )
+      columns.some((column) => {
+        const property = getNestedProperty(row, column.name.split("."));
+        return property.toString().toLowerCase().includes(filter.toLowerCase());
+      })
     )
     .sort(getComparator(order, orderBy))
     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);

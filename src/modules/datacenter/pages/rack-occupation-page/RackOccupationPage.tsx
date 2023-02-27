@@ -60,12 +60,12 @@ export default function RackOccupationPage() {
       },
       onConfirm: async (formData) => {
         modal.hide();
-        await updateRack({
-          ...formData,
-          id: rack.id,
-        }).unwrap();
-        toast.open({ message: "Rack alterado com sucesso" });
         try {
+          await updateRack({
+            ...formData,
+            id: rack.id,
+          }).unwrap();
+          toast.open({ message: "Rack alterado com sucesso" });
         } catch (error) {
           console.log(error);
           toast.open({ message: "Erro ao alterar rack", severity: "error" });
@@ -116,19 +116,19 @@ export default function RackOccupationPage() {
 
 const columns: ColumnHeader[] = [
   {
-    name: "site",
+    name: "site.name",
     label: "Site",
   },
   {
-    name: "building",
+    name: "building.name",
     label: "Prédio",
   },
   {
-    name: "floor",
+    name: "floor.name",
     label: "Andar",
   },
   {
-    name: "room",
+    name: "room.name",
     label: "Sala",
   },
   {

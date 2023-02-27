@@ -81,26 +81,6 @@ export interface UpdateRackEquipmentViewModel {
   description: string;
 }
 
-export interface RackEquipmentsTableViewModel {
-  id: string;
-  name: string;
-  model: string;
-  manufactor: string;
-  size: string;
-  serialNumber: string;
-  initialPosition: number;
-  finalPosition: number;
-  rackEquipmentType: ERackEquipmentType;
-  client: string;
-  function: string;
-  rackMountType: ERackMount;
-  rackEquipmentOrientation: ERackEquipmentOrientation;
-  occupation: number;
-  weight: number;
-  status: EEquipmentStatus;
-  description: string;
-}
-
 export enum ERackEquipmentType {
   SERVER = 0,
   SWITCH = 1,

@@ -8,7 +8,6 @@ import {
 import { RealtimeModel } from "modules/automation/models/realtime-model";
 import { TagModel } from "modules/automation/models/tag.model";
 import splitPathnameIntoFields from "modules/utils/helpers/splitPathnameIntoFields";
-import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import { useMqttState, useSubscription } from "mqtt-react-hooks";
 import { useEffect, useState } from "react";
 import AutomationRealtimeContext from "../contexts/automationRealtimeContext";
@@ -72,7 +71,7 @@ const AutomationRealtimeProvider: React.FC = ({ children }) => {
     switch (status) {
       case "Offline":
         offlineCounter++;
-        return offlineCounter > 2 ? "offline" : "loading";
+        return offlineCounter > 5 ? "offline" : "loading";
       case "Connecting":
         return "loading";
       case "Connected":

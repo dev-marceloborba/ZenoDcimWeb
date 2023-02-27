@@ -13,6 +13,7 @@ import { useToast } from "modules/shared/components/ToastProvider";
 import useRouter from "modules/core/hooks/useRouter";
 import useAutomationRealtime from "modules/automation/data/hooks/useAutomationRealtime";
 import { getStatusInAlarmsByPriorities } from "modules/automation/utils/automationUtils";
+import { automationPaths } from "modules/automation/routes/paths";
 
 export default function EtcBuilding() {
   const { data: sites, isLoading: isLoadingFetch } = useLoadCardsQuery();
@@ -138,41 +139,126 @@ export default function EtcBuilding() {
             <Grid key={site.siteId} item md={6}>
               <SiteBuildingCard
                 title={site.name}
+                historyPath={automationPaths.parameterHistory.pathFromSite}
                 siteId={site.siteId}
                 parameter1={{
                   description: site.parameter1?.description ?? "",
                   enabled: site.parameter1?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag1.alarms),
+                  equipmentId:
+                    site.parameter1?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter1?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter1?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter1?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter1?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter1?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag1,
                 }}
                 parameter2={{
                   description: site.parameter2?.description ?? "",
                   enabled: site.parameter2?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag2.alarms),
+                  equipmentId:
+                    site.parameter2?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter2?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter2?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter2?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter2?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter2?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag2,
                 }}
                 parameter3={{
                   description: site.parameter3?.description ?? "",
                   enabled: site.parameter3?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag3.alarms),
+                  equipmentId:
+                    site.parameter3?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter3?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter3?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter3?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter3?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter3?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag3,
                 }}
                 parameter4={{
                   description: site.parameter4?.description ?? "",
                   enabled: site.parameter4?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag4.alarms),
+                  equipmentId:
+                    site.parameter4?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter4?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter4?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter4?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter4?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter4?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag4,
                 }}
                 parameter5={{
                   description: site.parameter5?.description ?? "",
                   enabled: site.parameter5?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag5.alarms),
+                  equipmentId:
+                    site.parameter5?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter5?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter5?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter5?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter5?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter5?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag5,
                 }}
                 parameter6={{
                   description: site.parameter6?.description ?? "",
                   enabled: site.parameter6?.enabled ?? false,
                   status: getStatusInAlarmsByPriorities(tag6.alarms),
+                  equipmentId:
+                    site.parameter6?.equipmentParameter?.equipment.id ?? "",
+                  equipmentParameterId:
+                    site.parameter6?.equipmentParameterId ?? "",
+                  roomId:
+                    site.parameter6?.equipmentParameter?.equipment.roomId ?? "",
+                  floorId:
+                    site.parameter6?.equipmentParameter?.equipment.floorId ??
+                    "",
+                  buildingId:
+                    site.parameter6?.equipmentParameter?.equipment.buildingId ??
+                    "",
+                  siteId:
+                    site.parameter6?.equipmentParameter?.equipment.siteId ?? "",
                   ...tag6,
                 }}
                 alarms={{

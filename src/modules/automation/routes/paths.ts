@@ -31,6 +31,10 @@ export const automationPaths = {
       "etc/:siteId/:buildingId/:roomId/:equipmentId/:equipmentParameterId/history",
     alternativePath:
       "settings/equipments/details/:equipmentId/:equipmentParameterId/history",
+    pathFromSite:
+      ":siteId/:buildingId/:roomId/:equipmentId/:equipmentParameterId/history",
+    pathFromBuilding:
+      "buildingId/:roomId/:equipmentId/:equipmentParameterId/history",
   },
   fireSystem: {
     fullPath: "fire-system",
