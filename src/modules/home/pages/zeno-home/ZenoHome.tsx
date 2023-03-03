@@ -11,7 +11,10 @@ import Footer from "modules/shared/components/Footer";
 import { useFindUserByIdMutation } from "modules/user/services/authentication-service";
 import Loading from "modules/shared/components/Loading";
 import { useAppDispatch } from "app/hooks";
-import { setPreferences } from "modules/user/stores/slices/AuthenticationSlice";
+import {
+  setPreferences,
+  setPermissions,
+} from "modules/user/stores/slices/AuthenticationSlice";
 import { useAuth } from "app/hooks/useAuth";
 
 const ZenoHome: React.FC = () => {
@@ -25,6 +28,9 @@ const ZenoHome: React.FC = () => {
       const user = await findUser(currentUser?.id ?? "").unwrap();
       if (user.userPreferencies) {
         dispatch(setPreferences(user.userPreferencies));
+      }
+      if (user.group) {
+        dispatch(setPermissions(user.group));
       }
     }
     fetchUser();

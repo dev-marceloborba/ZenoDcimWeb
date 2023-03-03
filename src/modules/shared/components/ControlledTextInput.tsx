@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import isNumber from "modules/utils/helpers/isNumber";
 
 export type ComboboxItem = {
-  value: string | number;
+  value: string | number | boolean;
   description: string;
 };
 
@@ -54,7 +54,7 @@ const ControlledTextInput: React.FC<TextInputProps> = ({ ...props }) => {
           onBlur={onBlur}
         >
           {props.items?.map((item, idx) => (
-            <MenuItem key={idx} value={item.value}>
+            <MenuItem key={idx} value={item.value as string}>
               {item.description}
             </MenuItem>
           ))}

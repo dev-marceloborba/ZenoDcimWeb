@@ -21,6 +21,7 @@ import TriggerSetting from "modules/automation/components/trigger-setting-custom
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Tabs from "modules/shared/components/tabs/Tabs";
+import { useAuth } from "app/hooks/useAuth";
 
 const defaultGuid = "00000000-0000-0000-0000-000000000000";
 
@@ -36,6 +37,9 @@ const EquipmentParameterFormModalv2: React.FC<Props> = ({
   onConfirm,
   ...props
 }) => {
+  const {
+    userState: { permissions },
+  } = useAuth();
   const initialValues = {
     id: data?.id ?? defaultGuid,
     name: data?.name ?? "",
@@ -80,14 +84,15 @@ const EquipmentParameterFormModalv2: React.FC<Props> = ({
       <FormProvider {...methods}>
         <Form onSubmit={methods.handleSubmit(onSubmit)} sx={{ marginTop: 1 }}>
           <Tabs
-            mode="horizontal"
-            tabLabels={["Parâmetro", "Regras"]}
             tabItems={[
               {
+                title: "Parâmetro",
                 element: <ParameterTab />,
               },
               {
+                title: "Regras",
                 element: <TriggersTab fieldArray={fieldArray} />,
+                visible: permissions?.registers.alarms,
               },
             ]}
           />

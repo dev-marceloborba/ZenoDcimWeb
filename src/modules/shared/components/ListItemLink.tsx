@@ -11,11 +11,13 @@ import ListItemText from "@mui/material/ListItemText";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SxProps, Theme } from "@mui/system";
 import { Collapse } from "@mui/material";
+import { GroupModel } from "modules/user/models/group.model";
 
 type ListItemChildrenProps = {
   primary: string;
   sx?: SxProps<Theme>;
   to?: string;
+  validatePermission?(permissions: GroupModel): boolean;
 };
 
 export type ListItemLinkProps = ListItemChildrenProps & {

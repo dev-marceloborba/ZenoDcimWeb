@@ -5,6 +5,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  permissions: GroupModel;
 }
 
 export interface AuthModel {
@@ -63,36 +64,21 @@ export interface UserModel {
 
 export type UsersModel = UserModel[];
 
-export type UserModelNormalized = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  group: string;
-  active: string;
-};
-
 export interface LoginViewModel {
   email: string;
   password: string;
 }
 
-export interface UserViewModel {
-  firstName: string;
-  lastName: string;
-  password: string;
-  passwordConfirmation: string;
-  email: string;
-  groupId: string;
-  // role: EUserRole;
-  companyId: string;
-}
-
-export interface EditUserViewModel {
-  id: string;
+export interface UserEditorModel {
+  id?: string;
   firstName: string;
   lastName: string;
   email: string;
-  groupId: string;
+  password?: string;
+  passwordConfirmation?: string;
+  group?: GroupModel;
   active: boolean;
+  userPreferencies?: UserPreferenciesModel;
+  groupId: string;
+  companyId: string;
 }

@@ -1,5 +1,6 @@
 import { createSlice, Middleware, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "modules/core/store";
+import { GroupModel } from "modules/user/models/group.model";
 import { User } from "modules/user/models/user-model";
 import { UserPreferenciesModel } from "modules/user/models/user-preferencies.model";
 
@@ -7,12 +8,14 @@ type AuthState = {
   user: User | null;
   token: string | null;
   userPreferencies: UserPreferenciesModel | null;
+  permissions: GroupModel | null;
 };
 
 const initialState: AuthState = {
   user: null,
   token: null,
   userPreferencies: null,
+  permissions: null,
 };
 
 const persistStateOnLocalStorage = (state: AuthState) => {
@@ -39,10 +42,14 @@ const slice = createSlice({
       state.userPreferencies = action.payload;
       persistStateOnLocalStorage(state);
     },
+    setPermissions: (state, action: PayloadAction<GroupModel>) => {
+      state.permissions = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout, setPreferences } = slice.actions;
+export const { setCredentials, logout, setPreferences, setPermissions } =
+  slice.actions;
 
 export default slice.reducer;
 
@@ -63,6 +70,7 @@ export function reHydrateStore(): AuthState {
       user: null,
       token: null,
       userPreferencies: null,
+      permissions: null,
     };
   }
 }

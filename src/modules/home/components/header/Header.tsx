@@ -38,20 +38,33 @@ const Header: React.FC = () => {
   const { connectionStatus } = useAutomationRealtime();
 
   SignalRContext.useSignalREffect(
-    "SendAlarmNotification",
+    "SendNotification",
+    (key, value) => {
+      if (key === "alarm") {
+        const alarm = value as AlarmModel;
+        toast.open({
+          message: "Novo alarme",
+          position: "top-right",
+          severity: "warning",
+        });
+        addNotification({
+          id: alarm.id,
+          message: alarm.pathname.replaceAll("*", " / ").replaceAll("_", " "),
+          createdDate: new Date(alarm.createdDate),
+          title: "Novo alarme",
+        });
+      }
+      if (key === "runtime") {
+        console.log(value);
+      }
+    },
+    []
+  );
+
+  SignalRContext.useSignalREffect(
+    "SendRuntimeNotification",
     (message) => {
-      const alarm = message as AlarmModel;
-      toast.open({
-        message: "Novo alarme",
-        position: "top-right",
-        severity: "warning",
-      });
-      addNotification({
-        id: alarm.id,
-        message: alarm.pathname.replaceAll("*", " / ").replaceAll("_", " "),
-        createdDate: new Date(alarm.createdDate),
-        title: "Novo alarme",
-      });
+      console.log(message);
     },
     []
   );

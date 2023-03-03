@@ -38,7 +38,7 @@ const UserLogin: React.FC = () => {
     resolver: yupResolver(validationSchema),
     mode: "onChange",
   });
-  const { setCredentials, signed } = useAuth();
+  const { setCredentials, setPermissions, signed } = useAuth();
 
   const dispatch = useAppDispatch();
 
@@ -52,6 +52,7 @@ const UserLogin: React.FC = () => {
       const { data: account } = await login(data).unwrap();
       if (data) {
         dispatch(setCredentials(account));
+        dispatch(setPermissions(account.user.permissions));
         navigate(`/${HomePath}`);
       } else {
         toast.open({

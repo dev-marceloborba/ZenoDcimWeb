@@ -98,10 +98,9 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
       <FormProvider {...methods}>
         <Form onSubmit={methods.handleSubmit(onSubmit)}>
           <Tabs
-            mode="horizontal"
-            tabLabels={["Parâmetro", "Regras"]}
             tabItems={[
               {
+                title: "Parâmetro",
                 element: (
                   <ParameterTab
                     expanded={expanded}
@@ -113,6 +112,7 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
                 ),
               },
               {
+                title: "Regras",
                 element: <TriggersTab fieldArray={fieldArray} />,
               },
             ]}

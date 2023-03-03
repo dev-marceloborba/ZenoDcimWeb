@@ -7,6 +7,7 @@ export type CardSectionProps = {
   title: string;
   description: string;
   path?: string;
+  validatePermission?(permissions: any): boolean;
 };
 
 const CardSection: React.FC<CardSectionProps> = ({

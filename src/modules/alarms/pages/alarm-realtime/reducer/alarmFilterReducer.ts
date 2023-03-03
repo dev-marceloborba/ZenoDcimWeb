@@ -1,5 +1,6 @@
 import { AlarmModel } from "modules/automation/models/alarm-model";
 import { EAlarmPriority } from "modules/automation/models/alarm-rule-model";
+import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 
 export const alarmFilterInitialState: AlarmFilterReducerState = {
   alarmPriority: {
@@ -13,7 +14,12 @@ export const alarmFilterInitialState: AlarmFilterReducerState = {
     alarms_events: true,
   },
   computedPriority: 4,
+  computedType: 4,
   filteredAlarms: [],
+  date: {
+    initial: addDaysToDate(new Date(), -7),
+    final: new Date(),
+  },
 };
 
 type AlarmPriority = {
@@ -33,19 +39,27 @@ export enum AlarmFilterReducerType {
   TOGGLE_MEDIUM_PRIORITY,
   TOGGLE_LOW_PRIORITY,
   COMPUTE_PRIORITY,
+  COMPUTE_TYPE,
   ACK,
   FILTER_ALARMS,
   SET_ALARMS,
   TOGGLE_ALARM_TYPE,
   TOGGLE_EVENT_TYPE,
   TOGGLE_ALARM_EVENT_TYPE,
+  INITIAL_DATE,
+  FINAL_DATE,
 }
 
 export type AlarmFilterReducerState = {
   alarmType: AlarmType;
   alarmPriority: AlarmPriority;
   computedPriority: EAlarmPriority | number;
+  computedType: number;
   filteredAlarms: AlarmModel[];
+  date?: {
+    initial: Date;
+    final: Date;
+  };
 };
 
 export type LocationReducerAction = {
@@ -116,11 +130,35 @@ export default function alarmFilterReducer(
         ...state,
         computedPriority,
       };
+    case AlarmFilterReducerType.COMPUTE_TYPE:
+      const { computedType } = payload;
+      return {
+        ...state,
+        computedType,
+      };
     case AlarmFilterReducerType.FILTER_ALARMS:
       const { filteredAlarms } = payload;
       return {
         ...state,
         filteredAlarms,
+      };
+    case AlarmFilterReducerType.INITIAL_DATE:
+      const { initialDate } = payload;
+      return {
+        ...state,
+        date: {
+          initial: initialDate,
+          final: state.date?.final!,
+        },
+      };
+    case AlarmFilterReducerType.FINAL_DATE:
+      const { finalDate } = payload;
+      return {
+        ...state,
+        date: {
+          initial: state.date?.initial!,
+          final: finalDate,
+        },
       };
     default:
       return state;

@@ -39,8 +39,12 @@ import Loading from "modules/shared/components/Loading";
 import BuildingFormModal from "modules/datacenter/modals/building-form-modal/BuildingFormModal";
 import FloorFormModal from "modules/datacenter/modals/floor-form-modal/FloorFormModal";
 import RoomFormModal from "modules/datacenter/modals/room-form-modal/RoomFormModal";
+import { useAuth } from "app/hooks/useAuth";
 
 export default function InfrastructurePage() {
+  const {
+    userState: { permissions },
+  } = useAuth();
   const { showModal } = useModal();
   const toast = useToast();
   const { data: sites, isLoading: isLoadingFetchSites } =
@@ -146,36 +150,38 @@ export default function InfrastructurePage() {
   return (
     <HeroContainer title="Infraestrutura">
       <Tabs
-        mode="horizontal"
-        tabLabels={["Sites", "Prédios", "Andares", "Salas"]}
         tabItems={[
           {
+            title: "Sites",
             element: <SitesTab sites={sites ?? []} />,
-            content: (
+            content: permissions?.registers.datacenter ? (
               <Button variant="contained" onClick={handleOpenSiteModal}>
                 Novo site
               </Button>
-            ),
+            ) : null,
           },
           {
+            title: "Prédios",
             element: (
               <BuildingsTab buildings={buildings ?? []} sites={sites ?? []} />
             ),
-            content: (
+            content: permissions?.registers.datacenter ? (
               <Button variant="contained" onClick={handleOpenBuildingModal}>
                 Novo prédio
               </Button>
-            ),
+            ) : null,
           },
           {
+            title: "Andares",
             element: <FloorsTab floors={floors ?? []} sites={sites ?? []} />,
-            content: (
+            content: permissions?.registers.datacenter ? (
               <Button variant="contained" onClick={handleOpenFloorModal}>
                 Novo andar
               </Button>
-            ),
+            ) : null,
           },
           {
+            title: "Salas",
             element: (
               <RoomsTab
                 rooms={rooms ?? []}
@@ -184,11 +190,11 @@ export default function InfrastructurePage() {
                 sites={sites ?? []}
               />
             ),
-            content: (
+            content: permissions?.registers.datacenter ? (
               <Button variant="contained" onClick={handleOpenRoomModal}>
                 Nova sala
               </Button>
-            ),
+            ) : null,
           },
         ]}
       />

@@ -29,11 +29,15 @@ import { getEquipmentStatusFromEnum } from "modules/automation/utils/equipmentUt
 import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
 import { SiteModel } from "modules/datacenter/models/datacenter-model";
 import cleanPathnameGenerator from "modules/utils/cleanPathnameGenerator";
+import { useAuth } from "app/hooks/useAuth";
 
 const EquipmentDetailsPage: React.FC = () => {
   const { params } = useRouter();
   const { showModal } = useModal();
   const toast = useToast();
+  const {
+    userState: { permissions },
+  } = useAuth();
 
   const { data: sites } = useFindAllSitesQuery();
   const {
@@ -140,10 +144,9 @@ const EquipmentDetailsPage: React.FC = () => {
   return (
     <HeroContainer title={equipment?.component}>
       <Tabs
-        mode="horizontal"
-        tabLabels={["Detalhes", "Parâmetros"]}
         tabItems={[
           {
+            title: "Detalhes",
             element: <DetailsTab equipment={equipment} />,
             content: (
               <Button variant="contained" onClick={handleShowEquipmentModal}>
@@ -152,6 +155,7 @@ const EquipmentDetailsPage: React.FC = () => {
             ),
           },
           {
+            title: "Parâmetros",
             element: (
               <ParametersTab
                 equipment={equipment}
@@ -160,7 +164,7 @@ const EquipmentDetailsPage: React.FC = () => {
                 refetch={refetch}
               />
             ),
-            content: (
+            content: permissions?.registers.parameters ? (
               <Stack direction="row">
                 <Button
                   variant="contained"
@@ -176,7 +180,7 @@ const EquipmentDetailsPage: React.FC = () => {
                   Adicionar parâmetro virtual
                 </Button>
               </Stack>
-            ),
+            ) : null,
           },
         ]}
       />

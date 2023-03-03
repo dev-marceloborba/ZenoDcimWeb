@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { AlarmFilterViewModel } from "modules/automation/models/alarm-model";
 import HeroContainer from "modules/shared/components/HeroContainer";
 import addDaysToDate from "modules/utils/helpers/addDaysToDate";
 import {
@@ -15,27 +14,37 @@ import getTimeStampFormat from "modules/utils/helpers/timestampFormat";
 import Loading from "modules/shared/components/Loading";
 import AlarmIndicator from "modules/alarms/components/alarm-indicator/AlarmIndicator";
 import Tabs from "modules/shared/components/tabs/Tabs";
-import Dropdown from "modules/shared/components/dropdown/Dropdown";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import { AlarmStatisticsViewModel } from "modules/alarms/models/alarm-statistics.model";
 import KpiCard from "modules/shared/components/kpi-card/KpiCard";
 import Typography from "@mui/material/Typography";
-import AlarmLegend from "modules/alarms/components/alarm-legend/AlarmLegend";
 import { getAlarmStatusFromPriority } from "modules/alarms/utils/alarmUtils";
 import EquipmentAlarmsChart from "modules/alarms/components/equipment-alarms-chart/EquipmentAlarmsChart";
+import AlarmGroupFilter from "modules/alarms/components/alarm-group-filter/AlarmGroupFilter";
+
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import DetailsIcon from "@mui/icons-material/Details";
+import ChangeHistoryIcon from "@mui/icons-material/ChangeHistory";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
+import useAlarmFilter from "../alarm-realtime/reducer/useAlarmFilter";
+import useRouter from "modules/core/hooks/useRouter";
 
 export default function AlarmHistory() {
   return (
     <HeroContainer title="Histórico de alarmes">
       <Tabs
-        mode="horizontal"
-        tabLabels={["Histórico de alarmes", "Estatísticas"]}
         tabItems={[
           {
+            title: "Histórico de alarmes",
             element: <HistorianTab />,
           },
           {
+            title: "Estatísticas",
             element: <StatisticsTab />,
           },
         ]}
@@ -45,41 +54,26 @@ export default function AlarmHistory() {
 }
 
 const HistorianTab: React.FC = () => {
+  const { navigate } = useRouter();
   const [findAllAlarms, { data: alarms, isLoading }] =
     useFindAllAlarmsMutation();
-  const [filters, setFilters] = useState<AlarmFilterViewModel>({
-    initialDate: addDaysToDate(new Date(), -7),
-    finalDate: new Date(),
-    priority: 4,
-    type: 4,
-  });
-
-  const handleChangeDates = (
-    date: Date | null | undefined,
-    interval: keyof Pick<AlarmFilterViewModel, "initialDate" | "finalDate">
-  ) => setFilters((prevState) => ({ ...prevState, [interval]: date }));
-
-  const handleChangeFilters = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFilters((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+  const { alarmFilters, filters, priorities, dates } = useAlarmFilter();
 
   useEffect(() => {
     async function fetchAlarms() {
       await findAllAlarms({
-        initialDate: filters.initialDate,
-        finalDate: filters.finalDate,
-        priority: filters.priority,
-        type: filters.type,
+        initialDate: filters.date?.initial,
+        finalDate: filters.date?.final,
+        priority: filters.computedPriority,
+        type: filters.computedType,
       }).unwrap();
     }
     fetchAlarms();
   }, [
-    filters.finalDate,
-    filters.initialDate,
-    filters.priority,
-    filters.type,
+    filters.computedPriority,
+    filters.computedType,
+    filters.date?.final,
+    filters.date?.initial,
     findAllAlarms,
   ]);
 
@@ -93,63 +87,88 @@ const HistorianTab: React.FC = () => {
           rowSpacing={1}
           width="80%"
         >
-          <Grid item md={3}>
-            <Dropdown
-              name="priority"
-              label="Prioridade"
-              value={filters.priority}
-              onChange={handleChangeFilters}
-              items={[
-                { value: 4, label: "Todas" },
-                { value: 0, label: "Muito baixa" },
-                { value: 1, label: "Baixa" },
-                { value: 2, label: "Alta" },
-                { value: 3, label: "Muito alta" },
-              ]}
-            />
-          </Grid>
-          <Grid item md={3}>
-            <Dropdown
-              name="type"
-              label="Tipo"
-              value={filters.type}
-              onChange={handleChangeFilters}
-              items={[
-                { value: 4, label: "Todos" },
-                { value: 0, label: "Alarme" },
-                { value: 1, label: "Evento" },
-              ]}
-            />
+          <Grid item>
+            <Stack direction="row">
+              <AlarmGroupFilter
+                title="Tipo"
+                alarmItems={[
+                  {
+                    legend: "Alarmes e eventos",
+                    icon: <NotificationsIcon />,
+                    selected: filters.alarmType.alarms_events,
+                    onClick: alarmFilters.toggleAlarmEventType,
+                  },
+                  {
+                    legend: "Alarmes",
+                    icon: <NotificationsActiveIcon />,
+                    selected: filters.alarmType.alarms,
+                    onClick: alarmFilters.toggleAlarmType,
+                  },
+                  {
+                    legend: "Eventos",
+                    icon: <NotificationsOffIcon />,
+                    selected: filters.alarmType.events,
+                    onClick: alarmFilters.toggleEventType,
+                  },
+                ]}
+                color="rgba(0,98,189, 0.2)"
+              />
+              <AlarmGroupFilter
+                title="Severidade"
+                alarmItems={[
+                  {
+                    legend: "Severidade alta",
+                    icon: <WarningAmberIcon />,
+                    selected: filters.alarmPriority.high,
+                    onClick: priorities.toggleHighPriority,
+                  },
+                  {
+                    legend: "Severidade média",
+                    icon: <DetailsIcon />,
+                    selected: filters.alarmPriority.medium,
+                    onClick: priorities.toggleMediumPriority,
+                  },
+                  {
+                    legend: "Severidade baixa",
+                    icon: <ChangeHistoryIcon />,
+                    selected: filters.alarmPriority.low,
+                    onClick: priorities.toggleLowPriority,
+                  },
+                ]}
+                color="rgba(0,98,189, 0.25)"
+              />
+              <AlarmGroupFilter
+                title="Info"
+                alarmItems={[
+                  {
+                    legend: "Informações",
+                    icon: <InfoOutlinedIcon />,
+                    onClick: () => navigate("/zeno/settings/user-help", {}),
+                  },
+                ]}
+                color="rgba(0,98,189, 0.35)"
+              />
+            </Stack>
           </Grid>
           <Grid item md={3}>
             <DateTimePicker
               label="Data inicial"
-              value={filters.initialDate}
+              value={filters.date?.initial}
               onChange={() => {}}
               renderInput={(params) => <TextField {...params} fullWidth />}
-              onAccept={(d) => handleChangeDates(d, "initialDate")}
+              onAccept={dates.setInitialDate}
             />
           </Grid>
           <Grid item md={3}>
             <DateTimePicker
               label="Data final"
-              value={filters.finalDate}
+              value={filters.date?.final}
               onChange={() => {}}
               renderInput={(params) => <TextField {...params} fullWidth />}
-              onAccept={(d) => handleChangeDates(d, "finalDate")}
+              onAccept={dates.setFinalDate}
             />
           </Grid>
         </Grid>
-        <div
-          style={{
-            top: -100,
-            right: 40,
-            position: "absolute",
-            width: "200px",
-          }}
-        >
-          <AlarmLegend />
-        </div>
       </Stack>
       <DataTable
         title="Alarmes"

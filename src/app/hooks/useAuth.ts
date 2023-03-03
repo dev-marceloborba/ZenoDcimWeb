@@ -5,6 +5,7 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
   setCredentials,
+  setPermissions,
 } from "modules/user/stores/slices/AuthenticationSlice";
 
 export const useAuth = () => {
@@ -21,5 +22,6 @@ export const useAuth = () => {
     setCredentials,
     currentUser,
     userState,
+    setPermissions,
   };
 };

@@ -3,13 +3,10 @@ import environment from "app/config/env";
 import { RootState } from "modules/core/store";
 import {
   AuthModel,
-  EditUserViewModel,
-  EUserRole,
   LoginViewModel,
   UserModel,
-  UserModelNormalized,
   UsersModel,
-  UserViewModel,
+  UserEditorModel,
 } from "modules/user/models/user-model";
 
 import { ApiResponse } from "../models/api-response";
@@ -26,7 +23,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["UserModelNormalized", "UsersModel"],
+  tagTypes: ["UsersModel"],
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponse<AuthModel>, LoginViewModel>({
       query: (credentials) => ({
@@ -35,63 +32,33 @@ export const api = createApi({
         body: credentials,
       }),
     }),
-    findAllUsers: builder.query<UserModelNormalized[], void>({
+    findAllUsers: builder.query<UsersModel, void>({
       query: () => ({ url: "v1/users", method: "GET" }),
-      transformResponse: (returnedUsers: UsersModel) => {
-        // function getUserRoleDescription(role: EUserRole): string {
-        //   switch (role) {
-        //     case EUserRole.ADMIN:
-        //       return "Administrador";
-        //     case EUserRole.EXTERNAL_CLIENT:
-        //       return "Cliente";
-        //     case EUserRole.OPERATOR:
-        //       return "Operador";
-        //     case EUserRole.TECHNICIAN:
-        //       return "Técnico";
-        //     case EUserRole.VIEW_ONLY:
-        //       return "Visualizador";
-        //     default:
-        //       return "Desconhecido";
-        //   }
-        // }
 
-        const users: UserModelNormalized[] = [];
-        returnedUsers.forEach((returnedUser) => {
-          users.push({
-            id: returnedUser.id,
-            firstName: returnedUser.firstName,
-            lastName: returnedUser.lastName,
-            email: returnedUser.email,
-            active: returnedUser.active ? "Ativo" : "Inativo",
-            group: returnedUser.group.name,
-          });
-        });
-        return users;
-      },
-      providesTags: ["UserModelNormalized"],
+      providesTags: ["UsersModel"],
     }),
-    createUser: builder.mutation<ApiResponse<UserModel>, UserViewModel>({
+    createUser: builder.mutation<ApiResponse<UserModel>, UserEditorModel>({
       query: (user) => ({
         url: "v1/users",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserModelNormalized"],
+      invalidatesTags: ["UsersModel"],
     }),
     deleteUser: builder.mutation<ApiResponse<UserModel>, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["UserModelNormalized"],
+      invalidatesTags: ["UsersModel"],
     }),
-    editUser: builder.mutation<ApiResponse<UserModel>, EditUserViewModel>({
+    editUser: builder.mutation<ApiResponse<UserModel>, UserEditorModel>({
       query: (user) => ({
         url: "v1/users/edit",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserModelNormalized"],
+      invalidatesTags: ["UsersModel"],
     }),
     findUserById: builder.mutation<UserModel, string>({
       query: (id) => ({

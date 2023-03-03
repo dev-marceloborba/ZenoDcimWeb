@@ -118,10 +118,9 @@ export default function RackDetailsPage() {
   return (
     <HeroContainer title={rack?.name}>
       <Tabs
-        mode="horizontal"
-        tabLabels={["Detalhes", "Ocupação"]}
         tabItems={[
           {
+            title: "Detalhes",
             element: <DetailsTab rack={rack} />,
             content: (
               <Button variant="contained" onClick={handleEditRack}>
@@ -130,6 +129,7 @@ export default function RackDetailsPage() {
             ),
           },
           {
+            title: "Ocupação",
             element: <OccupationTab rack={rack} reload={() => refetch()} />,
             content: (
               <Button variant="contained" onClick={handleInsertEquipment}>

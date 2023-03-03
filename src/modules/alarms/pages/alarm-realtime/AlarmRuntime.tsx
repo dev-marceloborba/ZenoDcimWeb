@@ -38,17 +38,18 @@ import { useAuth } from "app/hooks/useAuth";
 import useRouter from "modules/core/hooks/useRouter";
 
 export default function AlarmRealtime() {
-  const { currentUser } = useAuth();
+  const {
+    currentUser,
+    userState: { permissions },
+  } = useAuth();
   const [selectedAlarms, setSelectedAlarms] = useState<AlarmTableViewModel[]>(
     []
   );
 
   const { showModal } = useModal();
-  const { alarms, publish, status, activeAlarms } = useAutomationRealtime();
+  const { alarms, publish, status } = useAutomationRealtime();
   const { alarmFilters, filters, priorities } = useAlarmFilter(alarms);
   const { navigate } = useRouter();
-
-  console.log(status);
 
   const handleOnAckSelection = () => {
     selectedAlarms.forEach((alarm) => {
@@ -85,19 +86,19 @@ export default function AlarmRealtime() {
               legend: "Alarmes e eventos",
               icon: <NotificationsIcon />,
               selected: filters.alarmType.alarms_events,
-              onClick: () => alarmFilters.toggleAlarmEventType(),
+              onClick: alarmFilters.toggleAlarmEventType,
             },
             {
               legend: "Alarmes",
               icon: <NotificationsActiveIcon />,
               selected: filters.alarmType.alarms,
-              onClick: () => alarmFilters.toggleAlarmType(),
+              onClick: alarmFilters.toggleAlarmType,
             },
             {
               legend: "Eventos",
               icon: <NotificationsOffIcon />,
               selected: filters.alarmType.events,
-              onClick: () => alarmFilters.toggleEventType(),
+              onClick: alarmFilters.toggleEventType,
             },
           ]}
           color="rgba(0,98,189, 0.2)"
@@ -109,45 +110,48 @@ export default function AlarmRealtime() {
               legend: "Severidade alta",
               icon: <WarningAmberIcon />,
               selected: filters.alarmPriority.high,
-              onClick: () => priorities.toggleHighPriority(),
+              onClick: priorities.toggleHighPriority,
             },
             {
               legend: "Severidade média",
               icon: <DetailsIcon />,
               selected: filters.alarmPriority.medium,
-              onClick: () => priorities.toggleMediumPriority(),
+              onClick: priorities.toggleMediumPriority,
             },
             {
               legend: "Severidade baixa",
               icon: <ChangeHistoryIcon />,
               selected: filters.alarmPriority.low,
-              onClick: () => priorities.toggleLowPriority(),
+              onClick: priorities.toggleLowPriority,
             },
           ]}
           color="rgba(0,98,189, 0.25)"
         />
-        <AlarmGroupFilter
-          title="Reconhecimento"
-          alarmItems={[
-            {
-              legend: "Reconhecer todos",
-              icon: <DoneAllIcon />,
-              onClick: handleModalConfirmation,
-              disabled: status === "offline",
-            },
-            {
-              legend: "Reconhecer alarmes",
-              icon: <CheckBoxOutlinedIcon />,
-              disabled: status === "offline",
-            },
-            {
-              legend: "Reconhecer eventos",
-              icon: <CheckIcon />,
-              disabled: status === "offline",
-            },
-          ]}
-          color="rgba(0,98,189, 0.3)"
-        />
+        {permissions?.actions.ackAlarms ? (
+          <AlarmGroupFilter
+            title="Reconhecimento"
+            alarmItems={[
+              {
+                legend: "Reconhecer todos",
+                icon: <DoneAllIcon />,
+                onClick: handleModalConfirmation,
+                disabled: status === "offline",
+              },
+              {
+                legend: "Reconhecer alarmes",
+                icon: <CheckBoxOutlinedIcon />,
+                disabled: status === "offline",
+              },
+              {
+                legend: "Reconhecer eventos",
+                icon: <CheckIcon />,
+                disabled: status === "offline",
+              },
+            ]}
+            color="rgba(0,98,189, 0.3)"
+          />
+        ) : null}
+
         <AlarmGroupFilter
           title="Info"
           alarmItems={[

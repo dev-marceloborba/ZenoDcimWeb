@@ -4,13 +4,10 @@ import { RootState } from "modules/core/store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import {
   AuthModel,
-  EditUserViewModel,
-  EUserRole,
   LoginViewModel,
   UserModel,
-  UserModelNormalized,
   UsersModel,
-  UserViewModel,
+  UserEditorModel,
 } from "modules/user/models/user-model";
 
 export const userApi = createApi({
@@ -25,7 +22,7 @@ export const userApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["UserResponseNormalized", "UsersResponse"],
+  tagTypes: ["UserModel", "UsersResponse"],
   endpoints: (builder) => ({
     login: builder.mutation<ApiResponseModel<AuthModel>, LoginViewModel>({
       query: (credentials) => ({
@@ -34,46 +31,32 @@ export const userApi = createApi({
         body: credentials,
       }),
     }),
-    findAllUsers: builder.query<UserModelNormalized[], void>({
+    findAllUsers: builder.query<UsersModel, void>({
       query: () => ({ url: "v1/users", method: "GET" }),
-      transformResponse: (returnedUsers: UsersModel) => {
-        const users: UserModelNormalized[] = [];
-        returnedUsers.forEach((returnedUser) => {
-          users.push({
-            id: returnedUser.id,
-            firstName: returnedUser.firstName,
-            lastName: returnedUser.lastName,
-            email: returnedUser.email,
-            active: returnedUser.active ? "Ativo" : "Inativo",
-            group: returnedUser.group.name,
-          });
-        });
-        return users;
-      },
-      providesTags: ["UserResponseNormalized"],
+      providesTags: ["UserModel"],
     }),
-    createUser: builder.mutation<ApiResponseModel<UserModel>, UserViewModel>({
+    createUser: builder.mutation<ApiResponseModel<UserModel>, UserEditorModel>({
       query: (user) => ({
         url: "v1/users",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModel"],
     }),
     deleteUser: builder.mutation<ApiResponseModel<UserModel>, string>({
       query: (id) => ({
         url: `v1/users/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModel"],
     }),
-    editUser: builder.mutation<ApiResponseModel<UserModel>, EditUserViewModel>({
+    editUser: builder.mutation<ApiResponseModel<UserModel>, UserEditorModel>({
       query: (user) => ({
         url: "v1/users/edit",
         method: "POST",
         body: user,
       }),
-      invalidatesTags: ["UserResponseNormalized"],
+      invalidatesTags: ["UserModel"],
     }),
     findUserById: builder.mutation<UserModel, string>({
       query: (id) => ({

@@ -22,9 +22,17 @@ import {
   AlarmRealtimePath,
 } from "modules/alarms/routes/paths";
 import { datacenterPaths } from "modules/datacenter/routes/paths";
+import { useAuth } from "app/hooks/useAuth";
 
 const Sidenav: React.FC = () => {
   const { drawerOpened } = useLayout();
+  const {
+    userState: { permissions },
+  } = useAuth();
+
+  if (permissions === null) {
+    return <></>;
+  }
 
   if (drawerOpened) {
     return (
@@ -47,9 +55,12 @@ const Sidenav: React.FC = () => {
           }}
         >
           <List sx={{ height: "100%" }}>
-            {menuItems.map((props, index) => (
-              <ListItemLink key={index} {...props} />
-            ))}
+            {menuItems.map((props, index) => {
+              const isAllowed = props.validatePermission
+                ? props.validatePermission(permissions!)
+                : true;
+              return isAllowed ? <ListItemLink key={index} {...props} /> : null;
+            })}
           </List>
         </Drawer>
       </Box>
@@ -110,6 +121,7 @@ const menuItems: ListItemLinkProps[] = [
         to: `/${HomePath}/${AlarmsPath}/${AlarmRealtimePath}`,
       },
     ],
+    validatePermission: ({ views: { alarms } }) => alarms === true,
   },
   // {
   //   primary: "Clientes",
@@ -174,6 +186,7 @@ const menuItems: ListItemLinkProps[] = [
     to: "/zeno/settings",
     primary: "Configurações",
     icon: <SettingsIcon />,
+    validatePermission: ({ registers: { users } }) => users === true,
   },
 ];
 

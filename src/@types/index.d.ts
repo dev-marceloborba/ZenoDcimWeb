@@ -6,5 +6,6 @@ declare module "react-router-dom" {
     title?: string;
     parameter?: string;
     resolver?(data: BreadcrumbData): JSX.Element | null | undefined;
+    validatePermission?(permission: any): boolean;
   }
 }

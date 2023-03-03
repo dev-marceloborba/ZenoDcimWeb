@@ -59,7 +59,7 @@ function filterAlarmsByType(alarms: AlarmModel[], type: EAlarmType | number) {
   }
 }
 
-export default function useAlarmFilter(alarms: AlarmModel[]) {
+export default function useAlarmFilter(alarms?: AlarmModel[]) {
   const [state, dispatch] = useReducer(
     alarmFilterReducer,
     alarmFilterInitialState
@@ -101,6 +101,20 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
     });
   };
 
+  const setInitialDate = (date: Date | null | undefined) => {
+    dispatch({
+      type: AlarmFilterReducerType.INITIAL_DATE,
+      payload: { initialDate: date },
+    });
+  };
+
+  const setFinalDate = (date: Date | null | undefined) => {
+    dispatch({
+      type: AlarmFilterReducerType.FINAL_DATE,
+      payload: { finalDate: date },
+    });
+  };
+
   useEffect(() => {
     dispatch({
       type: AlarmFilterReducerType.COMPUTE_PRIORITY,
@@ -113,26 +127,36 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
     });
 
     dispatch({
-      type: AlarmFilterReducerType.FILTER_ALARMS,
+      type: AlarmFilterReducerType.COMPUTE_TYPE,
       payload: {
-        filteredAlarms: filterAlarmsByType(
-          filterAlarmsByPriority(alarms, state.computedPriority),
+        computedType:
           Number(state.alarmType.alarms) * 1 +
-            Number(state.alarmType.events) * 2 +
-            Number(state.alarmType.alarms_events) * 3
-        ),
+          Number(state.alarmType.events) * 2 +
+          Number(state.alarmType.alarms_events) * 3,
       },
     });
   }, [
-    alarms,
     state.alarmPriority.high,
     state.alarmPriority.low,
     state.alarmPriority.medium,
     state.alarmType.alarms,
-    state.alarmType.events,
     state.alarmType.alarms_events,
-    state.computedPriority,
+    state.alarmType.events,
   ]);
+
+  useEffect(() => {
+    if (alarms) {
+      dispatch({
+        type: AlarmFilterReducerType.FILTER_ALARMS,
+        payload: {
+          filteredAlarms: filterAlarmsByType(
+            filterAlarmsByPriority(alarms, state.computedPriority),
+            state.computedType
+          ),
+        },
+      });
+    }
+  }, [alarms, state.computedPriority, state.computedType]);
 
   return {
     filters: state,
@@ -145,6 +169,10 @@ export default function useAlarmFilter(alarms: AlarmModel[]) {
       toggleHighPriority,
       toggleMediumPriority,
       toggleLowPriority,
+    },
+    dates: {
+      setInitialDate,
+      setFinalDate,
     },
   };
 }

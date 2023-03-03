@@ -82,10 +82,9 @@ export default function ParameterHistoryPage() {
   return (
     <HeroContainer title="Histórico de parâmetro">
       <Tabs
-        mode="horizontal"
-        tabLabels={["Detalhes", "Histórico"]}
         tabItems={[
           {
+            title: "Detalhes",
             element: <DetailsTab parameter={parameter} />,
             content: (
               <Button variant="contained" onClick={handleEditParameter}>
@@ -94,6 +93,7 @@ export default function ParameterHistoryPage() {
             ),
           },
           {
+            title: "Histórico",
             element: <HistorianTab parameter={parameter} />,
           },
         ]}
