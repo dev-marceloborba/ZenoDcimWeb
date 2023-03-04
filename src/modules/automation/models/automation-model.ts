@@ -1,47 +1,10 @@
+import {
+  BuildingModel,
+  FloorModel,
+  SiteModel,
+} from "modules/datacenter/models/datacenter-model";
+import { RoomModel } from "modules/datacenter/models/room.model";
 import { AlarmRuleEditor, AlarmRulesModel } from "./alarm-rule-model";
-
-export interface SiteViewModel {
-  name: string;
-}
-
-export interface SiteModel extends SiteViewModel {
-  id: string;
-  buildings: BuildingModel[];
-}
-
-export type BuildingViewModel = {
-  campus: string;
-  name: string;
-};
-
-export interface BuildingModel extends BuildingViewModel {
-  id: string;
-  floors?: FloorModel[];
-}
-
-export type BuildingsModel = BuildingModel[];
-
-export interface FloorViewModel {
-  buildingId: string;
-  name: string;
-}
-
-export interface FloorModel extends FloorViewModel {
-  id: string;
-  rooms?: RoomModel[];
-}
-
-export interface RoomViewModel {
-  buildingId: string;
-  floorId: string;
-  name: string;
-}
-
-export interface RoomModel extends RoomViewModel {
-  id: string;
-  building?: BuildingModel;
-  equipments?: EquipmentModel[];
-}
 
 export enum EEquipmentGroup {
   ENERGY = 0,

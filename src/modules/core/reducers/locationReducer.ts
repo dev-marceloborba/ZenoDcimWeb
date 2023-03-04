@@ -2,9 +2,9 @@ import { EquipmentModel } from "modules/automation/models/automation-model";
 import {
   BuildingModel,
   FloorModel,
-  RoomModel,
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
+import { RoomModel } from "modules/datacenter/models/room.model";
 
 export const locationInitialState: LocationReducerState = {
   sites: [],

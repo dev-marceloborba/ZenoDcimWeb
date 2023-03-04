@@ -2,22 +2,22 @@ import Modal, { ModalProps } from "modules/shared/components/modal/Modal";
 import React, { useEffect, useReducer } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaOf, string, object } from "yup";
+import { SchemaOf, string, object, number } from "yup";
 import Form, { FormMode } from "modules/shared/components/Form";
 import ControlledTextInput from "modules/shared/components/ControlledTextInput";
 import SubmitButton from "modules/shared/components/SubmitButton";
-import {
-  RoomModel,
-  RoomViewModel,
-  SiteModel,
-} from "modules/datacenter/models/datacenter-model";
+import { SiteModel } from "modules/datacenter/models/datacenter-model";
 import locationReducer, {
   locationInitialState,
   LocationReducerType,
 } from "modules/core/reducers/locationReducer";
+import {
+  RoomEditorViewModel,
+  RoomModel,
+} from "modules/datacenter/models/room.model";
 
 type FormProps = {
-  onConfirm(room: RoomViewModel): void;
+  onConfirm(room: RoomEditorViewModel): void;
   mode?: FormMode;
   data?: {
     model?: RoomModel;
@@ -32,7 +32,7 @@ const RoomFormModal: React.FC<FormProps> = ({
   ...props
 }) => {
   const [state, dispatch] = useReducer(locationReducer, locationInitialState);
-  const methods = useForm<RoomViewModel>({
+  const methods = useForm<RoomEditorViewModel>({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
@@ -45,7 +45,8 @@ const RoomFormModal: React.FC<FormProps> = ({
     formState: { isValid },
   } = methods;
 
-  const onSubmit: SubmitHandler<RoomViewModel> = (data) => onConfirm(data);
+  const onSubmit: SubmitHandler<RoomEditorViewModel> = (data) =>
+    onConfirm(data);
 
   useEffect(() => {
     dispatch({
@@ -62,20 +63,20 @@ const RoomFormModal: React.FC<FormProps> = ({
       dispatch({
         type: LocationReducerType.GET_FLOORS_BY_BUILDING,
         payload: {
-          buildingId: data?.model?.buildingId,
+          buildingId: data?.model?.floor?.building?.id,
         },
       });
       dispatch({
         type: LocationReducerType.GET_ROOMS_BY_FLOOR,
         payload: {
-          floorId: data?.model?.floorId,
+          floorId: data?.model?.floor.id,
         },
       });
     }
   }, [
-    data?.model?.buildingId,
+    data?.model?.floor?.building?.id,
     data?.model?.floor?.building?.site?.id,
-    data?.model?.floorId,
+    data?.model?.floor.id,
     data?.sites,
     mode,
   ]);
@@ -140,6 +141,14 @@ const RoomFormModal: React.FC<FormProps> = ({
             }
           />
           <ControlledTextInput name="name" label="Nome da sala" />
+          <ControlledTextInput
+            name="rackCapacity"
+            label="Capacidade de racks"
+          />
+          <ControlledTextInput
+            name="powerCapacity"
+            label="Capacidade de potência (W)"
+          />
           <SubmitButton disabled={!isValid} />
         </FormProvider>
       </Form>
@@ -149,9 +158,12 @@ const RoomFormModal: React.FC<FormProps> = ({
 
 export default RoomFormModal;
 
-const validationSchema: SchemaOf<RoomViewModel> = object().shape({
-  siteId: string().notRequired(),
+const validationSchema: SchemaOf<RoomEditorViewModel> = object().shape({
+  id: string().notRequired(),
   name: string().required("Nome é obrigatório"),
-  buildingId: string().required("Prédio é obrigatório"),
+  rackCapacity: number().notRequired(),
+  powerCapacity: number().notRequired(),
   floorId: string().required("Andar é obrigatório"),
+  buildingId: string().required("Prédio é obrigatório"),
+  siteId: string().required("Site é obrigatório"),
 });

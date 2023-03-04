@@ -1,7 +1,10 @@
 import { RouteObject, useRoutes } from "react-router-dom";
 import DataCenterSettingsPage from "../pages/datacenter-settings-page/DataCenterSettingsPage";
 import InfrastructurePage from "../pages/infrastructure-page/InfrastructurePage";
-import OcupationPage from "../pages/ocupation-page/OcupationPage";
+import OccupationBuildingLevelPage from "../pages/ocupation-page/OccupationBuildingLevelPage";
+import OccupationRackLevelPage from "../pages/ocupation-page/OccupationRackLevelPage";
+import OccupationRoomLevelPage from "../pages/ocupation-page/OccupationRoomLevelPage";
+import OccupationSiteLevelPage from "../pages/ocupation-page/OccupationSiteLevelPage";
 import RackDetailsPage from "../pages/rack-occupation-page/rack-details-page/RackDetailsPage";
 import RackOccupationPage from "../pages/rack-occupation-page/RackOccupationPage";
 import { datacenterPaths } from "./paths";
@@ -29,8 +32,20 @@ export const datacenterRoutes: RouteObject[] = [
   },
   {
     path: datacenterPaths.ocupation,
-    element: <OcupationPage />,
+    element: <OccupationSiteLevelPage />,
     title: "Ocupação do Datacenter",
+  },
+  {
+    path: datacenterPaths.buildingOccupation,
+    element: <OccupationBuildingLevelPage />,
+  },
+  {
+    path: datacenterPaths.roomOccupation,
+    element: <OccupationRoomLevelPage />,
+  },
+  {
+    path: datacenterPaths.rackOccupation,
+    element: <OccupationRackLevelPage />,
   },
 ];
 

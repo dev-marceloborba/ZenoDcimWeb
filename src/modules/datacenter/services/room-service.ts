@@ -1,11 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
-import {
-  RoomViewModel,
-  RoomModel,
-  UpdateRoomViewModel,
-} from "modules/datacenter/models/datacenter-model";
+import { RoomModel, RoomEditorViewModel } from "../models/room.model";
 import { RootState } from "modules/core/store";
 
 export const roomApi = createApi({
@@ -22,7 +18,10 @@ export const roomApi = createApi({
   }),
   tagTypes: ["RoomModel"],
   endpoints: (builder) => ({
-    createRoom: builder.mutation<ApiResponseModel<RoomModel>, RoomViewModel>({
+    createRoom: builder.mutation<
+      ApiResponseModel<RoomModel>,
+      RoomEditorViewModel
+    >({
       query: (newRoom) => ({
         url: "v1/data-center/building/floor/room",
         method: "POST",
@@ -48,7 +47,7 @@ export const roomApi = createApi({
         method: "GET",
       }),
     }),
-    updateRoom: builder.mutation<void, UpdateRoomViewModel>({
+    updateRoom: builder.mutation<void, RoomEditorViewModel>({
       query: (data) => ({
         url: `v1/data-center/building/floor/room/${data.id}`,
         method: "PUT",

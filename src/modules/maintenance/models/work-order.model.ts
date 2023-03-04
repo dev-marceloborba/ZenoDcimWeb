@@ -1,12 +1,10 @@
-import {
-  EquipmentModel,
-  RoomModel,
-} from "modules/automation/models/automation-model";
+import { EquipmentModel } from "modules/automation/models/automation-model";
 import {
   BuildingModel,
   FloorModel,
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
+import { RoomModel } from "modules/datacenter/models/room.model";
 
 export interface CreateWorkOrderViewModel {
   siteId: string;

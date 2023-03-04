@@ -3,9 +3,9 @@ import { EquipmentModel } from "modules/automation/models/automation-model";
 import {
   BuildingModel,
   FloorModel,
-  RoomModel,
 } from "modules/datacenter/models/datacenter-model";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import { RoomModel } from "modules/datacenter/models/room.model";
 
 type DatacenterLocalesFilter = {
   siteId?: string;

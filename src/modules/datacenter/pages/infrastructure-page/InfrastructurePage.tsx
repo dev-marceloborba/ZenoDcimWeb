@@ -12,7 +12,6 @@ import {
 import {
   BuildingModel,
   FloorModel,
-  RoomModel,
   SiteModel,
 } from "modules/datacenter/models/datacenter-model";
 import {
@@ -40,6 +39,7 @@ import BuildingFormModal from "modules/datacenter/modals/building-form-modal/Bui
 import FloorFormModal from "modules/datacenter/modals/floor-form-modal/FloorFormModal";
 import RoomFormModal from "modules/datacenter/modals/room-form-modal/RoomFormModal";
 import { useAuth } from "app/hooks/useAuth";
+import { RoomModel } from "modules/datacenter/models/room.model";
 
 export default function InfrastructurePage() {
   const {
@@ -64,6 +64,8 @@ export default function InfrastructurePage() {
     useCreateFloorMutation();
   const [createRoom, { isLoading: isLoadingCreateRoom }] =
     useCreateRoomMutation();
+
+  console.log(rooms);
 
   const handleOpenSiteModal = () => {
     const modal = showModal(SiteFormModal, {
@@ -495,28 +497,31 @@ const RoomsTab: React.FC<RoomsTabProps> = ({
     <>
       <DataTableV2
         title="Salas"
-        rows={rooms.map((room) => ({
-          ...room,
-          siteName: room.floor?.building?.site?.name ?? "",
-          buildingName: room.floor?.building?.name ?? "",
-          floorName: room.floor?.name ?? "",
-        }))}
+        rows={rooms}
         columns={[
           {
-            name: "siteName",
+            name: "floor.building.site.name",
             label: "Site",
           },
           {
-            name: "buildingName",
+            name: "floor.building.name",
             label: "Prédio",
           },
           {
-            name: "floorName",
+            name: "floor.name",
             label: "Andar",
           },
           {
             name: "name",
             label: "Sala",
+          },
+          {
+            name: "rackCapacity",
+            label: "Capacidade de racks",
+          },
+          {
+            name: "powerCapacity",
+            label: "Capacidade de potência (W)",
           },
         ]}
         options={{

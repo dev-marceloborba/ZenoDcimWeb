@@ -1,4 +1,5 @@
-import { EquipmentModel } from "modules/automation/models/automation-model";
+// import { EquipmentModel } from "modules/automation/models/automation-model";
+import { RoomModel } from "./room.model";
 
 export interface SiteViewModel {
   name: string;
@@ -62,23 +63,25 @@ export interface FloorModel extends FloorViewModel {
   rooms?: RoomModel[];
 }
 
-export interface RoomViewModel {
-  buildingId: string;
-  floorId: string;
-  name: string;
-  siteId?: string;
-}
+// export interface RoomViewModel {
+//   buildingId: string;
+//   floorId: string;
+//   name: string;
+//   rackCapacity: number;
+//   powerCapacity: number;
+//   siteId?: string;
+// }
 
-export interface RoomModel extends RoomViewModel {
-  id: string;
-  floor?: FloorModel;
-  equipments?: EquipmentModel[];
-}
+// export interface RoomModel extends RoomViewModel {
+//   id: string;
+//   floor?: FloorModel;
+//   equipments?: EquipmentModel[];
+// }
 
-export interface UpdateRoomViewModel {
-  id: string;
-  name: string;
-  floorId?: string;
-  buildingId?: string;
-  siteId?: string;
-}
+// export interface UpdateRoomViewModel {
+//   id: string;
+//   name: string;
+//   floorId?: string;
+//   buildingId?: string;
+//   siteId?: string;
+// }

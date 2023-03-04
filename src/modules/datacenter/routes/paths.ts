@@ -19,4 +19,7 @@ export const datacenterPaths = {
     shortPath: "rack-equipments",
   },
   ocupation: "occupation",
+  buildingOccupation: "occupation/:siteId",
+  roomOccupation: "occupation/:siteId/:buildingId",
+  rackOccupation: "occupation/:siteId/:buildingId/:roomId",
 };

@@ -2,11 +2,11 @@ import { useState } from "react";
 import {
   BuildingModel,
   FloorModel,
-  RoomModel,
 } from "modules/datacenter/models/datacenter-model";
 import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
 import { ComboboxItem } from "modules/shared/components/ControlledTextInput";
 import { EquipmentModel } from "modules/automation/models/automation-model";
+import { RoomModel } from "../models/room.model";
 
 export default function useDataCenter() {
   const { data: sites, isLoading } = useFindAllSitesQuery();

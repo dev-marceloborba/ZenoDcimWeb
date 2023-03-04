@@ -1,9 +1,5 @@
-import {
-  BuildingModel,
-  FloorModel,
-  RoomModel,
-  SiteModel,
-} from "./datacenter-model";
+import { BuildingModel, FloorModel, SiteModel } from "./datacenter-model";
+import { RoomModel } from "./room.model";
 
 export interface RackModel {
   id: string;

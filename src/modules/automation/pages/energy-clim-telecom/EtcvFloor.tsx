@@ -18,8 +18,9 @@ import { AutomationPath } from "modules/home/routes/paths";
 import { automationPaths } from "modules/automation/routes/paths";
 import useRouter from "modules/core/hooks/useRouter";
 import Loading from "modules/shared/components/Loading";
-import { RoomModel } from "modules/datacenter/models/datacenter-model";
+
 import { useFindRoomsByFloorIdMutation } from "modules/datacenter/services/room-service";
+import { RoomModel } from "modules/datacenter/models/room.model";
 
 const EtcFloor: React.FC = () => {
   const {
@@ -134,7 +135,7 @@ const RoomTable: React.FC<RoomTableProps> = ({ rooms }) => {
       HomePath,
       AutomationPath,
       automationPaths.cage.fullPath
-        .replace(":floorId", room.floorId)
+        .replace(":floorId", room.floor.id)
         .replace(":roomId", room.id),
     ]);
     navigate(destinationPath, {
