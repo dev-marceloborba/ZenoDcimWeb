@@ -27,7 +27,7 @@ const CircularIndicator: React.FC<CircularIndicatorProps> = ({ ...props }) => {
         <Typography
           variant="caption"
           component="div"
-          color="text.secondary"
+          color={props.color}
         >{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>

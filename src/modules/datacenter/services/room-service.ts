@@ -3,6 +3,7 @@ import environment from "app/config/env";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
 import { RoomModel, RoomEditorViewModel } from "../models/room.model";
 import { RootState } from "modules/core/store";
+import { OccupationModel } from "../models/occupation.model";
 
 export const roomApi = createApi({
   reducerPath: "roomApi",
@@ -62,6 +63,12 @@ export const roomApi = createApi({
       }),
       invalidatesTags: ["RoomModel"],
     }),
+    loadOccupationCard: builder.mutation<OccupationModel[], string>({
+      query: (buildingId) => ({
+        url: `v1/data-center/building/floor/room/occupation-card/${buildingId}`,
+        method: "GET"
+      })
+    }),
   }),
 });
 
@@ -72,4 +79,5 @@ export const {
   useFindRoomByIdMutation,
   useFindRoomsByFloorIdMutation,
   useUpdateRoomMutation,
+  useLoadOccupationCardMutation,
 } = roomApi;

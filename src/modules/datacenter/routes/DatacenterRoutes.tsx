@@ -1,3 +1,6 @@
+import BuildingResolver from "modules/automation/routes/resolvers/BuildingResolver";
+import RoomResolver from "modules/automation/routes/resolvers/RoomResolver";
+import SiteResolver from "modules/automation/routes/resolvers/SiteResolver";
 import { RouteObject, useRoutes } from "react-router-dom";
 import DataCenterSettingsPage from "../pages/datacenter-settings-page/DataCenterSettingsPage";
 import InfrastructurePage from "../pages/infrastructure-page/InfrastructurePage";
@@ -38,14 +41,17 @@ export const datacenterRoutes: RouteObject[] = [
   {
     path: datacenterPaths.buildingOccupation,
     element: <OccupationBuildingLevelPage />,
+    resolver: SiteResolver
   },
   {
     path: datacenterPaths.roomOccupation,
     element: <OccupationRoomLevelPage />,
+    resolver: BuildingResolver
   },
   {
     path: datacenterPaths.rackOccupation,
     element: <OccupationRackLevelPage />,
+    resolver: RoomResolver
   },
 ];
 

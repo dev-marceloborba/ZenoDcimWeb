@@ -9,6 +9,7 @@ import {
   UpdateBuildingViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
+import { OccupationModel } from "../models/occupation.model";
 
 export const buildingApi = createApi({
   reducerPath: "buildingApi",
@@ -83,6 +84,12 @@ export const buildingApi = createApi({
       }),
       invalidatesTags: ["BuildingModel", "BuildingMerged"],
     }),
+    loadOccupationCard: builder.mutation<OccupationModel[], string>({
+      query: (siteId) => ({
+        url: `v1/data-center/building/occupation-card/${siteId}`,
+        method: "GET"
+      })
+    }),
   }),
 });
 
@@ -93,4 +100,5 @@ export const {
   useFindAllBuildingsQuery,
   useFindBuildingByIdMutation,
   useUpdateBuildingMutation,
+  useLoadOccupationCardMutation,
 } = buildingApi;

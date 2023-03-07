@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import environment from "app/config/env";
 import { RootState } from "modules/core/store";
 import { ApiResponseModel } from "modules/shared/models/api-response-model";
+import { OccupationModel } from "../models/occupation.model";
 import {
   CreateRackViewModel,
   RackModel,
@@ -69,6 +70,12 @@ export const rackApi = createApi({
         method: "GET",
       }),
     }),
+    loadOccupationCard: builder.mutation<OccupationModel[], string>({
+      query: (roomId) => ({
+        url: `v1/racks/occupation-card/${roomId}`,
+        method: "GET"
+      })
+    }),
   }),
 });
 
@@ -79,4 +86,5 @@ export const {
   useFindRackByIdQuery,
   useUpdateRackMutation,
   useFindRackStatistcsMutation,
+  useLoadOccupationCardMutation
 } = rackApi;

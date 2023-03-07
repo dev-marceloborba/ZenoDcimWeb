@@ -7,6 +7,7 @@ import {
   UpdateSiteViewModel,
 } from "modules/datacenter/models/datacenter-model";
 import { RootState } from "modules/core/store";
+import { OccupationModel } from "../models/occupation.model";
 
 export const siteApi = createApi({
   reducerPath: "siteApi",
@@ -56,6 +57,12 @@ export const siteApi = createApi({
       }),
       invalidatesTags: ["SiteModel"],
     }),
+    loadOccupationCard: builder.query<OccupationModel[], void>({
+      query: () => ({
+        url: 'v1/data-center/sites/occupation-card',
+        method: "GET"
+      })
+    }),
   }),
 });
 
@@ -65,4 +72,5 @@ export const {
   useFindSiteByIdMutation,
   useFindAllSitesQuery,
   useUpdateSiteMutation,
+  useLoadOccupationCardQuery,
 } = siteApi;
