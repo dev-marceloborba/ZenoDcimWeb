@@ -45,7 +45,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
       {hideSettings ? null : (
         <SettingsButton
           onClick={onSettingsClick}
-          sx={{ position: "absolute", top: 16, right: 12 }}
+          sx={{ position: "absolute", top: 10, right: 12 }}
         />
       )}
       <List sx={{ mt: 0 }}>

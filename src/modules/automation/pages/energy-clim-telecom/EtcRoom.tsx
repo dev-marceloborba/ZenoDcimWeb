@@ -89,7 +89,7 @@ const EtcRoom: React.FC = () => {
 
   return (
     <HeroContainer>
-      <Grid container columnSpacing={1}>
+      <Grid container columnSpacing={1} rowSpacing={1}>
         {rooms?.map((room) => {
           const tag1 = getTag(
             room.parameter1?.equipmentParameter?.pathname ?? ""
@@ -125,7 +125,7 @@ const EtcRoom: React.FC = () => {
                 }}
                 activeAlarms={{
                   status: "highHigh",
-                  value: roomStatistics.totalAlarms,
+                  value: roomStatistics?.totalAlarms ?? 0,
                 }}
                 hideSettings={false}
                 onSettingsClick={() => {

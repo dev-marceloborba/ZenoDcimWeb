@@ -2,6 +2,7 @@ import MuiCard, { CardProps as MuiCardProps } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
+import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 type CardProps = {
@@ -35,14 +36,16 @@ const Card: React.FC<CardProps> = ({
       <Typography
         variant="h5"
         onClick={handleHeaderClick}
-        sx={{
+        sx={({ palette: { text } }) => ({
           cursor: "pointer",
           mt: 1,
           ml: 2,
-        }}
+          color: text.secondary
+        })}
       >
         {title}
       </Typography>
+      <Divider sx={{ mt: 0.5 }} />
       <CardContent>{children}</CardContent>
       {/* {showActions} */}
     </MuiCard>
