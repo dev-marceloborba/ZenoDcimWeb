@@ -6,6 +6,26 @@ import {
 } from "modules/datacenter/models/datacenter-model";
 import { RoomModel } from "modules/datacenter/models/room.model";
 
+export interface WorkOrderDraftEditor {
+  id?: string;
+  siteId: string;
+  buildingId: string;
+  floorId: string;
+  roomId: string;
+  equipmentId: string;
+  title: string;
+  orderType: EWorkOrderType;
+  nature: EWorkOrderNature;
+  priority: EOrderPriority;
+  maintenanceType: EMaintenanceType;
+  description: string;
+  initialDate: string;
+  finalDate: string;
+  estimatedRepairTime: number;
+  cost?: number;
+  user: string;
+}
+
 export interface CreateWorkOrderViewModel {
   siteId: string;
   buildingId: string;
@@ -15,14 +35,15 @@ export interface CreateWorkOrderViewModel {
   initialDate: string;
   finalDate: string;
   description: string;
-  responsible: string;
+  executor: string;
+  supervisor: string;
+  manager: string;
   responsibleType: EMaintenanceResponsibleType;
   maintenanceType: EMaintenanceType;
   nature: EWorkOrderNature;
   orderType: EWorkOrderType;
   priority: EOrderPriority;
   estimatedRepairTime: number;
-  realRepairTime: number;
   cost: number;
   title: string;
 }
@@ -31,7 +52,7 @@ export type UpdateWorkOrderViewModel = WorkOrderModel;
 
 export interface WorkOrderModel {
   id: string;
-  status: EMaintenanceStatus;
+  status: EWorkOrderStatus;
   modifiedDate: Date;
   site: SiteModel;
   building: BuildingModel;
@@ -41,7 +62,9 @@ export interface WorkOrderModel {
   initialDate: string;
   finalDate: string;
   description: string;
-  responsible: string;
+  executor: string;
+  supervisor: string;
+  manager: string;
   responsibleType: EMaintenanceResponsibleType;
   maintenanceType: EMaintenanceType;
   nature: EWorkOrderNature;
@@ -77,13 +100,21 @@ export type WorkOrderDetailsViewModel = {
   orderType: string;
   nature: string;
   responsible: string;
+  executor: string;
+  supervisor: string;
+  manager: string;
   description: string;
   title: string;
   priority: string;
   estimatedRepairTime: number;
   realRepairTime: number;
   cost: number;
+  status: EWorkOrderStatus;
 };
+
+export interface WorkOrderFilterViewModel {
+  status: EWorkOrderStatus;
+}
 
 export enum EMaintenanceResponsibleType {
   SUPPLIER = 0,
@@ -97,12 +128,15 @@ export enum EWorkOrderNature {
   PLANNED = 3, // planejada
 }
 
-export enum EMaintenanceStatus {
-  CREATED = 0,
-  CLOSED = 1,
-  CANCELLED = 2,
-  IN_PROGRESS = 3,
-  POSTPONED = 4,
+export enum EWorkOrderStatus {
+  DRAFT = 0,
+  IN_APPROVAL = 1,
+  APPROVED = 2,
+  WAITING_EXECUTION = 3,
+  IN_EXECUTION = 4,
+  FINISHED = 5,
+  CANCELED = 6,
+  REJECTED = 7,
 }
 
 export enum EMaintenanceType {

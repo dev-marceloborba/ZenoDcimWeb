@@ -38,11 +38,11 @@ export default function WorkOrderRegisterPage() {
   const onSubmit: SubmitHandler<CreateWorkOrderViewModel> = async (data) => {
     console.log(data);
     try {
-      await createWorkOrder({
-        ...data,
-        initialDate: format(new Date(data.initialDate), "yyyy-MM-dd"),
-        finalDate: format(new Date(data.finalDate), "yyyy-MM-dd"),
-      }).unwrap();
+      // await createWorkOrder({
+      //   ...data,
+      //   initialDate: format(new Date(data.initialDate), "yyyy-MM-dd"),
+      //   finalDate: format(new Date(data.finalDate), "yyyy-MM-dd"),
+      // }).unwrap();
       toast
         .open({ message: "Ordem de serviço criada com sucesso" })
         .then(() => back());
@@ -76,7 +76,9 @@ export default function WorkOrderRegisterPage() {
         maintenanceType: 0,
         nature: 0,
         orderType: 0,
-        responsible: "",
+        executor: "",
+        manager: "",
+        supervisor: "",
         responsibleType: 0,
         roomId: "",
       });
@@ -147,7 +149,6 @@ export default function WorkOrderRegisterPage() {
                     value: resp,
                   }))}
                 />
-
                 <ControlledTextInput
                   name="orderType"
                   label="Tipo de ordem"

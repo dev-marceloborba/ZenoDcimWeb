@@ -76,7 +76,7 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
       equipmentId: "",
       name: formData.name,
       scale: formData.scale,
-      unit: formData.unit,
+      unit: formData.unit ?? "",
       expression: "",
       pathname: "",
       alarmRules: formData.alarmRules.map<AlarmRuleEditor>((x) => ({
@@ -160,7 +160,7 @@ type AlarmRule = {
 type FormProps = {
   id?: string;
   name: string;
-  unit: string;
+  unit?: string;
   scale: number;
   expression: string;
   alarmRules: AlarmRule[];
@@ -168,7 +168,7 @@ type FormProps = {
 
 const schemaValidation = object().shape({
   name: string().required("Nome é obrigatório"),
-  unit: string().required("Unidade é obrigatória"),
+  unit: string().notRequired(),
   scale: number().required("Escala é obrigatória"),
   expression: string()
     .required("Expressão é obrigatória")

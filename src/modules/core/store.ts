@@ -27,6 +27,7 @@ import { siteCardApi } from "modules/automation/services/site-card-service";
 import { roomCardSettingsApi } from "modules/automation/services/room-card-service";
 import { equipmentCardSettingsApi } from "modules/automation/services/equipment-card-service";
 import alarmFilterSlice from "modules/alarms/pages/alarm-realtime/slices/alarmFilterSlice";
+import { workOrderEventsApi } from "modules/maintenance/services/work-order-events.service";
 
 export const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ export const store = configureStore({
     [alarmApi.reducerPath]: alarmApi.reducer,
     [supplierApi.reducerPath]: supplierApi.reducer,
     [maintenanceApi.reducerPath]: maintenanceApi.reducer,
+    [workOrderEventsApi.reducerPath]: workOrderEventsApi.reducer,
     [groupApi.reducerPath]: groupApi.reducer,
     [rackApi.reducerPath]: rackApi.reducer,
     [rackEquipmentApi.reducerPath]: rackEquipmentApi.reducer,
@@ -78,6 +80,7 @@ export const store = configureStore({
       alarmApi.middleware,
       supplierApi.middleware,
       maintenanceApi.middleware,
+      workOrderEventsApi.middleware,
       groupApi.middleware,
       rackApi.middleware,
       rackEquipmentApi.middleware,

@@ -27,7 +27,7 @@ const CardSection: React.FC<CardSectionProps> = ({ title, items, sx }) => {
       >
         {title}
       </Typography>
-      <Grid container rowSpacing={1}>
+      <Grid container rowSpacing={2} columnSpacing={1}>
         {items.map((item, idx) => (
           <Grid key={idx} item md={item.defaultSize ?? 3}>
             <Typography variant="subtitle2" color="#9CA7B1">

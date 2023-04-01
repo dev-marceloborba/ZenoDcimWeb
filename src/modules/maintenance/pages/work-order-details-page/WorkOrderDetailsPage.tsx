@@ -1,129 +1,219 @@
 import HeroContainer from "modules/shared/components/HeroContainer";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Divider from "@mui/material/Divider";
 import useRouter from "modules/core/hooks/useRouter";
-import { WorkEventsTableViewModel } from "modules/maintenance/models/work-order.model";
-import { useEffect } from "react";
-import { useFindWorkOrderByIdMutation } from "modules/maintenance/services/maintenance.service";
+import {
+  useApproveWorkOrderMutation,
+  useFindWorkOrderByIdQuery,
+  useRejectWorkOrderMutation,
+} from "modules/maintenance/services/maintenance.service";
 import Loading from "modules/shared/components/Loading";
-import OrderInfo from "./order-info/OrderInfo";
-import CardHeader from "@mui/material/CardHeader";
-import OrderManagement from "./order-management/OrderManagement";
+import CardSection from "modules/shared/components/card-section/CardSectionv3";
+import { Button, Stack, Typography } from "@mui/material";
+import WorkOrderStatus from "modules/maintenance/components/work-order-status/WorkOrderStatus";
+import { useToast } from "modules/shared/components/ToastProvider";
+import { useModal } from "mui-modal-provider";
+import ApproveWorkOrderFormModal from "modules/maintenance/modals/approve-work-order-form-modal/ApproveWorkOrderFormModal";
+import { useFindAllUsersQuery } from "modules/user/services/authentication-service";
+import RefuseWorkOrderFormModal from "modules/maintenance/modals/refuse-work-order-form-modal/RefuseWorkOrderFormModal";
+import { useAuth } from "app/hooks/useAuth";
 
 export default function WorkOrderDetailsPage() {
-  const {
-    state: { data },
-  }: {
-    state: {
-      data: WorkEventsTableViewModel;
-    };
-  } = useRouter();
-  const [findWorkOrder, { data: workOrder, isLoading }] =
-    useFindWorkOrderByIdMutation();
+  const { currentUser } = useAuth();
+  const toast = useToast();
+  const { showModal } = useModal();
+  const { params } = useRouter();
+  const { data: workOrder, isLoading } = useFindWorkOrderByIdQuery(
+    params.workOrderId!
+  );
+  const { data: users } = useFindAllUsersQuery();
+  const [approveOrder, { isLoading: approveLoading }] =
+    useApproveWorkOrderMutation();
+  const [rejectOrder, { isLoading: rejectLoading }] =
+    useRejectWorkOrderMutation();
 
-  useEffect(() => {
-    async function fetchWorkOrder() {
-      if (data) {
-        await findWorkOrder(data.id).unwrap();
-      }
-    }
-    fetchWorkOrder();
-  }, [data, findWorkOrder]);
+  const handleApproveOrder = () => {
+    const modal = showModal(ApproveWorkOrderFormModal, {
+      title: "Aceitar ordem de serviço",
+      data: {
+        technicians:
+          users?.map((user) => ({ id: user.id, name: user.firstName })) ?? [],
+      },
+      onConfirm: async (formData) => {
+        console.log(formData);
+        modal.hide();
+        try {
+          await approveOrder({
+            id: workOrder!.id,
+            user: formData.executor,
+          }).unwrap();
+          toast.open({ message: "Ordem de serviço aprovada" });
+        } catch (error) {
+          console.log(error);
+          toast.open({
+            message: "Erro ao aprovar ordem de serviço",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+      PaperProps: {
+        style: {
+          width: 450,
+        },
+      },
+    });
+  };
+
+  const handleRefuseOrder = () => {
+    const modal = showModal(RefuseWorkOrderFormModal, {
+      title: "Rejeitar ordem de serviço",
+      onConfirm: async (formData) => {
+        console.log(formData);
+        modal.hide();
+        try {
+          await rejectOrder({
+            id: workOrder!.id,
+            user: currentUser?.name,
+          }).unwrap();
+          toast.open({ message: "Ordem de serviço rejeitada" });
+        } catch (error) {
+          toast.open({
+            message: "Erro ao rejeitar ordem de serviço",
+            severity: "error",
+          });
+        }
+      },
+      onClose: () => {
+        modal.hide();
+      },
+      PaperProps: {
+        style: {
+          width: 450,
+        },
+      },
+    });
+  };
 
   return (
-    <HeroContainer title="Detalhes da ordem de serviço">
-      <Grid container direction="column">
-        <Grid item>
-          <Card>
-            <CardHeader title="Informações básicas" />
-            <Divider />
-            <CardContent>
-              <OrderInfo name="Código OS" description={workOrder?.id ?? ""} />
-              <Divider />
-              <OrderInfo name="Título" description={workOrder?.title ?? ""} />
-              <OrderInfo name="Site" description={workOrder?.site ?? ""} />
-              <Divider />
-              <OrderInfo
-                name="Prédio"
-                description={workOrder?.building ?? ""}
-              />
-              <Divider />
-              <OrderInfo name="Andar" description={workOrder?.floor ?? ""} />
-              <Divider />
-              <OrderInfo name="Sala" description={workOrder?.room ?? ""} />
-              <Divider />
-              <OrderInfo
-                name="Equipamento"
-                description={workOrder?.equipment ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Data inicial"
-                description={workOrder?.initialDate ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Data final"
-                description={workOrder?.finalDate ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Tipo de manutenção"
-                description={workOrder?.maintenanceType ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Tipo de ordem"
-                description={workOrder?.orderType ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Natureza da ordem"
-                description={workOrder?.nature ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Responsável"
-                description={workOrder?.responsible ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Prioridade"
-                description={workOrder?.priority ?? ""}
-              />
-              <Divider />
-              <OrderInfo
-                name="Tempo estimado de reparo"
-                description={workOrder?.estimatedRepairTime?.toString() ?? ""}
-                suffix="h"
-              />
-              <Divider />
-              <OrderInfo
-                name="Tempo real de reparo"
-                description={workOrder?.realRepairTime?.toString() ?? ""}
-                suffix="h"
-              />
-              <Divider />
-              <OrderInfo
-                name="Custo"
-                description={workOrder?.cost?.toString() ?? ""}
-                prefix="R$"
-              />
-              <Divider />
-              <OrderInfo
-                name="Descrição"
-                description={workOrder?.description ?? ""}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item>
-          <OrderManagement orderId={workOrder?.id ?? ""} />
-        </Grid>
-      </Grid>
-      <Loading open={isLoading} />
+    <HeroContainer>
+      <Stack direction="row" alignItems="center">
+        <Typography variant="h4">{workOrder?.title}</Typography>
+        <WorkOrderStatus status={workOrder?.status!} sx={{ ml: 3 }} />
+      </Stack>
+      <CardSection
+        title="Local"
+        items={[
+          {
+            title: "Site",
+            description: workOrder?.site,
+          },
+          {
+            title: "Prédio",
+            description: workOrder?.building,
+          },
+          {
+            title: "Andar",
+            description: workOrder?.floor,
+          },
+          {
+            title: "Sala",
+            description: workOrder?.room,
+          },
+        ]}
+      />
+      <CardSection
+        title="Identidade"
+        items={[
+          {
+            title: "Código OS",
+            description: workOrder?.id,
+            defaultSize: 6,
+          },
+          {
+            title: "Título",
+            description: workOrder?.title,
+          },
+          {
+            title: "Equipamento",
+            description: workOrder?.equipment,
+          },
+        ]}
+        sx={{ my: 1 }}
+      />
+      <CardSection
+        title="Dados da ordem"
+        items={[
+          {
+            title: "Tipo de ordem",
+            description: workOrder?.orderType,
+          },
+          {
+            title: "Natureza da ordem",
+            description: workOrder?.nature,
+          },
+          {
+            title: "Tipo de manutenção",
+            description: workOrder?.maintenanceType,
+          },
+          {
+            title: "Prioridade",
+            description: workOrder?.priority,
+          },
+          {
+            title: "Custo",
+            description: `R$ ${workOrder?.cost.toString()}`,
+          },
+          {
+            title: "Responsável",
+            description: workOrder?.supervisor,
+          },
+          {
+            title: "Tempo efetivo",
+            description: `${workOrder?.realRepairTime} h`,
+          },
+          {
+            title: "Tempo estimado",
+            description: `${workOrder?.estimatedRepairTime} h`,
+          },
+          {
+            title: "Data inicial",
+            description: workOrder?.initialDate,
+          },
+          {
+            title: "Data final",
+            description: workOrder?.finalDate,
+          },
+          {
+            title: "",
+            description: "",
+            defaultSize: 6,
+          },
+          {
+            title: "Descrição",
+            description: workOrder?.description,
+            defaultSize: 6,
+          },
+        ]}
+      />
+      <Stack direction="row" alignItems="center" marginTop={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleApproveOrder}
+        >
+          Aprovar ordem
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleRefuseOrder}
+          sx={{ ml: 2 }}
+        >
+          Recusar ordem
+        </Button>
+      </Stack>
+      <Loading open={isLoading || approveLoading || rejectLoading} />
     </HeroContainer>
   );
 }

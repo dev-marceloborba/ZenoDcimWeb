@@ -6,6 +6,7 @@ type ControlledDateInputProps = {
   name: string;
   defaultValue?: string;
   label: string;
+  required?: boolean;
 };
 
 const ControlledDateInput: React.FC<ControlledDateInputProps> = ({
@@ -23,6 +24,7 @@ const ControlledDateInput: React.FC<ControlledDateInputProps> = ({
         <DatePicker
           label={label}
           {...field}
+          value={field.value}
           renderInput={(params) => (
             <TextField
               variant="outlined"
@@ -30,6 +32,7 @@ const ControlledDateInput: React.FC<ControlledDateInputProps> = ({
               helperText={errors[name ?? ""]?.message}
               {...params}
               error={!!errors[name ?? ""]?.message}
+              {...props}
             />
           )}
         />
