@@ -102,6 +102,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -120,6 +121,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -139,6 +141,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -150,6 +153,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                   description: room.name,
                   value: room.id,
                 }))}
+                required
               />
             </Grid>
           </Grid>
@@ -159,15 +163,24 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
           </Typography>
           <Grid container columnSpacing={1} rowSpacing={1}>
             <Grid item md={12}>
-              <ControlledTextInput name="manufactor" label="Fabricante" />
+              <ControlledTextInput
+                name="manufactor"
+                label="Fabricante"
+                required
+              />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput name="component" label="Componente" />
+              <ControlledTextInput
+                name="component"
+                label="Componente"
+                required
+              />
             </Grid>
             <Grid item md={6}>
               <ControlledTextInput
                 name="componentCode"
                 label="Código/Nº de série"
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -188,6 +201,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     value: 2,
                   },
                 ]}
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -220,6 +234,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     value: 5,
                   },
                 ]}
+                required
               />
             </Grid>
           </Grid>
@@ -233,16 +248,22 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                 name="weight"
                 label="Peso (kg)"
                 defaultValue={0}
+                required
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="size" label="Tamanho (LxAxC cm)" />
+              <ControlledTextInput
+                name="size"
+                label="Tamanho (LxAxC cm)"
+                required
+              />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
                 name="powerLimit"
                 label="Potência limite (W)"
                 defaultValue={0}
+                required
               />
             </Grid>
           </Grid>
@@ -254,6 +275,7 @@ const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
             rows={2}
             name="description"
             label="Descrição"
+            required
           />
 
           <SubmitButton disabled={!isValid} sx={{ mt: 1 }} />

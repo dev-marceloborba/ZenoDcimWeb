@@ -98,10 +98,18 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
             marginBottom={1}
           >
             <Grid item md={6}>
-              <ControlledTextInput name="name" label="Título do rack" />
+              <ControlledTextInput
+                name="name"
+                label="Título do rack"
+                required
+              />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput name="localization" label="Localização" />
+              <ControlledTextInput
+                name="localization"
+                label="Localização"
+                required
+              />
             </Grid>
           </Grid>
           <Typography variant="subtitle1">Dados do rack</Typography>
@@ -113,16 +121,32 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
             marginBottom={1}
           >
             <Grid item md={6}>
-              <ControlledTextInput name="size" label="Tamanho (A x C x P cm)" />
+              <ControlledTextInput
+                name="size"
+                label="Tamanho (A x C x P cm)"
+                required
+              />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput name="capacity" label="Capacidade (RU's)" />
+              <ControlledTextInput
+                name="capacity"
+                label="Capacidade (RU's)"
+                required
+              />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput name="power" label="Potência do rack (kW)" />
+              <ControlledTextInput
+                name="power"
+                label="Potência do rack (kW)"
+                required
+              />
             </Grid>
             <Grid item md={6}>
-              <ControlledTextInput name="weight" label="Peso suportável (kg)" />
+              <ControlledTextInput
+                name="weight"
+                label="Peso suportável (kg)"
+                required
+              />
             </Grid>
           </Grid>
           <Typography variant="subtitle1">Local</Typography>
@@ -149,6 +173,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -167,6 +192,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -185,6 +211,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
                     },
                   })
                 }
+                required
               />
             </Grid>
             <Grid item md={6}>
@@ -195,6 +222,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
                   description: x.name,
                   value: x.id,
                 }))}
+                required
               />
             </Grid>
           </Grid>
@@ -213,6 +241,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
                 label="Descrição"
                 multiline
                 rows={3}
+                required
               />
             </Grid>
           </Grid>

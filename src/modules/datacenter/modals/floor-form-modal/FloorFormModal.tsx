@@ -88,6 +88,7 @@ const FloorFormModal: React.FC<FormProps> = ({
                 },
               })
             }
+            required
           />
           <ControlledTextInput
             name="buildingId"
@@ -96,8 +97,9 @@ const FloorFormModal: React.FC<FormProps> = ({
               description: building.name,
               value: building.id,
             }))}
+            required
           />
-          <ControlledTextInput name="name" label="Nome do andar" />
+          <ControlledTextInput name="name" label="Nome do andar" required />
           <SubmitButton disabled={!isValid} />
         </FormProvider>
       </Form>

@@ -44,6 +44,7 @@ const SiteFormModal: React.FC<FormProps> = ({
             label="Site"
             defaultValue=""
             sx={{ mt: 1 }}
+            required
           />
           <SubmitButton disabled={!isValid} sx={{ mt: 2 }} />
         </Form>

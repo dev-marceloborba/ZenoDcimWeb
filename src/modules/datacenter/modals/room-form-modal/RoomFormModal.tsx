@@ -107,6 +107,7 @@ const RoomFormModal: React.FC<FormProps> = ({
                 },
               })
             }
+            required
           />
           <ControlledTextInput
             name="buildingId"
@@ -123,6 +124,7 @@ const RoomFormModal: React.FC<FormProps> = ({
                 },
               })
             }
+            required
           />
           <ControlledTextInput
             name="floorId"
@@ -139,15 +141,18 @@ const RoomFormModal: React.FC<FormProps> = ({
                 },
               })
             }
+            required
           />
-          <ControlledTextInput name="name" label="Nome da sala" />
+          <ControlledTextInput name="name" label="Nome da sala" required />
           <ControlledTextInput
             name="rackCapacity"
             label="Capacidade de racks"
+            required
           />
           <ControlledTextInput
             name="powerCapacity"
             label="Capacidade de potência (W)"
+            required
           />
           <SubmitButton disabled={!isValid} />
         </FormProvider>

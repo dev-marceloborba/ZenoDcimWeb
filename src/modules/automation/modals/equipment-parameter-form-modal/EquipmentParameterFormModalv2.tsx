@@ -71,7 +71,7 @@ const EquipmentParameterFormModalv2: React.FC<Props> = ({
       equipmentId: "",
       name: formData.name,
       scale: formData.scale,
-      unit: formData.unit,
+      unit: formData.unit ?? "",
       expression: "",
       pathname: "",
       alarmRules: formData.alarmRules.map<AlarmRuleEditor>((x) => ({
@@ -108,7 +108,7 @@ export default EquipmentParameterFormModalv2;
 type FormProps = {
   id?: string;
   name: string;
-  unit: string;
+  unit?: string;
   scale: number;
   alarmRules: AlarmRule[];
 };
@@ -128,7 +128,7 @@ type AlarmRule = {
 const validationSchema: SchemaOf<FormProps> = object().shape({
   id: string().notRequired(),
   name: string().required("Parâmetro é obrigatório"),
-  unit: string().required("Unidade é obrigatória"),
+  unit: string().notRequired(),
   scale: number().required("Escala é obrigatória"),
   alarmRules: array(
     object().shape({
@@ -148,13 +148,13 @@ const ParameterTab: React.FC = () => {
   return (
     <Grid container rowSpacing={1} columnSpacing={1}>
       <Grid item md={12}>
-        <ControlledTextInput name="name" label="Parâmetro" />
+        <ControlledTextInput name="name" label="Parâmetro" required />
       </Grid>
       <Grid item md={6}>
         <ControlledTextInput name="unit" label="Unidade" />
       </Grid>
       <Grid item md={6}>
-        <ControlledTextInput name="scale" label="Escala" />
+        <ControlledTextInput name="scale" label="Escala" required />
       </Grid>
     </Grid>
   );

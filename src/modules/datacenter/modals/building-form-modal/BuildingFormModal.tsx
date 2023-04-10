@@ -60,8 +60,9 @@ const BuildingFormModal: React.FC<FormProps> = ({
                 value: site.id,
               })) ?? []
             }
+            required
           />
-          <ControlledTextInput name="name" label="Nome do prédio" />
+          <ControlledTextInput name="name" label="Nome do prédio" required />
           <SubmitButton disabled={!isValid} />
         </FormProvider>
       </Form>

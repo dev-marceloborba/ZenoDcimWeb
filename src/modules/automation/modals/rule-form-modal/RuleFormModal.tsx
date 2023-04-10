@@ -63,8 +63,9 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
               description: parameter.name,
               value: parameter.id,
             }))}
+            required
           />
-          <ControlledTextInput name="name" label="Regra" />
+          <ControlledTextInput name="name" label="Regra" required />
           <ControlledTextInput
             name="priority"
             label="Prioridade"
@@ -82,6 +83,7 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
                 value: 2,
               },
             ]}
+            required
           />
           <ControlledTextInput
             name="conditional"
@@ -108,8 +110,9 @@ const RuleFormModal: React.FC<RuleFormModalProps> = ({
                 value: 4,
               },
             ]}
+            required
           />
-          <ControlledTextInput name="setpoint" label="Setpoint" />
+          <ControlledTextInput name="setpoint" label="Setpoint" required />
           <Typography>Configurações</Typography>
           <ControlledCheckbox
             name="enableNotification"

@@ -68,16 +68,17 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             marginBottom={1}
           >
             <Grid item md={4}>
-              <ControlledTextInput name="name" label="Nome" />
+              <ControlledTextInput name="name" label="Nome" required />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
                 name="serialNumber"
                 label="Número de série"
+                required
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="client" label="Cliente" />
+              <ControlledTextInput name="client" label="Cliente" required />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
@@ -97,12 +98,14 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
                     description: "Storage",
                   },
                 ]}
+                required
               />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
                 name="function"
                 label="Função do equipamento"
+                required
               />
             </Grid>
           </Grid>
@@ -116,10 +119,14 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
             marginBottom={1}
           >
             <Grid item md={4}>
-              <ControlledTextInput name="manufactor" label="Fabricante" />
+              <ControlledTextInput
+                name="manufactor"
+                label="Fabricante"
+                required
+              />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="model" label="Modelo" />
+              <ControlledTextInput name="model" label="Modelo" required />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
@@ -163,13 +170,18 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
                     description: "Com acessório, Backsided",
                   },
                 ]}
+                required
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="size" label="Tamanho (A x C x P mm)" />
+              <ControlledTextInput
+                name="size"
+                label="Tamanho (A x C x P mm)"
+                required
+              />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="weight" label="Peso (kg)" />
+              <ControlledTextInput name="weight" label="Peso (kg)" required />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
@@ -189,13 +201,14 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
                     description: "Bothsided",
                   },
                 ]}
+                required
               />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="occupation" label="RU's" />
+              <ControlledTextInput name="occupation" label="RU's" required />
             </Grid>
             <Grid item md={4}>
-              <ControlledTextInput name="power" label="Potência" />
+              <ControlledTextInput name="power" label="Potência" required />
             </Grid>
             <Grid item md={4}>
               <ControlledTextInput
@@ -227,6 +240,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
                     value: 5,
                   },
                 ]}
+                required
               />
             </Grid>
           </Grid>
@@ -242,6 +256,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
               <ControlledTextInput
                 name="initialPosition"
                 label="Posição (RU)"
+                required
               />
             </Grid>
           </Grid>
@@ -260,6 +275,7 @@ const RackEquipmentFormModal: React.FC<RackEquipmentFormModalFormProps> = ({
                 label="Descrição"
                 multiline
                 rows={3}
+                required
               />
             </Grid>
           </Grid>

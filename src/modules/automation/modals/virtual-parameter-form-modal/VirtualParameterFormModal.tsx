@@ -227,13 +227,18 @@ const ParameterTab: React.FC<ParameterTabProps> = ({
       <Grid item md={expanded ? 6 : 12}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <ControlledTextInput label="Parâmetro" name="name" />
+            <ControlledTextInput label="Parâmetro" name="name" required />
           </Grid>
           <Grid item xs={6}>
             <ControlledTextInput label="Unidade" name="unit" />
           </Grid>
           <Grid item xs={6}>
-            <ControlledTextInput label="Escala" name="scale" defaultValue={1} />
+            <ControlledTextInput
+              label="Escala"
+              name="scale"
+              defaultValue={1}
+              required
+            />
           </Grid>
           <Grid item xs={12}>
             <ControlledTextInput
@@ -241,6 +246,7 @@ const ParameterTab: React.FC<ParameterTabProps> = ({
               name="expression"
               multiline
               rows={6}
+              required
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="start">

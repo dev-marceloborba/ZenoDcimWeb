@@ -55,13 +55,13 @@ const UserFormModal: React.FC<UserFormProps> = ({
               />
             </Grid>
             <Grid item xs={6}>
-              <ControlledTextInput name="firstName" label="Nome" />
+              <ControlledTextInput name="firstName" label="Nome" required />
             </Grid>
             <Grid item xs={6}>
-              <ControlledTextInput name="lastName" label="Sobrenome" />
+              <ControlledTextInput name="lastName" label="Sobrenome" required />
             </Grid>
             <Grid item xs={6}>
-              <ControlledTextInput name="email" label="E-mail" />
+              <ControlledTextInput name="email" label="E-mail" required />
             </Grid>
             <Grid item xs={6}>
               <ControlledTextInput
@@ -73,6 +73,7 @@ const UserFormModal: React.FC<UserFormProps> = ({
                     value: group.id,
                   })) ?? []
                 }
+                required
               />
             </Grid>
             {mode === "new" ? (
@@ -82,6 +83,7 @@ const UserFormModal: React.FC<UserFormProps> = ({
                     name="password"
                     label="Senha"
                     type="password"
+                    required
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -89,6 +91,7 @@ const UserFormModal: React.FC<UserFormProps> = ({
                     name="passwordConfirmation"
                     label="Confirmação de senha"
                     type="password"
+                    required
                   />
                 </Grid>
               </>
@@ -108,6 +111,7 @@ const UserFormModal: React.FC<UserFormProps> = ({
                       description: "Ativo",
                     },
                   ]}
+                  required
                 />
               </Grid>
             ) : null}
