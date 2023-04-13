@@ -27,12 +27,12 @@ import { useNavigate } from "react-router-dom";
 import format from "date-fns/format";
 import Loading from "modules/shared/components/Loading";
 import useRouter from "modules/core/hooks/useRouter";
-import { WorkOrderModel } from "modules/maintenance/models/work-order.model";
+// import { WorkOrderModel } from "modules/maintenance/models/work-order.model";
 
 export default function NewWorkOrderPage() {
   const toast = useToast();
   const navigate = useNavigate();
-  const { state: draftedWorkOrder } = useRouter();
+  const { state: draftedWorkOrder }: { state: any } = useRouter();
   const { currentUser } = useAuth();
   const { data: sites } = useFindAllSitesQuery();
   const [createDraft, { isLoading: loadingDraft }] =
@@ -89,33 +89,34 @@ export default function NewWorkOrderPage() {
   }, [sites]);
 
   useEffect(() => {
-    dispatch({
-      type: LocationReducerType.GET_BUILDINGS_BY_SITE,
-      payload: {
-        siteId: draftedWorkOrder.siteId,
-      },
-    });
-    dispatch({
-      type: LocationReducerType.GET_FLOORS_BY_BUILDING,
-      payload: {
-        buildingId: draftedWorkOrder.buildingId,
-      },
-    });
-    dispatch({
-      type: LocationReducerType.GET_ROOMS_BY_FLOOR,
-      payload: {
-        floorId: draftedWorkOrder.floorId,
-      },
-    });
-    dispatch({
-      type: LocationReducerType.GET_EQUIPMENTS_BY_ROOM,
-      payload: {
-        roomId: draftedWorkOrder.roomId,
-      },
-    });
-    methods.reset({ ...draftedWorkOrder });
+    if (Object.keys(draftedWorkOrder).length > 0) {
+      dispatch({
+        type: LocationReducerType.GET_BUILDINGS_BY_SITE,
+        payload: {
+          siteId: draftedWorkOrder.siteId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_FLOORS_BY_BUILDING,
+        payload: {
+          buildingId: draftedWorkOrder.buildingId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_ROOMS_BY_FLOOR,
+        payload: {
+          floorId: draftedWorkOrder.floorId,
+        },
+      });
+      dispatch({
+        type: LocationReducerType.GET_EQUIPMENTS_BY_ROOM,
+        payload: {
+          roomId: draftedWorkOrder.roomId,
+        },
+      });
+      methods.reset({ ...draftedWorkOrder });
+    }
   }, [
-    draftedWorkOrder,
     draftedWorkOrder.buildingId,
     draftedWorkOrder.floorId,
     draftedWorkOrder.roomId,

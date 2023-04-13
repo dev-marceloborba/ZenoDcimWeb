@@ -20,7 +20,7 @@ import Fade from "@mui/material/Fade";
 import Form from "modules/shared/components/Form";
 import Grid, { GridProps } from "@mui/material/Grid";
 import Loading from "modules/shared/components/Loading";
-import Logo from "app/assets/logo-horizontal-white.svg";
+import ZenoLogo from "app/assets/zeno-white.svg";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 
 //business logic
@@ -71,8 +71,9 @@ const UserLogin: React.FC = () => {
     return (
       <PageGrid container>
         <ImageContainer>
-          <PageLogo src={Logo} />
-          <LogoTitle>Zeno DCIM</LogoTitle>
+          {/* <PageLogo src={Logo} />
+          <LogoTitle>Zeno DCIM</LogoTitle> */}
+          <PageLogo src={ZenoLogo} />
         </ImageContainer>
         <FormContainer>
           <FormTitle variant="h1">Bem vindo!</FormTitle>
@@ -150,17 +151,8 @@ const ImageContainer = styled(Box)<BoxProps>(({ theme }) => ({
 }));
 
 const PageLogo = styled("img")<BoxProps>(({ theme }) => ({
-  width: 165,
+  width: "60%",
   marginBottom: theme.spacing(4),
-}));
-
-const LogoTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
-  color: "white",
-  fontWeight: 500,
-  fontSize: 84,
-  [theme.breakpoints.down("md")]: {
-    fontSize: 48,
-  },
 }));
 
 const FormContainer = styled("div")(({ theme }) => ({

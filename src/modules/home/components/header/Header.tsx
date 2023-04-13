@@ -11,7 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import FullScreenIcon from "@mui/icons-material/Fullscreen";
 import { useLayout } from "app/hooks/useLayout";
 // import UserSettings from './UserSettings';
-import Logo from "app/assets/logo-white.svg";
+import Logo from "app/assets/zeno-icon.svg";
 import { useAuth } from "app/hooks/useAuth";
 import { useFullscreen } from "@straw-hat/react-fullscreen";
 import { SignalRContext } from "index";
