@@ -8,14 +8,15 @@ import { useLoadOccupationCardMutation } from "modules/datacenter/services/room-
 
 export default function OccupationRoomLevelPage() {
   const { params, path } = useRouter();
-  const [findRooms, { data: rooms, isLoading }] = useLoadOccupationCardMutation();
+  const [findRooms, { data: rooms, isLoading }] =
+    useLoadOccupationCardMutation();
 
   useEffect(() => {
     async function fetchRooms() {
-      await findRooms(params.buildingId!).unwrap()
+      await findRooms(params.buildingId!).unwrap();
     }
-    fetchRooms()
-  }, []);
+    fetchRooms();
+  }, [findRooms, params.buildingId]);
 
   return (
     <HeroContainer
@@ -23,29 +24,41 @@ export default function OccupationRoomLevelPage() {
     "
     >
       <Grid container rowSpacing={1} columnSpacing={1}>
-        {rooms?.map(({ id, name, occupiedPower, occupiedCapacity, powerCapacity, rackCapacity, racksQuantity, roomsQuantity }) => {
-          return (
-            <Grid key={id} item xs={4}>
-              <OccupationCard
-                title={name}
-                power={{
-                  current: occupiedPower,
-                  total: powerCapacity,
-                  unit: "MW",
-                }}
-                capacity={{
-                  current: occupiedCapacity,
-                  total: rackCapacity,
-                }}
-                quantity={{
-                  racks: racksQuantity,
-                  rooms: roomsQuantity,
-                }}
-                pathToNavigate={`${path}/${id}`}
-              />
-            </Grid>
-          );
-        })}
+        {rooms?.map(
+          ({
+            id,
+            name,
+            occupiedPower,
+            occupiedCapacity,
+            powerCapacity,
+            rackCapacity,
+            racksQuantity,
+            roomsQuantity,
+          }) => {
+            return (
+              <Grid key={id} item xs={4}>
+                <OccupationCard
+                  title={name}
+                  power={{
+                    current: occupiedPower,
+                    total: powerCapacity,
+                    unit: "MW",
+                  }}
+                  capacity={{
+                    current: occupiedCapacity,
+                    total: rackCapacity,
+                  }}
+                  quantity={{
+                    racks: racksQuantity,
+                    rooms: roomsQuantity,
+                  }}
+                  pathToNavigate={`${path}/${id}`}
+                  hideQuantity
+                />
+              </Grid>
+            );
+          }
+        )}
       </Grid>
       <Loading open={isLoading} />
     </HeroContainer>

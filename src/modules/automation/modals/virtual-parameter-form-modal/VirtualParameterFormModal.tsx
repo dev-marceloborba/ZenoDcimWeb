@@ -17,7 +17,7 @@ import {
   EquipmentParameterEditor,
   EquipmentParameterModel,
 } from "modules/automation/models/automation-model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchButton from "modules/shared/components/search-button/SearchButton";
 import { SiteModel } from "modules/datacenter/models/datacenter-model";
 import DatacenterTreeviewExplorer from "modules/datacenter/components/datacenter-treeview-explorer/DatacenterTreeviewExplorer";
@@ -59,7 +59,8 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
     mode: "onChange",
     defaultValues: {
       ...data?.model,
-      alarmRules: data?.model?.alarmRules?.map((x) => ({ ...x, _id: x.id })),
+      alarmRules:
+        data?.model?.alarmRules?.map((x) => ({ ...x, _id: x.id })) ?? [],
     },
   });
 
@@ -77,7 +78,7 @@ const VirtualParameterFormModal: React.FC<VirtualParameterFormModalProps> = ({
       name: formData.name,
       scale: formData.scale,
       unit: formData.unit ?? "",
-      expression: "",
+      expression: formData.expression,
       pathname: "",
       alarmRules: formData.alarmRules.map<AlarmRuleEditor>((x) => ({
         ...x,
@@ -129,6 +130,7 @@ export default VirtualParameterFormModal;
 const fakeValuesMap = new Map<string, number>();
 
 function validateExpression(expression: string) {
+  // console.log(fakeValuesMap);
   let expressionWithValues = expression;
 
   fakeValuesMap.forEach((value, key) => {
@@ -218,9 +220,28 @@ const ParameterTab: React.FC<ParameterTabProps> = ({
     fakeValuesMap.set(expression, 1);
   };
 
-  const currentExpression = methods.watch("expression");
+  const currentExpression = methods.watch("expression") ?? "";
 
   if (currentExpression === "") fakeValuesMap.clear();
+
+  useEffect(() => {
+    if (currentExpression === "") return;
+    currentExpression.split("*").forEach((expression) => {
+      fakeValuesMap.set(expression, 1);
+    });
+    currentExpression
+      .split("+")
+      .forEach((expression) => fakeValuesMap.set(expression, 1));
+    currentExpression
+      .split("-")
+      .forEach((expression) => fakeValuesMap.set(expression, 1));
+    currentExpression
+      .split("/")
+      .forEach((expression) => fakeValuesMap.set(expression, 1));
+    methods.setValue("expression", currentExpression, {
+      shouldValidate: true,
+    });
+  }, [currentExpression, methods]);
 
   return (
     <Grid container columnSpacing={1}>

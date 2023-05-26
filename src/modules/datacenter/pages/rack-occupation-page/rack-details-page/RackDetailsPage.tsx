@@ -179,7 +179,11 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ rack }) => {
           {
             title: "Rack",
             description: rack?.name,
-            defaultSize: 12,
+            // defaultSize: 12,
+          },
+          {
+            title: "Localização",
+            description: rack?.localization,
           },
         ]}
         sx={{ my: 1 }}

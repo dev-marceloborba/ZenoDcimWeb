@@ -55,7 +55,7 @@ const EquipmentAdmin: React.FC = () => {
         } catch (error) {
           console.log(error);
           toast.open({
-            message: "Erro ao criar equipamento",
+            message: (error as any).data,
             severity: "error",
           });
         }

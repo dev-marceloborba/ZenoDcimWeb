@@ -107,7 +107,7 @@ const RackFormModal: React.FC<RackFormModalProps> = ({
             <Grid item md={6}>
               <ControlledTextInput
                 name="localization"
-                label="Localização"
+                label="Localização (matriz L x C)"
                 required
               />
             </Grid>

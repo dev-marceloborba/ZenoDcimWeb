@@ -106,6 +106,8 @@ const EquipmentDetailsPage: React.FC = () => {
             message: "Erro ao adicionar parâmetro",
             severity: "error",
           });
+        } finally {
+          refetch();
         }
       },
       onClose: () => {
@@ -121,18 +123,22 @@ const EquipmentDetailsPage: React.FC = () => {
         sites,
       },
       onConfirm: async (formData) => {
+        console.log(formData);
         try {
           await createEquipmentParameter({
             ...formData,
             equipmentId: params.equipmentId!,
           }).unwrap();
           toast.open({ message: "Parâmetro virtual criado com sucesso" });
+          modal.hide();
         } catch (error) {
           console.log(error);
           toast.open({
             message: "Erro ao adicionar parâmetro virtual",
             severity: "error",
           });
+        } finally {
+          refetch();
         }
       },
       onClose: () => {
@@ -344,6 +350,7 @@ const ParametersTab: React.FC<ParametersTabProps> = ({
     try {
       await deleteParameter(parameter.id).unwrap();
       toast.open({ message: "Parâmetro excluído com sucesso" });
+      refetch();
     } catch (error) {
       console.log(error);
       toast.open({ message: "Erro ao excluir parâmetro", severity: "error" });

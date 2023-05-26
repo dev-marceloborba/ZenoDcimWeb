@@ -33,6 +33,9 @@ import {
 import { useModal } from "mui-modal-provider";
 import EquipmentParameterFormModal from "modules/automation/modals/equipment-parameter-form-modal/EquipmentParameterFormModalv2";
 import { useToast } from "modules/shared/components/ToastProvider";
+import VirtualParameterFormModal from "modules/automation/modals/virtual-parameter-form-modal/VirtualParameterFormModal";
+import { useFindAllSitesQuery } from "modules/datacenter/services/site-service";
+import { parse, compareDesc } from "date-fns";
 
 type FilterState = {
   initialDate: Date | null;
@@ -50,19 +53,31 @@ export default function ParameterHistoryPage() {
   } = useFindEquipmentParameterByIdQueryQuery(params.equipmentParameterId!);
   const [updateParameter, { isLoading: isLoadingUpdate }] =
     useUpdateEquipmentParameterMutation();
+  const { data: sites } = useFindAllSitesQuery();
 
   const handleEditParameter = () => {
-    const modal = showModal(EquipmentParameterFormModal, {
-      title: "Editar parâmetro",
+    let modalToShow: any = EquipmentParameterFormModal;
+    let params: any = parameter;
+    if (!!parameter?.expression) {
+      modalToShow = VirtualParameterFormModal;
+      params = {
+        model: parameter,
+        sites,
+      };
+    }
+
+    const modal = showModal(modalToShow, {
+      title: "Editar parâmetro do equipamento",
+      data: params,
       mode: "edit",
-      data: parameter,
-      onConfirm: async (formData) => {
-        modal.hide();
+      onConfirm: async (formData: any) => {
+        modal.destroy();
         try {
           await updateParameter({
             ...formData,
             equipmentId: params.equipmentId!,
-            id: parameter!.id,
+            id: parameter?.id,
+            pathname: parameter?.pathname,
           }).unwrap();
           refetch();
           toast.open({ message: "Parâmetro atualizado com sucesso" });
@@ -75,12 +90,13 @@ export default function ParameterHistoryPage() {
         }
       },
       onClose: () => {
-        modal.hide();
+        modal.destroy();
       },
     });
   };
+
   return (
-    <HeroContainer title="Histórico de parâmetro">
+    <HeroContainer title="Detalhes do parâmetro">
       <Tabs
         tabItems={[
           {
@@ -105,10 +121,6 @@ export default function ParameterHistoryPage() {
 
 const columns: ColumnHeader[] = [
   {
-    name: "parameter",
-    label: "Parâmetro",
-  },
-  {
     name: "value",
     label: "Valor",
   },
@@ -124,6 +136,8 @@ type DetailsTabProps = {
 };
 
 const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
+  console.log(parameter);
+
   return (
     <>
       <CardSection
@@ -141,9 +155,27 @@ const DetailsTab: React.FC<DetailsTabProps> = ({ parameter }) => {
             title: "Escala",
             description: parameter?.scale.toString(),
           },
+          {
+            title: "Expressão",
+            description: parameter?.expression ?? "",
+            defaultSize: 12,
+            isInvisible: parameter?.expression == null,
+          },
+          {
+            title: "Id",
+            description: parameter?.id ?? "",
+            defaultSize: 12,
+          },
+          // {
+          //   title: "Pathname",
+          //   description: parameter?.pathname,
+          //   defaultSize: 12,
+          // },
         ]}
       />
-      <Typography variant="subtitle1">Triggers</Typography>
+      {parameter?.alarmRules?.length! > 0 ? (
+        <Typography variant="subtitle1">Triggers</Typography>
+      ) : null}
       {parameter?.alarmRules?.map((alarmRule, idx) => (
         <TriggerDetails
           key={alarmRule.id}
@@ -165,7 +197,7 @@ type HistorianTabProps = {
 
 const HistorianTab: React.FC<HistorianTabProps> = ({ parameter }) => {
   const [filter, setFilter] = useState<FilterState>({
-    initialDate: addDaysToDate(new Date(), -7),
+    initialDate: addDaysToDate(new Date(), -1),
     finalDate: new Date(),
   });
   const [findMeasuresByParameter, { data: measures, isLoading }] =
@@ -196,6 +228,20 @@ const HistorianTab: React.FC<HistorianTabProps> = ({ parameter }) => {
     parameter?.name,
   ]);
 
+  const getSortedData = () => {
+    if (measures) {
+      const filteredData = measures.filter(
+        (item) => item !== null && item.timestamp !== null
+      );
+      const sortedData = filteredData.sort((a, b) => {
+        const timestampA = parse(a.timestamp, "dd/MM/yyyy HH:mm", new Date());
+        const timestampB = parse(b.timestamp, "dd/MM/yyyy HH:mm", new Date());
+        return compareDesc(timestampA, timestampB);
+      });
+      return sortedData;
+    } else return [];
+  };
+
   return (
     <>
       <Row sx={{ mb: 2 }}>
@@ -224,7 +270,7 @@ const HistorianTab: React.FC<HistorianTabProps> = ({ parameter }) => {
         </Grid>
         <Grid item md={6}>
           <ParameterChart
-            measures={measures ?? []}
+            measures={getSortedData()}
             description={parameter?.name ?? ""}
           />
         </Grid>
